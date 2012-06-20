@@ -71,11 +71,12 @@ class Cloudinary {
         $width = Cloudinary::option_get($options, "width");
         $height = Cloudinary::option_get($options, "height");
 
-        if ($width && floatval($width) < 1) unset($options["width"]); 
-        if ($height && floatval($height) < 1) unset($options["height"]); 
+        $has_layer = Cloudinary::option_get($options, "underlay") || Cloudinary::option_get($options, "overlay");
+        if ($width && (floatval($width) < 1 || $has_layer)) unset($options["width"]); 
+        if ($height && (floatval($height) < 1 || $has_layer)) unset($options["height"]); 
          
         $crop = Cloudinary::option_consume($options, "crop");
-        if (!$crop) $width = $height = NULL;
+        if (!$crop && !$has_layer) $width = $height = NULL;
 
         $background = Cloudinary::option_consume($options, "background");
         if ($background) $background = preg_replace("/^#/", 'rgb:', $background);
@@ -99,7 +100,8 @@ class Cloudinary {
         if (is_array($effect)) $effect = implode(":", $effect);
 
         $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect);
-        $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity", "q"=>"quality", "p"=>"prefix", "a"=>"angle", "l"=>"overlay", "f"=>"fetch_format");
+        $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity", 
+                              "q"=>"quality", "p"=>"prefix", "a"=>"angle", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format");
         foreach ($simple_params as $param=>$option) { 
             $params[$param] = Cloudinary::option_consume($options, $option);
         }        

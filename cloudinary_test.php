@@ -203,6 +203,24 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
         $this->assertEquals("http://res.cloudinary.com/test123/image/upload/l_text:hello/test", $result);
+        // should not pass width/height to html if overlay
+        $options = array("overlay" => "text:hello", "width"=>100, "height"=>100);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/h_100,l_text:hello,w_100/test", $result);
+    }
+
+    public function test_underlay() {
+        // should support underlay
+        $options = array("underlay" => "text:hello");
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/u_text:hello/test", $result);
+        // should not pass width/height to html if underlay
+        $options = array("underlay" => "text:hello", "width"=>100, "height"=>100);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/h_100,u_text:hello,w_100/test", $result);
     }
 
     public function test_fetch_format() {
