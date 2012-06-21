@@ -15,9 +15,9 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 
 Download cloudinary_php from [here](https://github.com/downloads/cloudinary/cloudinary_php/cloudinary_php-0.1.0.tar.gz)
 
-To install the cloudinary_php, open the package in your php folder
+*Note: cloudinary_php require PHP 5.3*
 
-*Note: cloudinary_php depends on the HTTP pecl to work.*
+*Note: cloudinary_php depends on the HTTP pecl for upload.*
 
 ## Try it right away
 
