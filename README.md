@@ -13,7 +13,7 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 
 ## Setup ######################################################################
 
-Download cloudinary_php from [here](https://github.com/downloads/cloudinary/cloudinary_php/cloudinary_php-0.1.0.tar.gz)
+Download cloudinary_php from [here](https://github.com/downloads/cloudinary/cloudinary_php/cloudinary_php-0.2.0.tar.gz)
 
 *Note: cloudinary_php require PHP 5.3*
 
@@ -140,7 +140,7 @@ Additional resources are available at:
 
 ## Support
 
-You can [open an issue through GitHub](https://github.com/cloudinary/pycloudinary/issues).
+You can [open an issue through GitHub](https://github.com/cloudinary/cloudinary_php/issues).
 
 Contact us at [info@cloudinary.com](mailto:info@cloudinary.com)
 
