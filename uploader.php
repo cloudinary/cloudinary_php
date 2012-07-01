@@ -8,6 +8,7 @@ class Uploader {
                         "public_id" =>  \Cloudinary::option_get($options, "public_id"),
                         "callback" =>    \Cloudinary::option_get($options, "callback"),
                         "format" => \Cloudinary::option_get($options, "format"),
+                        "backup" => \Cloudinary::option_get($options, "backup"),
                         "type" => \Cloudinary::option_get($options, "type"),
                         "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
         if (isset($options["eager"])) {
