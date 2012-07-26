@@ -169,6 +169,14 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("http://res.cloudinary.com/test123/image/fetch/http://blah.com/hello%3Fa%3Db", $result);
     }
 
+    public function test_http_escape() {
+        // should escape http urls
+        $options = array("type" => "youtube");
+        $result = Cloudinary::cloudinary_url("http://www.youtube.com/watch?v=d9NF2edxy-M", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/youtube/http://www.youtube.com/watch%3Fv%3Dd9NF2edxy-M", $result);
+    }
+
     public function test_background() {
         // should support background
         $options = array("background" => "red");
@@ -247,6 +255,21 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("http://res.cloudinary.com/test123/image/upload/e_sepia:10/test", $result);
     }
 
+    public function test_density() {
+        // should support density
+        $options = array("density" => 150);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/dn_150/test", $result);
+    }
+
+    public function test_page() {
+        // should support page
+        $options = array("page" => 5);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/pg_5/test", $result);
+    }
 
     public function test_cl_image_tag() {
         $tag = cl_image_tag("test", array("width"=>10, "height"=>10, "crop"=>"fit", "format"=>"png"));

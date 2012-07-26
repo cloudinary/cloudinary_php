@@ -101,7 +101,8 @@ class Cloudinary {
 
         $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect);
         $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity", 
-                              "q"=>"quality", "p"=>"prefix", "a"=>"angle", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format");
+                              "q"=>"quality", "p"=>"prefix", "a"=>"angle", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format",
+                              "dn"=>"density", "pg"=>"page");
         foreach ($simple_params as $param=>$option) { 
             $params[$param] = Cloudinary::option_consume($options, $option);
         }        
@@ -121,7 +122,7 @@ class Cloudinary {
 
     // Warning: $options are being destructively updated!
     public static function cloudinary_url($source, &$options=array()) {
-        $type = Cloudinary::option_consume($options, "type");
+        $type = Cloudinary::option_consume($options, "type", "upload");
 
         if ($type == "fetch" && !isset($options["fetch_format"])) {
             $options["fetch_format"] = Cloudinary::option_consume($options, "format");
@@ -141,12 +142,13 @@ class Cloudinary {
         
         $original_source = $source;
         if (!$source) return $original_source;
-        if ((!$type || $type == "asset") && preg_match("/^https?:\//i", $source)) return $original_source;
-        if (!$type) $type = "upload";
-                
-        if ($format && $type != "fetch") $source = $source . "." . $format;
-        if ($type == "fetch" || $type == "asset") $source = Cloudinary::smart_escape($source);
-            
+
+        if (preg_match("/^https?:\//i", $source)) {
+          if ($type == "upload" || $type == "asset") return $original_source; 
+          $source = Cloudinary::smart_escape($source);
+        } else if ($format) {
+          $source = $source . "." . $format;
+        }            
         if ($secure && !$secure_distribution) {
             if ($private_cdn) {
                 throw new InvalidArgumentException("secure_distribution not defined");
