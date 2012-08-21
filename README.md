@@ -17,8 +17,6 @@ Download cloudinary_php from [here](https://github.com/downloads/cloudinary/clou
 
 *Note: cloudinary_php require PHP 5.3*
 
-*Note: cloudinary_php depends on the HTTP pecl for upload.*
-
 ## Try it right away
 
 Sign up for a [free account](https://cloudinary.com/users/register/free) so you can try out image transformations and seamless image delivery through CDN.
