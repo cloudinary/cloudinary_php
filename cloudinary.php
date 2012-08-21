@@ -31,7 +31,7 @@ class Cloudinary {
     }
 
     public static function config_get($option, $default=NULL) {
-        return Cloudinary::option_get(self::$config, $option, $default);
+        return Cloudinary::option_get(self::config(), $option, $default);
     }
 
     public static function option_get(&$options, $option, $default=NULL) {
