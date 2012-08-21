@@ -1,6 +1,8 @@
 Cloudinary
 ==========
 
+This repository is a fork from the actual Cloudinary PHP SDK
+
 Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline. 
 
 Easily upload images to the cloud. Automatically perform smart image resizing, cropping and conversion without installing any complex software. Integrate Facebook or Twitter profile image extraction in a snap, in any dimension and style to match your website’s graphics requirements. Images are seamlessly delivered through a fast CDN, and much much more. 
@@ -11,9 +13,13 @@ Cloudinary provides URL and HTTP based APIs that can be easily integrated with a
 
 For PHP, Cloudinary provides an extension for simplifying the integration even further.
 
+Improvements
+
+    1. Made code changes to implement cURL instead of HTTP Pecl for Upload.
+
 ## Setup ######################################################################
 
-Download cloudinary_php from [here](https://github.com/downloads/cloudinary/cloudinary_php/cloudinary_php.tar.gz)
+Download cloudinary_php from [here](https://github.com/abishekrsrikaanth/cloudinary_php/tarball/master)
 
 *Note: cloudinary_php require PHP 5.3*
 
