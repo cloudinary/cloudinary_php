@@ -5,14 +5,12 @@ require "uploader.php" ;
 class UploaderTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
         Cloudinary::reset_config();
+        if (!Cloudinary::config_get("api_secret")) {
+          $this->markTestSkipped('Please setup environment for Upload test to run');
+        }
     }
 
     public function test_upload() {
-        // should successfully upload file 
-        if (!Cloudinary::config_get("api_secret")) {
-            echo "Please setup environment for upload test to run";
-            return;
-        }
         $result = Cloudinary\Uploader::upload("tests/logo.png");
         $this->assertEquals($result["width"], 241);
         $this->assertEquals($result["height"], 51);
@@ -20,12 +18,22 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($result["signature"], $expected_signature);
     }
 
+    public function test_explicit() {
+        $result = Cloudinary\Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));        
+        $url = cloudinary_url("cloudinary", array("type"=>"twitter_name", "crop"=>"scale", "width"=>"2.0", "format"=>"png", "version"=>$result["version"]));
+        $this->assertEquals($result["eager"][0]["url"], $url);        
+    }
+
+    public function test_eager() {
+        Cloudinary\Uploader::upload("tests/logo.png", array("eager"=>array("crop"=>"scale", "width"=>"2.0")));
+    }
+
+    public function test_headers() {
+        Cloudinary\Uploader::upload("tests/logo.png", array("headers"=>array("Link: 1")));
+        Cloudinary\Uploader::upload("tests/logo.png", array("headers"=>array("Link" => "1")));
+    }
+
     public function test_text() {
-        // should successfully generate text image
-        if (!Cloudinary::config_get("api_secret")) {
-            echo "Please setup environment for upload test to run";
-            return;
-        }
         $result = Cloudinary\Uploader::text("hello world");
         $this->assertGreaterThan(1, $result["width"]);
         $this->assertGreaterThan(1, $result["height"]);

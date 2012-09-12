@@ -63,8 +63,19 @@ class Cloudinary {
         }
     }
 
+    private static function generate_base_transformation($base_transformation) {
+        return is_array($base_transformation) ? 
+               Cloudinary::generate_transformation_string($base_transformation) : 
+               Cloudinary::generate_transformation_string(array("transformation"=>$base_transformation));
+    } 
+    
     // Warning: $options are being destructively updated!
     public static function generate_transformation_string(&$options=array()) {
+        $generate_base_transformation = "Cloudinary::generate_base_transformation";
+        if ($options == array_values($options)) {
+            return implode("/", array_map($generate_base_transformation, $options));
+        }
+
         $size = Cloudinary::option_consume($options, "size");
         if ($size) list($options["width"], $options["height"]) = preg_split("/x/", $size);
 
@@ -83,13 +94,7 @@ class Cloudinary {
                 
         $base_transformations = Cloudinary::build_array(Cloudinary::option_consume($options, "transformation"));
         if (count(array_filter($base_transformations, "is_array")) > 0) {
-            $callback = function($base_transformation) {
-                $base_transformation_copy = $base_transformation;
-                return is_array($base_transformation) ? 
-                       Cloudinary::generate_transformation_string($base_transformation_copy) : 
-                       Cloudinary::generate_transformation_string(array("transformation"=>$base_transformation));
-            };
-            $base_transformations = array_map($callback, $base_transformations);
+            $base_transformations = array_map($generate_base_transformation, $base_transformations);
             $named_transformation = "";
         } else {
             $named_transformation = implode(".", $base_transformations);
@@ -116,9 +121,6 @@ class Cloudinary {
         array_push($base_transformations, $transformation);
         return implode("/", array_filter($base_transformations));
     }
-
-    public static function hash_join($sep, &$array) {
-    } 
 
     // Warning: $options are being destructively updated!
     public static function cloudinary_url($source, &$options=array()) {

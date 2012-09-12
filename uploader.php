@@ -11,15 +11,9 @@ namespace Cloudinary {
                 "format" => \Cloudinary::option_get($options, "format"),
                 "backup" => \Cloudinary::option_get($options, "backup"),
                 "type" => \Cloudinary::option_get($options, "type"),
+                "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
+                "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
-            if (isset($options["eager"])) {
-                $eager = array();
-                foreach (\Cloudinary::build_array($options["eager"]) as $trans) {
-                    $transformation = $trans;
-                    if ($transformation) array_push($eager, \Cloudinary::generate_transformation_string($transformation));
-                }
-                $params["eager"] = implode("|", $eager);
-            }
             return array_filter($params);
         }
 
@@ -37,6 +31,20 @@ namespace Cloudinary {
                 "public_id" => $public_id
             );
             return Uploader::call_api("destroy", $params, $options);
+        }
+
+        public static function explicit($public_id, $options = array())
+        {
+            $params = array(
+                "timestamp" => time(),
+                "public_id" => $public_id,
+                "type" => \Cloudinary::option_get($options, "type"),
+                "callback" => \Cloudinary::option_get($options, "callback"),
+                "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
+                "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
+                "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")))
+            );
+            return Uploader::call_api("explicit", $params, $options);
         }
 
         // options may include 'exclusive' (boolean) which causes clearing this tag from all other resources
@@ -63,6 +71,7 @@ namespace Cloudinary {
                 "timestamp" => time(),
                 "tag" => $tag,
                 "public_ids" => \Cloudinary::build_array($public_ids),
+                "type" => \Cloudinary::option_get($options, "type"),
                 "command" => $command
             );
             return Uploader::call_api("tags", $params, $options);
@@ -130,6 +139,29 @@ namespace Cloudinary {
                 }
             }
             return $result;
+        }
+        protected static function build_eager(&$transformations) {
+            $eager = array();
+            foreach (\Cloudinary::build_array($transformations) as $trans) {
+                $transformation = $trans;
+                $format = \Cloudinary::option_consume($tranformation, "format");
+                $single_eager = implode("/", array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));      
+                array_push($eager, $single_eager);
+            }
+            return implode("|", $eager);          
+        }
+
+        protected static function build_custom_headers(&$headers) {
+            if ($headers == NULL) {
+                return NULL;
+            } elseif (is_string($headers)) {
+                return $headers;
+            } elseif ($headers == array_values($headers)) {
+                return implode("\n", $headers);
+            } else {
+                $join_pair = function($key, $value) { return $key . ": " . $value; };
+                return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));                
+            }
         }
     }
 }
