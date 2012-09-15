@@ -141,6 +141,7 @@ class Cloudinary {
         $private_cdn = Cloudinary::option_consume($options, "private_cdn", Cloudinary::config_get("private_cdn"));
         $secure_distribution = Cloudinary::option_consume($options, "secure_distribution", Cloudinary::config_get("secure_distribution"));
         $cdn_subdomain = Cloudinary::option_consume($options, "cdn_subdomain", Cloudinary::config_get("cdn_subdomain"));
+        $cname = Cloudinary::option_consume($options, "cname", Cloudinary::config_get("cname"));
         
         $original_source = $source;
         if (!$source) return $original_source;
@@ -161,8 +162,9 @@ class Cloudinary {
         if ($secure) {
             $prefix = "https://" . $secure_distribution;
         } else {
-            $subdomain = $cdn_subdomain ? "a" . ((crc32(source) % 5 + 5) % 5 + 1) : "";
-            $prefix = "http://" . $subdomain . ($private_cdn ? $cloud_name . "-" : "") . "res.cloudinary.com";
+            $subdomain = $cdn_subdomain ? "a" . ((crc32($source) % 5 + 5) % 5 + 1) . "." : "";
+            $host = $cname ? $cname : ($private_cdn ? $cloud_name . "-" : "") . "res.cloudinary.com";
+            $prefix = "http://" . $subdomain . $host;
         }
         if (!$private_cdn) $prefix .= "/" . $cloud_name; 
                 

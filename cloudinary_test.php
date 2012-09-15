@@ -169,6 +169,22 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("http://res.cloudinary.com/test123/image/fetch/http://blah.com/hello%3Fa%3Db", $result);
     }
 
+    public function test_cname() {
+        // should support extenal cname
+        $options = array("cname" => "hello.com");
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://hello.com/test123/image/upload/test", $result);
+    }
+
+    public function test_cname_subdomain() {
+        // should support extenal cname with cdn_subdomain on
+        $options = array("cname" => "hello.com", "cdn_subdomain" => TRUE);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://a2.hello.com/test123/image/upload/test", $result);
+    }
+
     public function test_http_escape() {
         // should escape http urls
         $options = array("type" => "youtube");
