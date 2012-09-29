@@ -119,11 +119,19 @@ namespace Cloudinary {
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
+            $curl_error = NULL;
+            if(curl_errno($ch))
+            {
+                $curl_error = curl_error($ch);
+            }
 
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $response_data = $response;
 
             curl_close($ch);
+            if ($curl_error != NULL) {
+                throw new \Exception("Error in sending request to server - " . $curl_error);
+            }
             if ($code != 200 && $code != 400 && $code != 500) {
                 throw new \Exception("Server returned unexpected status code - " . $code . " - " . $response_data);
             }
