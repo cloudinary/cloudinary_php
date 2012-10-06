@@ -104,10 +104,17 @@ class Cloudinary {
         $effect = Cloudinary::option_consume($options, "effect");
         if (is_array($effect)) $effect = implode(":", $effect);
 
-        $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect);
+        $border = Cloudinary::option_consume($options, "border");
+        if (is_array($border)) {
+          $border_width = Cloudinary::option_get($border, "width", "2");
+          $border_color = preg_replace("/^#/", 'rgb:', Cloudinary::option_get($border, "color", "black"));
+          $border = $border_width . "px_solid_" . $border_color;
+        }
+
+        $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect, "bo"=>$border);
         $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity", 
                               "q"=>"quality", "p"=>"prefix", "a"=>"angle", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format",
-                              "dn"=>"density", "pg"=>"page");
+                              "dn"=>"density", "pg"=>"page", "dl"=>"delay", "cs"=>"color_space");
         foreach ($simple_params as $param=>$option) { 
             $params[$param] = Cloudinary::option_consume($options, $option);
         }        

@@ -287,6 +287,22 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("http://res.cloudinary.com/test123/image/upload/pg_5/test", $result);
     }
 
+    public function test_border() {
+        // should support border
+        $options = array("border" => array("width" => 5));
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/bo_5px_solid_black/test", $result);
+        $options = array("border" => array("width" => 5, "color"=>"#ffaabbdd"));
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/bo_5px_solid_rgb:ffaabbdd/test", $result);
+        $options = array("border" => "1px_solid_blue");
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/bo_1px_solid_blue/test", $result);
+    }
+
     public function test_cl_image_tag() {
         $tag = cl_image_tag("test", array("width"=>10, "height"=>10, "crop"=>"fit", "format"=>"png"));
         $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/c_fit,h_10,w_10/test.png' height='10' width='10'/>", $tag);
