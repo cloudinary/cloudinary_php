@@ -57,7 +57,7 @@ class Api {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $type = \Cloudinary::option_get($options, "type", "upload");
     $uri = array("resources", $resource_type, $type, $public_id);
-    return $this->call_api("get", $uri, $this->only($options, array("exif", "colors", "faces")), $options);      
+    return $this->call_api("get", $uri, $this->only($options, array("exif", "colors", "faces", "max_results")), $options);      
   }
   
   function delete_resources($public_ids, $options=array()) {
