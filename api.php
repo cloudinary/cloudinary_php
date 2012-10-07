@@ -67,10 +67,11 @@ class Api {
     return $this->call_api("delete", $uri, array("public_ids"=>$public_ids), $options);      
   }
 
-  function delete_resources_by_prefix($type, $prefix, $options=array()) {
+  function delete_resources_by_prefix($prefix, $options=array()) {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $uri = array("resources", $resource_type, $type);
-    return $this->call_api("delete", $uri, array("prefix"=>$prefix), $options);      
+    $type = \Cloudinary::option_get($options, "type", "upload");
+        return $this->call_api("delete", $uri, array("prefix"=>$prefix), $options);      
   }  
   
   function delete_derived_resources($derived_resource_ids, $options=array()) {
