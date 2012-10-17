@@ -64,17 +64,23 @@ class Api {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $type = \Cloudinary::option_get($options, "type", "upload");
     $uri = array("resources", $resource_type, $type);
-    return $this->call_api("delete", $uri, array("public_ids"=>$public_ids), $options);      
+    return $this->call_api("delete", $uri, array_merge(array("public_ids"=>$public_ids), $this->only($options, array("keep_original"))), $options);      
   }
 
   function delete_resources_by_prefix($prefix, $options=array()) {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
-    $uri = array("resources", $resource_type, $type);
     $type = \Cloudinary::option_get($options, "type", "upload");
-        return $this->call_api("delete", $uri, array("prefix"=>$prefix), $options);      
+    $uri = array("resources", $resource_type, $type);
+    return $this->call_api("delete", $uri, array_merge(array("prefix"=>$prefix), $this->only($options, array("keep_original"))), $options);      
   }  
   
-  function delete_derived_resources($derived_resource_ids, $options=array()) {
+  function delete_resources_by_tag($tag, $options=array()) {
+    $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
+    $uri = array("resources", $resource_type, "tags", $tag);
+    return $this->call_api("delete", $uri, $this->only($options, array("keep_original")), $options);    
+  }
+  
+    function delete_derived_resources($derived_resource_ids, $options=array()) {
     $uri = array("derived_resources");
     return $this->call_api("delete", $uri, array("derived_resource_ids"=>$derived_resource_ids), $options);      
   }

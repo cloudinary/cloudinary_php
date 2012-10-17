@@ -120,6 +120,30 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->api->resource("api_test3");
   }
 
+  /**
+   * @expectedException \Cloudinary\Api\NotFound
+   */
+  function test09a_delete_resources_by_prefix() {
+    // should allow deleting resources 
+    \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_test_by_prefix"));
+    $resource = $this->api->resource("api_test_by_prefix");
+    $this->assertNotEquals($resource, NULL);    
+    $this->api->delete_resources_by_prefix("api_test_by");
+    $this->api->resource("api_test_by_prefix");
+  }
+
+  /**
+   * @expectedException \Cloudinary\Api\NotFound
+   */
+  function test09b_delete_resources_by_tag() {
+    // should allow deleting resources 
+    \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_test4", "tags"=>array("api_test_tag_for_delete")));
+    $resource = $this->api->resource("api_test4");
+    $this->assertNotEquals($resource, NULL);    
+    $this->api->delete_resources_by_tag("api_test4");
+    $this->api->resource("api_test4");
+  }
+  
   function test10_tags() {
     // should allow listing tags
     $result = $this->api->tags(); 
