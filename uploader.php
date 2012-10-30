@@ -132,7 +132,7 @@ namespace Cloudinary {
             if ($curl_error != NULL) {
                 throw new \Exception("Error in sending request to server - " . $curl_error);
             }
-            if ($code != 200 && $code != 400 && $code != 500) {
+            if ($code != 200 && $code != 400 && $code != 500 && $code != 401 && $code != 404) {
                 throw new \Exception("Server returned unexpected status code - " . $code . " - " . $response_data);
             }
             $result = json_decode($response_data, TRUE);
