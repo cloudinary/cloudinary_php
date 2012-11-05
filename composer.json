@@ -1,5 +1,5 @@
 {
-    "name": "cloudinary / cloudinary_php",
+    "name": "cloudinary/cloudinary_php",
     "description": "Cloudinary PHP SDK",
     "keywords": ["cloudinary", "sdk"],
     "type": "library",
