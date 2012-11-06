@@ -130,6 +130,18 @@ Optional parameters:
     public_id - The name of the uploaded file in Cloudinary
     form - html attributes to be added to the form tag
     Any other parameter that can be passed to \Cloudinary\Uploader::upload
+
+## Development
+
+### Testing
+
+To run the PHPUnit test suite you must first set the evnironment variable containing your Cloudinary Url. This can be obtained viar your control panel.
+
+    export CLOUDINARY_URL=cloudinary://123456789101112:xxxxxxx-xxxxxxxxxxxxxxxxxxx@abcdefghi
+
+Next you can run your the PHPUnit suite from the root of this libraries directory.
+
+   phpunit tests/* 
   
 ## Additional resources ##########################################################
 

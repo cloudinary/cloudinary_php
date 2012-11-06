@@ -1,8 +1,9 @@
 <?php
+$base = realpath(dirname(__FILE__).'/../');
+require_once($base . DIRECTORY_SEPARATOR . 'src/Cloudinary.php');
+require_once($base . DIRECTORY_SEPARATOR . 'src/Uploader.php');
+require_once($base . DIRECTORY_SEPARATOR . 'src/Api.php');
 
-require "cloudinary.php" ;
-require "uploader.php" ;
-require "api.php" ;
 class ApiTest extends PHPUnit_Framework_TestCase {
   static $initialized = FALSE;  
   public function setUp() {
