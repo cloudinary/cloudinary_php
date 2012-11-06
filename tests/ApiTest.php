@@ -141,7 +141,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_test4", "tags"=>array("api_test_tag_for_delete")));
     $resource = $this->api->resource("api_test4");
     $this->assertNotEquals($resource, NULL);    
-    $this->api->delete_resources_by_tag("api_test4");
+    $this->api->delete_resources_by_tag("api_test_tag_for_delete");
     $this->api->resource("api_test4");
   }
   
