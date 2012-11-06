@@ -1,7 +1,8 @@
 {
     "name": "cloudinary/cloudinary_php",
+    "version": "1.0.1",
     "description": "Cloudinary PHP SDK",
-    "keywords": ["cloudinary", "sdk"],
+    "keywords": ["cloudinary", "sdk", "cloud", "image management", "cdn"],
     "type": "library",
     "homepage": "https://github.com/cloudinary/cloudinary_php",
     "license": "MIT",
@@ -15,6 +16,10 @@
         "php": ">=5.2.0",
         "ext-curl": "*",
         "ext-json": "*"
+    },
+    "support": {
+      "email": "info@cloudinary.com",
+      "issues": "https://github.com/cloudinary/cloudinary_php/issues"
     },
     "autoload": {
         "classmap": ["src"]
