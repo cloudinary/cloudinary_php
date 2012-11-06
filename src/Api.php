@@ -178,7 +178,7 @@ class Api {
     return $result;
   }
   
-  public function parse_json_response($response) {
+  static function parse_json_response($response) {
     $result = json_decode($response->body, TRUE);
     if ($result == NULL) {
       $error = json_last_error();
