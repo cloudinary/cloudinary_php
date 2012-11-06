@@ -1,0 +1,22 @@
+{
+    "name": "cloudinary/cloudinary_php",
+    "description": "Cloudinary PHP SDK",
+    "keywords": ["cloudinary", "sdk"],
+    "type": "library",
+    "homepage": "https://github.com/cloudinary/cloudinary_php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cloudinary",
+            "homepage": "https://github.com/cloudinary/cloudinary_php/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "classmap": ["src"]
+    }
+}

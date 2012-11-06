@@ -148,18 +148,18 @@ namespace Cloudinary {
             }
             return $result;
         }
-        protected static function build_eager(&$transformations) {
+        protected static function build_eager($transformations) {
             $eager = array();
             foreach (\Cloudinary::build_array($transformations) as $trans) {
                 $transformation = $trans;
                 $format = \Cloudinary::option_consume($tranformation, "format");
-                $single_eager = implode("/", array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));      
+                $single_eager = implode("/", array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));
                 array_push($eager, $single_eager);
             }
-            return implode("|", $eager);          
+            return implode("|", $eager);
         }
 
-        protected static function build_custom_headers(&$headers) {
+        protected static function build_custom_headers($headers) {
             if ($headers == NULL) {
                 return NULL;
             } elseif (is_string($headers)) {
@@ -168,7 +168,7 @@ namespace Cloudinary {
                 return implode("\n", $headers);
             } else {
                 $join_pair = function($key, $value) { return $key . ": " . $value; };
-                return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));                
+                return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));
             }
         }
     }
