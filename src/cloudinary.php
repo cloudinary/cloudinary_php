@@ -25,7 +25,7 @@ class Cloudinary {
                             "private_cdn" => isset($uri["path"]));
             if (isset($uri["path"])) {
                 $config["secure_distribution"] = substr($uri["path"], 1);
-            } 
+            }
             self::$config = array_merge(self::$config, $config);
         }
     }
@@ -34,16 +34,16 @@ class Cloudinary {
         return Cloudinary::option_get(self::config(), $option, $default);
     }
 
-    public static function option_get(&$options, $option, $default=NULL) {
-        if (isset($options[$option])) { 
+    public static function option_get($options, $option, $default=NULL) {
+        if (isset($options[$option])) {
             return $options[$option];
         } else {
             return $default;
         }
     }
-    
+
     public static function option_consume(&$options, $option, $default=NULL) {
-        if (isset($options[$option])) { 
+        if (isset($options[$option])) {
             $value = $options[$option];
             unset($options[$option]);
             return $value;
@@ -52,7 +52,7 @@ class Cloudinary {
             return $default;
         }
     }
-    
+
     public static function build_array($value) {
         if (is_array($value) && $value == array_values($value)) {
             return $value;
@@ -64,11 +64,11 @@ class Cloudinary {
     }
 
     private static function generate_base_transformation($base_transformation) {
-        return is_array($base_transformation) ? 
-               Cloudinary::generate_transformation_string($base_transformation) : 
+        return is_array($base_transformation) ?
+               Cloudinary::generate_transformation_string($base_transformation) :
                Cloudinary::generate_transformation_string(array("transformation"=>$base_transformation));
-    } 
-    
+    }
+
     // Warning: $options are being destructively updated!
     public static function generate_transformation_string(&$options=array()) {
         $generate_base_transformation = "Cloudinary::generate_base_transformation";
@@ -83,17 +83,17 @@ class Cloudinary {
         $height = Cloudinary::option_get($options, "height");
 
         $has_layer = Cloudinary::option_get($options, "underlay") || Cloudinary::option_get($options, "overlay");
-        if ($width && (floatval($width) < 1 || $has_layer)) unset($options["width"]); 
-        if ($height && (floatval($height) < 1 || $has_layer)) unset($options["height"]); 
-        
+        if ($width && (floatval($width) < 1 || $has_layer)) unset($options["width"]);
+        if ($height && (floatval($height) < 1 || $has_layer)) unset($options["height"]);
+
         $angle = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "angle")), ".");
-         
+
         $crop = Cloudinary::option_consume($options, "crop");
         if (!$crop && !$has_layer) $width = $height = NULL;
 
         $background = Cloudinary::option_consume($options, "background");
         if ($background) $background = preg_replace("/^#/", 'rgb:', $background);
-                
+
         $base_transformations = Cloudinary::build_array(Cloudinary::option_consume($options, "transformation"));
         if (count(array_filter($base_transformations, "is_array")) > 0) {
             $base_transformations = array_map($generate_base_transformation, $base_transformations);
@@ -102,7 +102,7 @@ class Cloudinary {
             $named_transformation = implode(".", $base_transformations);
             $base_transformations = array();
         }
-        
+
         $effect = Cloudinary::option_consume($options, "effect");
         if (is_array($effect)) $effect = implode(":", $effect);
 
@@ -116,12 +116,12 @@ class Cloudinary {
         $flags = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "flags")), ".");
 
         $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect, "bo"=>$border, "a"=>$angle, "fl"=>$flags);
-        $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity", 
+        $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity",
                               "q"=>"quality", "p"=>"prefix", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format",
                               "dn"=>"density", "pg"=>"page", "dl"=>"delay", "cs"=>"color_space");
-        foreach ($simple_params as $param=>$option) { 
+        foreach ($simple_params as $param=>$option) {
             $params[$param] = Cloudinary::option_consume($options, $option);
-        }        
+        }
 
         $params = array_filter($params);
         ksort($params);
@@ -145,7 +145,7 @@ class Cloudinary {
         $resource_type = Cloudinary::option_consume($options, "resource_type", "image");
         $version = Cloudinary::option_consume($options, "version");
         $format = Cloudinary::option_consume($options, "format");
-        
+
         $cloud_name = Cloudinary::option_consume($options, "cloud_name", Cloudinary::config_get("cloud_name"));
         if (!$cloud_name) throw new InvalidArgumentException("Must supply cloud_name in tag or in configuration");
         $secure = Cloudinary::option_consume($options, "secure", Cloudinary::config_get("secure"));
@@ -153,23 +153,23 @@ class Cloudinary {
         $secure_distribution = Cloudinary::option_consume($options, "secure_distribution", Cloudinary::config_get("secure_distribution"));
         $cdn_subdomain = Cloudinary::option_consume($options, "cdn_subdomain", Cloudinary::config_get("cdn_subdomain"));
         $cname = Cloudinary::option_consume($options, "cname", Cloudinary::config_get("cname"));
-        
+
         $original_source = $source;
         if (!$source) return $original_source;
 
         if (preg_match("/^https?:\//i", $source)) {
-          if ($type == "upload" || $type == "asset") return $original_source; 
+          if ($type == "upload" || $type == "asset") return $original_source;
           $source = Cloudinary::smart_escape($source);
         } else if ($format) {
           $source = $source . "." . $format;
-        }            
+        }
         if ($secure && !$secure_distribution) {
             if ($private_cdn) {
                 throw new InvalidArgumentException("secure_distribution not defined");
             } else {
                 $secure_distribution = Cloudinary::SHARED_CDN;
             }
-        } 
+        }
         if ($secure) {
             $prefix = "https://" . $secure_distribution;
         } else {
@@ -177,8 +177,8 @@ class Cloudinary {
             $host = $cname ? $cname : ($private_cdn ? $cloud_name . "-" : "") . "res.cloudinary.com";
             $prefix = "http://" . $subdomain . $host;
         }
-        if (!$private_cdn) $prefix .= "/" . $cloud_name; 
-                
+        if (!$private_cdn) $prefix .= "/" . $cloud_name;
+
         return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
          $type, $transformation, $version ? "v" . $version : "", $source)));
     }
@@ -241,7 +241,7 @@ function fetch_image_tag($url, $options = array()) {
     $options["type"] = "fetch";
     return cl_image_tag($url, $options);
 }
-  
+
 function facebook_profile_image_tag($profile, $options = array()) {
     $options["type"] = "facebook";
     return cl_image_tag($profile, $options);
@@ -282,5 +282,5 @@ function cloudinary_url_internal($source, &$options = array()) {
 
     return Cloudinary::cloudinary_url($source, $options);
 }
-  
+
 ?>
