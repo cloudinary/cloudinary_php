@@ -1,7 +1,7 @@
 <?php
 $base = realpath(dirname(__FILE__).'/../');
-require_once($base . DIRECTORY_SEPARATOR . 'src/cloudinary.php');
-require_once($base . DIRECTORY_SEPARATOR . 'src/uploader.php');
+require_once($base . DIRECTORY_SEPARATOR . 'src/Cloudinary.php');
+require_once($base . DIRECTORY_SEPARATOR . 'src/Uploader.php');
 
 class UploaderTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
