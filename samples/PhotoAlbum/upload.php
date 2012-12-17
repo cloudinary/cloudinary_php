@@ -44,7 +44,7 @@ $(function () {
     .fileupload({ dropZone: '#direct_upload' })
     .on('cloudinarydone', function (e, data) {
         console.log("cloudinarydone: ", data);
-        $.post('upload-complete', { public_id: data.result.public_id } );
+        $.post('upload_complete.php', data.result);
         $('<p/>').text(data.result.public_id).appendTo('#direct_upload');
     });
 </script>
