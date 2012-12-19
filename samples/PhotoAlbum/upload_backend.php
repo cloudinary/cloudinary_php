@@ -19,7 +19,7 @@ class PhotoAlbumUploadHandler extends UploadHandler {
       ));
       unlink($file_path);
       error_log("upload result: " . \PhotoAlbum\ret_var_dump($result));
-      $photo = \PhotoAlbum\create_photo_model($result["public_id"], $result["format"]);
+      $photo = \PhotoAlbum\create_photo_model($result);
     }
 }
 

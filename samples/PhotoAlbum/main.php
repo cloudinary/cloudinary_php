@@ -7,11 +7,16 @@ namespace PhotoAlbum {
   // sets up cloudinary params and RB's DB
   include 'settings.php';
 
-  function create_photo_model($public_id, $format) {
+  function create_photo_model($options = array()) {
     $photo = \R::dispense('photo');
-    $photo->public_id = $public_id;
-    $photo->format = $format;
-    #$photo->timestamp = R::isoDateTime();
+
+    # Add metadata we want to keep:
+    $photo->created_at = \R::isoDateTime();
+
+    foreach ( $options as $key => $value ) {
+        $photo->{$key} = $value;
+    }
+    
     $id = \R::store($photo);
   }
 
