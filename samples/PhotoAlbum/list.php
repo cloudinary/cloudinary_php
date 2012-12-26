@@ -26,18 +26,17 @@
         foreach (R::findAll('photo') as $photo) {
       ?>
         <div class="photo">
+            <a href="<?php echo cloudinary_url($photo["public_id"], 
+                array("format" => $photo["format"])) ?>" target="_blank">
+                <?php 
+                  echo cl_image_tag($photo["public_id"], array(
+                    "format" => $photo["format"], "crop" => "fill", "height" => 100, "width" => 60))
+                ?>
+            </a>
           <div class="less_info">
-            <?php 
-              echo cl_image_tag($photo["public_id"], array(
-                "format" => $photo["format"], "crop" => "fit", "height" => 100, "width" => 60))
-            ?>
             <a href="#" class="toggle_info">Show more...</a>
           </div>
           <div class="more_info">
-            <?php
-              echo cl_image_tag($photo["public_id"], array(
-                "format" => $photo["format"]))
-            ?>
             <a href="#" class="toggle_info">Show less...</a>
             <?php 
               foreach ($photo as $key => $value) {
