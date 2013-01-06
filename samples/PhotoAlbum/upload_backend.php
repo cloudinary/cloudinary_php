@@ -2,7 +2,7 @@
 require 'main.php';
 
 error_reporting(E_ALL | E_STRICT);
-require('jQuery-File-Upload/server/php/UploadHandler.php');
+require('lib/UploadHandler.php');
 class PhotoAlbumUploadHandler extends UploadHandler {
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
             $index = null, $content_range = null) {

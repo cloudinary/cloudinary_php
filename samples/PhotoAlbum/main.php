@@ -25,6 +25,9 @@ namespace PhotoAlbum {
     var_dump($var);
     return ob_get_clean();
   }
+
+  $thumbs_params = array("format" => "jpg", "height" => 150, "width" => 150, 
+    "class" => "thumbnail inline");
 }
 
 ?>
