@@ -18,20 +18,20 @@ require 'main.php';
   </head>
   <body>
     <div id="logo">
-        <!-- This will render the fetched image using cloudinary -->
-        <?php echo fetch_image_tag("http://cloudinary.com/images/logo.png") ?>
+      <!-- This will render the fetched image using cloudinary -->
+      <?php echo fetch_image_tag("http://cloudinary.com/images/logo.png") ?>
     </div>
     <div id="posterframe" style="position: absolute; right: 0; top: 5px;">
-        <!-- This will render the fetched facebook image using cloudinary with all the
-             requested transformations -->
-        <?php echo facebook_profile_image_tag("officialchucknorrispage", array(
-          "format" => "png",
-          "transformation" => array(
-            array("height" => 95, "width" => 95, "crop" => "thumb", "gravity" => "face",
-              "effect" => "sepia", "radius" => 20
-            ), array("angle" => 10)
-          ))); 
-        ?>
+      <!-- This will render the fetched facebook image using cloudinary with all the
+           requested transformations -->
+      <?php echo facebook_profile_image_tag("officialchucknorrispage", array(
+        "format" => "png",
+        "transformation" => array(
+          array("height" => 95, "width" => 95, "crop" => "thumb", "gravity" => "face",
+            "effect" => "sepia", "radius" => 20
+          ), array("angle" => 10)
+        ))); 
+      ?>
     </div>
 
     <!-- This is the backend upload - based on the fileupload javascript for the frontend and also
