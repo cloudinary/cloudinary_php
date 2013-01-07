@@ -1,6 +1,12 @@
 <?php include 'main.php' ?>
 <html>
   <head>
+    <meta charset="utf-8">
+    <title>PhotoAlbum - Main page</title>
+
+    <link rel="shortcut icon"
+     href="<?php echo cloudinary_url("http://cloudinary.com/favicon.png",
+           array("type" => "fetch")); ?>" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <style>
       .more_info, .show_more_info .less_info {

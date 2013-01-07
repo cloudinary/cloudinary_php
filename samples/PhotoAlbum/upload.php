@@ -5,7 +5,11 @@ require 'main.php';
 <html>
   <head>
     <meta charset="utf-8">
-    <title>jQuery File Upload Example</title>
+    <title>PhotoAlbum - Upload page</title>
+
+    <link rel="shortcut icon"
+     href="<?php echo cloudinary_url("http://cloudinary.com/favicon.png",
+           array("type" => "fetch")); ?>" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="lib/jquery.ui.widget.js"></script>
     <script src="lib/jquery.iframe-transport.js"></script>
@@ -13,7 +17,6 @@ require 'main.php';
     <script src="lib/jquery.cloudinary.js"></script>
   </head>
   <body>
-
     <div id="logo">
         <!-- This will render the fetched image using cloudinary -->
         <?php echo fetch_image_tag("http://cloudinary.com/images/logo.png") ?>

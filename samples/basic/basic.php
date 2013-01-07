@@ -63,6 +63,13 @@ function show_image($img, $options = array(), $caption = "") {
 }
 ?>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cloudinary - basic php sample</title>
+    <link rel="shortcut icon"
+ href="<?php echo cloudinary_url("http://cloudinary.com/favicon.png",
+       array("type" => "fetch")); ?>" />
+  </head>
   <body>
     <?php
       echo "<h2>Uploading ... </h2>";
