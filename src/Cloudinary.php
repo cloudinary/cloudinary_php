@@ -16,9 +16,13 @@ class Cloudinary {
     }
 
     public static function reset_config() {
+        self::config_from_url(getenv("CLOUDINARY_URL"));
+    }
+
+    public static function config_from_url($cloudinary_url) {
         self::$config = array();
-        if (getenv("CLOUDINARY_URL")) {
-            $uri = parse_url(getenv("CLOUDINARY_URL"));
+        if ($cloudinary_url) {
+            $uri = parse_url($cloudinary_url);
             $config = array("cloud_name" => $uri["host"],
                             "api_key" => $uri["user"],
                             "api_secret" => $uri["pass"],
