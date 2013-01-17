@@ -122,7 +122,7 @@ class Cloudinary {
         $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect, "bo"=>$border, "a"=>$angle, "fl"=>$flags);
         $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity",
                               "q"=>"quality", "p"=>"prefix", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format",
-                              "dn"=>"density", "pg"=>"page", "dl"=>"delay", "cs"=>"color_space");
+                              "dn"=>"density", "pg"=>"page", "dl"=>"delay", "cs"=>"color_space", "o"=>"opacity");
         foreach ($simple_params as $param=>$option) {
             $params[$param] = Cloudinary::option_consume($options, $option);
         }

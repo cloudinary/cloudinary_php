@@ -76,10 +76,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     
     public function test_various_options() {
         // should use x, y, radius, prefix, gravity and quality from $options        
-        $options = array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => 0.4, "prefix" => "a");
+        $options = array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => 0.4, "prefix" => "a", "opacity" => 20);
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
-        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/g_center,p_a,q_0.4,r_3,x_1,y_2/test", $result);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test", $result);
     }
     
     public function test_transformation_simple() {
