@@ -63,10 +63,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_crop() {
-        // should use width and height from $options only if crop is given
+        // should use width and height from $options even if crop is not given
         $options = array("width" => 100, "height" => 100);
         $result = Cloudinary::cloudinary_url("test", $options);
-        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/test", $result);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/h_100,w_100/test", $result);
         $this->assertEquals(array("width" => 100, "height" => 100), $options);
         $options = array("width" => 100, "height" => 100, "crop" => "crop");
         $result = Cloudinary::cloudinary_url("test", $options);
@@ -321,8 +321,8 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
     
     public function test_cl_image_tag() {
-        $tag = cl_image_tag("test", array("width"=>10, "height"=>10, "crop"=>"fit", "format"=>"png"));
-        $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/c_fit,h_10,w_10/test.png' height='10' width='10'/>", $tag);
+        $tag = cl_image_tag("test", array("width"=>10, "height"=>10, "crop"=>"fill", "format"=>"png"));
+        $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/test.png' height='10' width='10'/>", $tag);
     }
 }
 ?>

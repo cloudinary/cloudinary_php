@@ -87,13 +87,13 @@ class Cloudinary {
         $height = Cloudinary::option_get($options, "height");
 
         $has_layer = Cloudinary::option_get($options, "underlay") || Cloudinary::option_get($options, "overlay");
-        if ($width && (floatval($width) < 1 || $has_layer)) unset($options["width"]);
-        if ($height && (floatval($height) < 1 || $has_layer)) unset($options["height"]);
-
         $angle = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "angle")), ".");
-
         $crop = Cloudinary::option_consume($options, "crop");
-        if (!$crop && !$has_layer) $width = $height = NULL;
+
+        $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit";
+
+        if ($width && (floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
+        if ($height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
 
         $background = Cloudinary::option_consume($options, "background");
         if ($background) $background = preg_replace("/^#/", 'rgb:', $background);
