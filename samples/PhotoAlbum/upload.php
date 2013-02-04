@@ -15,6 +15,9 @@ require 'main.php';
     <script src="lib/jquery.iframe-transport.js"></script>
     <script src="lib/jquery.fileupload.js"></script>
     <script src="lib/jquery.cloudinary.js"></script>
+    <script>
+      $.cloudinary.config("cloud_name", "<?php echo Cloudinary::config_get("cloud_name"); ?>");
+    </script>
   </head>
   <body>
     <div id="logo">
@@ -57,8 +60,19 @@ require 'main.php';
       <?php
         echo cl_image_upload_tag('test', array("tags" => "direct_photo_album"));
       ?>
+      <div class="uploaded-info" style="display: none;">
+        <div class="data"></div>
+        <div class="image"></div>
+      </div>
     </div>
     <script>
+      function prettydump(obj) {
+        ret = ""
+        $.each(obj, function(key, value) {
+          ret += "<tr><td>" + key + "</td><td>" + value + "</td></tr>";
+        });
+        return ret;
+      }
       $('.cloudinary-fileupload')
       .fileupload({ 
         dropZone: '#direct_upload',
@@ -72,7 +86,11 @@ require 'main.php';
       .on('cloudinarydone', function (e, data) {
           $('.status_value').text('Idle');
           $.post('upload_complete.php', data.result);
-          $('<p/>').text(data.result.public_id).appendTo('#direct_upload');
+          $('.uploaded-info .data').html(prettydump(data.result));
+          $('.uploaded-info .image').empty().append($.cloudinary.image(data.result.public_id, {
+            format: "png", width: 400, height: 300,
+          }));
+          $('.uploaded-info').show();
       });
     </script>
   </body> 

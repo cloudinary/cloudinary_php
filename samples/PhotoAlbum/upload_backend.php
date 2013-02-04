@@ -8,14 +8,14 @@ function create_photo($file_path) {
   unlink($file_path);
   error_log("upload result: " . \PhotoAlbum\ret_var_dump($result));
   $photo = \PhotoAlbum\create_photo_model($result);
-  return $result["public_id"];
+  return $result;
 }
 
 $files = $_FILES["files"];
 $files = is_array($files) ? $files : array($files);
-$ids = array();
+$files_data = array();
 foreach ($files["tmp_name"] as $index => $value) {
-  array_push($ids, create_photo($value));
+  array_push($files_data, create_photo($value));
 }
 
 ?>
@@ -23,8 +23,13 @@ foreach ($files["tmp_name"] as $index => $value) {
   <body>
     <h1>Your photos has been uploaded</h1>
     <?php
-      foreach ($ids as $id) {
-        echo cl_image_tag($id, $thumbs_params);
+      foreach ($files_data as $file_data) {
+        echo "<table>";
+        foreach ($file_data as $key => $value) {
+          echo "<tr><td>" . $key . "</td><td>" . $value . "</td></tr>";
+        }
+        echo "</table>";
+        echo cl_image_tag($file_data['public_id'], $thumbs_params);
       }
     ?>
   </body>
