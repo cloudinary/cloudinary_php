@@ -58,7 +58,7 @@ require 'main.php';
     <div id='direct_upload'>
       <br /><h1>Direct upload</h1>
       <?php
-        echo cl_image_upload_tag('test', array("tags" => "direct_photo_album"));
+        echo cl_image_upload_tag('test', array("tags" => "direct_photo_album", "callback" => $cors_location));
       ?>
       <div class="uploaded-info" style="display: none;">
         <div class="data"></div>

@@ -37,6 +37,8 @@ namespace PhotoAlbum {
     error_reporting($saved_error_reporting);
   }
 
+  $cors_location = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["SERVER_NAME"] .
+    dirname($_SERVER["SCRIPT_NAME"]) . "/lib/cloudinary_cors.html";
   $thumbs_params = array("format" => "jpg", "height" => 150, "width" => 150, 
     "class" => "thumbnail inline");
 }
