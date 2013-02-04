@@ -38,30 +38,13 @@ require 'main.php';
          on the PHP backend demo. The uploaded images will be processed in upload_backend.php -->
     <div id='backend_upload'>
       <br /><h1>Upload through backend</h1>
-      <input id="fileupload" type="file" name="files[]" data-url="upload_backend.php" multiple>
+      <form action="upload_backend.php" method="post" enctype="multipart/form-data">
+        <input id="fileupload" type="file" name="files[]" multiple accept="image/gif, image/jpeg, image/png">
+        <input type="submit">
+      </form>
     </div>
 
-    <script>
-      $(function () {
-          $('#fileupload').fileupload({
-              dataType: 'json',
-              dropZone: '#backend_upload',
-              start: function () {
-                $('.status_value').text('Starting backend upload...');
-              },
-              progress: function () {
-                $('.status_value').text('Continue backend upload...');
-              },
-              done: function (e, data) {
-                $('.status_value').text('Idle');
-                $.each(data.result.files, function (index, file) {
-                  $('<p/>').text(file.name).appendTo('#backend_upload');
-                });
-              }
-          });
-      });
-    </script>
-
+    <!-- Status box -->
     <div class="status" style="position: fixed; width: 200px; left: 50%; text-align: center; border: double;">
       <h3>Status</h3>
       <span class="status_value">Idle</span>

@@ -1,30 +1,31 @@
 <?php
 require 'main.php';
 
-error_reporting(E_ALL | E_STRICT);
-require('lib/UploadHandler.php');
-class PhotoAlbumUploadHandler extends UploadHandler {
-    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
-            $index = null, $content_range = null) {
-        $file = parent::handle_file_upload($uploaded_file, $name, $size, $type, $error,
-            $index, $content_range);
-        $this->create_photo($file);
-        return $file;
-    }
-
-    protected function create_photo($file) {
-      $file_path = $this->get_upload_path($file->name);
-      $result = \Cloudinary\Uploader::upload($file_path, array(
-        "tags" => "backend_photo_album",
-      ));
-      unlink($file_path);
-      error_log("upload result: " . \PhotoAlbum\ret_var_dump($result));
-      $photo = \PhotoAlbum\create_photo_model($result);
-    }
+function create_photo($file_path) {
+  $result = \Cloudinary\Uploader::upload($file_path, array(
+    "tags" => "backend_photo_album",
+  ));
+  unlink($file_path);
+  error_log("upload result: " . \PhotoAlbum\ret_var_dump($result));
+  $photo = \PhotoAlbum\create_photo_model($result);
+  return $result["public_id"];
 }
 
-$upload_handler = new PhotoAlbumUploadHandler(array(
-  "image_versions" => array(),
-));
+$files = $_FILES["files"];
+$files = is_array($files) ? $files : array($files);
+$ids = array();
+foreach ($files["tmp_name"] as $index => $value) {
+  array_push($ids, create_photo($value));
+}
 
 ?>
+<html><head><title>Upload succeeded!</title></head>
+  <body>
+    <h1>Your photos has been uploaded</h1>
+    <?php
+      foreach ($ids as $id) {
+        echo cl_image_tag($id, $thumbs_params);
+      }
+    ?>
+  </body>
+</html>
