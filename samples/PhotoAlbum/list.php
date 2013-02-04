@@ -1,4 +1,4 @@
-<?php include 'main.php' ?>
+<?php require 'main.php' ?>
 <html>
   <head>
     <meta charset="utf-8">
@@ -17,6 +17,10 @@
       }
       .inline {
         display: inline-block;
+      }
+      td {
+        vertical-align: top;
+        padding-right: 5px;
       }
     </style>
     <script type='text/javascript'>
@@ -98,8 +102,8 @@
                   $merged_params = array_merge($thumbs_params, $params);
                   echo "<td>";
                   echo cl_image_tag($photo["public_id"], $merged_params);
-                  echo "Params: ";
-                  print_r($merged_params);
+                  echo "<br/>";
+                  \PhotoAlbum\array_to_table($merged_params);
                   echo "</td>";
                 }
               ?>
@@ -107,11 +111,6 @@
             <p> As you can see, different tranformations can go a long way.
             You're welcome to consult the <a href="http://cloudinary.com/documentation/image_transformations"
             >Image Transformation reference</a> for more awesome transformations
-            <?php 
-              foreach ($photo as $key => $value) {
-                echo "<p>$key = $value</p>";
-              }
-            ?>
           </div>
         </div>
       <?php } ?>

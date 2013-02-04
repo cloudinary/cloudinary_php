@@ -27,6 +27,16 @@ namespace PhotoAlbum {
     return ob_get_clean();
   }
 
+  function array_to_table($array) {
+    $saved_error_reporting = error_reporting(0);
+    echo "<table>";
+    foreach ($array as $key => $value) {
+      echo "<tr><td>" . $key . "</td><td>" . json_encode($value) . "</td></tr>";
+    }
+    echo "</table>";
+    error_reporting($saved_error_reporting);
+  }
+
   $thumbs_params = array("format" => "jpg", "height" => 150, "width" => 150, 
     "class" => "thumbnail inline");
 }
