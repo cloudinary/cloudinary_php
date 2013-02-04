@@ -93,13 +93,14 @@
                   array("crop" => "fit"),
                   array("crop" => "thumb", "gravity" => "face"),
                   array("crop" => "thumb", "gravity" => "face"),
-                  array("crop" => "fill", "gravity" => "north", "format" => "png", "transformation" => array(
+                  array("override" => true, "format" => "png", "transformation" => array(
+                    array("crop" => "fill", "gravity" => "north", "width" => 150, "height" => 150),
                     array("effect" => "sepia"),
                     array("angle" => "20"),
                   )),
                 );
                 foreach($thumbs as $params) {
-                  $merged_params = array_merge($thumbs_params, $params);
+                  $merged_params = array_merge((\Cloudinary::option_consume($params, "override")) ? array() : $thumbs_params, $params);
                   echo "<td>";
                   echo cl_image_tag($photo["public_id"], $merged_params);
                   echo "<br/>";
