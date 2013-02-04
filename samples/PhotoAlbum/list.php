@@ -13,7 +13,7 @@
         display: none;
       }
       .show_more_info .more_info, .less_info {
-        display: block;
+        display: inline-block;
       }
       .inline {
         display: inline-block;
@@ -21,6 +21,13 @@
       td {
         vertical-align: top;
         padding-right: 5px;
+      }
+      .photo a {
+        display: inline-block;
+        width: 200px;
+      }
+      .photo > * {
+        vertical-align: top;
       }
     </style>
     <script type='text/javascript'>
@@ -70,13 +77,15 @@
          to go to the upload page</p>
       <?php
         }
+        $index = 0;
         foreach (R::findAll('photo') as $photo) {
       ?>
-        <div class="photo">
+        <div class="photo<?php echo $index == 1 ? " show_more_info" : "" ?>">
             <a href="<?php echo cloudinary_url($photo["public_id"], 
                 array("format" => $photo["format"])) ?>" target="_blank">
                 <?php 
-                  echo cl_image_tag($photo["public_id"], array_merge($thumbs_params, array("crop" => "fill")));
+                  echo $photo["public_id"];
+                  // echo cl_image_tag($photo["public_id"], array_merge($thumbs_params, array("crop" => "fill")));
                 ?>
             </a>
           <div class="less_info">
@@ -114,7 +123,7 @@
             >Image Transformation reference</a> for more awesome transformations
           </div>
         </div>
-      <?php } ?>
+      <?php $index++; } ?>
     </div>
   </body>
 </html>
