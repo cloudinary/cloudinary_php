@@ -8,19 +8,13 @@ namespace PhotoAlbum {
   // sets up cloudinary params and RB's DB
   include 'settings.php';
 
-  function create_photo_model($options = array()) {
-    $photo = \R::dispense('photo');
+  // global settings
+  $cors_location = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["SERVER_NAME"] .
+    dirname($_SERVER["SCRIPT_NAME"]) . "/lib/cloudinary_cors.html";
+  $thumbs_params = array("format" => "jpg", "height" => 150, "width" => 150, 
+    "class" => "thumbnail inline");
 
-    # Add metadata we want to keep:
-    $photo->created_at = \R::isoDateTime();
-
-    foreach ( $options as $key => $value ) {
-        $photo->{$key} = $value;
-    }
-    
-    $id = \R::store($photo);
-  }
-
+  // help functions
   function ret_var_dump($var) {
     ob_start();
     var_dump($var);
@@ -36,11 +30,6 @@ namespace PhotoAlbum {
     echo "</table>";
     error_reporting($saved_error_reporting);
   }
-
-  $cors_location = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["SERVER_NAME"] .
-    dirname($_SERVER["SCRIPT_NAME"]) . "/lib/cloudinary_cors.html";
-  $thumbs_params = array("format" => "jpg", "height" => 150, "width" => 150, 
-    "class" => "thumbnail inline");
 }
 
 ?>
