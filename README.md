@@ -121,6 +121,26 @@ Usage:
 
     # <img src='http://res.cloudinary.com/cloud_name/image/upload/c_fill,h_100,w_100/sample.png' height='100' width='100'/>
 
+### cl\_image\_upload\_tag
+
+Returns an html input field for direct image upload, to be used in conjunction with [cloudinary\_js package](https://github.com/cloudinary/cloudinary_js/). It integrates [jQuery-File-Upload widget](https://github.com/blueimp/jQuery-File-Upload) and provides all the necessary parameters for a direct upload.
+You may see a sample usage of this feature in the PhotoAlbum sample included in this project.
+
+Usage:
+
+    cl_image_upload_tag(post-upload-field-name, upload-options-array)
+
+Parameters:
+
+ - `post-upload-field-name` - A name of a field in the form to be updated with the uploaded file data.
+      If no such field exists a new hidden field will be creates.   
+      The value format is `<image-path>#<public-id>`.   
+      If the `cl_image_upload_tag` is not within an html form, this argument is ignored.
+
+ - `upload-options-array` - upload options same as in Upload section above, with:
+      - html - an associative array of html attributes for the upload field
+
+
 ### cl\_form\_tag
 
 The following function returns an html form that can be used to upload the file directly to Cloudinary. The result is a redirect to the supplied callback_url.

@@ -57,9 +57,13 @@ require 'main.php';
           allow uploading directly to your Cloudinary storage -->
     <div id='direct_upload'>
       <br /><h1>Direct upload</h1>
+      <form>
       <?php
+        # The callback is set to a file on the local server which works-around restrictions in older IE
+        # which don't implement CORS correctly.
         echo cl_image_upload_tag('test', array("tags" => "direct_photo_album", "callback" => $cors_location));
       ?>
+      </form>
       <div class="uploaded-info" style="display: none;">
         <div class="data"></div>
         <div class="image"></div>
