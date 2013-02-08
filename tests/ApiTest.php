@@ -229,4 +229,11 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   function test17b_transformation_delete_implicit() {  
     $this->api->transformation("c_scale,w_100");
   }
+  
+  function test18_usage() {
+    // should allow listing resource_types
+    $result = $this->api->usage(); 
+    $this->assertNotEquals($result["last_updated"], NULL);
+  }
+  
 }

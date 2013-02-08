@@ -35,6 +35,10 @@ class Api {
     500 => "\Cloudinary\Api\GeneralError"
    );
 
+  function usage($options=array()) {
+    return $this->call_api("get", array("usage"), array(), $options);
+  }
+
   function resource_types($options=array()) {
     return $this->call_api("get", array("resources"), array(), $options);
   }
