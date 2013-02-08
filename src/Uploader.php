@@ -11,6 +11,7 @@ namespace Cloudinary {
                 "format" => \Cloudinary::option_get($options, "format"),
                 "backup" => \Cloudinary::option_get($options, "backup"),
                 "faces" => \Cloudinary::option_get($options, "faces"),
+                "image_metadata" => \Cloudinary::option_get($options, "image_metadata"),
                 "exif" => \Cloudinary::option_get($options, "exif"),
                 "colors" => \Cloudinary::option_get($options, "colors"),
                 "type" => \Cloudinary::option_get($options, "type"),
