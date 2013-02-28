@@ -17,6 +17,10 @@ namespace Cloudinary {
                 "type" => \Cloudinary::option_get($options, "type"),
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
                 "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
+                "use_filename" => \Cloudinary::option_get($options, "use_filename"),
+                "notification_url" => \Cloudinary::option_get($options, "notification_url"),
+                "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
+                "eager_async" => \Cloudinary::option_get($options, "eager_async"),
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
             return array_filter($params);
         }
@@ -49,6 +53,48 @@ namespace Cloudinary {
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")))
             );
             return Uploader::call_api("explicit", $params, $options);
+        }
+
+        public static function generate_sprite($tag, $options = array())
+        {
+            $transformation = \Cloudinary::generate_transformation_string(
+              array_merge(array("fetch_format"=>\Cloudinary::option_get($options, "format")), $options));
+            $params = array(
+                "timestamp" => time(),
+                "tag" => $tag,
+                "async" => \Cloudinary::option_get($options, "async"),
+                "notification_url" => \Cloudinary::option_get($options, "notification_url"),
+                "transformation" => $transformation
+            );
+            return Uploader::call_api("sprite", $params, $options);
+        }
+
+        public static function multi($tag, $options = array())
+        {
+            $transformation = \Cloudinary::generate_transformation_string($options);
+            $params = array(
+                "timestamp" => time(),
+                "tag" => $tag,
+                "format" => \Cloudinary::option_get($options, "format"),
+                "async" => \Cloudinary::option_get($options, "async"),
+                "notification_url" => \Cloudinary::option_get($options, "notification_url"),
+                "transformation" => $transformation
+            );
+            return Uploader::call_api("multi", $params, $options);
+        }
+
+        public static function explode($public_id, $options = array())
+        {
+            $transformation = \Cloudinary::generate_transformation_string($options);
+            $params = array(
+                "timestamp" => time(),
+                "public_id" => $public_id,
+                "format" => \Cloudinary::option_get($options, "format"),
+                "type" => \Cloudinary::option_get($options, "type"),
+                "notification_url" => \Cloudinary::option_get($options, "notification_url"),
+                "transformation" => $transformation
+            );
+            return Uploader::call_api("explode", $params, $options);
         }
 
         // options may include 'exclusive' (boolean) which causes clearing this tag from all other resources
