@@ -139,7 +139,15 @@ class Api {
     curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
     curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__))."/cacert.pem");
     $response = $this->execute($ch);       
+    $curl_error = NULL;
+    if(curl_errno($ch))
+    {
+        $curl_error = curl_error($ch);
+    }
     curl_close($ch);
+    if ($curl_error != NULL) {
+        throw new \Cloudinary\Api\GeneralError("Error in sending request to server - " . $curl_error);
+    }
     if ($response->responseCode == 200) {
       return new \Cloudinary\Api\Response($response);
     } else {
