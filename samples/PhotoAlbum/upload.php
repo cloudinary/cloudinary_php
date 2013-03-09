@@ -7,9 +7,12 @@ require 'main.php';
     <meta charset="utf-8">
     <title>PhotoAlbum - Upload page</title>
 
+	<link href="style.css" media="all" rel="stylesheet" />
+
     <link rel="shortcut icon"
      href="<?php echo cloudinary_url("http://cloudinary.com/favicon.png",
            array("type" => "fetch")); ?>" />
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="lib/jquery.ui.widget.js"></script>
     <script src="lib/jquery.iframe-transport.js"></script>
@@ -19,13 +22,16 @@ require 'main.php';
       $.cloudinary.config("cloud_name", "<?php echo Cloudinary::config_get("cloud_name"); ?>");
     </script>
   </head>
+  
   <body>
+  	
     <div id="logo">
-      <!-- This will render the fetched image using cloudinary -->
+      <!-- This will render the image fetched from a remote HTTP URL using Cloudinary -->
       <?php echo fetch_image_tag("http://cloudinary.com/images/logo.png") ?>
     </div>
-    <div id="posterframe" style="position: absolute; right: 0; top: 5px;">
-      <!-- This will render the fetched facebook image using cloudinary with all the
+    
+    <div id="posterframe">
+      <!-- This will render the fetched Facebook profile picture using Cloudinary according to the
            requested transformations -->
       <?php echo facebook_profile_image_tag("officialchucknorrispage", array(
         "format" => "png",
@@ -37,38 +43,41 @@ require 'main.php';
       ?>
     </div>
 
-    <!-- This is the backend upload - based on the fileupload javascript for the frontend and also
-         on the PHP backend demo. The uploaded images will be processed in upload_backend.php -->
+    <!-- A standard form for sending the image data to your server -->
     <div id='backend_upload'>
-      <br /><h1>Upload through backend</h1>
+      <h1>Upload through your server</h1>
       <form action="upload_backend.php" method="post" enctype="multipart/form-data">
         <input id="fileupload" type="file" name="files[]" multiple accept="image/gif, image/jpeg, image/png">
-        <input type="submit">
+        <input type="submit" value="Upload">
       </form>
     </div>
 
-    <!-- Status box -->
-    <div class="status" style="position: fixed; width: 200px; left: 50%; text-align: center; border: double;">
-      <h3>Status</h3>
-      <span class="status_value">Idle</span>
-    </div>
-    <!-- This is the direct upload - also based on the fileupload for the frontend. 
-          The cl_image_upload_tag php function is generating the required html and javascript to
-          allow uploading directly to your Cloudinary storage -->
+    
+    <!-- A form for direct uploading using a jQuery plug-in. 
+          The cl_image_upload_tag PHP function generates the required HTML and JavaScript to
+          allow uploading directly frm the browser to your Cloudinary account -->
     <div id='direct_upload'>
-      <br /><h1>Direct upload</h1>
+      <h1>Direct upload from the browser</h1>
       <form>
       <?php
-        # The callback is set to a file on the local server which works-around restrictions in older IE
-        # which don't implement CORS correctly.
-        echo cl_image_upload_tag('test', array("tags" => "direct_photo_album", "callback" => $cors_location));
+        # The callback URL is set to point to an HTML file on the local server which works-around restrictions 
+        # in older browsers (e.g., IE) which don't full support CORS.
+        echo cl_image_upload_tag('test', array("tags" => "direct_photo_album", "callback" => $cors_location, "html" => array("multiple" => true)));
       ?>
       </form>
-      <div class="uploaded-info" style="display: none;">
-        <div class="data"></div>
-        <div class="image"></div>
+
+	  <!-- status box -->
+	  <div class="status">
+	    <h2>Status</h2>
+	    <span class="status_value">Idle</span>
+	  </div>
+	
+      <div class="uploaded_info_holder">
       </div>
     </div>
+
+    <a href="list.php" class="back_link">Back to list...</a>
+    
     <script>
       function prettydump(obj) {
         ret = ""
@@ -77,6 +86,7 @@ require 'main.php';
         });
         return ret;
       }
+      
       $('.cloudinary-fileupload')
       .fileupload({ 
         dropZone: '#direct_upload',
@@ -84,17 +94,21 @@ require 'main.php';
           $('.status_value').text('Starting direct upload...');
         },
         progress: function () {
-          $('.status_value').text('Continue direct upload...');
+          $('.status_value').text('Uploading...');
         },
       })
       .on('cloudinarydone', function (e, data) {
           $('.status_value').text('Idle');
           $.post('upload_complete.php', data.result);
-          $('.uploaded-info .data').html(prettydump(data.result));
-          $('.uploaded-info .image').empty().append($.cloudinary.image(data.result.public_id, {
-            format: "png", width: 400, height: 300,
-          }));
-          $('.uploaded-info').show();
+          var info = $('<div class="uploaded_info"/>');
+          $(info).append($('<div class="data"/>').append(prettydump(data.result)));
+          $(info).append($('<div class="image"/>').append(
+          	$.cloudinary.image(data.result.public_id, {
+            	format: data.result.format, width: 150, height: 150, crop: "fill"
+          	})
+          ));
+          $('.uploaded_info_holder').append(info);
+          
       });
     </script>
   </body> 

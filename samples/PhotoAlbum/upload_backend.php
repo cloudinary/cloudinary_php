@@ -2,11 +2,13 @@
 require 'main.php';
 
 function create_photo($file_path) {
+  # Upload the received image file to Cloudinary 
   $result = \Cloudinary\Uploader::upload($file_path, array(
     "tags" => "backend_photo_album",
   ));
+  
   unlink($file_path);
-  error_log("upload result: " . \PhotoAlbum\ret_var_dump($result));
+  error_log("Upload result: " . \PhotoAlbum\ret_var_dump($result));
   $photo = \PhotoAlbum\create_photo_model($result);
   return $result;
 }
@@ -19,14 +21,24 @@ foreach ($files["tmp_name"] as $index => $value) {
 }
 
 ?>
-<html><head><title>Upload succeeded!</title></head>
+<html>
+	<head>
+		<link href="style.css" media="all" rel="stylesheet" />
+		<title>Upload succeeded!</title>
+	</head>
   <body>
-    <h1>Your photos has been uploaded</h1>
+  	
+    <h1>Your photo has been uploaded sucessfully!</h1>
+    <h2>Upload details:</h2>    
     <?php
       foreach ($files_data as $file_data) {
-        \PhotoAlbum\array_to_table($file_data);
-        echo cl_image_tag($file_data['public_id'], $thumbs_params);
-      }
-    ?>
+        \PhotoAlbum\array_to_table($file_data);        
+      }	  
+	?>
+	<br/>	  
+    <?php echo cl_image_tag($file_data['public_id'],  array_merge($thumbs_params, array("crop" => "fill"))); ?>
+    
+    <a href="list.php" class="back_link">Back to list...</a>
+    
   </body>
 </html>
