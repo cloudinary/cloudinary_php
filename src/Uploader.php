@@ -244,11 +244,15 @@ namespace {
         # Remove blank parameters
         $params = array_filter($params);
 
+        $classes = array("cloudinary-fileupload");
+        if (isset($html_options["class"])) {
+            array_unshift($classes, Cloudinary::option_consume($html_options, "class"));
+        }
         $tag_options = array_merge($html_options, array("type" => "file", "name" => "file",
             "data-url" => $cloudinary_upload_url,
             "data-form-data" => json_encode($params),
             "data-cloudinary-field" => $field,
-            "class" => implode(" ", array($html_options["class"], "cloudinary-fileupload"))
+            "class" => implode(" ", $classes),
         ));
         return '<input ' . Cloudinary::html_attrs($tag_options) . '/>';
     }

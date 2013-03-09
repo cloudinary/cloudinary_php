@@ -3,7 +3,7 @@ Cloudinary
 
 Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline. 
 
-Easily upload images to the cloud. Automatically perform smart image resizing, cropping and conversion without installing any complex software. Integrate Facebook or Twitter profile image extraction in a snap, in any dimension and style to match your website’s graphics requirements. Images are seamlessly delivered through a fast CDN, and much much more. 
+Easily upload images to the cloud. Automatically perform smart image resizing, cropping and conversion without installing any complex software. Integrate Facebook or Twitter profile image extraction in a snap, in any dimension and style to match your website's graphics requirements. Images are seamlessly delivered through a fast CDN, and much much more. 
 
 Cloudinary offers comprehensive APIs and administration capabilities and is easy to integrate with any web application, existing or new.
 
@@ -55,6 +55,8 @@ Generating a 120x90 thumbnail based on automatic face detection of the Facebook 
 
 For more details, see our documentation for embedding [Facebook](http://cloudinary.com/documentation/facebook_profile_pictures) and [Twitter](http://cloudinary.com/documentation/twitter_profile_pictures) profile pictures. 
 
+### Samples
+You can find our simple and ready-to-use samples projects, along with documentations in the [samples folder](https://github.com/cloudinary/cloudinary_php/tree/master/samples). Please consult with the [README file](https://github.com/cloudinary/cloudinary_php/blob/master/samples/README.md), for usage and explanations.
 
 ## Usage
 
@@ -109,7 +111,7 @@ You can also specify your own public ID:
 
     http://res.cloudinary.com/demo/image/upload/sample_remote.jpg
         
-### cl_image_tag
+### cl\_image\_tag
 
 Returns an html image tag pointing to Cloudinary.
 
@@ -119,7 +121,27 @@ Usage:
 
     # <img src='http://res.cloudinary.com/cloud_name/image/upload/c_fill,h_100,w_100/sample.png' height='100' width='100'/>
 
-### cl_form_tag
+### cl\_image\_upload\_tag
+
+Returns an html input field for direct image upload, to be used in conjunction with [cloudinary\_js package](https://github.com/cloudinary/cloudinary_js/). It integrates [jQuery-File-Upload widget](https://github.com/blueimp/jQuery-File-Upload) and provides all the necessary parameters for a direct upload.
+You may see a sample usage of this feature in the PhotoAlbum sample included in this project.
+
+Usage:
+
+    cl_image_upload_tag(post-upload-field-name, upload-options-array)
+
+Parameters:
+
+ - `post-upload-field-name` - A name of a field in the form to be updated with the uploaded file data.
+      If no such field exists a new hidden field will be creates.   
+      The value format is `<image-path>#<public-id>`.   
+      If the `cl_image_upload_tag` is not within an html form, this argument is ignored.
+
+ - `upload-options-array` - upload options same as in Upload section above, with:
+      - html - an associative array of html attributes for the upload field
+
+
+### cl\_form\_tag
 
 The following function returns an html form that can be used to upload the file directly to Cloudinary. The result is a redirect to the supplied callback_url.
 

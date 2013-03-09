@@ -76,6 +76,9 @@ class Cloudinary {
     // Warning: $options are being destructively updated!
     public static function generate_transformation_string(&$options=array()) {
         $generate_base_transformation = "Cloudinary::generate_base_transformation";
+        if (is_string($options)) {
+            return $options;
+        }
         if ($options == array_values($options)) {
             return implode("/", array_map($generate_base_transformation, $options));
         }
