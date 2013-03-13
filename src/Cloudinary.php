@@ -1,8 +1,11 @@
 <?php
 
 class Cloudinary {
+    const CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
+    const AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
+    const SHARED_CDN = "cloudinary-a.akamaihd.net";
+        
     private static $config = NULL;
-    const SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
     public static $JS_CONFIG_PARAMS = array("api_key", "cloud_name", "private_cdn", "secure_distribution", "cdn_subdomain");
 
     public static function config($values = NULL) {
@@ -171,11 +174,7 @@ class Cloudinary {
           $source = $source . "." . $format;
         }
         if ($secure && !$secure_distribution) {
-            if ($private_cdn) {
-                throw new InvalidArgumentException("secure_distribution not defined");
-            } else {
-                $secure_distribution = Cloudinary::SHARED_CDN;
-            }
+            $secure_distribution = Cloudinary::SHARED_CDN;
         }
         if ($secure) {
             $prefix = "https://" . $secure_distribution;
@@ -184,7 +183,7 @@ class Cloudinary {
             $host = $cname ? $cname : ($private_cdn ? $cloud_name . "-" : "") . "res.cloudinary.com";
             $prefix = "http://" . $subdomain . $host;
         }
-        if (!$private_cdn) $prefix .= "/" . $cloud_name;
+        if (!$private_cdn || ($secure && $secure_distribution == Cloudinary::AKAMAI_SHARED_CDN)) $prefix .= "/" . $cloud_name;
 
         return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
          $type, $transformation, $version ? "v" . $version : "", $source)));

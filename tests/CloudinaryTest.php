@@ -25,7 +25,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $options = array("secure" => TRUE);
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
-        $this->assertEquals("https://d3jpl91pxevbkh.cloudfront.net/test123/image/upload/test", $result);
+        $this->assertEquals("https://cloudinary-a.akamaihd.net/test123/image/upload/test", $result);
     }
 
     public function test_secure_distribution_overwrite() {
@@ -45,13 +45,28 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("https://config.secure.distribution.com/test123/image/upload/test", $result);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function test_missing_secure_distribution() {
-        // should raise exception if secure is given with private_cdn and no secure_distribution
-        Cloudinary::config(array("private_cdn" => TRUE));
-        cloudinary_url("test", array("secure"=>TRUE));
+    public function test_secure_akamai() {
+        // should default to akamai if secure is given with private_cdn and no secure_distribution
+        $options = array("secure" => TRUE, "private_cdn" => TRUE);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("https://cloudinary-a.akamaihd.net/test123/image/upload/test", $result);
+    }
+
+    public function test_secure_non_akamai() {
+        // should not add cloud_name if private_cdn and secure non akamai secure_distribution
+        $options = array("secure" => TRUE, "private_cdn" => TRUE, "secure_distribution" => "something.cloudfront.net");
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("https://something.cloudfront.net/image/upload/test", $result);
+    }
+
+    public function test_http_private_cdn() {
+        // should not add cloud_name if private_cdn and not secure
+        $options = array("private_cdn" => TRUE);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://test123-res.cloudinary.com/image/upload/test", $result);
     }
 
     public function test_format() {
