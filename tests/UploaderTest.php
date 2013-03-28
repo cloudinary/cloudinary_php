@@ -2,6 +2,7 @@
 $base = realpath(dirname(__FILE__).'/../');
 require_once($base . DIRECTORY_SEPARATOR . 'src/Cloudinary.php');
 require_once($base . DIRECTORY_SEPARATOR . 'src/Uploader.php');
+require_once($base . DIRECTORY_SEPARATOR . 'src/Api.php');
 
 class UploaderTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
@@ -40,6 +41,21 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $this->assertGreaterThan(1, $result["height"]);
     }
 
+    public function test_tags() {
+        $api = new \Cloudinary\Api();      
+        $result = Cloudinary\Uploader::upload("tests/logo.png");
+        Cloudinary\Uploader::add_tag("tag1", $result["public_id"]);
+        Cloudinary\Uploader::add_tag("tag2", $result["public_id"]);
+        $info = $api->resource($result["public_id"]);
+        $this->assertEquals($info["tags"], array("tag1", "tag2"));
+        Cloudinary\Uploader::remove_tag("tag1", $result["public_id"]);
+        $info = $api->resource($result["public_id"]);
+        $this->assertEquals($info["tags"], array("tag2"));
+        Cloudinary\Uploader::replace_tag("tag3", $result["public_id"]);
+        $info = $api->resource($result["public_id"]);
+        $this->assertEquals($info["tags"], array("tag3"));
+    }
+    
     public function test_cl_form_tag() {
         Cloudinary::config(array("cloud_name"=>"test123", "secure_distribution" => NULL, "private_cdn" => FALSE, "api_key" => "1234"));
 
