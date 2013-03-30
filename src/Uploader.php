@@ -41,6 +41,18 @@ namespace Cloudinary {
             return Uploader::call_api("destroy", $params, $options);
         }
 
+        public static function rename($from_public_id, $to_public_id, $options = array())
+        {
+            $params = array(
+                "timestamp" => time(),
+                "type" => \Cloudinary::option_get($options, "type"),
+                "from_public_id" => $from_public_id,
+                "to_public_id" => $to_public_id,
+                "overwrite" => \Cloudinary::option_get($options, "overwrite")
+            );
+            return Uploader::call_api("rename", $params, $options);
+        }
+        
         public static function explicit($public_id, $options = array())
         {
             $params = array(

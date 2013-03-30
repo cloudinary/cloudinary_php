@@ -20,6 +20,24 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($result["signature"], $expected_signature);
     }
 
+    public function test_rename() {
+        $result = Cloudinary\Uploader::upload("tests/logo.png");
+        Cloudinary\Uploader::rename($result["public_id"], $result["public_id"]."2");
+        $api = new \Cloudinary\Api();      
+        $this->assertNotNull($api->resource($result["public_id"]."2"));
+
+        $result2 = Cloudinary\Uploader::upload("tests/favicon.ico");
+        $error_thrown = FALSE;
+        try {
+          Cloudinary\Uploader::rename($result2["public_id"], $result["public_id"]."2");
+          $error_thrown = TRUE;
+        } catch (Exception $e) {}
+        $this->assertFalse($error_thrown);
+        Cloudinary\Uploader::rename($result2["public_id"], $result["public_id"]."2", array("overwrite"=>TRUE));
+        $resource = $api->resource($result["public_id"]."2");
+        $this->assertEquals($resource["format"], "ico");        
+    }
+
     public function test_explicit() {
         $result = Cloudinary\Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));        
         $url = cloudinary_url("cloudinary", array("type"=>"twitter_name", "crop"=>"scale", "width"=>"2.0", "format"=>"png", "version"=>$result["version"]));
