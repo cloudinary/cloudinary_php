@@ -112,7 +112,11 @@ class Api {
   # updates - currently only supported update is the "allowed_for_strict" boolean flag
   function update_transformation($transformation, $updates=array(), $options=array()) {
     $uri = array("transformations", $this->transformation_string($transformation));
-    return $this->call_api("put", $uri, $updates, $options);    
+    $params = $this->only($updates, array("allowed_for_strict"));
+    if (isset($updates["unsafe_update"])) {
+      $params["unsafe_update"] = $this->transformation_string($updates["unsafe_update"]);  
+    }
+    return $this->call_api("put", $uri, $params, $options);    
   }
   
   function create_transformation($name, $definition, $options=array()) {

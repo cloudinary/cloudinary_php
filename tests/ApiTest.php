@@ -22,6 +22,9 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     try {
       $this->api->delete_transformation("api_test_transformation2");
     } catch (Exception $e) {}
+    try {
+      $this->api->delete_transformation("api_test_transformation3");
+    } catch (Exception $e) {}
     \Cloudinary\Uploader::upload("tests/logo.png", 
       array("public_id"=>"api_test", "tags"=>"api_test_tag", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
     \Cloudinary\Uploader::upload("tests/logo.png", 
@@ -200,6 +203,16 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertNotEquals($transformation, NULL);    
     $this->assertEquals($transformation["allowed_for_strict"], TRUE);
     $this->assertEquals($transformation["info"], array(array("crop"=> "scale", "width"=> 102)));
+    $this->assertEquals($transformation["used"], FALSE);
+  }
+
+  function test15a_transformation_unsafe_update() {
+    // should allow unsafe update of named transformation 
+    $this->api->create_transformation("api_test_transformation3", array("crop" => "scale", "width" => 102));
+    $this->api->update_transformation("api_test_transformation3", array("unsafe_update"=>array("crop"=>"scale", "width"=>103)));
+    $transformation = $this->api->transformation("api_test_transformation3");
+    $this->assertNotEquals($transformation, NULL);    
+    $this->assertEquals($transformation["info"], array(array("crop"=> "scale", "width"=> 103)));
     $this->assertEquals($transformation["used"], FALSE);
   }
   
