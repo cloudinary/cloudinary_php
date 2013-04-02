@@ -163,6 +163,7 @@ class Cloudinary {
         $secure_distribution = Cloudinary::option_consume($options, "secure_distribution", Cloudinary::config_get("secure_distribution"));
         $cdn_subdomain = Cloudinary::option_consume($options, "cdn_subdomain", Cloudinary::config_get("cdn_subdomain"));
         $cname = Cloudinary::option_consume($options, "cname", Cloudinary::config_get("cname"));
+        $shorten = Cloudinary::option_consume($options, "shorten", Cloudinary::config_get("shorten"));
 
         $original_source = $source;
         if (!$source) return $original_source;
@@ -184,6 +185,11 @@ class Cloudinary {
             $prefix = "http://" . $subdomain . $host;
         }
         if (!$private_cdn || ($secure && $secure_distribution == Cloudinary::AKAMAI_SHARED_CDN)) $prefix .= "/" . $cloud_name;
+
+        if ($shorten && $resource_type == "image" && $type == "upload") {
+            $resource_type = "iu";
+            $type = "";          
+        }
 
         return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
          $type, $transformation, $version ? "v" . $version : "", $source)));

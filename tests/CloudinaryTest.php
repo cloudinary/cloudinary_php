@@ -339,6 +339,19 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $tag = cl_image_tag("test", array("width"=>10, "height"=>10, "crop"=>"fill", "format"=>"png"));
         $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/test.png' height='10' width='10'/>", $tag);
     }
+
+    public function test_shorten() {
+        $options = array("shorten"=>TRUE);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/iu/test", $result);
+
+        $options = array("shorten"=>TRUE, "type"=>"private");
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/private/test", $result);
+    }
+
 }
 ?>
 
