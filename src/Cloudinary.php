@@ -190,6 +190,9 @@ class Cloudinary {
             $resource_type = "iu";
             $type = "";          
         }
+        if (strpos($source, "/") && !preg_match("/^https?:\//", $source) && !preg_match("/^v[0-9]+/", $source) && empty($version)) {
+            $version = "1";
+        }
 
         return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
          $type, $transformation, $version ? "v" . $version : "", $source)));
