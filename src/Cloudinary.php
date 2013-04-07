@@ -220,6 +220,27 @@ class Cloudinary {
         return $result["resource_type"] . "/upload/v" . $result["version"] . "/" . $result["public_id"] .
                (isset($result["format"]) ? "." . $result["format"] : "") . "#" . $result["signature"];
     }
+    
+    public static function private_download_url($public_id, $format, $options = array()) {
+        $api_key = \Cloudinary::option_get($options, "api_key", \Cloudinary::config_get("api_key"));
+        if (!$api_key) throw new \InvalidArgumentException("Must supply api_key");
+        $api_secret = \Cloudinary::option_get($options, "api_secret", \Cloudinary::config_get("api_secret"));
+        if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
+        $cloudinary_params = array_filter(array(
+          "timestamp"=>time(), 
+          "public_id"=>$public_id, 
+          "format"=>$format, 
+          "type"=>\Cloudinary::option_get($options, "type"),
+          "attachment"=>Cloudinary::option_get($options, "attachment"),
+          "expires_at"=>Cloudinary::option_get($options, "expires_at")
+        ));
+
+        $cloudinary_params["signature"] = \Cloudinary::api_sign_request($cloudinary_params, $api_secret);
+        $cloudinary_params["api_key"] = $api_key;
+
+        return Cloudinary::cloudinary_api_url("download", $options) . "?" . http_build_query($cloudinary_params); 
+    }
+    
 
     public static function api_sign_request($params_to_sign, $api_secret) {
         $params = array();
