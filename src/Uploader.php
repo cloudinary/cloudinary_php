@@ -21,6 +21,7 @@ namespace Cloudinary {
                 "notification_url" => \Cloudinary::option_get($options, "notification_url"),
                 "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
                 "eager_async" => \Cloudinary::option_get($options, "eager_async"),
+                "invalidate" => \Cloudinary::option_get($options, "invalidate"),
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
             return array_filter($params);
         }
@@ -36,6 +37,7 @@ namespace Cloudinary {
             $params = array(
                 "timestamp" => time(),
                 "type" => \Cloudinary::option_get($options, "type"),
+                "invalidate" => \Cloudinary::option_get($options, "invalidate"),
                 "public_id" => $public_id
             );
             return Uploader::call_api("destroy", $params, $options);
