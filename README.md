@@ -105,7 +105,7 @@ The uploaded image is assigned a randomly generated public ID. The image is imme
 
 You can also specify your own public ID:    
     
-    \Cloudinary\Uploader::upload("http://www.example.com/image.jpg", "public_id" => 'sample_remote')
+    \Cloudinary\Uploader::upload("http://www.example.com/image.jpg", array("public_id" => 'sample_remote'))
 
     cloudinary_url("sample_remote.jpg")
 
