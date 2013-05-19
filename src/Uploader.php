@@ -18,6 +18,7 @@ namespace Cloudinary {
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
                 "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
                 "use_filename" => \Cloudinary::option_get($options, "use_filename"),
+                "discard_original_filename" => \Cloudinary::option_get($options, "discard_original_filename"),
                 "notification_url" => \Cloudinary::option_get($options, "notification_url"),
                 "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
                 "eager_async" => \Cloudinary::option_get($options, "eager_async"),
