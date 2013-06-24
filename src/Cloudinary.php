@@ -301,7 +301,7 @@ function twitter_name_profile_image_tag($profile, $options = array()) {
 
 function cloudinary_js_config() {
     $params = array();
-    foreach (Cloudinary::JS_CONFIG_PARAMS as $param) {
+    foreach (Cloudinary::$JS_CONFIG_PARAMS as $param) {
         $value = Cloudinary::config_get($param);
         if ($value) $params[$param] = $value;
     }
