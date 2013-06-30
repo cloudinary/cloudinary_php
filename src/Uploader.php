@@ -232,13 +232,7 @@ namespace Cloudinary {
                 $join_pair = function($key, $value) { return $key . ": " . $value; };
                 return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));
             }
-        }
-  
-        public static function zip_download_url($tag, $options=array()) {
-            $params = array("timestamp"=>time(), "tag"=>$tag, "transformation" => \Cloudinary::generate_transformation_string($options));
-            $params = \Cloudinary::sign_request($params, $options);
-            return \Cloudinary::cloudinary_api_url("download_tag.zip", $options) . "?" . http_build_query($params); 
-        }
+        }  
     }
 
 	class PreloadedFile {
