@@ -241,6 +241,20 @@ class Cloudinary {
         return Cloudinary::cloudinary_api_url("download", $options) . "?" . http_build_query($cloudinary_params); 
     }
     
+    public static function sign_request($params, &$options) {
+        $api_key = Cloudinary::option_get($options, "api_key", Cloudinary::config_get("api_key"));
+        if (!$api_key) throw new \InvalidArgumentException("Must supply api_key");
+        $api_secret = Cloudinary::option_get($options, "api_secret", Cloudinary::config_get("api_secret"));
+        if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
+
+        # Remove blank parameters
+        $params = array_filter($params);
+
+        $params["signature"] = Cloudinary::api_sign_request($params, $api_secret);
+        $params["api_key"] = $api_key;
+        
+        return $params;
+    }
 
     public static function api_sign_request($params_to_sign, $api_secret) {
         $params = array();

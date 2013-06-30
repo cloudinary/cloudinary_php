@@ -156,18 +156,13 @@ namespace Cloudinary {
         public static function call_api($action, $params, $options = array(), $file = NULL)
         {
             $return_error = \Cloudinary::option_get($options, "return_error");
-            $api_key = \Cloudinary::option_get($options, "api_key", \Cloudinary::config_get("api_key"));
-            if (!$api_key) throw new \InvalidArgumentException("Must supply api_key");
-            $api_secret = \Cloudinary::option_get($options, "api_secret", \Cloudinary::config_get("api_secret"));
-            if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
-
-            $params["signature"] = \Cloudinary::api_sign_request($params, $api_secret);
-            $params["api_key"] = $api_key;
+            
+            $params = \Cloudinary::sign_request($params, $options);
 
             $api_url = \Cloudinary::cloudinary_api_url($action, $options);
 
             # Serialize params
-            $api_url .= "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query(array_filter($params))); 
+            $api_url .= "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params)); 
 
             $ch = curl_init($api_url);
 
@@ -238,6 +233,12 @@ namespace Cloudinary {
                 return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));
             }
         }
+  
+        public static function zip_download_url($tag, $options=array()) {
+            $params = array("timestamp"=>time(), "tag"=>$tag, "transformation" => \Cloudinary::generate_transformation_string($options));
+            $params = \Cloudinary::sign_request($params, $options);
+            return \Cloudinary::cloudinary_api_url("download_tag.zip", $options) . "?" . http_build_query($params); 
+        }
     }
 
 	class PreloadedFile {
@@ -268,7 +269,7 @@ namespace Cloudinary {
 		    return $this->signature == $expected_signature;			
 		}
 
-        protected function split_format($identifier) {
+    protected function split_format($identifier) {
 			$last_dot = strrpos($identifier, ".");
 			
 			if ($last_dot === false) {
@@ -299,17 +300,8 @@ namespace {
         if (!isset($options["resource_type"])) $options["resource_type"] = "auto";
         $cloudinary_upload_url = Cloudinary::cloudinary_api_url("upload", $options);
 
-        $api_key = Cloudinary::option_get($options, "api_key", Cloudinary::config_get("api_key"));
-        if (!$api_key) throw new \InvalidArgumentException("Must supply api_key");
-        $api_secret = Cloudinary::option_get($options, "api_secret", Cloudinary::config_get("api_secret"));
-        if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
-
         $params = Cloudinary\Uploader::build_upload_params($options);
-        $params["signature"] = Cloudinary::api_sign_request($params, $api_secret);
-        $params["api_key"] = $api_key;
-
-        # Remove blank parameters
-        $params = array_filter($params);
+        $params = Cloudinary::sign_request($params, $options);
 
         $classes = array("cloudinary-fileupload");
         if (isset($html_options["class"])) {
@@ -329,9 +321,9 @@ namespace {
         $form_options = Cloudinary::option_get($options, "form", array());
 
         $options["callback_url"] = $callback_url;
+
         $params = Cloudinary\Uploader::build_upload_params($options);
-        $params["signature"] = Cloudinary::api_sign_request($params, Cloudinary::config_get("api_secret"));
-        $params["api_key"] = Cloudinary::config_get("api_key");
+        $params = Cloudinary::sign_request($params, $options);
 
         $api_url = Cloudinary::cloudinary_api_url("upload", $options);
 
