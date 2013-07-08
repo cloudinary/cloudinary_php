@@ -332,4 +332,17 @@ function cloudinary_url_internal($source, &$options = array()) {
     return Cloudinary::cloudinary_url($source, $options);
 }
 
+function cl_sprite_url($tag, $options = array()) {
+    if (substr($tag, -strlen(".css")) != ".css") {
+        $options["format"] = "css";
+    }
+    $options["type"] = "sprite";
+    return cloudinary_url_internal($tag, $options);
+}
+
+function cl_sprite_tag($tag, $options = array()) {
+    return "<link rel='stylesheet' type='text/css' href='" . cl_sprite_url($tag, $options) . "'>";
+}
+
+
 ?>

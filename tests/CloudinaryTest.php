@@ -362,6 +362,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array(), $options);
         $this->assertEquals("http://res.cloudinary.com/test123/image/private/test", $result);
     }
+    
+    public function test_cl_sprite_tag() {
+        $url = cl_sprite_tag("mytag", array("crop"=>"fill", "width"=>10, "height"=>10));
+        $this->assertEquals("<link rel='stylesheet' type='text/css' href='http://res.cloudinary.com/test123/image/sprite/c_fill,h_10,w_10/mytag.css'>", $url);
+    }
 
 }
 ?>
