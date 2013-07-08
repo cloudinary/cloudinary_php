@@ -168,7 +168,7 @@ namespace Cloudinary {
 
             $post_params = array();
             if ($file) {
-                if (!preg_match('/^@|^https?:|^s3:|^data:image\/\w*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
+                if (!preg_match('/^@|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
                     $post_params["file"] = "@" . $file;
                 } else {
                     $post_params["file"] = $file;
