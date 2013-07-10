@@ -11,9 +11,9 @@ Cloudinary provides URL and HTTP based APIs that can be easily integrated with a
 
 For PHP, Cloudinary provides an extension for simplifying the integration even further.
 
-Improvements
+## Getting started guide
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png)  **Take a look at our [Getting started guide for PHP](http://cloudinary.com/documentation/php_integration#getting_started_guide)**.
 
-    1. Made code changes to implement cURL instead of HTTP Pecl for Upload.
 
 ## Setup ######################################################################
 
@@ -89,6 +89,10 @@ Same goes for Twitter:
 
     cloudinary_url("billclinton.jpg", array("type" => "twitter_name"))
 
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php_image_manipulation) for more information about displaying and transforming images in PHP**.                                         
+
+
+
 ### Upload
 
 Assuming you have your Cloudinary configuration parameters defined (`cloud_name`, `api_key`, `api_secret`), uploading to Cloudinary is very simple.
@@ -110,7 +114,11 @@ You can also specify your own public ID:
     cloudinary_url("sample_remote.jpg")
 
     http://res.cloudinary.com/demo/image/upload/sample_remote.jpg
-        
+
+
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php_image_upload) for plenty more options of uploading to the cloud from your PHP code**.
+
+
 ### cl\_image\_tag
 
 Returns an html image tag pointing to Cloudinary.
@@ -120,6 +128,8 @@ Usage:
     <?php echo cl_image_tag("sample", array("format"=>"png", "width"=>100, "height"=>100, "crop"=>"fill") ?>
 
     # <img src='http://res.cloudinary.com/cloud_name/image/upload/c_fill,h_100,w_100/sample.png' height='100' width='100'/>
+
+
 
 ### cl\_image\_upload\_tag
 
@@ -139,6 +149,8 @@ Parameters:
 
  - `upload-options-array` - upload options same as in Upload section above, with:
       - html - an associative array of html attributes for the upload field
+
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php_image_upload#direct_uploading_from_the_browser) for plenty more options of uploading directly from the browser**.
 
 
 ### cl\_form\_tag
@@ -170,17 +182,20 @@ Next you can run your the PHPUnit suite from the root of this library:
 Additional resources are available at:
 
 * [Website](http://cloudinary.com)
+* [Knowledge Base](http://support.cloudinary.com/forums) 
 * [Documentation](http://cloudinary.com/documentation)
+* [Documentation for PHP integration](http://cloudinary.com/documentation/php_integration)
+* [PHP image upload documentation](http://cloudinary.com/documentation/php_image_upload)
+* [PHP image manipulation documentation](http://cloudinary.com/documentation/php_image_manipulation)
 * [Image transformations documentation](http://cloudinary.com/documentation/image_transformations)
-* [Upload API documentation](http://cloudinary.com/documentation/upload_images)
 
 ## Support
 
 You can [open an issue through GitHub](https://github.com/cloudinary/cloudinary_php/issues).
 
-Contact us at [info@cloudinary.com](mailto:info@cloudinary.com)
+Contact us [http://cloudinary.com/contact](http://cloudinary.com/contact)
 
-Or via Twitter: [@cloudinary](https://twitter.com/#!/cloudinary)
+Stay tuned for updates, tips and tutorials: [Blog](http://cloudinary.com/blog), [Twitter](https://twitter.com/cloudinary), [Facebook](http://www.facebook.com/Cloudinary).
 
 ## License #######################################################################
 
