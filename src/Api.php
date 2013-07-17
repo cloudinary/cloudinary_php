@@ -48,7 +48,7 @@ class Api {
     $type = \Cloudinary::option_get($options, "type");
     $uri = array("resources", $resource_type);
     if ($type) array_push($uri, $type);
-    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "prefix")), $options);    
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "prefix", "tags")), $options);    
   }
   
   function resources_by_tag($tag, $options=array()) {
