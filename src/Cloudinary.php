@@ -2,8 +2,9 @@
 
 class Cloudinary {
     const CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
-    const AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
-    const SHARED_CDN = "cloudinary-a.akamaihd.net";
+    const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
+    const AKAMAI_SHARED_CDN = "res.cloudinary.com";
+    const SHARED_CDN = "res.cloudinary.com";
         
     private static $config = NULL;
     public static $JS_CONFIG_PARAMS = array("api_key", "cloud_name", "private_cdn", "secure_distribution", "cdn_subdomain");
@@ -169,22 +170,25 @@ class Cloudinary {
         if (!$source) return $original_source;
 
         if (preg_match("/^https?:\//i", $source)) {
-          if ($type == "upload" || $type == "asset") return $original_source;
-          $source = Cloudinary::smart_escape($source);
+            if ($type == "upload" || $type == "asset") return $original_source;
+            $source = Cloudinary::smart_escape($source);
         } else if ($format) {
-          $source = $source . "." . $format;
+            $source = $source . "." . $format;
         }
-        if ($secure && !$secure_distribution) {
-            $secure_distribution = Cloudinary::SHARED_CDN;
-        }
+
+        $shared_domain = !$private_cdn;
         if ($secure) {
+            if (!$secure_distribution || $secure_distribution == Cloudinary::OLD_AKAMAI_SHARED_CDN) {
+                $secure_distribution = $private_cdn ? $cloud_name . "-res.cloudinary.com" : Cloudinary::SHARED_CDN;
+            }
+            $shared_domain = $shared_domain || $secure_distribution == Cloudinary::SHARED_CDN;
             $prefix = "https://" . $secure_distribution;
         } else {
             $subdomain = $cdn_subdomain ? "a" . ((crc32($source) % 5 + 5) % 5 + 1) . "." : "";
             $host = $cname ? $cname : ($private_cdn ? $cloud_name . "-" : "") . "res.cloudinary.com";
             $prefix = "http://" . $subdomain . $host;
         }
-        if (!$private_cdn || ($secure && $secure_distribution == Cloudinary::AKAMAI_SHARED_CDN)) $prefix .= "/" . $cloud_name;
+        if ($shared_domain) $prefix .= "/" . $cloud_name; 
 
         if ($shorten && $resource_type == "image" && $type == "upload") {
             $resource_type = "iu";

@@ -25,7 +25,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $options = array("secure" => TRUE);
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
-        $this->assertEquals("https://cloudinary-a.akamaihd.net/test123/image/upload/test", $result);
+        $this->assertEquals("https://res.cloudinary.com/test123/image/upload/test", $result);
     }
 
     public function test_secure_distribution_overwrite() {
@@ -50,7 +50,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $options = array("secure" => TRUE, "private_cdn" => TRUE);
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
-        $this->assertEquals("https://cloudinary-a.akamaihd.net/test123/image/upload/test", $result);
+        $this->assertEquals("https://test123-res.cloudinary.com/image/upload/test", $result);
     }
 
     public function test_secure_non_akamai() {
