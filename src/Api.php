@@ -35,6 +35,10 @@ class Api {
     500 => "\Cloudinary\Api\GeneralError"
    );
 
+  function ping($options=array()) {
+    return $this->call_api("get", array("ping"), array(), $options);
+  }
+
   function usage($options=array()) {
     return $this->call_api("get", array("usage"), array(), $options);
   }
