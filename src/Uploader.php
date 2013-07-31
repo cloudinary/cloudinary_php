@@ -23,6 +23,8 @@ namespace Cloudinary {
                 "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
                 "eager_async" => \Cloudinary::option_get($options, "eager_async"),
                 "invalidate" => \Cloudinary::option_get($options, "invalidate"),
+                "proxy" => \Cloudinary::option_get($options, "proxy"),
+                "folder" => \Cloudinary::option_get($options, "folder"),
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
             return array_filter($params);
         }
