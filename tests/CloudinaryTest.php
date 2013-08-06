@@ -368,6 +368,19 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("<link rel='stylesheet' type='text/css' href='http://res.cloudinary.com/test123/image/sprite/c_fill,h_10,w_10/mytag.css'>", $url);
     }
 
+    public function test_escape_public_id() {
+        # should escape public_ids
+        $tests = array(
+            "a b" => "a%20b",
+            "a+b" => "a%2Bb",
+            "a%20b" => "a%20b",
+            "a-b" => "a-b",
+            "a??b" => "a%3F%3Fb");
+        foreach ($tests as $source => $target) {
+            $url = Cloudinary::cloudinary_url($source);
+            $this->assertEquals("http://res.cloudinary.com/test123/image/upload/$target", $url);                      
+        }
+    }    
 }
 ?>
 

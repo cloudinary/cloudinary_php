@@ -172,8 +172,9 @@ class Cloudinary {
         if (preg_match("/^https?:\//i", $source)) {
             if ($type == "upload" || $type == "asset") return $original_source;
             $source = Cloudinary::smart_escape($source);
-        } else if ($format) {
-            $source = $source . "." . $format;
+        } else {
+            $source = Cloudinary::smart_escape(rawurldecode($source));
+            if ($format) $source = $source . "." . $format;
         }
 
         $shared_domain = !$private_cdn;
