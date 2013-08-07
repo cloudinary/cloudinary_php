@@ -289,23 +289,30 @@ namespace Cloudinary {
 }
 
 namespace {
+    function cl_upload_url($options = array()) 
+    {
+        if (!isset($options["resource_type"])) $options["resource_type"] = "auto";
+        return Cloudinary::cloudinary_api_url("upload", $options);      
+    }
 
+    function cl_upload_tag_params($options = array()) 
+    {
+        $params = Cloudinary\Uploader::build_upload_params($options);
+        $params = Cloudinary::sign_request($params, $options);
+        return json_encode($params);
+    }
+    
     function cl_image_upload_tag($field, $options = array())
     {
         $html_options = Cloudinary::option_get($options, "html", array());
-        if (!isset($options["resource_type"])) $options["resource_type"] = "auto";
-        $cloudinary_upload_url = Cloudinary::cloudinary_api_url("upload", $options);
-
-        $params = Cloudinary\Uploader::build_upload_params($options);
-        $params = Cloudinary::sign_request($params, $options);
 
         $classes = array("cloudinary-fileupload");
         if (isset($html_options["class"])) {
             array_unshift($classes, Cloudinary::option_consume($html_options, "class"));
         }
         $tag_options = array_merge($html_options, array("type" => "file", "name" => "file",
-            "data-url" => $cloudinary_upload_url,
-            "data-form-data" => json_encode($params),
+            "data-url" => cl_upload_url($options),
+            "data-form-data" => cl_upload_tag_params($options),
             "data-cloudinary-field" => $field,
             "class" => implode(" ", $classes),
         ));
