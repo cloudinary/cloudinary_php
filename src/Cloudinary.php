@@ -42,8 +42,11 @@ class Cloudinary {
         return Cloudinary::option_get(self::config(), $option, $default);
     }
 
-    public static function option_get($options, $option, $default=NULL) {
+    public static function option_get($options, $option, $default=NULL, $encode_bool = FALSE) {
         if (isset($options[$option])) {
+	    if ($encode_bool && is_bool($options[$option])) {
+		return $options[$option] ? "true" : "false";
+	    } 
             return $options[$option];
         } else {
             return $default;
@@ -252,7 +255,7 @@ class Cloudinary {
         if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
 
         # Remove blank parameters
-        $params = array_filter($params);
+        $params = array_filter($params, function($v){ return isset($v) && $v !== "";});
 
         $params["signature"] = Cloudinary::api_sign_request($params, $api_secret);
         $params["api_key"] = $api_key;
@@ -263,12 +266,12 @@ class Cloudinary {
     public static function api_sign_request($params_to_sign, $api_secret) {
         $params = array();
         foreach ($params_to_sign as $param => $value) {
-            if ($value) {
+            if (isset($value) && $value !== "") {
                 $params[$param] = is_array($value) ? implode(",", $value) : $value;
             }
         }
         ksort($params);
-        $join_pair = function($key, $value) { return $key . "=" . $value; };
+	$join_pair = function($key, $value) { return $key . "=" . $value; };
         $to_sign = implode("&", array_map($join_pair, array_keys($params), array_values($params)));
         return sha1($to_sign . $api_secret);
     }

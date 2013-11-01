@@ -73,6 +73,14 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $info = $api->resource($result["public_id"]);
         $this->assertEquals($info["tags"], array("tag3"));
     }
+
+    public function test_use_filename() {
+        $api = new \Cloudinary\Api();      
+        $result = Cloudinary\Uploader::upload("tests/logo.png", array("use_filename"=>TRUE));
+        $this->assertRegExp('/logo_[a-zA-Z0-9]{6}/', $result["public_id"]);
+        $result = Cloudinary\Uploader::upload("tests/logo.png", array("use_filename"=>TRUE, "unique_filename"=>FALSE));
+        $this->assertEquals("logo", $result["public_id"]);
+    }
     
     public function test_cl_form_tag() {
         Cloudinary::config(array("cloud_name"=>"test123", "secure_distribution" => NULL, "private_cdn" => FALSE, "api_key" => "1234"));
