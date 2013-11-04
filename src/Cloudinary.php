@@ -104,6 +104,8 @@ class Cloudinary {
 
         $background = Cloudinary::option_consume($options, "background");
         if ($background) $background = preg_replace("/^#/", 'rgb:', $background);
+        $color = Cloudinary::option_consume($options, "color");
+        if ($color) $color = preg_replace("/^#/", 'rgb:', $color);
 
         $base_transformations = Cloudinary::build_array(Cloudinary::option_consume($options, "transformation"));
         if (count(array_filter($base_transformations, "is_array")) > 0) {
@@ -126,7 +128,7 @@ class Cloudinary {
 
         $flags = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "flags")), ".");
 
-        $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "e"=>$effect, "bo"=>$border, "a"=>$angle, "fl"=>$flags);
+        $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "co"=>$color, "e"=>$effect, "bo"=>$border, "a"=>$angle, "fl"=>$flags);
         $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity",
                               "q"=>"quality", "p"=>"prefix", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format",
                               "dn"=>"density", "pg"=>"page", "dl"=>"delay", "cs"=>"color_space", "o"=>"opacity");
