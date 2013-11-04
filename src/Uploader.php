@@ -18,7 +18,7 @@ namespace Cloudinary {
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
                 "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
                 "use_filename" => \Cloudinary::option_get($options, "use_filename"),
-                "unique_filename" => \Cloudinary::option_get($options, "unique_filename", NULL, TRUE),
+                "unique_filename" => \Cloudinary::option_get($options, "unique_filename"),
                 "discard_original_filename" => \Cloudinary::option_get($options, "discard_original_filename"),
                 "notification_url" => \Cloudinary::option_get($options, "notification_url"),
                 "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
@@ -27,6 +27,7 @@ namespace Cloudinary {
                 "proxy" => \Cloudinary::option_get($options, "proxy"),
                 "folder" => \Cloudinary::option_get($options, "folder"),
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
+	    array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
 	    return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
         }
 

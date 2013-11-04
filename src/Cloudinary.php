@@ -42,11 +42,8 @@ class Cloudinary {
         return Cloudinary::option_get(self::config(), $option, $default);
     }
 
-    public static function option_get($options, $option, $default=NULL, $encode_bool = FALSE) {
+    public static function option_get($options, $option, $default=NULL) {
         if (isset($options[$option])) {
-	    if ($encode_bool && is_bool($options[$option])) {
-		return $options[$option] ? "true" : "false";
-	    } 
             return $options[$option];
         } else {
             return $default;
