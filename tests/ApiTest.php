@@ -38,7 +38,8 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     return NULL;
   } 
   
-  function test01_resource_types() {    // should allow listing resource_types
+  function test01_resource_types() {
+    // should allow listing resource_types
     $result = $this->api->resource_types(); 
     $this->assertContains("image", $result["resource_types"]);
   }
@@ -247,6 +248,18 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     // should allow listing resource_types
     $result = $this->api->usage(); 
     $this->assertNotEquals($result["last_updated"], NULL);
+  }
+  
+  function test19_delete_derived() {
+    // should allow deleting all resources 
+    \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_test5", "eager"=>array("transformation"=>array("width"=> 101,"crop" => "scale"))));    
+    $resource = $this->api->resource("api_test5");
+    $this->assertNotEquals($resource, NULL);    
+    $this->assertEquals(count($resource["derived"]), 1);
+    $this->api->delete_all_resources(array("keep_original" => True));
+    $resource = $this->api->resource("api_test5");
+    $this->assertNotEquals($resource, NULL);    
+    $this->assertEquals(count($resource["derived"]), 0);
   }
   
 }

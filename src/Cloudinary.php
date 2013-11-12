@@ -27,10 +27,13 @@ class Cloudinary {
         self::$config = array();
         if ($cloudinary_url) {
             $uri = parse_url($cloudinary_url);
-            $config = array("cloud_name" => $uri["host"],
+            $q_params = array();
+            parse_str($uri["query"], $q_params);
+            $config = array_merge($q_params, array(
+                            "cloud_name" => $uri["host"],
                             "api_key" => $uri["user"],
                             "api_secret" => $uri["pass"],
-                            "private_cdn" => isset($uri["path"]));
+                            "private_cdn" => isset($uri["path"])));
             if (isset($uri["path"])) {
                 $config["secure_distribution"] = substr($uri["path"], 1);
             }
