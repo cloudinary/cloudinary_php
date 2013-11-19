@@ -28,7 +28,9 @@ class Cloudinary {
         if ($cloudinary_url) {
             $uri = parse_url($cloudinary_url);
             $q_params = array();
-            parse_str($uri["query"], $q_params);
+            if (isset($uri["query"])) {
+                parse_str($uri["query"], $q_params);
+            }
             $config = array_merge($q_params, array(
                             "cloud_name" => $uri["host"],
                             "api_key" => $uri["user"],
