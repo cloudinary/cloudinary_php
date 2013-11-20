@@ -252,11 +252,9 @@ namespace Cloudinary {
 	    		$this->version = $matches[3];
 	    		$this->filename = $matches[4];
 	    		$this->signature = $matches[5];
-				
 				$public_id_and_format = $this->split_format($this->filename);
 				$this->public_id = $public_id_and_format[0];
 				$this->format = $public_id_and_format[1]; 
-
 			} else {
 				throw new \InvalidArgumentException("Invalid preloaded file info");	
 			}			
