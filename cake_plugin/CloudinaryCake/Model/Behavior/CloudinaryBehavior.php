@@ -69,7 +69,12 @@ class CloudinaryBehavior extends ModelBehavior {
         return true;
     }
 
-    /// Methods
+    /// Public Methods ///
+    public function cloudinaryFields(Model $Model) {
+        return $this->settings[$Model->alias]['fields'];
+    }
+
+    /// Private Methods ///
     private function createCloudinaryField(Model $Model, $fieldName, $source=NULL) {
         error_log("CloudinaryBehavior::createCloudinaryField(): ");
         $source = $source ? $source : $Model->data;
