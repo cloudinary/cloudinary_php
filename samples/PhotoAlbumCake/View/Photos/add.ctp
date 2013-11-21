@@ -1,5 +1,5 @@
 <div class="photos form">
-<?php echo $this->Form->create('Photo'); ?>
+<?php echo $this->Form->create('Photo', array('type' => 'file')); ?>
 	<fieldset>
 		<legend><?php echo __('Add Photo'); ?></legend>
 	<?php

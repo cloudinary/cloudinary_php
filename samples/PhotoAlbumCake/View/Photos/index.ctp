@@ -4,6 +4,7 @@
 	<tr>
 			<th><?php echo $this->Paginator->sort('id'); ?></th>
 			<th><?php echo $this->Paginator->sort('cloudinaryIdentifier'); ?></th>
+			<th>Thumbnail</th>
 			<th><?php echo $this->Paginator->sort('moderated'); ?></th>
 			<th><?php echo $this->Paginator->sort('created'); ?></th>
 			<th><?php echo $this->Paginator->sort('updated'); ?></th>
@@ -12,7 +13,16 @@
 	<?php foreach ($photos as $photo): ?>
 	<tr>
 		<td><?php echo h($photo['Photo']['id']); ?>&nbsp;</td>
-		<td><?php echo h($photo['Photo']['cloudinaryIdentifier']); ?>&nbsp;</td>
+        <td><?php
+          if ($photo['Photo']['cloudinaryIdentifier']->url()) {
+              echo '<a href="' . $photo['Photo']['cloudinaryIdentifier']->url() . '" target="_blank">';
+              $close_tag = '</a>';
+          }
+          echo h($photo['Photo']['cloudinaryIdentifier']);
+          echo @$close_tag;
+        ?></td>
+        <td><?php echo $this->Cloudinary->cl_image_tag($photo['Photo']['cloudinaryIdentifier'],
+            array("width" => 60, "height" => 60, "crop" => "thumb", "gravity" => "face")); ?>&nbsp;</td>
 		<td><?php echo h($photo['Photo']['moderated']); ?>&nbsp;</td>
 		<td><?php echo h($photo['Photo']['created']); ?>&nbsp;</td>
 		<td><?php echo h($photo['Photo']['updated']); ?>&nbsp;</td>

@@ -14,6 +14,7 @@ class PhotosController extends AppController {
  * @var array
  */
 	public $components = array('Paginator');
+    public $helpers = array('Html', 'Form', 'CloudinaryCake.Cloudinary');
 
 /**
  * index method
