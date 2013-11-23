@@ -339,7 +339,10 @@ function cloudinary_url($source, $options = array()) {
     return cloudinary_url_internal($source, $options);
 }
 function cloudinary_url_internal($source, &$options = array()) {
-    if (!isset($options["secure"])) $options["secure"] = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' );
+    if (!isset($options["secure"])) {
+        $options["secure"] = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
+            || ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' );
+    }
 
     return Cloudinary::cloudinary_url($source, $options);
 }
