@@ -283,7 +283,10 @@ namespace Cloudinary {
 			return "v" . $this->version . "/" . $this->filename;
 		}
 		
-		  
+		public function extended_identifier() {
+			return $this->resource_type . "/" . $this->type . "/" . $this->identifier();
+		}
+
 	    public function __toString() {
 			return $this->resource_type . "/" . $this->type . "/v" . $this->version . "/" . $this->filename . "#" . $this->signature;
 		}
