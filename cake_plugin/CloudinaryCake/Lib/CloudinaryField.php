@@ -35,7 +35,7 @@ class CloudinaryField extends Object {
         if ($this->verifyUpload && !$preloaded.is_valid()) {
             throw new \Exception("Error! Couldn't verify cloudinary response!");
         }
-        $this->identifier = $preloaded->identifier();
+        $this->identifier = $preloaded->extended_identifier();
     }
 
     public function delete() {
