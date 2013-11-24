@@ -4,6 +4,11 @@ App::uses('ModelBehavior', 'Model');
 App::uses('CloudinaryField', 'CloudinaryCake.Lib');
 
 class CloudinaryBehavior extends ModelBehavior {
+    public $settingsDefaults = array(
+        "fields" => array(),
+        "changeModelDefaults" => true
+    );
+
     public function __construct() {
         error_log("CloudinaryBehavior::__construct)");
     }
@@ -11,11 +16,14 @@ class CloudinaryBehavior extends ModelBehavior {
     public function setup(Model $Model, $settings = array()) {
         error_log("CloudinaryBehavior::setup(): ");
         if (!isset($this->settings[$Model->alias])) {
-            $this->settings[$Model->alias] = array(/* default values */);
+            $this->settings[$Model->alias] = $this->settingsDefaults;
         }
         $this->settings[$Model->alias] = array_merge(
-            $this->settings[$Model->alias], (array)$settings);
-        $Model->Cloudinary = array();
+            $this->settings[$Model->alias], (array)$settings
+        );
+        if ($this->settings[$Model->alias]['changeModelDefaults']) {
+            $this->changeModelDefaults($Model);
+        }
     }
 
     public function cleanup(Model $Model) {
@@ -106,6 +114,31 @@ class CloudinaryBehavior extends ModelBehavior {
             return $cloudinaryFields;
         }
         return array_intersect($cloudinaryFields, $options['fieldList']);
+    }
+
+    private static function modifyPropertyUsingForce($instance, $property, $newValue) {
+        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+            $myClassReflection = new ReflectionClass(get_class($instance));
+            $secret = $myClassReflection->getProperty($property);
+            $secret->setAccessible(true);
+            $secret->setValue($instance, $newValue);
+        }
+    }
+
+    private function changeModelDefaults(Model $Model) {
+        $schema = $Model->schema();
+        foreach ($this->relevantFields($Model) as $fieldName) {
+            $schema[$fieldName] = new CloneOnAccessArray($schema[$fieldName]);
+            $schema[$fieldName]['default'] = new CloudinaryField();
+        }
+        self::modifyPropertyUsingForce($Model, "_schema", $schema);
+    }
+}
+
+class CloneOnAccessArray extends ArrayObject {
+    public function offsetGet($offset) {
+        $ret = parent::offsetGet($offset);
+        return (is_object($ret)) ? clone $ret : $ret;
     }
 }
 
