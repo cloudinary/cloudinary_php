@@ -1,7 +1,7 @@
 <?php
 
 App::uses('ModelBehavior', 'Model');
-App::uses('CloudinaryField', 'CloudinaryCake.Lib');
+App::import('Config', 'CloudinaryCake.IncludeCloudinary', 'CloudinaryCake.Config');
 
 class CloudinaryBehavior extends ModelBehavior {
     public $settingsDefaults = array(
@@ -9,12 +9,7 @@ class CloudinaryBehavior extends ModelBehavior {
         "changeModelDefaults" => true
     );
 
-    public function __construct() {
-        error_log("CloudinaryBehavior::__construct)");
-    }
-
     public function setup(Model $Model, $settings = array()) {
-        error_log("CloudinaryBehavior::setup(): ");
         if (!isset($this->settings[$Model->alias])) {
             $this->settings[$Model->alias] = $this->settingsDefaults;
         }
@@ -26,14 +21,8 @@ class CloudinaryBehavior extends ModelBehavior {
         }
     }
 
-    public function cleanup(Model $Model) {
-        error_log("CloudinaryBehavior::cleanup(): ");
-    }
-
     /// Callbacks ///
     public function afterFind(Model $Model, $results, $primary = false) {
-        error_log("CloudinaryBehavior::afterFind()");
-
         $fieldNames = $this->relevantFields($Model);
         if (!$fieldNames) {
             return $results;
@@ -55,13 +44,11 @@ class CloudinaryBehavior extends ModelBehavior {
     }
 
     public function beforeValidate(Model $Model, $options = array()) {
-        error_log("CloudinaryBehavior::beforeValidate()");
         foreach ($this->relevantFields($Model, $options) as $fieldName) {
             $field = @$Model->data[$Model->alias][$fieldName];
             if (is_string($field) && $field) {
                 if (!(new CloudinaryField($field))->verify()) {
                     $Model->invalidate($fieldName, "Bad cloudinary signature!");
-                    error_log("CloudinaryBehavior::beforeValidate(): Error in field " . $fieldName . " with data: " . $field);
                     return false;
                 }
             }
@@ -76,7 +63,6 @@ class CloudinaryBehavior extends ModelBehavior {
 
     /// Private Methods ///
     private function createCloudinaryField(Model $Model, $fieldName, $source=NULL) {
-        error_log("CloudinaryBehavior::createCloudinaryField(): ");
         $source = $source ? $source : $Model->data;
         return new CloudinaryField(isset($source[$Model->alias][$fieldName]) ?
             $source[$Model->alias][$fieldName] : "");
@@ -85,10 +71,8 @@ class CloudinaryBehavior extends ModelBehavior {
     private function updateCloudinaryField(Model $Model, $fieldName, &$data=NULL) {
         $source =& $data ? $data : $Model->data;
         if (isset($source[$Model->alias][$fieldName]) && $source[$Model->alias][$fieldName] instanceof CloudinaryField) {
-            error_log("CloudinaryBehavior::updateCloudinaryField - not updating again field '" . $fieldName . "' of " . $Model);
             return;
         }
-        error_log("CloudinaryBehavior::updateCloudinaryField - updating field '" . $fieldName . "' of " . $Model->alias);
         $source[$Model->alias][$fieldName] = $this->createCloudinaryField($Model, $fieldName, $source);
     }
 

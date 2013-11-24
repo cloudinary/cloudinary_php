@@ -1,7 +1,7 @@
 <?php
 
 App::uses('FormHelper', 'View/Helper');
-App::uses('CloudinaryField', 'CloudinaryCake.Lib');
+App::import('Config', 'CloudinaryCake.IncludeCloudinary', 'CloudinaryCake.Config');
 
 class CloudinaryHelper extends FormHelper {
     public $helpers = array('Html');
@@ -40,7 +40,7 @@ class CloudinaryHelper extends FormHelper {
 		$this->setEntity($fieldName);
         $model = $this->_getModel($this->model());
         $fieldKey = $this->field();
-        if ($model->hasMethod('cloudinaryFields') && in_array($fieldKey, $model->cloudinaryFields())) {
+        if (!@$options['type'] && $model->hasMethod('cloudinaryFields') && in_array($fieldKey, $model->cloudinaryFields())) {
             $options['type'] = 'file';
         }
         return parent::input($fieldName, $options);

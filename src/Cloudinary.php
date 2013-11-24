@@ -153,7 +153,7 @@ class Cloudinary {
 
     // Warning: $options are being destructively updated!
     public static function cloudinary_url($source, &$options=array()) {
-        $source = self::check_identifier_source($source, $options);
+        $source = self::check_cloudinary_field($source, $options);
         $type = Cloudinary::option_consume($options, "type", "upload");
 
         if ($type == "fetch" && !isset($options["fetch_format"])) {
@@ -213,17 +213,21 @@ class Cloudinary {
 
     // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
     // Warning: $options are being destructively updated!
-    public static function check_identifier_source($source, &$options=array()) {
+    public static function check_cloudinary_field($source, &$options=array()) {
         $IDENTIFIER_RE = "~" .
             "^(?:([^/]+)/)??(?:([^/]+)/)??(?:v(\\d+)/)?" .
             "(?:([^#/]+?)(?:\\.([^.#/]+))?)(?:#([^/]+))?$" . "~";
         $matches = array();
-        if (strstr(':', $source) !== false || !preg_match($IDENTIFIER_RE, $source, $matches)) {
+        if (!(is_object($source) && method_exists($source, 'identifier') && $source->identifier())) {
+            return $source;
+        }
+        $identifier = $source->identifier();
+        if (strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
             return $source;
         }
         $optionNames = array('resource_type', 'type', 'version', 'public_id', 'format');
         foreach ($optionNames as $index => $optionName) {
-            if ($matches[$index+1]) {
+            if (@$matches[$index+1]) {
                 $options[$optionName] = $matches[$index+1];
             }
         }

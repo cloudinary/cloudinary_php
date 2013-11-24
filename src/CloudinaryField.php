@@ -3,29 +3,31 @@
  * Manages access to a cloudinary image as a field
  */
 
-require_once '../../../src/Cloudinary.php';
-require_once '../../../src/Uploader.php';
+require_once 'Cloudinary.php';
+require_once 'Uploader.php';
 
-class CloudinaryField extends Object {
-    private $identifier = NULL;
-    private $autoSave = false;
+class CloudinaryField {
+    private $_identifier = NULL;
     private $verifyUpload = false;
 
     public function __construct($identifier = "") {
-        error_log("CloudinaryField::__construct - " . $identifier);
-        $this->identifier = $identifier;
+        $this->_identifier = $identifier;
     }
 
     public function __toString() {
-        return explode("#", $this->identifier)[0];
+        return explode("#", $this->identifier())[0];
+    }
+
+    public function identifier() {
+        return $this->_identifier;
     }
 
     public function url($options = array()) {
-        if (!$this->identifier) {
+        if (!$this->_identifier) {
             // TODO: Error?
             return;
         }
-        return cloudinary_url($this->identifier, $options);
+        return cloudinary_url($this, $options);
     }
 
     public function upload($file, $options = array()) {
@@ -35,17 +37,17 @@ class CloudinaryField extends Object {
         if ($this->verifyUpload && !$preloaded.is_valid()) {
             throw new \Exception("Error! Couldn't verify cloudinary response!");
         }
-        $this->identifier = $preloaded->extended_identifier();
+        $this->_identifier = $preloaded->extended_identifier();
     }
 
     public function delete() {
         $options['return_error'] = false;
-        $ret = \Cloudinary\Uploader::destroy($this->identifier);
-        unset($this->identifier);
+        $ret = \Cloudinary\Uploader::destroy($this->_identifier);
+        unset($this->_identifier);
     }
 
     public function verify() {
-        $preloaded = new \Cloudinary\PreloadedFile($this->identifier);
+        $preloaded = new \Cloudinary\PreloadedFile($this->_identifier);
         return $preloaded->is_valid();
     }
 }
