@@ -141,7 +141,8 @@ class Cloudinary {
             $params[$param] = Cloudinary::option_consume($options, $option);
         }
 
-        $params = array_filter($params);
+        $param_filter = function($value) { return $value === 0 || $value === '0' || $value == true; };
+        $params = array_filter($params, $param_filter);
         ksort($params);
         $join_pair = function($key, $value) { return $key . "_" . $value; };
         $transformation = implode(",", array_map($join_pair, array_keys($params), array_values($params)));
