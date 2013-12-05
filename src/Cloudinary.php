@@ -104,8 +104,8 @@ class Cloudinary {
 
         $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit";
 
-        if ($width && (floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
-        if ($height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
+        if (strlen($width) == 0 || $width && (floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
+        if (strlen($height) == 0 || $height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
 
         $background = Cloudinary::option_consume($options, "background");
         if ($background) $background = preg_replace("/^#/", 'rgb:', $background);
