@@ -96,9 +96,17 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array(), $options);
         $this->assertEquals("http://res.cloudinary.com/test123/image/upload/g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test", $result);
     }
+
+    public function test_no_empty_options() {
+        // should use x, y, width, height, crop, prefix and opacity from $options
+        $options = array("x" => 0, "y" => '0', "width" => '', "height" => "", "crop" => ' ', "prefix" => false, "opacity" => null);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(array(), $options);
+        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/x_0,y_0/test", $result);
+    }
     
     public function test_transformation_simple() {
-        // should support named tranformation        
+        // should support named transformation        
         $options = array("transformation" => "blip");
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
@@ -106,7 +114,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_transformation_array() {
-        // should support array of named tranformations        
+        // should support array of named transformations        
         $options = array("transformation" => array("blip", "blop"));
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);
@@ -114,7 +122,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_base_transformations() {
-        // should support base tranformation        
+        // should support base transformation        
         $options = array("transformation" => array("x" => 100, "y" => 100, "crop" => "fill"), "crop" => "crop", "width" => 100);
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array("width" => 100), $options);
@@ -122,7 +130,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_base_transformation_array() {
-        // should support array of base tranformations        
+        // should support array of base transformations        
         $options = array("transformation" => array(array("x" => 100, "y" => 100, "width" => 200, "crop" => "fill"), array("radius" => 10)), "crop" => "crop", "width" => 100);
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array("width" => 100), $options);
@@ -130,7 +138,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_no_empty_transformation() {
-        // should not include empty tranformations        
+        // should not include empty transformations        
         $options = array("transformation" => array(array(), array("x" => 100, "y" => 100, "crop" => "fill"), array()));
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array(), $options);

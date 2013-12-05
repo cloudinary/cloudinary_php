@@ -104,8 +104,8 @@ class Cloudinary {
 
         $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit";
 
-        if ($width && (floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
-        if ($height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
+        if (strlen($width) == 0 || $width && (floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
+        if (strlen($height) == 0 || $height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
 
         $background = Cloudinary::option_consume($options, "background");
         if ($background) $background = preg_replace("/^#/", 'rgb:', $background);
@@ -141,7 +141,8 @@ class Cloudinary {
             $params[$param] = Cloudinary::option_consume($options, $option);
         }
 
-        $params = array_filter($params);
+        $param_filter = function($value) { return $value === 0 || $value === '0' || trim($value) == true; };
+        $params = array_filter($params, $param_filter);
         ksort($params);
         $join_pair = function($key, $value) { return $key . "_" . $value; };
         $transformation = implode(",", array_map($join_pair, array_keys($params), array_values($params)));
