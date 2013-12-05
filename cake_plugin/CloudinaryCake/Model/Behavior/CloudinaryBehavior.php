@@ -1,7 +1,6 @@
 <?php
 
 App::uses('ModelBehavior', 'Model');
-App::import('Config', 'CloudinaryCake.IncludeCloudinary', 'CloudinaryCake.Config');
 
 class CloudinaryBehavior extends ModelBehavior {
     public $settingsDefaults = array(

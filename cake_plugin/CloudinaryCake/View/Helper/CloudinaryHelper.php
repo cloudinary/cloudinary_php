@@ -1,7 +1,6 @@
 <?php
 
 App::uses('FormHelper', 'View/Helper');
-App::import('Config', 'CloudinaryCake.IncludeCloudinary', 'CloudinaryCake.Config');
 
 class CloudinaryHelper extends FormHelper {
     public $helpers = array('Html');
