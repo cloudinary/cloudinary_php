@@ -24,6 +24,8 @@ class PhotosController extends AppController {
     public $helpers = array('Html', 'Form' => array('className' => 'CloudinaryCake.Cloudinary'));
 
 
+/// Photo album actions ///
+
 /**
  * list method
  *
@@ -33,6 +35,21 @@ class PhotosController extends AppController {
 		$this->Photo->recursive = 0;
 		$this->set('photos', $this->Paginator->paginate());
 	}
+
+	public function upload() {
+		if ($this->request->is('post')) {
+			$this->Photo->create();
+			if ($this->Photo->save($this->request->data)) {
+				$this->Session->setFlash(__('The photo has been saved.'));
+				return $this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The photo could not be saved. Please, try again.'));
+			}
+		}
+        $this->set('cors_location', Router::url('cloudinary_cors.html', true));
+	}
+
+/// Default actions ///
 
 /**
  * index method
