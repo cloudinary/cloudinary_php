@@ -23,6 +23,17 @@ class PhotosController extends AppController {
     #public $helpers = array('Html', 'Form', 'CloudinaryCake.Cloudinary');
     public $helpers = array('Html', 'Form' => array('className' => 'CloudinaryCake.Cloudinary'));
 
+
+/**
+ * list method
+ *
+ * @return void
+ */
+	public function list_photos() {
+		$this->Photo->recursive = 0;
+		$this->set('photos', $this->Paginator->paginate());
+	}
+
 /**
  * index method
  *
