@@ -49,7 +49,10 @@
   </div>
 </div>
 
-<a href="list.php" class="back_link">Back to list...</a>
+<?php echo $this->Html->link('Back to list...',
+    array('controller' => 'photos', 'action' => 'list_photos'),
+    array('class' => 'back_link'));
+?>
 
 <script>
   function prettydump(obj) {

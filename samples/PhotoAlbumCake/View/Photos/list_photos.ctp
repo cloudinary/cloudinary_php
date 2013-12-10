@@ -50,7 +50,10 @@ function array_to_table($array) {
     Following are the images uploaded by you. You can also upload more pictures.
 
     You can click on each picture to view its original size, and see more info about and additional transformations.
-    <a class="upload_link" href="upload.php">Upload Images...</a>
+    <?php echo $this->Html->link('Upload Images...',
+        array('controller' => 'photos', 'action' => 'upload'),
+        array('class' => 'upload_link'));
+    ?>
   </p>
   <?php if (sizeof($photos) == 0) { ?>
     <p>No images were uploaded yet.</p>
@@ -58,7 +61,7 @@ function array_to_table($array) {
     }
     foreach ($photos as $photo) {
   ?>
-    <div class="photo">
+	<div class="photo">
         <a href="<?php echo cloudinary_url($photo["Photo"]["cloudinaryIdentifier"]) ?>" target="_blank" class="public_id_link">
             <?php
               echo "<div class='public_id'>" . $photo["Photo"]["cloudinaryIdentifier"] . "</div>";

@@ -99,8 +99,5 @@ CakeLog::config('error', array(
 	'file' => 'error',
 ));
 
-CakePlugin::load('CloudinaryCake', array('bootstrap' => true, 'routes' => false,
-    'path' => APP . '..' . DS . '..' . DS . 'cake_plugin' . DS . 'CloudinaryCake' . DS));
-
-Configure::load('private');
-\Cloudinary::config(Configure::read('cloudinary'));
+require join(DS, array(APP . '..', '..', 'cake_plugin')) . DS . 'CloudinaryCakeLoader.php';
+CloudinaryCakeLoader::load();

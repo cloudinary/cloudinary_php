@@ -33,7 +33,8 @@ class PhotosController extends AppController {
  */
 	public function list_photos() {
 		$this->Photo->recursive = 0;
-		$this->set('photos', $this->Paginator->paginate());
+        $this->paginate = array("order" => array("created" => "desc"));
+        $this->set('photos', $this->Paginator->paginate());
 	}
 
 	public function upload() {
@@ -41,7 +42,7 @@ class PhotosController extends AppController {
 			$this->Photo->create();
 			if ($this->Photo->save($this->request->data)) {
 				$this->Session->setFlash(__('The photo has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'list_photos'));
 			} else {
 				$this->Session->setFlash(__('The photo could not be saved. Please, try again.'));
 			}
