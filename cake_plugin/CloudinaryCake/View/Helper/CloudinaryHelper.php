@@ -52,9 +52,10 @@ class CloudinaryHelper extends FormHelper {
     }
 
     /// Called for input() when type => direct_upload
-    public function direct_upload() {
+    public function direct_upload($fieldName, $options = array()) {
         $modelKey = $this->model();
         $fieldKey = $this->field();
-        return \cl_image_upload_tag("data[" . $modelKey . "][" . $fieldKey . "]");
+        $options = @$options["cloudinary"] ? $options["cloudinary"] : array();
+        return \cl_image_upload_tag("data[" . $modelKey . "][" . $fieldKey . "]", $options);
     }
 }
