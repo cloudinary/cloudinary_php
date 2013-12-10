@@ -295,7 +295,7 @@ namespace Cloudinary {
 namespace {
     function cl_upload_url($options = array()) 
     {
-        if (!isset($options["resource_type"])) $options["resource_type"] = "auto";
+        if (!@$options["resource_type"]) $options["resource_type"] = "auto";
         return Cloudinary::cloudinary_api_url("upload", $options);      
     }
 

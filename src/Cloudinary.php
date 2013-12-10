@@ -215,17 +215,18 @@ class Cloudinary {
     // Warning: $options are being destructively updated!
     public static function check_cloudinary_field($source, &$options=array()) {
         $IDENTIFIER_RE = "~" .
-            "^(?:([^/]+)/)??(?:([^/]+)/)??(?:v(\\d+)/)?" .
-            "(?:([^#/]+?)(?:\\.([^.#/]+))?)(?:#([^/]+))?$" . "~";
+            "^(?:([^/]+)/)??(?:([^/]+)/)??(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" .
+            "([^#/]+?)(?:\\.([^.#/]+))?(?:#([^/]+))?$" .
+            "~";
         $matches = array();
-        if (!(is_object($source) && method_exists($source, 'identifier') && $source->identifier())) {
+        if (!(is_object($source) && method_exists($source, 'identifier'))) {
             return $source;
         }
         $identifier = $source->identifier();
-        if (strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
+        if (!$identifier || strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
             return $source;
         }
-        $optionNames = array('resource_type', 'type', 'version', 'public_id', 'format');
+        $optionNames = array('resource_type', 'type', 'version', 'folder', 'public_id', 'format');
         foreach ($optionNames as $index => $optionName) {
             if (@$matches[$index+1]) {
                 $options[$optionName] = $matches[$index+1];
