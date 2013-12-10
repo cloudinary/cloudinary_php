@@ -5,7 +5,7 @@ class Cloudinary {
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
     const SHARED_CDN = "res.cloudinary.com";
-        
+
     private static $config = NULL;
     public static $JS_CONFIG_PARAMS = array("api_key", "cloud_name", "private_cdn", "secure_distribution", "cdn_subdomain");
 
@@ -154,6 +154,7 @@ class Cloudinary {
 
     // Warning: $options are being destructively updated!
     public static function cloudinary_url($source, &$options=array()) {
+        $source = self::check_cloudinary_field($source, $options);
         $type = Cloudinary::option_consume($options, "type", "upload");
 
         if ($type == "fetch" && !isset($options["fetch_format"])) {
@@ -209,6 +210,30 @@ class Cloudinary {
 
         return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
          $type, $transformation, $version ? "v" . $version : "", $source)));
+    }
+
+    // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
+    // Warning: $options are being destructively updated!
+    public static function check_cloudinary_field($source, &$options=array()) {
+        $IDENTIFIER_RE = "~" .
+            "^(?:([^/]+)/)??(?:([^/]+)/)??(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" .
+            "([^#/]+?)(?:\\.([^.#/]+))?(?:#([^/]+))?$" .
+            "~";
+        $matches = array();
+        if (!(is_object($source) && method_exists($source, 'identifier'))) {
+            return $source;
+        }
+        $identifier = $source->identifier();
+        if (!$identifier || strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
+            return $source;
+        }
+        $optionNames = array('resource_type', 'type', 'version', 'folder', 'public_id', 'format');
+        foreach ($optionNames as $index => $optionName) {
+            if (@$matches[$index+1]) {
+                $options[$optionName] = $matches[$index+1];
+            }
+        }
+        return Cloudinary::option_consume($options, 'public_id');
     }
 
     // Based on http://stackoverflow.com/a/1734255/526985

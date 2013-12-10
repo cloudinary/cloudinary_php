@@ -22,6 +22,7 @@
       "issues": "https://github.com/cloudinary/cloudinary_php/issues"
     },
     "autoload": {
+        "psr-0": { "": "cake_plugin" },
         "classmap": ["src"]
     }
 }
