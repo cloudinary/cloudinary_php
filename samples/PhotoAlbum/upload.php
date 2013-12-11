@@ -18,9 +18,7 @@ require 'main.php';
     <script src="lib/jquery.iframe-transport.js"></script>
     <script src="lib/jquery.fileupload.js"></script>
     <script src="lib/jquery.cloudinary.js"></script>
-    <script>
-      $.cloudinary.config("cloud_name", "<?php echo Cloudinary::config_get("cloud_name"); ?>");
-    </script>
+    <?php echo cloudinary_js_config(); ?>
   </head>
   
   <body>

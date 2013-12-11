@@ -183,7 +183,7 @@ namespace Cloudinary {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 60);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
-            curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__))."/cacert.pem");
+            curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             $curl_error = NULL;
@@ -252,11 +252,9 @@ namespace Cloudinary {
 	    		$this->version = $matches[3];
 	    		$this->filename = $matches[4];
 	    		$this->signature = $matches[5];
-				
 				$public_id_and_format = $this->split_format($this->filename);
 				$this->public_id = $public_id_and_format[0];
 				$this->format = $public_id_and_format[1]; 
-
 			} else {
 				throw new \InvalidArgumentException("Invalid preloaded file info");	
 			}			
@@ -283,7 +281,10 @@ namespace Cloudinary {
 			return "v" . $this->version . "/" . $this->filename;
 		}
 		
-		  
+		public function extended_identifier() {
+			return $this->resource_type . "/" . $this->type . "/" . $this->identifier();
+		}
+
 	    public function __toString() {
 			return $this->resource_type . "/" . $this->type . "/v" . $this->version . "/" . $this->filename . "#" . $this->signature;
 		}
@@ -294,7 +295,7 @@ namespace Cloudinary {
 namespace {
     function cl_upload_url($options = array()) 
     {
-        if (!isset($options["resource_type"])) $options["resource_type"] = "auto";
+        if (!@$options["resource_type"]) $options["resource_type"] = "auto";
         return Cloudinary::cloudinary_api_url("upload", $options);      
     }
 
