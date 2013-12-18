@@ -8,7 +8,7 @@ Included in this folder are two sample projects for demonstrating the common Clo
 
 The cloudinary\_php package is ready to be used as-is in your Apache server. (other servers are also supported, but the access restrictions set in .htaccess might not work).
 As described in cloudinary\_php main README.md file, you have to set up your Cloudinary credentials either by passing it as the `CLOUDINARY_URL` environment variable or calling Cloudinary::config().
-Each sample tries to include `settings.php` (`Config/private.php` for PhotoAlubmCake) for configuration data - you can use the included `settings.php.sample` as a basis for such file.
+Each sample tries to include `settings.php` (`Config/CloudinaryPrivate.php` for PhotoAlbumCake) for configuration data - you can use the included `settings.php.sample` as a basis for such file.
 
 ## Basic sample
 
@@ -54,9 +54,9 @@ When you finish:
 * Setup database config (You can use `Config/database.php.default` as reference by copying it into `Config/database.php` and modifying the relevant fields. See the [CakePHP Cookbook](http://book.cakephp.org/2.0/en/index.html) for more information)
 * Create the database table (`cake schema create`)
 
-You can now access the sample through http://YOUR\_SERVER/PATH\_TO\_CLOUDINARY\_PHP/samples/PhotoAlubmCake
+You can now access the sample through http://YOUR\_SERVER/PATH\_TO\_CLOUDINARY\_PHP/samples/PhotoAlbumCake
 
-*If you use Composer - Please note:* You do not need to bake a new project if you want just to try out the sample. If you do bake one, you'll have to remove the `.htaccess` from your app root directory in order to be able to access the sample in `APP_ROOT/Vendor/cloudinary/cloudinary_php/samples/PhotoAlubmCake`.
+*If you use Composer - Please note:* You do not need to bake a new project if you want just to try out the sample. If you do bake one, you'll have to remove the `.htaccess` from your app root directory in order to be able to access the sample in `APP_ROOT/Vendor/cloudinary/cloudinary_php/samples/PhotoAlbumCake`.
 
 Another option is available if you are using PHP 5.4 or higher. Go to the `samples` directory and run -
 

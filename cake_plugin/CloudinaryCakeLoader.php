@@ -11,10 +11,10 @@ class CloudinaryCakeLoader {
 
     private static function configureCloudinary() {
         try {
-            Configure::load('private');
+            Configure::load('CloudinaryPrivate');
             \Cloudinary::config(Configure::read('cloudinary'));
         } catch (Exception $e) {
-            CakeLog::notice("Couldn't find Config/private.php file");
+            CakeLog::notice("Couldn't find Config/CloudinaryPrivate.php file");
         }
     }
 

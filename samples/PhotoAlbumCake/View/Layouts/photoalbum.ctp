@@ -13,7 +13,7 @@
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
-	<title>PhotoAlubm - <?php echo $title_for_layout; ?></title>
+	<title>PhotoAlbum - <?php echo $title_for_layout; ?></title>
 	<?php
 		echo $this->Html->meta('favicon', cloudinary_url("http://cloudinary.com/favicon.png",
            array("type" => "fetch")), array('type' => 'icon'));
@@ -54,6 +54,5 @@
 			<?php echo $this->fetch('content'); ?>
 		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

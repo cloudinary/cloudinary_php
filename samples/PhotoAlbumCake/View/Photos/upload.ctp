@@ -36,7 +36,7 @@
     # A simple $this->Form->input('cloudinaryIdentifier', array("type" => "direct_upload"))
     # should be sufficient in most cases
 
-    echo $this->Form->end(__('Upload'));
+    echo $this->Form->end();
   ?>
 
   <!-- status box -->

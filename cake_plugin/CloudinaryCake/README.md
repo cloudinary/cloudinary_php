@@ -13,18 +13,18 @@ Explore the [PhotoAlbumCake sample](https://github.com/cloudinary/cloudinary_php
 ### Manual
 1. Create a CakePHP project
 1. Download cloudinary\_php from [here](https://github.com/cloudinary/cloudinary_php/tarball/master)
-1. Extract the cloudinary\_php archive into vendors library
+1. Extract the cloudinary\_php archive into `vendors` library
 1. Configure cloudinary
     1. Environment variable - `export CLOUDINARY\_URL = "cloudinary://API_KEY:API_SECRET@CLOUD_NAME"` ([Check your settings in Cloudinary console](https://cloudinary.com/console))
-    1. Create `app/Config/private.php` using `vendor/cloudinary_php/samples/PhotoAlbumCake/Config/private.php.sample`
+    1. Create `app/Config/CloudinaryPrivate.php` using `vendors/cloudinary_php/samples/PhotoAlbumCake/Config/CloudinaryPrivate.php.sample`
 1. Load the cloudinary plugin by adding the following lines to `app/Config/bootstrap.php`:
 
         // Load plugin
         CakePlugin::load('CloudinaryCake', array('bootstrap' => true, 'routes' => false,
-            'path' => ROOT . DS 'vendor' . DS 'cloudinary_php' . DS . 'cake_plugin' . DS . 'CloudinaryCake' . DS));
+            'path' => ROOT . DS 'vendors' . DS 'cloudinary_php' . DS . 'cake_plugin' . DS . 'CloudinaryCake' . DS));
 
-        // required when using `private.php` for cloudinary configuration
-        Configure::load('private');
+        // required when using `CloudinaryPrivate.php` for cloudinary configuration
+        Configure::load('CloudinaryPrivate');
         \Cloudinary::config(Configure::read('cloudinary'));
 
 ### Composer
@@ -43,14 +43,14 @@ Explore the [PhotoAlbumCake sample](https://github.com/cloudinary/cloudinary_php
 
     1. Bake a new project
 
-            vendor/bin/cake bake project .
+            Vendor/bin/cake bake project .
 
     1. You may define `CAKE_CORE_INCLUDE_PATH` to a relative path as suggested in the cookbook by adding the following to `webroot/index.php`:
 
             define(
                 'CAKE_CORE_INCLUDE_PATH',
                 ROOT . DS . APP_DIR . '/Vendor/pear-pear.cakephp.org/CakePHP'
-            )
+            );
 
     1. Add the following lines to `Config/bootstrap.php`:
 
@@ -65,7 +65,7 @@ Explore the [PhotoAlbumCake sample](https://github.com/cloudinary/cloudinary_php
 
         composer require 'cloudinary/cloudinary_php:>=1.0.8'
 
-1. Configure Cloudinary using the `CLOUDINARY_URL` environment variable, or the `Config/private.php` configuration file
+1. Configure Cloudinary using the `CLOUDINARY_URL` environment variable, or the `Config/CloudinaryPrivate.php` configuration file
 
 ## Usage
 
