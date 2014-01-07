@@ -67,13 +67,40 @@ class Cloudinary {
     }
 
     public static function build_array($value) {
-        if (is_array($value) && $value == array_values($value)) {
+        if (is_array($value) && !Cloudinary::is_assoc($value)) {
             return $value;
         } else if ($value == NULL) {
             return array();
         } else {
             return array($value);
         }
+    }
+    
+    public static function encode_array($array) {
+      return implode(",", Cloudinary::build_array($array));
+    }
+    
+    public static function encode_double_array($array) {
+      $array = Cloudinary::build_array($array);
+      $array = array_map('Cloudinary::encode_array', $array);
+      return implode("|", $array);
+    }
+    
+    public static function encode_assoc_array($array) {
+      if (Cloudinary::is_assoc($array)){
+        $encoded = array();
+        foreach ($array as $key => $value) {
+          array_push($encoded, $key . '=' . $value);
+        }
+        return implode("|", $encoded);
+      } else {
+        return $array;
+      }
+    }
+    
+    private static function is_assoc($array) {
+      if (!is_array($array)) return FALSE;
+      return $array != array_values($array);
     }
 
     private static function generate_base_transformation($base_transformation) {
@@ -174,6 +201,8 @@ class Cloudinary {
         $cdn_subdomain = Cloudinary::option_consume($options, "cdn_subdomain", Cloudinary::config_get("cdn_subdomain"));
         $cname = Cloudinary::option_consume($options, "cname", Cloudinary::config_get("cname"));
         $shorten = Cloudinary::option_consume($options, "shorten", Cloudinary::config_get("shorten"));
+        $sign_url = Cloudinary::option_consume($options, "sign_url", Cloudinary::config_get("sign_url"));
+        $api_secret = Cloudinary::option_consume($options, "api_secret", Cloudinary::config_get("api_secret"));
 
         $original_source = $source;
         if (!$source) return $original_source;
@@ -207,9 +236,15 @@ class Cloudinary {
         if (strpos($source, "/") && !preg_match("/^https?:\//", $source) && !preg_match("/^v[0-9]+/", $source) && empty($version)) {
             $version = "1";
         }
+        
+        $rest = implode("/", array_filter(array($transformation, $version ? "v" . $version : "", $source)));
+        if ($sign_url) {
+          $signature = str_replace(array('+','/','='), array('-','_',''), base64_encode(sha1($rest . $api_secret, TRUE)));
+          $rest = 's--' . substr($signature, 0, 8) . '--/' . $rest;
+        }
 
         return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
-         $type, $transformation, $version ? "v" . $version : "", $source)));
+         $type, $rest)));
     }
 
     // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]

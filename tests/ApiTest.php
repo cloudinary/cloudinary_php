@@ -26,9 +26,9 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       $this->api->delete_transformation("api_test_transformation3");
     } catch (Exception $e) {}
     \Cloudinary\Uploader::upload("tests/logo.png", 
-      array("public_id"=>"api_test", "tags"=>"api_test_tag", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
+      array("public_id"=>"api_test", "tags"=>"api_test_tag", "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
     \Cloudinary\Uploader::upload("tests/logo.png", 
-      array("public_id"=>"api_test2", "tags"=>"api_test_tag", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
+      array("public_id"=>"api_test2", "tags"=>"api_test_tag", "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
   }
    
   function find_by_attr($elements, $attr, $value) {
@@ -67,21 +67,77 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   
   function test04_resources_by_type() {
     // should allow listing resources by type 
-    $result = $this->api->resources(array("type"=>"upload"));
+    $result = $this->api->resources(array("type"=>"upload", "context" => true, "tags" => true));
     $resource = $this->find_by_attr($result["resources"], "public_id", "api_test"); 
+    $context_map = function($resource) {
+      if (array_key_exists("context", $resource)) {
+        return $resource["context"]["custom"]["key"];
+      } else {
+        return NULL;
+      }
+    };
+    $tags_map = function($resource) {
+      if (count($resource["tags"]) > 0) {
+        return $resource["tags"][0];
+      } else {
+        return NULL;
+      }
+    };
+    $context_values = array_map($context_map, $result["resources"]);  
+    $tags = array_map($tags_map, $result["resources"]);  
     $this->assertNotEquals($resource, NULL);
+    $this->assertContains("value", $context_values);
+    $this->assertContains("api_test_tag", $tags);
   }
 
   function test05_resources_by_prefix() {
     // should allow listing resources by prefix 
-    $result = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test"));
+    $result = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "context" => true, "tags" => true));
     $func = function($resource) {
         return $resource["public_id"];
     };
-
+    $context_map = function($resource) {
+      if (array_key_exists("context", $resource)) {
+        return $resource["context"]["custom"]["key"];
+      } else {
+        return NULL;
+      }
+    };
+    $tags_map = function($resource) {
+      if (count($resource["tags"]) > 0) {
+        return $resource["tags"][0];
+      } else {
+        return NULL;
+      }
+    };
+    $context_values = array_map($context_map, $result["resources"]);  
+    $tags = array_map($tags_map, $result["resources"]);  
     $public_ids = array_map($func, $result["resources"]);  
     $this->assertContains("api_test", $public_ids);
     $this->assertContains("api_test2", $public_ids);
+    $this->assertContains("value", $context_values);
+    $this->assertContains("api_test_tag", $tags);
+  }
+  
+  function test_resources_by_public_ids() {
+    // should allow listing resources by public ids 
+    $result = $this->api->resources_by_ids(array("api_test", "api_test2", "api_test3"), array("context" => true, "tags" => true));
+    $id_map = function($resource) {
+        return $resource["public_id"];
+    };
+    $context_map = function($resource) {
+        return $resource["context"]["custom"]["key"];
+    };
+    $tags_map = function($resource) {
+        return $resource["tags"][0];
+    };
+    $public_ids = array_map($id_map, $result["resources"]); 
+    $context_values = array_map($context_map, $result["resources"]);  
+    $tags = array_map($tags_map, $result["resources"]);  
+    $this->assertContains("api_test", $public_ids);
+    $this->assertContains("api_test2", $public_ids);
+    $this->assertContains("value", $context_values);
+    $this->assertContains("api_test_tag", $tags);
   }
   
   function test06_resources_tag() {

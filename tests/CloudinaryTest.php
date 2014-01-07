@@ -3,7 +3,7 @@ $base = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..');
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
 class CloudinaryTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
-        Cloudinary::config(array("cloud_name"=>"test123", "secure_distribution" => NULL, "private_cdn" => FALSE));
+        Cloudinary::config(array("cloud_name"=>"test123", "api_secret"=>"b",  "secure_distribution" => NULL, "private_cdn" => FALSE));
     }
 
     public function test_cloud_name() {
@@ -374,6 +374,26 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     public function test_cl_sprite_tag() {
         $url = cl_sprite_tag("mytag", array("crop"=>"fill", "width"=>10, "height"=>10));
         $this->assertEquals("<link rel='stylesheet' type='text/css' href='http://res.cloudinary.com/test123/image/sprite/c_fill,h_10,w_10/mytag.css'>", $url);
+    }
+    
+    public function test_signed_url() {
+      // should correctly sign a url
+      $ooptions = $options = array("version" => 1234, "transformation" => array("crop" => "crop", "width" => 10, "height" => 20), "sign_url" => TRUE);
+    	$expected = "http://res.cloudinary.com/test123/image/upload/s--MaRXzoEC--/c_crop,h_20,w_10/v1234/image.jpg";
+    	$actual = Cloudinary::cloudinary_url("image.jpg", $options);
+    	$this->assertEquals($expected, $actual);
+
+    	$expected = "http://res.cloudinary.com/test123/image/upload/s--ZlgFLQcO--/v1234/image.jpg";
+      $options2 = $ooptions;
+      unset($options2["transformation"]);
+    	$actual = Cloudinary::cloudinary_url("image.jpg", $options2);
+    	$this->assertEquals($expected, $actual);
+
+    	$expected = "http://res.cloudinary.com/test123/image/upload/s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg";
+      $options3 = $ooptions;
+      unset($options3["version"]);
+    	$actual = Cloudinary::cloudinary_url("image.jpg", $options3);
+    	$this->assertEquals($expected, $actual);
     }
 
     public function test_escape_public_id() {

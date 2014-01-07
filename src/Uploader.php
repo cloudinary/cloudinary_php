@@ -26,7 +26,10 @@ namespace Cloudinary {
                 "invalidate" => \Cloudinary::option_get($options, "invalidate"),
                 "proxy" => \Cloudinary::option_get($options, "proxy"),
                 "folder" => \Cloudinary::option_get($options, "folder"),
-                "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))));
+                "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))),
+                "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
+                "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
+                "allowed_formats" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "allowed_formats")));
 	    array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
 	    return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
         }
@@ -69,7 +72,8 @@ namespace Cloudinary {
                 "callback" => \Cloudinary::option_get($options, "callback"),
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
                 "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
-                "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")))
+                "tags" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "tags")),
+                "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates"))
             );
             return Uploader::call_api("explicit", $params, $options);
         }
