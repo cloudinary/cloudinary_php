@@ -14,7 +14,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     if (self::$initialized) return;
     self::$initialized = TRUE;
     try {
-      $this->api->delete_resources(array("api_test", "api_test2", "api_test3"));
+      $this->api->delete_resources(array("api_test", "api_test2", "api_test3", "api_test5"));
     } catch (Exception $e) {}
     try {
       $this->api->delete_transformation("api_test_transformation");
@@ -70,7 +70,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $result = $this->api->resources(array("type"=>"upload", "context" => true, "tags" => true));
     $resource = $this->find_by_attr($result["resources"], "public_id", "api_test"); 
     $context_map = function($resource) {
-      if (array_key_exists("context", $resource)) {
+      if (array_key_exists("context", $resource) && array_key_exists("key", $resource["context"]["custom"])) {
         return $resource["context"]["custom"]["key"];
       } else {
         return NULL;

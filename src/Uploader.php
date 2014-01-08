@@ -189,6 +189,7 @@ namespace Cloudinary {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
             curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::USER_AGENT);
             $response = curl_exec($ch);
             $curl_error = NULL;
             if(curl_errno($ch))

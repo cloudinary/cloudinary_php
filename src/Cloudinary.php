@@ -5,6 +5,8 @@ class Cloudinary {
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
     const SHARED_CDN = "res.cloudinary.com";
+    const VERSION = "1.0.7";
+    const USER_AGENT = "cld-php-1.0.7";
 
     private static $config = NULL;
     public static $JS_CONFIG_PARAMS = array("api_key", "cloud_name", "private_cdn", "secure_distribution", "cdn_subdomain");
