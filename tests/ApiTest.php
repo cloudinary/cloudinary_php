@@ -308,6 +308,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   
   function test19_delete_derived() {
     // should allow deleting all resources 
+    $this->markTestSkipped("Not enabled by default - remove this line to test");
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_test5", "eager"=>array("transformation"=>array("width"=> 101,"crop" => "scale"))));    
     $resource = $this->api->resource("api_test5");
     $this->assertNotEquals($resource, NULL);    
