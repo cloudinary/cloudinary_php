@@ -1,6 +1,6 @@
 {
     "name": "cloudinary/cloudinary_php",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Cloudinary PHP SDK",
     "keywords": ["cloudinary", "sdk", "cloud", "image management", "cdn"],
     "type": "library",
@@ -23,6 +23,7 @@
     },
     "autoload": {
         "psr-0": { "": "cake_plugin" },
-        "classmap": ["src"]
+        "classmap": ["src"],
+        "files": ["src/Helpers.php"]
     }
 }

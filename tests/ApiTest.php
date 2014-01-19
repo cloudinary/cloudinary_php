@@ -2,6 +2,7 @@
 $base = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..');
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Uploader.php')));
+require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Helpers.php')));
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Api.php')));
 
 class ApiTest extends PHPUnit_Framework_TestCase {

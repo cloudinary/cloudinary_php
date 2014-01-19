@@ -338,7 +338,7 @@ class Cloudinary {
             }
         }
         ksort($params);
-	$join_pair = function($key, $value) { return $key . "=" . $value; };
+	      $join_pair = function($key, $value) { return $key . "=" . $value; };
         $to_sign = implode("&", array_map($join_pair, array_keys($params), array_values($params)));
         return sha1($to_sign . $api_secret);
     }
@@ -348,79 +348,5 @@ class Cloudinary {
         return implode(" ", array_map($join_pair, array_keys($options), array_values($options)));
     }
 }
-
-
-// Examples
-// cl_image_tag("israel.png", array("width"=>100, "height"=>100, "alt"=>"hello") # W/H are not sent to cloudinary
-// cl_image_tag("israel.png", array("width"=>100, "height"=>100, "alt"=>"hello", "crop"=>"fit") # W/H are sent to cloudinary
-function cl_image_tag($source, $options = array()) {
-    $source = cloudinary_url_internal($source, $options);
-    if (isset($options["html_width"])) $options["width"] = Cloudinary::option_consume($options, "html_width");
-    if (isset($options["html_height"])) $options["height"] = Cloudinary::option_consume($options, "html_height");
-
-    return "<img src='" . $source . "' " . Cloudinary::html_attrs($options) . "/>";
-}
-
-function fetch_image_tag($url, $options = array()) {
-    $options["type"] = "fetch";
-    return cl_image_tag($url, $options);
-}
-
-function facebook_profile_image_tag($profile, $options = array()) {
-    $options["type"] = "facebook";
-    return cl_image_tag($profile, $options);
-}
-
-function gravatar_profile_image_tag($email, $options = array()) {
-    $options["type"] = "gravatar";
-    $options["format"] = "jpg";
-    return cl_image_tag(md5(strtolower(trim($email))), $options);
-}
-
-function twitter_profile_image_tag($profile, $options = array()) {
-    $options["type"] = "twitter";
-    return cl_image_tag($profile, $options);
-}
-
-function twitter_name_profile_image_tag($profile, $options = array()) {
-    $options["type"] = "twitter_name";
-    return cl_image_tag($profile, $options);
-}
-
-function cloudinary_js_config() {
-    $params = array();
-    foreach (Cloudinary::$JS_CONFIG_PARAMS as $param) {
-        $value = Cloudinary::config_get($param);
-        if ($value) $params[$param] = $value;
-    }
-    return "<script type='text/javascript'>\n" .
-        "$.cloudinary.config(" . json_encode($params) . ");\n" .
-        "</script>\n";
-}
-
-function cloudinary_url($source, $options = array()) {
-    return cloudinary_url_internal($source, $options);
-}
-function cloudinary_url_internal($source, &$options = array()) {
-    if (!isset($options["secure"])) {
-        $options["secure"] = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
-            || ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' );
-    }
-
-    return Cloudinary::cloudinary_url($source, $options);
-}
-
-function cl_sprite_url($tag, $options = array()) {
-    if (substr($tag, -strlen(".css")) != ".css") {
-        $options["format"] = "css";
-    }
-    $options["type"] = "sprite";
-    return cloudinary_url_internal($tag, $options);
-}
-
-function cl_sprite_tag($tag, $options = array()) {
-    return "<link rel='stylesheet' type='text/css' href='" . cl_sprite_url($tag, $options) . "'>";
-}
-
 
 ?>

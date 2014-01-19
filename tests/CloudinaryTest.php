@@ -1,6 +1,7 @@
 <?php
 $base = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..');
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
+require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Helpers.php')));
 class CloudinaryTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
         Cloudinary::config(array("cloud_name"=>"test123", "api_secret"=>"b",  "secure_distribution" => NULL, "private_cdn" => FALSE));

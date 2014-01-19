@@ -5,6 +5,7 @@
 
 require_once 'Cloudinary.php';
 require_once 'Uploader.php';
+require_once 'PreloadedFile.php';
 
 class CloudinaryField {
     private $_identifier = NULL;
