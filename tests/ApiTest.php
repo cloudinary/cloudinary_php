@@ -140,6 +140,17 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertContains("api_test_tag", $tags);
   }
   
+  function test_resources_direction() {
+    // should allow listing resources and specify direction 
+    $asc_resources = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>"asc"))["resources"];
+    $desc_resources = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>"desc"))["resources"];
+    $this->assertEquals(array_reverse($asc_resources), $desc_resources);
+    $asc_resources_alt = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>1))["resources"];
+    $desc_resources_alt = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>-1))["resources"];
+    $this->assertEquals(array_reverse($asc_resources_alt), $desc_resources_alt);
+    $this->assertEquals($asc_resources_alt, $asc_resources);
+  }
+  
   function test06_resources_tag() {
     // should allow listing resources by tag 
     $result = $this->api->resources_by_tag("api_test_tag");

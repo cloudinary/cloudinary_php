@@ -52,13 +52,13 @@ class Api {
     $type = \Cloudinary::option_get($options, "type");
     $uri = array("resources", $resource_type);
     if ($type) array_push($uri, $type);
-    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "prefix", "tags", "context")), $options);    
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "prefix", "tags", "context", "direction")), $options);    
   }
   
   function resources_by_tag($tag, $options=array()) {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $uri = array("resources", $resource_type, "tags", $tag);
-    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "tags", "context")), $options);    
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "tags", "context", "direction")), $options);    
   }
   
   function resources_by_ids($public_ids, $options=array()) {
