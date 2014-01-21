@@ -16,7 +16,7 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 
 
 ## CakePHP ##
-Special support to the cake PHP is included. You can access the code, installation and usage information [in the `cloudinary_cake_php` repository](https://github.com/cloudinary/cloudinary_cake_php).
+Dedicated CakePHP plugin is also available. You can browse the code, installation and usage information [at the `cloudinary_cake_php` repository](https://github.com/cloudinary/cloudinary_cake_php).
 
 ## Setup ######################################################################
 
@@ -203,3 +203,4 @@ Stay tuned for updates, tips and tutorials: [Blog](http://cloudinary.com/blog), 
 ## License #######################################################################
 
 Released under the MIT license. 
+
