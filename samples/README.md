@@ -45,4 +45,4 @@ Then you can simply browse to:
 
 ## Photo Album Cake
 
-See the [Cloudinary CakePHP project](https://github.com/cloudinary/cloudinary_cake_php/tree/master/samples/PhotoAlbumCake).
+See the [Cloudinary CakePHP project](https://github.com/cloudinary/cloudinary_cake_php/tree/master/samples).
