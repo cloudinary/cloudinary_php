@@ -16,7 +16,7 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 
 
 ## CakePHP ##
-Special support to the cake PHP is included. You can access the code, installation and usage information [in the `cake_plugin/CloudinaryCake/README.md` file](https://github.com/cloudinary/cloudinary_php/tree/master/cake_plugin/CloudinaryCake)
+Special support to the cake PHP is included. You can access the code, installation and usage information [in the `cloudinary_cake_php` repository](https://github.com/cloudinary/cloudinary_cake_php).
 
 ## Setup ######################################################################
 
