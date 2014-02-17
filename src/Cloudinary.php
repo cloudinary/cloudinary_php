@@ -1,6 +1,7 @@
 <?php
 
 class Cloudinary {
+
     const CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
@@ -33,12 +34,13 @@ class Cloudinary {
             if (isset($uri["query"])) {
                 parse_str($uri["query"], $q_params);
             }
+            $private_cdn = isset($uri["path"]) && $uri["path"] != "/"; 
             $config = array_merge($q_params, array(
                             "cloud_name" => $uri["host"],
                             "api_key" => $uri["user"],
                             "api_secret" => $uri["pass"],
-                            "private_cdn" => isset($uri["path"])));
-            if (isset($uri["path"])) {
+                            "private_cdn" => $private_cdn));
+            if ($private_cdn) {
                 $config["secure_distribution"] = substr($uri["path"], 1);
             }
             self::$config = array_merge(self::$config, $config);
