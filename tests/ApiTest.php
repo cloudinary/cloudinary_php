@@ -330,4 +330,70 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(count($resource["derived"]), 0);
   }
   
+  
+  function test20_manual_moderation() {
+    // should support setting manual moderation status
+    $resource = \Cloudinary\Uploader::upload("tests/logo.png", array("moderation"=>"manual"));    
+    $this->assertEquals($resource["moderation"][0]["status"], "pending");
+    $this->assertEquals($resource["moderation"][0]["kind"], "manual");
+
+    $api_result = $this->api->update($resource["public_id"], array("moderation_status" => "approved"));
+    $this->assertEquals($api_result["moderation"][0]["status"], "approved");
+    $this->assertEquals($api_result["moderation"][0]["kind"], "manual");
+  }
+  
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Illegal value
+   */   
+  function test21_ocr_info() {
+    // should support requesting ocr info 
+    $this->api->update("api_test", array("ocr" => "illegal"));
+  }
+  
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Illegal value
+   */
+  function test22_raw_conversion() {
+    // should support requesting raw_convert 
+    $resource = \Cloudinary\Uploader::upload("tests/docx.docx", array("resource_type"=>"raw"));    
+    $this->api->update($resource["public_id"], array("raw_convert" => "illegal", "resource_type"=>"raw"));
+  }
+
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Illegal value
+   */
+  function test23_categorization() {
+    // should support requesting categorization 
+    $this->api->update("api_test", array("categorization" => "illegal"));
+  }
+
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Illegal value
+   */
+  function test24_detection() {
+    // should support requesting detection 
+    $this->api->update("api_test", array("detection" => "illegal"));
+  }
+
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Illegal value
+   */
+  function test25_similarity_search() {
+    // should support requesting similarity_search 
+    $this->api->update("api_test", array("similarity_search" => "illegal"));
+  }
+
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Must use
+   */
+  function test26_auto_tagging() {
+    // should support requesting auto_tagging 
+    $this->api->update("api_test", array("auto_tagging" => 0.5));
+  }
 }

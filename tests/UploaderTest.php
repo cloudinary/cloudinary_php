@@ -142,5 +142,67 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $tag = cl_image_upload_tag("image", array("public_id"=>"hello", "html"=>array("class"=>"uploader")));
         $this->assertRegexp("/<input class='uploader cloudinary-fileupload' data-cloudinary-field='image' data-form-data='{\"timestamp\":\d+,\"public_id\":\"hello\",\"signature\":\"[0-9a-f]+\",\"api_key\":\"1234\"}' data-url='https:\/\/api.cloudinary.com\/v1_1\/test123\/auto\/upload' name='file' type='file'\/>/", $tag);
     }
+  
+    function test_manual_moderation() {
+      // should support setting manual moderation status
+      $resource = \Cloudinary\Uploader::upload("tests/logo.png", array("moderation"=>"manual"));    
+      $this->assertEquals($resource["moderation"][0]["status"], "pending");
+      $this->assertEquals($resource["moderation"][0]["kind"], "manual");
+    }
+    
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Illegal value
+     */   
+    function test_ocr_info() {
+      // should support requesting ocr info 
+      \Cloudinary\Uploader::upload("tests/logo.png", array("ocr" => "illegal"));
+    }
+    
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Illegal value
+     */
+    function test_raw_conversion() {
+      // should support requesting raw_convert 
+      \Cloudinary\Uploader::upload("tests/docx.docx", array("resource_type"=>"raw", "raw_convert" => "illegal"));    
+    }
+  
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Illegal value
+     */
+    function test_categorization() {
+      // should support requesting categorization 
+      \Cloudinary\Uploader::upload("tests/logo.png", array("categorization" => "illegal"));
+    }
+  
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Illegal value
+     */
+    function test_detection() {
+      // should support requesting detection 
+      \Cloudinary\Uploader::upload("tests/logo.png", array("detection" => "illegal"));
+    }
+
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Illegal value
+     */
+    function test_similarity() {
+      // should support requesting similarity_search 
+      \Cloudinary\Uploader::upload("tests/logo.png", array("similarity_search" => "illegal"));
+    }
+  
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Must use
+     */
+    function test_auto_tagging() {
+      // should support requesting auto_tagging 
+      \Cloudinary\Uploader::upload("tests/logo.png", array("auto_tagging" => 0.5));
+  }
+    
 }
 ?>

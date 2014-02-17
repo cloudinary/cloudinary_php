@@ -52,13 +52,19 @@ class Api {
     $type = \Cloudinary::option_get($options, "type");
     $uri = array("resources", $resource_type);
     if ($type) array_push($uri, $type);
-    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "prefix", "tags", "context", "direction")), $options);    
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "prefix", "tags", "context", "moderations", "direction")), $options);    
   }
   
   function resources_by_tag($tag, $options=array()) {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $uri = array("resources", $resource_type, "tags", $tag);
-    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "tags", "context", "direction")), $options);    
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "tags", "context", "moderations", "direction")), $options);    
+  }
+
+  function resources_by_moderation($kind, $status, $options=array()) {
+    $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
+    $uri = array("resources", $resource_type, "moderations", $kind, $status);
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "tags", "context", "moderations", "direction")), $options);
   }
   
   function resources_by_ids($public_ids, $options=array()) {
@@ -66,7 +72,7 @@ class Api {
     $type = \Cloudinary::option_get($options, "type", "upload");
     $uri = array("resources", $resource_type, $type);
     $params = array_merge($options, array("public_ids" => $public_ids));
-    return $this->call_api("get", $uri, $this->only($params, array("public_ids", "tags", "context")), $options);    
+    return $this->call_api("get", $uri, $this->only($params, array("public_ids", "tags", "moderations", "context")), $options);    
   }
   
   function resource($public_id, $options=array()) {
@@ -74,6 +80,26 @@ class Api {
     $type = \Cloudinary::option_get($options, "type", "upload");
     $uri = array("resources", $resource_type, $type, $public_id);
     return $this->call_api("get", $uri, $this->only($options, array("exif", "colors", "faces", "image_metadata", "pages", "max_results")), $options);      
+  }
+  
+  function update($public_id, $options=array()) {
+    $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
+    $type = \Cloudinary::option_get($options, "type", "upload");
+    $uri = array("resources", $resource_type, $type, $public_id);
+
+    $tags = \Cloudinary::option_get($options, "tags");
+    $context = \Cloudinary::option_get($options, "context");
+    $face_coordinates = \Cloudinary::option_get($options, "face_coordinates");
+    $update_options = array_merge(
+      $this->only($options, array("moderation_status", "raw_convert", "ocr", "categorization", "detection", "similarity_search", "auto_tagging")),
+      array(
+        "tags" => $tags ? implode(",", \Cloudinary::build_array($tags)) : $tags,
+        "context" => $context ? \Cloudinary::encode_assoc_array($context) : $context,
+        "face_coordinates" => $face_coordinates ? \Cloudinary::encode_double_array($face_coordinates) : $face_coordinates,
+      )
+    );
+
+    return $this->call_api("post", $uri, $update_options, $options);      
   }
   
   function delete_resources($public_ids, $options=array()) {

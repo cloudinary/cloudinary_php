@@ -1,6 +1,8 @@
 <?php
 namespace Cloudinary {
 
+    class Error extends \Exception {};  
+
     class Uploader {
         public static function build_upload_params(&$options)
         {
@@ -29,6 +31,13 @@ namespace Cloudinary {
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))),
                 "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
                 "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
+                "moderation" => \Cloudinary::option_get($options, "moderation"),
+                "raw_convert" => \Cloudinary::option_get($options, "raw_convert"),
+                "ocr" => \Cloudinary::option_get($options, "ocr"),
+                "categorization" => \Cloudinary::option_get($options, "categorization"),
+                "detection" => \Cloudinary::option_get($options, "detection"),
+                "similarity_search" => \Cloudinary::option_get($options, "similarity_search"),
+                "auto_tagging" => \Cloudinary::option_get($options, "auto_tagging"),
                 "allowed_formats" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "allowed_formats")));
 	    array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
 	    return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
@@ -202,20 +211,20 @@ namespace Cloudinary {
 
             curl_close($ch);
             if ($curl_error != NULL) {
-                throw new \Exception("Error in sending request to server - " . $curl_error);
+                throw new \Cloudinary\Error("Error in sending request to server - " . $curl_error);
             }
             if ($code != 200 && $code != 400 && $code != 500 && $code != 401 && $code != 404) {
-                throw new \Exception("Server returned unexpected status code - " . $code . " - " . $response_data);
+                throw new \Cloudinary\Error("Server returned unexpected status code - " . $code . " - " . $response_data, $code);
             }
             $result = json_decode($response_data, TRUE);
             if ($result == NULL) {
-                throw new \Exception("Error parsing server response (" . $code . ") - " . $response_data);
+                throw new \Cloudinary\Error("Error parsing server response (" . $code . ") - " . $response_data);
             }
             if (isset($result["error"])) {
                 if ($return_error) {
                     $result["error"]["http_code"] = $code;
                 } else {
-                    throw new \Exception($result["error"]["message"]);
+                    throw new \Cloudinary\Error($result["error"]["message"], $code);
                 }
             }
             return $result;
