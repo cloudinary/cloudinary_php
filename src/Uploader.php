@@ -49,6 +49,51 @@ namespace Cloudinary {
             return Uploader::call_api("upload", $params, $options, $file);
         }
 
+        // Upload large raw files. Note that public_id should include an extension for best results.
+        public static function upload_large($file, $options=array())
+        {
+            $src = fopen($file, 'r');
+            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' + pathinfo($file, PATHINFO_EXTENSION));
+            $upload = $upload_id = NULL;
+            $public_id = \Cloudinary::option_get($upload, "public_id");
+            $index = 1;
+            while (!feof($src)) {
+                $dest = fopen($temp_file_name, 'w');
+                stream_copy_to_stream($src, $dest, 20000000);
+                fclose($dest);
+                try {
+                    $upload = Uploader::upload_large_part($temp_file_name, array_merge($options, 
+                                array("public_id"=>$public_id, "upload_id"=>$upload_id, "part_number"=>$index, "final"=>feof($src))));
+                } catch(\Exception $e) {
+                    unlink($temp_file_name);
+                    fclose($src);
+                    throw $e;                    
+                }
+                $upload_id = \Cloudinary::option_get($upload, "upload_id");
+                $public_id = \Cloudinary::option_get($upload, "public_id");
+                $index += 1;
+            }
+            unlink($temp_file_name);
+            fclose($src);
+            return $upload;
+        }
+    
+
+        // Upload large raw files. Note that public_id should include an extension for best results.
+        public static function upload_large_part($file, $options=array())
+        {
+            $params = array(
+                "timestamp" => time(),
+                "type" => \Cloudinary::option_get($options, "type"),
+                "backup" => \Cloudinary::option_get($options, "backup"),
+                "final" => \Cloudinary::option_get($options, "final"),
+                "part_number" => \Cloudinary::option_get($options, "part_number"),
+                "upload_id" => \Cloudinary::option_get($options, "upload_id"),
+                "public_id" => \Cloudinary::option_get($options, "public_id")
+            );
+            return Uploader::call_api("upload_large", $params, array_merge($options, array("resource_type" => "raw")), $file);
+        }
+
         public static function destroy($public_id, $options = array())
         {
             $params = array(

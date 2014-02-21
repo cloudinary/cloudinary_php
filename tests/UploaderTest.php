@@ -144,10 +144,10 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     }
   
     function test_manual_moderation() {
-      // should support setting manual moderation status
-      $resource = \Cloudinary\Uploader::upload("tests/logo.png", array("moderation"=>"manual"));    
-      $this->assertEquals($resource["moderation"][0]["status"], "pending");
-      $this->assertEquals($resource["moderation"][0]["kind"], "manual");
+        // should support setting manual moderation status
+        $resource = \Cloudinary\Uploader::upload("tests/logo.png", array("moderation"=>"manual"));    
+        $this->assertEquals($resource["moderation"][0]["status"], "pending");
+        $this->assertEquals($resource["moderation"][0]["kind"], "manual");
     }
     
     /**
@@ -155,8 +155,8 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Illegal value
      */   
     function test_ocr_info() {
-      // should support requesting ocr info 
-      \Cloudinary\Uploader::upload("tests/logo.png", array("ocr" => "illegal"));
+        // should support requesting ocr info 
+        \Cloudinary\Uploader::upload("tests/logo.png", array("ocr" => "illegal"));
     }
     
     /**
@@ -164,8 +164,8 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Illegal value
      */
     function test_raw_conversion() {
-      // should support requesting raw_convert 
-      \Cloudinary\Uploader::upload("tests/docx.docx", array("resource_type"=>"raw", "raw_convert" => "illegal"));    
+        // should support requesting raw_convert 
+        \Cloudinary\Uploader::upload("tests/docx.docx", array("resource_type"=>"raw", "raw_convert" => "illegal"));    
     }
   
     /**
@@ -173,8 +173,8 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Illegal value
      */
     function test_categorization() {
-      // should support requesting categorization 
-      \Cloudinary\Uploader::upload("tests/logo.png", array("categorization" => "illegal"));
+        // should support requesting categorization 
+        \Cloudinary\Uploader::upload("tests/logo.png", array("categorization" => "illegal"));
     }
   
     /**
@@ -182,8 +182,8 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Illegal value
      */
     function test_detection() {
-      // should support requesting detection 
-      \Cloudinary\Uploader::upload("tests/logo.png", array("detection" => "illegal"));
+        // should support requesting detection 
+        \Cloudinary\Uploader::upload("tests/logo.png", array("detection" => "illegal"));
     }
 
     /**
@@ -200,9 +200,13 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Must use
      */
     function test_auto_tagging() {
-      // should support requesting auto_tagging 
-      \Cloudinary\Uploader::upload("tests/logo.png", array("auto_tagging" => 0.5));
-  }
+        // should support requesting auto_tagging 
+        \Cloudinary\Uploader::upload("tests/logo.png", array("auto_tagging" => 0.5));
+    }
+    
+    function test_large_upload() {
+        \Cloudinary\Uploader::upload_large("tests/docx.docx");          
+    }
     
 }
 ?>
