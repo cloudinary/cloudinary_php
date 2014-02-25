@@ -1,7 +1,6 @@
 <?php
 include '../../src/Cloudinary.php';
 include '../../src/Uploader.php';
-include '../../src/Helpers.php';
 if (file_exists('settings.php')) {
   include 'settings.php';
 }

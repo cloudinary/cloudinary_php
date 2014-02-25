@@ -3,7 +3,6 @@ namespace PhotoAlbum {
   require 'lib/rb.php';
   require '../../src/Cloudinary.php';
   require '../../src/Uploader.php';
-  require '../../src/Helpers.php';
   error_reporting(E_ALL | E_STRICT);
 
   // Sets up Cloudinary's parameters and RB's DB
