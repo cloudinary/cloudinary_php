@@ -352,4 +352,3 @@ class Cloudinary {
 }
 
 require_once(join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), 'Helpers.php')));
-?>

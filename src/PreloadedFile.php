@@ -49,5 +49,4 @@ namespace Cloudinary {
             return $this->resource_type . "/" . $this->type . "/v" . $this->version . "/" . $this->filename . "#" . $this->signature;
         }    
     }
-    }
-?>
+}
