@@ -152,16 +152,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     
     /**
      * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage Illegal value
-     */   
-    function test_ocr_info() {
-        // should support requesting ocr info 
-        \Cloudinary\Uploader::upload("tests/logo.png", array("ocr" => "illegal"));
-    }
-    
-    /**
-     * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage Illegal value
+     * @expectedExceptionMessage illegal is not a valid
      */
     function test_raw_conversion() {
         // should support requesting raw_convert 
@@ -170,7 +161,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
   
     /**
      * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage Illegal value
+     * @expectedExceptionMessage illegal is not a valid
      */
     function test_categorization() {
         // should support requesting categorization 
@@ -179,20 +170,11 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
   
     /**
      * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage Illegal value
+     * @expectedExceptionMessage illegal is not a valid
      */
     function test_detection() {
         // should support requesting detection 
         \Cloudinary\Uploader::upload("tests/logo.png", array("detection" => "illegal"));
-    }
-
-    /**
-     * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage Illegal value
-     */
-    function test_similarity() {
-      // should support requesting similarity_search 
-      \Cloudinary\Uploader::upload("tests/logo.png", array("similarity_search" => "illegal"));
     }
   
     /**
@@ -207,6 +189,14 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     function test_large_upload() {
         \Cloudinary\Uploader::upload_large("tests/docx.docx");          
     }
-    
+
+    function test_upload_preset() {
+      // should support unsigned uploading using presets
+      $api = new \Cloudinary\Api();
+      $preset = $api->create_upload_preset(array("folder"=>"upload_folder", "unsigned"=>TRUE));
+      $result = \Cloudinary\Uploader::unsigned_upload("tests/logo.png", $preset["name"]);
+      $this->assertRegExp('/^upload_folder\/[a-z0-9]+$/', $result["public_id"]);
+      $api->delete_upload_preset($preset["name"]);
+    }    
 }
 ?>

@@ -53,23 +53,39 @@ require 'main.php';
     
     <!-- A form for direct uploading using a jQuery plug-in. 
           The cl_image_upload_tag PHP function generates the required HTML and JavaScript to
-          allow uploading directly frm the browser to your Cloudinary account -->
+          allow uploading directly from the browser to your Cloudinary account -->
+    <?php
+      $unsigned = isset($_GET["unsigned"]) && $_GET["unsigned"] == "1";
+    ?>
     <div id='direct_upload'>
-      <h1>Direct upload from the browser</h1>
+      <h1>Direct <?php if ($unsigned) echo "unsigned "; ?>upload from the browser</h1>
       <form>
       <?php
-        # The callback URL is set to point to an HTML file on the local server which works-around restrictions 
-        # in older browsers (e.g., IE) which don't full support CORS.
-        echo cl_image_upload_tag('test', array("tags" => "direct_photo_album", "callback" => $cors_location, "html" => array("multiple" => true)));
+        if ($unsigned) {
+          # For the sake of simplicity of the sample site, we generate the preset on the fly. It only needs to be created once, in advance.
+          $api = new \Cloudinary\Api();
+          try {
+              $api->upload_preset("sample_preset_dhfjhriu");
+          } catch (\Cloudinary\Api\NotFound $e) {
+              $api->create_upload_preset(array("name"=>"sample_preset_dhfjhriu", "unsigned"=>TRUE, "folder"=>"preset_folder", "format"=>"jpg"));
+          }
+          # The callback URL is set to point to an HTML file on the local server which works-around restrictions 
+          # in older browsers (e.g., IE) which don't full support CORS.
+          echo cl_unsigned_image_upload_tag('test', "sample_preset_dhfjhriu", array("tags" => "direct_photo_album", "callback" => $cors_location, "html" => array("multiple" => true)));          
+        } else {
+          # The callback URL is set to point to an HTML file on the local server which works-around restrictions 
+          # in older browsers (e.g., IE) which don't full support CORS.
+          echo cl_image_upload_tag('test', array("tags" => "direct_photo_album", "callback" => $cors_location, "html" => array("multiple" => true)));
+        }
       ?>
+      <a href="?unsigned=<?php echo !$unsigned; ?>"><?php echo $unsigned ? "use signed" : "use unsigned"; ?></a>
       </form>
-
-	  <!-- status box -->
-	  <div class="status">
-	    <h2>Status</h2>
-	    <span class="status_value">Idle</span>
-	  </div>
-	
+    <!-- status box -->
+    <div class="status">
+      <h2>Status</h2>
+      <span class="status_value">Idle</span>
+    </div>
+  
       <div class="uploaded_info_holder">
       </div>
     </div>

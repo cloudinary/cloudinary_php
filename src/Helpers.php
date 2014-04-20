@@ -10,10 +10,19 @@ namespace {
     function cl_upload_tag_params($options = array()) 
     {
         $params = Cloudinary\Uploader::build_upload_params($options);
-        $params = Cloudinary::sign_request($params, $options);
+        if (Cloudinary::option_get($options, "unsigned")) {
+          $params = array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
+        } else {
+          $params = Cloudinary::sign_request($params, $options);
+        }
         return json_encode($params);
     }
     
+    function cl_unsigned_image_upload_tag($field, $upload_preset, $options = array())
+    {
+      return cl_image_upload_tag($field, array_merge($options, array("unsigned"=>TRUE, "upload_preset"=>$upload_preset)));
+    }
+
     function cl_image_upload_tag($field, $options = array())
     {
         $html_options = Cloudinary::option_get($options, "html", array());

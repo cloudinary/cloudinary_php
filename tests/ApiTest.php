@@ -25,6 +25,18 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     try {
       $this->api->delete_transformation("api_test_transformation3");
     } catch (Exception $e) {}
+    try {
+      $this->api->delete_transformation("api_test_upload_preset");
+    } catch (Exception $e) {}
+    try {
+      $this->api->delete_transformation("api_test_upload_preset2");
+    } catch (Exception $e) {}
+    try {
+      $this->api->delete_transformation("api_test_upload_preset3");
+    } catch (Exception $e) {}
+    try {
+      $this->api->delete_transformation("api_test_upload_preset4");
+    } catch (Exception $e) {}
     \Cloudinary\Uploader::upload("tests/logo.png", 
       array("public_id"=>"api_test", "tags"=>"api_test_tag", "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
     \Cloudinary\Uploader::upload("tests/logo.png", 
@@ -341,16 +353,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($api_result["moderation"][0]["status"], "approved");
     $this->assertEquals($api_result["moderation"][0]["kind"], "manual");
   }
-  
-  /**
-   * @expectedException \Cloudinary\Api\BadRequest
-   * @expectedExceptionMessage Illegal value
-   */   
-  function test21_ocr_info() {
-    // should support requesting ocr info 
-    $this->api->update("api_test", array("ocr" => "illegal"));
-  }
-  
+   
   /**
    * @expectedException \Cloudinary\Api\BadRequest
    * @expectedExceptionMessage Illegal value
@@ -381,19 +384,77 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException \Cloudinary\Api\BadRequest
-   * @expectedExceptionMessage Illegal value
-   */
-  function test25_similarity_search() {
-    // should support requesting similarity_search 
-    $this->api->update("api_test", array("similarity_search" => "illegal"));
-  }
-
-  /**
-   * @expectedException \Cloudinary\Api\BadRequest
    * @expectedExceptionMessage Must use
    */
   function test26_auto_tagging() {
     // should support requesting auto_tagging 
     $this->api->update("api_test", array("auto_tagging" => 0.5));
+  }
+
+  function test27_start_at() {
+      // should allow listing resources by start date
+      sleep(2);
+      $start_at = (new DateTime())->format(DateTime::ISO8601);
+      sleep(2);
+      $response = \Cloudinary\Uploader::upload("tests/logo.png");
+      $api_repsonse = $this->api->resources(array("type"=>"upload", "start_at"=>$start_at, "direction"=>"asc"));
+      $resources = $api_repsonse["resources"];
+      $this->assertEquals(count($resources), 1);
+      $this->assertEquals($resources[0]["public_id"], $response["public_id"]);
+  }
+
+  function test28_create_list_upload_presets() {
+      // should allow creating and listing upload_presets
+      $this->api->create_upload_preset(array("name"=>"api_test_upload_preset", "folder"=>"folder"));
+      $this->api->create_upload_preset(array("name"=>"api_test_upload_preset2", "folder"=>"folder2"));
+      $this->api->create_upload_preset(array("name"=>"api_test_upload_preset3", "folder"=>"folder3"));
+      $api_response = $this->api->upload_presets();
+      $presets = $api_response["presets"];
+      $this->assertGreaterThanOrEqual(3, count($presets));
+      $this->assertEquals($presets[0]["name"], "api_test_upload_preset3");
+      $this->assertEquals($presets[1]["name"], "api_test_upload_preset2");
+      $this->assertEquals($presets[2]["name"], "api_test_upload_preset");
+      $this->api->delete_upload_preset("api_test_upload_preset");
+      $this->api->delete_upload_preset("api_test_upload_preset2");
+      $this->api->delete_upload_preset("api_test_upload_preset3");
+  }
+
+  function test29_get_upload_presets() {
+      // should allow getting a single upload_preset
+      $result = $this->api->create_upload_preset(array("unsigned"=>TRUE, "folder"=>"folder", "width"=>100, "crop"=>"scale", "tags"=>array("a","b","c"), "context"=>array("a"=>"b","c"=>"d")));
+      $name = $result["name"];
+      $preset = $this->api->upload_preset($name);
+      $this->assertEquals($preset["name"], $name);
+      $this->assertEquals($preset["unsigned"], TRUE);
+      $settings = $preset["settings"];
+      $this->assertEquals($settings["folder"], "folder");
+      $this->assertEquals($settings["transformation"], array(array("width"=>100,"crop"=>"scale")));
+      $this->assertEquals($settings["context"], array("a"=>"b", "c"=>"d"));
+      $this->assertEquals($settings["tags"], array("a","b","c"));
+      $this->api->delete_upload_preset($name);
+  }
+
+  function test30_create_list_upload_presets() {
+      // should allow deleting upload_presets
+      $this->api->create_upload_preset(array("name"=>"api_test_upload_preset4", "folder"=>"folder"));
+      $preset = $this->api->upload_preset("api_test_upload_preset4");
+      $this->api->delete_upload_preset("api_test_upload_preset4");
+      try {
+        $preset = $this->api->upload_preset("api_test_upload_preset4");
+        $this->fail();
+      } catch (\Cloudinary\Api\NotFound $expected) {
+      }
+  }
+
+  function test31_update_upload_presets() {
+      // should allow getting a single upload_preset
+      $result = $this->api->create_upload_preset(array("folder"=>"folder"));
+      $name = $result["name"];
+      $preset = $this->api->upload_preset($name);
+      $this->api->update_upload_preset($name, array_merge($preset["settings"], array("colors"=>TRUE, "unsigned"=>TRUE, "disallow_public_id"=>TRUE)));
+      $preset = $this->api->upload_preset($name);
+      $this->assertEquals($preset["unsigned"], TRUE);
+      $this->assertEquals($preset["settings"], array("folder"=>"folder", "colors"=>TRUE, "disallow_public_id"=>TRUE));
+      $this->api->delete_upload_preset($name);
   }
 }
