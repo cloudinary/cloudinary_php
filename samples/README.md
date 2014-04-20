@@ -3,6 +3,7 @@ Cloudinary PHP Sample Project
 
 Included in this folder are two sample projects for demonstrating the common Cloudinary's usage in PHP.
 
+*Note: PHP 5.3+ is required.*
 
 ## Installation
 
