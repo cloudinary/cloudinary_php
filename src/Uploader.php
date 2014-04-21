@@ -238,10 +238,12 @@ namespace Cloudinary {
 
             $post_params = array();
             if ($file) {
-                if (file_exists($file) && function_exists("curl_file_create")) {
-                    $post_params['file'] = curl_file_create($file);
-                } else if (!preg_match('/^@|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
-                    $post_params["file"] = "@" . $file;
+                if (!preg_match('/^@|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
+                    if (function_exists("curl_file_create")) {
+                        $post_params['file'] = curl_file_create($file);
+                    } else {
+                        $post_params["file"] = "@" . $file;
+                    }
                 } else {
                     $post_params["file"] = $file;
                 }
