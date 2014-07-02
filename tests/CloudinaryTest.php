@@ -348,6 +348,34 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/test.png' height='10' width='10'/>", $tag);
     }
 
+    public function test_responsive_width() {
+        // should add responsive width transformation
+        $tag = cl_image_tag("hello", array("responsive_width"=>True, "format"=>"png"));
+        $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>", $tag);
+
+        $options = array("width"=>100, "height"=>100, "crop"=>"crop", "responsive_width"=>true);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals($options, array("responsive"=> true));
+        $this->assertEquals($result, "http://res.cloudinary.com/test123/image/upload/c_crop,h_100,w_100/c_limit,w_auto/test");
+        Cloudinary::config(array("responsive_width_transformation"=>array("width"=>"auto", "crop"=>"pad")));
+        $options = array("width"=>100, "height"=>100, "crop"=>"crop", "responsive_width"=>true);
+        $result = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals($options, array("responsive"=> true));
+        $this->assertEquals($result, "http://res.cloudinary.com/test123/image/upload/c_crop,h_100,w_100/c_pad,w_auto/test");
+    }
+
+    public function test_width_auto() {
+        // should support width=auto
+        $tag = cl_image_tag("hello", array("width"=>"auto", "crop"=>"limit", "format"=>"png"));
+        $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>", $tag);
+    }
+
+    public function test_dpr_auto() {
+        // should support width=auto
+        $tag = cl_image_tag("hello", array("dpr"=>"auto", "format"=>"png"));
+        $this->assertEquals("<img class='cld-hidpi' data-src='http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png'/>", $tag);
+    }
+
     public function test_folder_version() {
         // should add version if public_id contains /
         $result = Cloudinary::cloudinary_url("folder/test");

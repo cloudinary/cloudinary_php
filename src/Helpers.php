@@ -67,8 +67,24 @@ namespace {
         $source = cloudinary_url_internal($source, $options);
         if (isset($options["html_width"])) $options["width"] = Cloudinary::option_consume($options, "html_width");
         if (isset($options["html_height"])) $options["height"] = Cloudinary::option_consume($options, "html_height");
-    
-        return "<img src='" . $source . "' " . Cloudinary::html_attrs($options) . "/>";
+
+        $responsive = Cloudinary::option_consume($options, "responsive");
+        $hidpi = Cloudinary::option_consume($options, "hidpi");
+        if ($responsive || $hidpi) {
+            $options["data-src"] = $source;
+            $classes = array($responsive ? "cld-responsive" : "cld-hidpi");
+            $current_class = Cloudinary::option_consume($options, "class");
+            if ($current_class) array_unshift($classes, $current_class);
+            $options["class"] = implode(" ", $classes);
+            $source = Cloudinary::option_consume($options, "responsive_placeholder", Cloudinary::config_get("responsive_placeholder"));
+            if ($source == "blank") {
+                $source = Cloudinary::BLANK;
+            }
+        }
+        $html = "<img ";
+        if ($source) $html .= "src='$source' ";
+        $html .= Cloudinary::html_attrs($options) . "/>";
+        return $html;
     }
     
     function fetch_image_tag($url, $options = array()) {

@@ -8,6 +8,8 @@ class Cloudinary {
     const SHARED_CDN = "res.cloudinary.com";
     const VERSION = "1.0.7";
     const USER_AGENT = "cld-php-1.0.7";
+    const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+    public static $DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = array("width"=>"auto", "crop"=>"limit");
 
     private static $config = NULL;
     public static $JS_CONFIG_PARAMS = array("api_key", "cloud_name", "private_cdn", "secure_distribution", "cdn_subdomain");
@@ -123,6 +125,8 @@ class Cloudinary {
             return implode("/", array_map($generate_base_transformation, $options));
         }
 
+        $responsive_width = Cloudinary::option_consume($options, "responsive_width", Cloudinary::config_get("responsive_width"));
+
         $size = Cloudinary::option_consume($options, "size");
         if ($size) list($options["width"], $options["height"]) = preg_split("/x/", $size);
 
@@ -133,9 +137,9 @@ class Cloudinary {
         $angle = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "angle")), ".");
         $crop = Cloudinary::option_consume($options, "crop");
 
-        $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit";
+        $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit" || $responsive_width;
 
-        if (strlen($width) == 0 || $width && (floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
+        if (strlen($width) == 0 || $width && ($width == "auto" || floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
         if (strlen($height) == 0 || $height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
 
         $background = Cloudinary::option_consume($options, "background");
@@ -163,8 +167,9 @@ class Cloudinary {
         }
 
         $flags = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "flags")), ".");
+        $dpr = Cloudinary::option_consume($options, "dpr", Cloudinary::config_get("dpr"));
 
-        $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "co"=>$color, "e"=>$effect, "bo"=>$border, "a"=>$angle, "fl"=>$flags);
+        $params = array("w"=>$width, "h"=>$height, "t"=>$named_transformation, "c"=>$crop, "b"=>$background, "co"=>$color, "e"=>$effect, "bo"=>$border, "a"=>$angle, "fl"=>$flags, "dpr"=>$dpr);
         $simple_params = array("x"=>"x", "y"=>"y", "r"=>"radius", "d"=>"default_image", "g"=>"gravity",
                               "q"=>"quality", "p"=>"prefix", "l"=>"overlay", "u"=>"underlay", "f"=>"fetch_format",
                               "dn"=>"density", "pg"=>"page", "dl"=>"delay", "cs"=>"color_space", "o"=>"opacity");
@@ -180,6 +185,16 @@ class Cloudinary {
         $raw_transformation = Cloudinary::option_consume($options, "raw_transformation");
         $transformation = implode(",", array_filter(array($transformation, $raw_transformation)));
         array_push($base_transformations, $transformation);
+        if ($responsive_width) {
+            $responsive_width_transformation = Cloudinary::config_get("responsive_width_transformation", Cloudinary::$DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION);
+            array_push($base_transformations, Cloudinary::generate_transformation_string($responsive_width_transformation));
+        }
+        if ($width == "auto" || $responsive_width) {
+            $options["responsive"] = true;
+        }
+        if ($dpr == "auto") {
+            $options["hidpi"] = true;
+        }
         return implode("/", array_filter($base_transformations));
     }
 
