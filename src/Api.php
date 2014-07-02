@@ -91,7 +91,7 @@ class Api {
     $context = \Cloudinary::option_get($options, "context");
     $face_coordinates = \Cloudinary::option_get($options, "face_coordinates");
     $update_options = array_merge(
-      $this->only($options, array("moderation_status", "raw_convert", "ocr", "categorization", "detection", "similarity_search", "auto_tagging")),
+      $this->only($options, array("moderation_status", "raw_convert", "ocr", "categorization", "detection", "similarity_search", "auto_tagging", "background_removal")),
       array(
         "tags" => $tags ? implode(",", \Cloudinary::build_array($tags)) : $tags,
         "context" => $context ? \Cloudinary::encode_assoc_array($context) : $context,

@@ -38,6 +38,7 @@ namespace Cloudinary {
                 "detection" => \Cloudinary::option_get($options, "detection"),
                 "similarity_search" => \Cloudinary::option_get($options, "similarity_search"),
                 "auto_tagging" => \Cloudinary::option_get($options, "auto_tagging"),
+                "background_removal" => \Cloudinary::option_get($options, "background_removal"),
                 "phash" => \Cloudinary::option_get($options, "phash"),
                 "upload_preset" => \Cloudinary::option_get($options, "upload_preset"),
                 "allowed_formats" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "allowed_formats")));

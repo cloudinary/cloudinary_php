@@ -186,6 +186,15 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         \Cloudinary\Uploader::upload("tests/logo.png", array("auto_tagging" => 0.5));
     }
     
+    /**
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage illegal is not a valid
+     */
+    function test_background_removal() {
+        // should support requesting background_removal 
+        \Cloudinary\Uploader::upload("tests/logo.png", array("background_removal" => "illegal"));
+    }
+
     function test_large_upload() {
         \Cloudinary\Uploader::upload_large("tests/docx.docx");          
     }

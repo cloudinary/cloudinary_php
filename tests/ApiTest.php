@@ -6,6 +6,8 @@ require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Api.php')));
 
 class ApiTest extends PHPUnit_Framework_TestCase {
   static $initialized = FALSE;  
+  static $timestamp_tag;
+
   public function setUp() {
     if (!Cloudinary::config_get("api_secret")) {
       $this->markTestSkipped('Please setup environment for API test to run');
@@ -37,10 +39,11 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     try {
       $this->api->delete_transformation("api_test_upload_preset4");
     } catch (Exception $e) {}
+    self::$timestamp_tag = "api_test_tag_" . time();
     \Cloudinary\Uploader::upload("tests/logo.png", 
-      array("public_id"=>"api_test", "tags"=>"api_test_tag", "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
+      array("public_id"=>"api_test", "tags"=>array("api_test_tag",self::$timestamp_tag), "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
     \Cloudinary\Uploader::upload("tests/logo.png", 
-      array("public_id"=>"api_test2", "tags"=>"api_test_tag", "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
+      array("public_id"=>"api_test2", "tags"=>array("api_test_tag",self::$timestamp_tag), "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
   }
    
   function find_by_attr($elements, $attr, $value) {
@@ -89,17 +92,13 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       }
     };
     $tags_map = function($resource) {
-      if (count($resource["tags"]) > 0) {
-        return $resource["tags"][0];
-      } else {
-        return NULL;
-      }
+        return $resource["tags"] == array("api_test_tag", ApiTest::$timestamp_tag);
     };
     $context_values = array_map($context_map, $result["resources"]);  
     $tags = array_map($tags_map, $result["resources"]);  
     $this->assertNotEquals($resource, NULL);
     $this->assertContains("value", $context_values);
-    $this->assertContains("api_test_tag", $tags);
+    $this->assertContains(TRUE, $tags);
   }
 
   function test05_resources_by_prefix() {
@@ -116,11 +115,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       }
     };
     $tags_map = function($resource) {
-      if (count($resource["tags"]) > 0) {
-        return $resource["tags"][0];
-      } else {
-        return NULL;
-      }
+        return $resource["tags"] == array("api_test_tag", ApiTest::$timestamp_tag);
     };
     $context_values = array_map($context_map, $result["resources"]);  
     $tags = array_map($tags_map, $result["resources"]);  
@@ -128,7 +123,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertContains("api_test", $public_ids);
     $this->assertContains("api_test2", $public_ids);
     $this->assertContains("value", $context_values);
-    $this->assertContains("api_test_tag", $tags);
+    $this->assertContains(TRUE, $tags);
   }
   
   function test_resources_by_public_ids() {
@@ -141,7 +136,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
         return $resource["context"]["custom"]["key"];
     };
     $tags_map = function($resource) {
-        return $resource["tags"][0];
+        return $resource["tags"] == array("api_test_tag", ApiTest::$timestamp_tag);
     };
     $public_ids = array_map($id_map, $result["resources"]); 
     $context_values = array_map($context_map, $result["resources"]);  
@@ -149,16 +144,16 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertContains("api_test", $public_ids);
     $this->assertContains("api_test2", $public_ids);
     $this->assertContains("value", $context_values);
-    $this->assertContains("api_test_tag", $tags);
+    $this->assertNotContains(FALSE, $tags);
   }
   
   function test_resources_direction() {
     // should allow listing resources and specify direction 
-    $asc_resources = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>"asc"))["resources"];
-    $desc_resources = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>"desc"))["resources"];
+    $asc_resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>"asc"))["resources"];
+    $desc_resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>"desc"))["resources"];
     $this->assertEquals(array_reverse($asc_resources), $desc_resources);
-    $asc_resources_alt = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>1))["resources"];
-    $desc_resources_alt = $this->api->resources(array("type"=>"upload", "prefix"=>"api_test", "direction"=>-1))["resources"];
+    $asc_resources_alt = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>1))["resources"];
+    $desc_resources_alt = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>-1))["resources"];
     $this->assertEquals(array_reverse($asc_resources_alt), $desc_resources_alt);
     $this->assertEquals($asc_resources_alt, $asc_resources);
   }
@@ -380,6 +375,15 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   function test24_detection() {
     // should support requesting detection 
     $this->api->update("api_test", array("detection" => "illegal"));
+  }
+
+  /**
+   * @expectedException \Cloudinary\Api\BadRequest
+   * @expectedExceptionMessage Illegal value
+   */
+  function test25_background_removal() {
+    // should support requesting background_removal 
+    $this->api->update("api_test", array("background_removal" => "illegal"));
   }
 
   /**
