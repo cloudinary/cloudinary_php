@@ -31,6 +31,7 @@ namespace Cloudinary {
                 "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))),
                 "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
                 "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
+                "custom_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "custom_coordinates")),
                 "moderation" => \Cloudinary::option_get($options, "moderation"),
                 "raw_convert" => \Cloudinary::option_get($options, "raw_convert"),
                 "ocr" => \Cloudinary::option_get($options, "ocr"),
@@ -135,7 +136,8 @@ namespace Cloudinary {
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
                 "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
                 "tags" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "tags")),
-                "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates"))
+                "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
+                "custom_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "custom_coordinates"))
             );
             return Uploader::call_api("explicit", $params, $options);
         }

@@ -109,16 +109,18 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     }
     
     public function test_face_coordinates() {
-        //should allow sending face coordinates
-        $coordinates = array(array(120, 30, 109, 150), array(121, 31, 110, 151));
-        $result = Cloudinary\Uploader::upload("tests/logo.png", array("face_coordinates" => $coordinates, "faces" => TRUE));
-        $this->assertEquals($coordinates, $result["faces"]);
+        //should allow sending face and custom coordinates
+        $face_coordinates = array(array(120, 30, 109, 150), array(121, 31, 110, 151));
+        $result = Cloudinary\Uploader::upload("tests/logo.png", array("face_coordinates" => $face_coordinates, "faces" => TRUE));
+        $this->assertEquals($face_coordinates, $result["faces"]);
 
-        $different_coordinates = array(array(122, 32, 111, 152));
-        Cloudinary\Uploader::explicit($result["public_id"], array("face_coordinates" => $different_coordinates, "faces" => TRUE, "type" => "upload"));
+        $different_face_coordinates = array(array(122, 32, 111, 152));
+        $custom_coordinates = array(1,2,3,4);
+        Cloudinary\Uploader::explicit($result["public_id"], array("face_coordinates" => $different_face_coordinates, "custom_coordinates" => $custom_coordinates, "faces" => TRUE, "type" => "upload"));
         $api = new \Cloudinary\Api();
-        $info = $api->resource($result["public_id"], array("faces" => true));
-        $this->assertEquals($different_coordinates, $info["faces"]);
+        $info = $api->resource($result["public_id"], array("faces" => true, "coordinates" => true));
+        $this->assertEquals($info["faces"], $different_face_coordinates);
+        $this->assertEquals($info["coordinates"], array("faces"=>$different_face_coordinates, "custom"=>array($custom_coordinates)));
     }
     
     public function test_context() {

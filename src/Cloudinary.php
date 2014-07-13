@@ -88,7 +88,12 @@ class Cloudinary {
     
     public static function encode_double_array($array) {
       $array = Cloudinary::build_array($array);
-      $array = array_map('Cloudinary::encode_array', $array);
+      if (count($array) > 0 && !is_array($array[0])) {
+        return Cloudinary::encode_array($array);
+      } else {
+        $array = array_map('Cloudinary::encode_array', $array);        
+      }
+      
       return implode("|", $array);
     }
     

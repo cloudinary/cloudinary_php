@@ -79,7 +79,7 @@ class Api {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $type = \Cloudinary::option_get($options, "type", "upload");
     $uri = array("resources", $resource_type, $type, $public_id);
-    return $this->call_api("get", $uri, $this->only($options, array("exif", "colors", "faces", "image_metadata", "phash", "pages", "max_results")), $options);      
+    return $this->call_api("get", $uri, $this->only($options, array("exif", "colors", "faces", "image_metadata", "phash", "pages", "coordinates", "max_results")), $options);      
   }
   
   function update($public_id, $options=array()) {
@@ -90,12 +90,14 @@ class Api {
     $tags = \Cloudinary::option_get($options, "tags");
     $context = \Cloudinary::option_get($options, "context");
     $face_coordinates = \Cloudinary::option_get($options, "face_coordinates");
+    $custom_coordinates = \Cloudinary::option_get($options, "custom_coordinates");
     $update_options = array_merge(
       $this->only($options, array("moderation_status", "raw_convert", "ocr", "categorization", "detection", "similarity_search", "auto_tagging", "background_removal")),
       array(
         "tags" => $tags ? implode(",", \Cloudinary::build_array($tags)) : $tags,
         "context" => $context ? \Cloudinary::encode_assoc_array($context) : $context,
         "face_coordinates" => $face_coordinates ? \Cloudinary::encode_double_array($face_coordinates) : $face_coordinates,
+        "custom_coordinates" => $custom_coordinates ? \Cloudinary::encode_double_array($custom_coordinates) : $custom_coordinates,
       )
     );
 
