@@ -41,6 +41,7 @@ namespace Cloudinary {
                 "auto_tagging" => \Cloudinary::option_get($options, "auto_tagging"),
                 "background_removal" => \Cloudinary::option_get($options, "background_removal"),
                 "phash" => \Cloudinary::option_get($options, "phash"),
+                "return_delete_token" => \Cloudinary::option_get($options, "return_delete_token"),
                 "upload_preset" => \Cloudinary::option_get($options, "upload_preset"),
                 "allowed_formats" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "allowed_formats")));
             array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
