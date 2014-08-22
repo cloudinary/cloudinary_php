@@ -431,7 +431,8 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
             "a+b" => "a%2Bb",
             "a%20b" => "a%20b",
             "a-b" => "a-b",
-            "a??b" => "a%3F%3Fb");
+            "a??b" => "a%3F%3Fb",
+            "parentheses(interject)" => "parentheses%28interject%29");
         foreach ($tests as $source => $target) {
             $url = Cloudinary::cloudinary_url($source);
             $this->assertEquals("http://res.cloudinary.com/test123/image/upload/$target", $url);                      
