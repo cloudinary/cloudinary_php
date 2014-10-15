@@ -438,7 +438,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       $this->api->delete_upload_preset($name);
   }
 
-  function test30_create_list_upload_presets() {
+  function test30_delete_upload_presets() {
       // should allow deleting upload_presets
       $this->api->create_upload_preset(array("name"=>"api_test_upload_preset4", "folder"=>"folder"));
       $preset = $this->api->upload_preset("api_test_upload_preset4");
