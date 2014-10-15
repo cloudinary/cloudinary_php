@@ -1,6 +1,6 @@
 {
     "name": "cloudinary/cloudinary_php",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "description": "Cloudinary PHP SDK",
     "keywords": ["cloudinary", "sdk", "cloud", "image management", "cdn"],
     "type": "library",
