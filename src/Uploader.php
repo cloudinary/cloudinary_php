@@ -245,6 +245,7 @@ namespace Cloudinary {
                 if (!preg_match('/^@|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
                     if (function_exists("curl_file_create")) {
                         $post_params['file'] = curl_file_create($file);
+                        $post_params['file']->setPostFilename($file);
                     } else {
                         $post_params["file"] = "@" . $file;
                     }
