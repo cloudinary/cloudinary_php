@@ -6,8 +6,8 @@ class Cloudinary {
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
     const SHARED_CDN = "res.cloudinary.com";
-    const VERSION = "1.0.14";
-    const USER_AGENT = "cld-php-1.0.14";
+    const VERSION = "1.0.15";
+    const USER_AGENT = "cld-php-1.0.15";
     const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     public static $DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = array("width"=>"auto", "crop"=>"limit");
 
