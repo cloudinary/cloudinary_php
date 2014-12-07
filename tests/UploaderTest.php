@@ -198,7 +198,8 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     }
 
     function test_large_upload() {
-        \Cloudinary\Uploader::upload_large("tests/docx.docx");          
+        $resource = \Cloudinary\Uploader::upload_large("tests/docx.docx", array("tags" => array("upload_large_tag")));
+        $this->assertEquals($resource["tags"], array("upload_large_tag"));
     }
 
     function test_upload_preset() {

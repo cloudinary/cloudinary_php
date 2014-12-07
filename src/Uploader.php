@@ -99,6 +99,7 @@ namespace Cloudinary {
                 "final" => \Cloudinary::option_get($options, "final"),
                 "part_number" => \Cloudinary::option_get($options, "part_number"),
                 "upload_id" => \Cloudinary::option_get($options, "upload_id"),
+                "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))),
                 "public_id" => \Cloudinary::option_get($options, "public_id")
             );
             return Uploader::call_api("upload_large", $params, array_merge($options, array("resource_type" => "raw")), $file);
