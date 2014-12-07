@@ -195,6 +195,14 @@ class Api {
     $params = \Cloudinary\Uploader::build_upload_params($options);
     return $this->call_api("post", array("upload_presets"), array_merge($params, $this->only($options, array("name", "unsigned", "disallow_public_id"))), $options);    
   }
+
+  function root_folders($options=array()) {
+    return $this->call_api("get", array("folders"), array(), $options);
+  }
+
+  function subfolders($of_folder_path, $options=array()) {
+    return $this->call_api("get", array("folders", $of_folder_path), array(), $options);
+  }
     
   function call_api($method, $uri, $params, &$options) {
     $prefix = \Cloudinary::option_get($options, "upload_prefix", \Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com"));
