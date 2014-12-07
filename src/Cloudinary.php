@@ -75,7 +75,7 @@ class Cloudinary {
     public static function build_array($value) {
         if (is_array($value) && !Cloudinary::is_assoc($value)) {
             return $value;
-        } else if ($value == NULL) {
+        } else if ($value === NULL) {
             return array();
         } else {
             return array($value);
@@ -223,53 +223,149 @@ class Cloudinary {
         $private_cdn = Cloudinary::option_consume($options, "private_cdn", Cloudinary::config_get("private_cdn"));
         $secure_distribution = Cloudinary::option_consume($options, "secure_distribution", Cloudinary::config_get("secure_distribution"));
         $cdn_subdomain = Cloudinary::option_consume($options, "cdn_subdomain", Cloudinary::config_get("cdn_subdomain"));
+        $secure_cdn_subdomain = CLoudinary::option_consume($options, "secure_cdn_subdomain", Cloudinary::config_get("secure_cdn_subdomain"));
         $cname = Cloudinary::option_consume($options, "cname", Cloudinary::config_get("cname"));
         $shorten = Cloudinary::option_consume($options, "shorten", Cloudinary::config_get("shorten"));
         $sign_url = Cloudinary::option_consume($options, "sign_url", Cloudinary::config_get("sign_url"));
         $api_secret = Cloudinary::option_consume($options, "api_secret", Cloudinary::config_get("api_secret"));
+        $url_suffix = Cloudinary::option_consume($options, "url_suffix", Cloudinary::config_get("url_suffix"));
+        $use_root_path = Cloudinary::option_consume($options, "use_root_path", Cloudinary::config_get("use_root_path"));
 
-        $original_source = $source;
-        if (!$source) return $original_source;
+        if (!$private_cdn) {
+          if (!empty($url_suffix)) throw new InvalidArgumentException("URL Suffix only supported in private CDN");
+          if ($use_root_path) throw new InvalidArgumentException("Root path only supported in private CDN");
+        }
+
+        if (!$source) return $source;
 
         if (preg_match("/^https?:\//i", $source)) {
-            if ($type == "upload" || $type == "asset") return $original_source;
-            $source = Cloudinary::smart_escape($source);
-        } else {
-            $source = Cloudinary::smart_escape(rawurldecode($source));
-            if ($format) $source = $source . "." . $format;
+          if ($type == "upload") return $source;
         }
 
-        $shared_domain = !$private_cdn;
-        if ($secure) {
-            if (!$secure_distribution || $secure_distribution == Cloudinary::OLD_AKAMAI_SHARED_CDN) {
-                $secure_distribution = $private_cdn ? $cloud_name . "-res.cloudinary.com" : Cloudinary::SHARED_CDN;
-            }
-            $shared_domain = $shared_domain || $secure_distribution == Cloudinary::SHARED_CDN;
-            $prefix = "https://" . $secure_distribution;
-        } else {
-            $subdomain = $cdn_subdomain ? "a" . ((crc32($source) % 5 + 5) % 5 + 1) . "." : "";
-            $host = $cname ? $cname : ($private_cdn ? $cloud_name . "-" : "") . "res.cloudinary.com";
-            $prefix = "http://" . $subdomain . $host;
-        }
-        if ($shared_domain) $prefix .= "/" . $cloud_name; 
-
-        if ($shorten && $resource_type == "image" && $type == "upload") {
-            $resource_type = "iu";
-            $type = "";          
-        }
-        if (strpos($source, "/") && !preg_match("/^https?:\//", $source) && !preg_match("/^v[0-9]+/", $source) && empty($version)) {
+        $resource_type_and_type = Cloudinary::finalize_resource_type($resource_type, $type, $url_suffix, $use_root_path, $shorten);
+        $sources = Cloudinary::finalize_source($source, $format, $url_suffix);
+        $source = $sources["source"];
+        $source_to_sign = $sources["source_to_sign"];
+        
+        if (strpos($source_to_sign, "/") && !preg_match("/^https?:\//", $source_to_sign) && !preg_match("/^v[0-9]+/", $source_to_sign) && empty($version)) {
             $version = "1";
         }
+        $version = $version ? "v" . $version : NULL;
         
-        $rest = implode("/", array_filter(array($transformation, $version ? "v" . $version : "", $source)));
+        $signature = NULL;
         if ($sign_url) {
-          $signature = str_replace(array('+','/','='), array('-','_',''), base64_encode(sha1($rest . $api_secret, TRUE)));
-          $rest = 's--' . substr($signature, 0, 8) . '--/' . $rest;
+          $to_sign = implode("/", array_filter(array($transformation, $source_to_sign)));
+          $signature = str_replace(array('+','/','='), array('-','_',''), base64_encode(sha1($to_sign . $api_secret, TRUE)));
+          $signature = 's--' . substr($signature, 0, 8) . '--';
         }
 
-        return preg_replace("/([^:])\/+/", "$1/", implode("/", array($prefix, $resource_type,
-         $type, $rest)));
+        $prefix = Cloudinary::unsigned_download_url_prefix($source, $cloud_name, $private_cdn, $cdn_subdomain, $secure_cdn_subdomain, 
+          $cname, $secure, $secure_distribution);
+
+        return preg_replace("/([^:])\/+/", "$1/", implode("/", array_filter(array($prefix, $resource_type_and_type, 
+          $signature, $transformation, $version, $source))));
     }
+
+    private static function finalize_source($source, $format, $url_suffix) {
+      $source = preg_replace('/([^:])\/\//', '$1/', $source);
+      if (preg_match('/^https?:\//i', $source)) {
+        $source = Cloudinary::smart_escape($source);
+        $source_to_sign = $source;
+      } else {
+        $source = Cloudinary::smart_escape(rawurldecode($source));
+        $source_to_sign = $source;
+        if (!empty($url_suffix)) {
+          if (preg_match('/[\.\/]/i', $url_suffix)) throw new InvalidArgumentException("url_suffix should not include . or /");
+          $source = $source . '/' . $url_suffix;
+        }
+        if (!empty($format)) {
+          $source = $source . '.' . $format ;
+          $source_to_sign = $source_to_sign . '.' . $format ;
+        }
+      }
+      return array("source" => $source, "source_to_sign" => $source_to_sign);
+    }    
+
+    private static function finalize_resource_type($resource_type, $type, $url_suffix, $use_root_path, $shorten) {
+      if (empty($type)) { 
+        $type = "upload"; 
+      }
+
+      if (!empty($url_suffix)) {
+        if ($resource_type == "image" && $type == "upload") {
+          $resource_type = "images";
+          $type = NULL;
+        } else if ($resource_type == "raw" && $type == "upload") {
+          $resource_type = "files";
+          $type = NULL;
+        } else {
+          throw new InvalidArgumentException("URL Suffix only supported for image/upload and raw/upload");
+        }
+      }
+
+      if ($use_root_path) {
+        if (($resource_type == "image" && $type == "upload") || ($resource_type == "images" && empty($type))) {
+          $resource_type = NULL;
+          $type = NULL;
+        } else {
+          throw new InvalidArgumentException("Root path only supported for image/upload");
+        }
+      }
+      if ($shorten && $resource_type == "image" && $type == "upload") {
+        $resource_type = "iu";
+        $type = NULL;
+      }
+      $out = "";
+      if (!empty($resource_type)) {
+        $out = $resource_type;
+      }
+      if (!empty($type)) {
+        $out = $out . '/' . $type;
+      }
+      return $out;
+    }
+
+    // cdn_subdomain and secure_cdn_subdomain
+    // 1) Customers in shared distribution (e.g. res.cloudinary.com)
+    //   if cdn_domain is true uses res-[1-5].cloudinary.com for both http and https. Setting secure_cdn_subdomain to false disables this for https.
+    // 2) Customers with private cdn 
+    //   if cdn_domain is true uses cloudname-res-[1-5].cloudinary.com for http
+    //   if secure_cdn_domain is true uses cloudname-res-[1-5].cloudinary.com for https (please contact support if you require this)
+    // 3) Customers with cname
+    //   if cdn_domain is true uses a[1-5].cname for http. For https, uses the same naming scheme as 1 for shared distribution and as 2 for private distribution.
+    private static function unsigned_download_url_prefix($source, $cloud_name, $private_cdn, $cdn_subdomain, $secure_cdn_subdomain, $cname, $secure, $secure_distribution) {
+      $shared_domain = !$private_cdn;
+      $prefix = NULL;
+      if ($secure) {
+        if (empty($secure_distribution) || $secure_distribution == Cloudinary::OLD_AKAMAI_SHARED_CDN) {
+          $secure_distribution = $private_cdn ? $cloud_name . '-res.cloudinary.com' : Cloudinary::SHARED_CDN;
+        }
+
+        if (empty($shared_domain)) {
+          $shared_domain = ($secure_distribution == Cloudinary::SHARED_CDN);
+        }
+
+        if (empty($secure_cdn_subdomain) && $shared_domain) {
+          $secure_cdn_subdomain = $cdn_subdomain ;
+        }
+
+        if ($secure_cdn_subdomain) {
+          $secure_distribution = str_replace('res.cloudinary.com', "res-" . ((crc32($source) % 5) + 1) . "cloudinary.com", $secure_distribution);
+        }
+
+        $prefix = "https://" . $secure_distribution;
+      } else if ($cname) {
+        $subdomain = $cdn_subdomain ? "a" . ((crc32($source) % 5) + 1) . '.' : "";
+        $prefix = "http://" . $subdomain . $cname;
+      } else {
+        $host = implode(array($private_cdn ? $cloud_name . "-" : "", "res", $cdn_subdomain ? "-" . ((crc32($source) % 5) + 1) : "", ".cloudinary.com"));
+        $prefix = "http://" . $host;
+      }
+      if ($shared_domain) {
+        $prefix = $prefix . '/' . $cloud_name;
+      }
+      return $prefix;
+    } 
 
     // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
     // Warning: $options are being destructively updated!
