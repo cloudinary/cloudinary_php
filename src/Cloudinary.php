@@ -223,7 +223,7 @@ class Cloudinary {
         $private_cdn = Cloudinary::option_consume($options, "private_cdn", Cloudinary::config_get("private_cdn"));
         $secure_distribution = Cloudinary::option_consume($options, "secure_distribution", Cloudinary::config_get("secure_distribution"));
         $cdn_subdomain = Cloudinary::option_consume($options, "cdn_subdomain", Cloudinary::config_get("cdn_subdomain"));
-        $secure_cdn_subdomain = CLoudinary::option_consume($options, "secure_cdn_subdomain", Cloudinary::config_get("secure_cdn_subdomain"));
+        $secure_cdn_subdomain = Cloudinary::option_consume($options, "secure_cdn_subdomain", Cloudinary::config_get("secure_cdn_subdomain"));
         $cname = Cloudinary::option_consume($options, "cname", Cloudinary::config_get("cname"));
         $shorten = Cloudinary::option_consume($options, "shorten", Cloudinary::config_get("shorten"));
         $sign_url = Cloudinary::option_consume($options, "sign_url", Cloudinary::config_get("sign_url"));
