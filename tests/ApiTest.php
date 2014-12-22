@@ -463,17 +463,17 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   }
 
   function test32_folder_listing() {
-    //$this->markTestSkipped("For this test to work, 'Auto-create folders' should be enabled in the Upload Settings, and the account should be empty of folders. Comment out this line if you really want to test it.");
+    $this->markTestSkipped("For this test to work, 'Auto-create folders' should be enabled in the Upload Settings, and the account should be empty of folders. Comment out this line if you really want to test it.");
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id" => "test_folder1/item"));
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id" => "test_folder2/item"));
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id" => "test_folder1/test_subfolder1/item"));
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id" => "test_folder1/test_subfolder2/item"));
     $result = $this->api->root_folders();
-    $this->assertEquals($result["folders"][0]["name"], "test_folder1");
-    $this->assertEquals($result["folders"][1]["name"], "test_folder2");
+    $this->assertContains(array("name" => "test_folder1", "path" => "test_folder1"), $result["folders"]);
+    $this->assertContains(array("name" => "test_folder2", "path" => "test_folder2"), $result["folders"]);
     $result = $this->api->subfolders("test_folder1");
-    $this->assertEquals($result["folders"][0]["path"], "test_folder1/test_subfolder1");
-    $this->assertEquals($result["folders"][1]["path"], "test_folder1/test_subfolder2");
+    $this->assertContains(array("name" => "test_subfolder1", "path" => "test_folder1/test_subfolder1"), $result["folders"]);
+    $this->assertContains(array("name" => "test_subfolder2", "path" => "test_folder1/test_subfolder2"), $result["folders"]);
   }
 
   /**

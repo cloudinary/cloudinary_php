@@ -190,7 +190,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     
     /**
      * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage illegal is not a valid
+     * @expectedExceptionMessage Background removal is invalid
      */
     function test_background_removal() {
         // should support requesting background_removal 
