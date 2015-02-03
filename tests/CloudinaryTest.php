@@ -400,13 +400,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->cloudinary_url_assertion("test", array("url_suffix"=>"hello", "private_cdn"=>TRUE, "resource_type"=>"raw"), "http://test123-res.cloudinary.com/files/test/hello");
   }
 
-  /**
-   * @expectedException InvalidArgumentException
-   */
-  public function test_disallow_use_root_path_in_shared() {
-    //should disllow use_root_path in shared distribution
-    $options = array("use_root_path"=>TRUE);
-    Cloudinary::cloudinary_url("test", $options);
+  public function test_allow_use_root_path_in_shared() {
+
+    $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE), "http://res.cloudinary.com/test123/test");
+    $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE, "transformation"=>array("angle"=>0)), "http://res.cloudinary.com/test123/a_0/test");
   }
 
   public function test_use_root_path_for_private_cdn() {
@@ -424,7 +421,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
    * @expectedException InvalidArgumentException
    */
   public function test_disallow_use_root_path_if_not_image_upload_1() {
-    //should disllow use_root_path if not image/upload
+    //should disallow use_root_path if not image/upload
     $options = array("use_root_path"=>TRUE, "private_cdn"=>TRUE, "type"=>"facebook");
     Cloudinary::cloudinary_url("test", $options);
   }
@@ -433,7 +430,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
    * @expectedException InvalidArgumentException
    */
   public function test_disallow_use_root_path_if_not_image_upload_2() {
-    //should disllow use_root_path if not image/upload
+    //should disallow use_root_path if not image/upload
     $options = array("use_root_path"=>TRUE, "private_cdn"=>TRUE, "resource_type"=>"raw");
     Cloudinary::cloudinary_url("test", $options);
   }

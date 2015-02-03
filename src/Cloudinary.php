@@ -231,9 +231,8 @@ class Cloudinary {
         $url_suffix = Cloudinary::option_consume($options, "url_suffix", Cloudinary::config_get("url_suffix"));
         $use_root_path = Cloudinary::option_consume($options, "use_root_path", Cloudinary::config_get("use_root_path"));
 
-        if (!$private_cdn) {
-          if (!empty($url_suffix)) throw new InvalidArgumentException("URL Suffix only supported in private CDN");
-          if ($use_root_path) throw new InvalidArgumentException("Root path only supported in private CDN");
+        if (!$private_cdn and !empty($url_suffix)) {
+            throw new InvalidArgumentException("URL Suffix only supported in private CDN");
         }
 
         if (!$source) return $source;

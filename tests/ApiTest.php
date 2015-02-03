@@ -7,43 +7,120 @@ require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Api.php')));
 class ApiTest extends PHPUnit_Framework_TestCase {
   static $initialized = FALSE;  
   static $timestamp_tag;
+  /** @var  \Cloudinary\Api $api */
+  private $api;
+
+  public static function setUpBeforeClass()
+  {
+        if (Cloudinary::config_get("api_secret")) {
+
+      $api = new \Cloudinary\Api();
+
+
+      self::delete_resources($api);
+      self::delete_transformations($api);
+      self::delete_presets($api);
+
+      self::$timestamp_tag = "api_test_tag_" . time();
+      self::upload_sample_resources();
+    } else {
+      self::fail("You need to configure the cloudinary api for the tests to work.");
+    }
+  }
+
+  public static function tearDownAfterClass()
+  {
+    if (Cloudinary::config_get("api_secret")) {
+
+      $api = new \Cloudinary\Api();
+
+
+      self::delete_resources($api);
+      self::delete_transformations($api);
+      self::delete_presets($api);
+
+    } else {
+      self::fail("You need to configure the cloudinary api for the tests to work.");
+    }
+
+  }
+
+
+  /**
+   * Delete all test related resources
+   * @param \Cloudinary\Api $api an initialized api object
+   */
+  protected static function delete_resources($api)
+  {
+    try {
+      $api->delete_resources(array("api_test", "api_test2", "api_test3", "api_test5"));
+      $api->delete_resources_by_tag('api_test_tag');
+    } catch (Exception $e) {
+    }
+  }
+
+  /**
+   * Delete all test related transformations
+   * @param \Cloudinary\Api $api an initialized api object
+   */
+  protected static function delete_transformations($api ){
+    $transformations = array(
+        "api_test_transformation",
+        "api_test_transformation2",
+        "api_test_transformation3"
+    );
+
+    foreach ($transformations as $t) {
+      try {
+        $api->delete_transformation($t);
+      } catch (Exception $e) {}
+
+    }
+
+
+
+  }
+
+  /**
+   * Delete all test related presets
+   * @param \Cloudinary\Api $api
+   */
+  protected static function delete_presets($api) {
+    $presets = array("api_test_upload_preset",
+        "api_test_upload_preset2",
+        "api_test_upload_preset3",
+        "api_test_upload_preset4"
+    );
+    foreach ($presets as $p) {
+      try {
+        $api->delete_upload_preset($p);
+      } catch (Exception $e) {
+      }
+    }
+
+
+  }
+
+  /**
+   * Upload sample resources. These resources need to be present for some of the tests to work.
+   */
+  protected static function upload_sample_resources()
+  {
+    \Cloudinary\Uploader::upload("tests/logo.png",
+        array("public_id" => "api_test", "tags" => array("api_test_tag", self::$timestamp_tag), "context" => "key=value", "eager" => array("transformation" => array("width" => 100, "crop" => "scale"))));
+    \Cloudinary\Uploader::upload("tests/logo.png",
+        array("public_id" => "api_test2", "tags" => array("api_test_tag", self::$timestamp_tag), "context" => "key=value", "eager" => array("transformation" => array("width" => 100, "crop" => "scale"))));
+  }
+
 
   public function setUp() {
     if (!Cloudinary::config_get("api_secret")) {
       $this->markTestSkipped('Please setup environment for API test to run');
     }
-    $this->api = new \Cloudinary\Api();
-    if (self::$initialized) return;
-    self::$initialized = TRUE;
-    try {
-      $this->api->delete_resources(array("api_test", "api_test2", "api_test3", "api_test5"));
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_transformation");
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_transformation2");
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_transformation3");
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_upload_preset");
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_upload_preset2");
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_upload_preset3");
-    } catch (Exception $e) {}
-    try {
-      $this->api->delete_transformation("api_test_upload_preset4");
-    } catch (Exception $e) {}
-    self::$timestamp_tag = "api_test_tag_" . time();
-    \Cloudinary\Uploader::upload("tests/logo.png", 
-      array("public_id"=>"api_test", "tags"=>array("api_test_tag",self::$timestamp_tag), "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
-    \Cloudinary\Uploader::upload("tests/logo.png", 
-      array("public_id"=>"api_test2", "tags"=>array("api_test_tag",self::$timestamp_tag), "context" => "key=value", "eager"=>array("transformation"=>array("width"=>100,"crop"=>"scale"))));
+    if (!isset($this->api)) {
+      $this->api = new \Cloudinary\Api();
+    }
+
   }
    
   function find_by_attr($elements, $attr, $value) {
@@ -482,4 +559,5 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   function test33_folder_listing_error() {
     $this->api->subfolders("test_folder");
   }
+
 }
