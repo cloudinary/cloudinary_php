@@ -228,10 +228,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $resource = \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=> $public_id, "overwrite" => true));
         $this->assertArrayHasKey("etag", $resource, "Should return an etag when uploading an existing resource with overwrite=true");
 
-
-//        print_r($resource);
         $api->delete_resources($public_id);
-//        $resource = \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=> $public_id, "overwrite" => false));
 
     }
 }
