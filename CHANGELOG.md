@@ -1,5 +1,10 @@
 # Cloudinary_PHP Changelog
 
+### 1.0.17 (February 10, 2015)
+* Add a changelog
+* Add support for 'overwrite' option in upload
+* Allow root path for shared CDN
+
 ### 1.0.16 (December 22, 2014)
 * Support folder listing
 * Secure domain sharding
