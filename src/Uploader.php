@@ -140,6 +140,7 @@ namespace Cloudinary {
                 "type" => \Cloudinary::option_get($options, "type"),
                 "callback" => \Cloudinary::option_get($options, "callback"),
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
+                "eager_async" => \Cloudinary::option_get($options, "eager_async"),
                 "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
                 "tags" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "tags")),
                 "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
