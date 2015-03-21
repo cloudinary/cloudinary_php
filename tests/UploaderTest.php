@@ -198,8 +198,24 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     }
 
     function test_large_upload() {
-        $resource = \Cloudinary\Uploader::upload_large("tests/docx.docx", array("tags" => array("upload_large_tag")));
+        $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.test.');
+        $temp_file = fopen($temp_file_name, 'w');
+        fwrite($temp_file, "BMJ\xB9Y\x00\x00\x00\x00\x00\x8A\x00\x00\x00|\x00\x00\x00x\x05\x00\x00x\x05\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\xC0\xB8Y\x00a\x0F\x00\x00a\x0F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\x00\x00\xFF\x00\x00\xFF\x00\x00\x00\x00\x00\x00\xFFBGRs\x00\x00\x00\x00\x00\x00\x00\x00T\xB8\x1E\xFC\x00\x00\x00\x00\x00\x00\x00\x00fff\xFC\x00\x00\x00\x00\x00\x00\x00\x00\xC4\xF5(\xFF\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00");
+        for ($i = 1; $i <= 588000; $i++) {
+          fwrite($temp_file, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF");
+        }
+        fclose($temp_file);
+        $this->assertEquals(5880138, filesize($temp_file_name));
+
+        $resource = \Cloudinary\Uploader::upload_large($temp_file_name, array("chunk_size" => 5243000, "tags" => array("upload_large_tag")));
         $this->assertEquals($resource["tags"], array("upload_large_tag"));
+        $this->assertEquals($resource["resource_type"], "raw");
+
+        $resource = \Cloudinary\Uploader::upload_large($temp_file_name, array("chunk_size" => 5243000, "tags" => array("upload_large_tag"), "resource_type" => "image"));
+        $this->assertEquals($resource["tags"], array("upload_large_tag"));
+        $this->assertEquals($resource["resource_type"], "image");
+        $this->assertEquals($resource["width"], 1400);
+        $this->assertEquals($resource["height"], 1400);
     }
 
     function test_upload_preset() {

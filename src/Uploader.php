@@ -67,15 +67,26 @@ namespace Cloudinary {
             $src = fopen($file, 'r');
             $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' + pathinfo($file, PATHINFO_EXTENSION));
             $upload = $upload_id = NULL;
-            $public_id = \Cloudinary::option_get($upload, "public_id");
-            $index = 1;
+            $chunk_size = \Cloudinary::option_get($options, "chunk_size", 20000000);
+            $public_id = \Cloudinary::option_get($options, "public_id");
+            $index = 0;
+            $file_size = filesize($file);
             while (!feof($src)) {
                 $dest = fopen($temp_file_name, 'w');
-                stream_copy_to_stream($src, $dest, 20000000);
+                stream_copy_to_stream($src, $dest, $chunk_size);
                 fclose($dest);
+                if (phpversion() >= "5.3.0") {
+                    clearstatcache(TRUE, $temp_file_name);
+                } else {
+                    clearstatcache();
+                }
+
+                $temp_file_size = filesize($temp_file_name);
+                $current_loc = $index * $chunk_size;
+                $range = "bytes ". $current_loc . "-" . ($current_loc + $temp_file_size - 1) . "/" . $file_size;
                 try {
                     $upload = Uploader::upload_large_part($temp_file_name, array_merge($options, 
-                                array("public_id"=>$public_id, "upload_id"=>$upload_id, "part_number"=>$index, "final"=>feof($src))));
+                                array("public_id"=>$public_id, "content_range"=>$range)));
                 } catch(\Exception $e) {
                     unlink($temp_file_name);
                     fclose($src);
@@ -94,17 +105,8 @@ namespace Cloudinary {
         // Upload large raw files. Note that public_id should include an extension for best results.
         public static function upload_large_part($file, $options=array())
         {
-            $params = array(
-                "timestamp" => time(),
-                "type" => \Cloudinary::option_get($options, "type"),
-                "backup" => \Cloudinary::option_get($options, "backup"),
-                "final" => \Cloudinary::option_get($options, "final"),
-                "part_number" => \Cloudinary::option_get($options, "part_number"),
-                "upload_id" => \Cloudinary::option_get($options, "upload_id"),
-                "tags" => implode(",", \Cloudinary::build_array(\Cloudinary::option_get($options, "tags"))),
-                "public_id" => \Cloudinary::option_get($options, "public_id")
-            );
-            return Uploader::call_api("upload_large", $params, array_merge($options, array("resource_type" => "raw")), $file);
+            $params = Uploader::build_upload_params($options);
+            return Uploader::call_api("upload_chunked", $params, array_merge(array("resource_type" => "raw"), $options), $file);
         }
 
         public static function destroy($public_id, $options = array())
@@ -264,6 +266,11 @@ namespace Cloudinary {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::USER_AGENT);
             curl_setopt($ch, CURLOPT_PROXY, \Cloudinary::option_get($options, "api_proxy", \Cloudinary::config_get("api_proxy")));
+
+            $range = \Cloudinary::option_get($options, "content_range");
+            if ($range != NULL){
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Range: '.$range));
+            }
             
             $response = curl_exec($ch);
             $curl_error = NULL;
