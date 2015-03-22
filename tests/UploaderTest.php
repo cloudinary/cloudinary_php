@@ -247,5 +247,20 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $api->delete_resources($public_id);
 
     }
+
+    /**
+     * @expectedException Cloudinary\Error
+     * @expectedExceptionMessage Operation timed out
+     */
+    function test_upload_timeout() {
+      $timeout = Cloudinary::config_get("timeout");
+      Cloudinary::config(array("timeout" => 0.01));
+      $this->assertEquals(Cloudinary::config_get("timeout"), 0.01);
+      try {
+        \Cloudinary\Uploader::upload("tests/logo.png");
+      } finally {
+        Cloudinary::config(array("timeout", $timeout));
+      }
+    }
 }
 ?>

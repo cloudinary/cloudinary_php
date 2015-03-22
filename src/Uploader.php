@@ -261,7 +261,8 @@ namespace Cloudinary {
             }
 
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            $timeout = \Cloudinary::option_get($options, "timeout", \Cloudinary::config_get("timeout", 60));
+            curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout * 1000);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
             curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
