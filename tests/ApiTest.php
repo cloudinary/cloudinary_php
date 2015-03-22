@@ -9,10 +9,10 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   static $timestamp_tag;
   /** @var  \Cloudinary\Api $api */
   private $api;
-
+  
   public static function setUpBeforeClass()
   {
-        if (Cloudinary::config_get("api_secret")) {
+    if (Cloudinary::config_get("api_secret")) {
 
       $api = new \Cloudinary\Api();
 

@@ -2,6 +2,11 @@
 $base = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..');
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
 class CloudinaryTest extends PHPUnit_Framework_TestCase {
+
+  const DEFAULT_ROOT_PATH = 'http://res.cloudinary.com/test123/';
+  const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
+  const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
+
   public function setUp() {
     Cloudinary::config(array("cloud_name"=>"test123", "api_secret"=>"b",  "secure_distribution" => NULL, "private_cdn" => FALSE));
   }
@@ -9,7 +14,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_cloud_name() {
     // should use cloud_name from config
     $result = Cloudinary::cloudinary_url("test");
-    $this->assertEquals("http://res.cloudinary.com/test123/image/upload/test", $result);
+    $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "test", $result);
   }
 
   public function test_cloud_name_options() {
@@ -58,43 +63,43 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_format() {
     // should use format from $options        
     $options = array("format" => "jpg");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/test.jpg");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "test.jpg");
   }
 
   public function test_crop() {
     // should use width and height from $options even if crop is not given
     $options = array("width" => 100, "height" => 100);
     $result = Cloudinary::cloudinary_url("test", $options);
-    $this->assertEquals("http://res.cloudinary.com/test123/image/upload/h_100,w_100/test", $result);
+    $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "h_100,w_100/test", $result);
     $this->assertEquals(array("width" => 100, "height" => 100), $options);
     $options = array("width" => 100, "height" => 100, "crop" => "crop");
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => 100, "height" => 100), $options);
-    $this->assertEquals("http://res.cloudinary.com/test123/image/upload/c_crop,h_100,w_100/test", $result);
+    $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/test", $result);
   }
 
   public function test_various_options() {
     // should use x, y, radius, prefix, gravity and quality from $options        
     $options = array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => 0.4, "prefix" => "a", "opacity" => 20);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test");
   }
 
   public function test_no_empty_options() {
     // should use x, y, width, height, crop, prefix and opacity from $options
     $options = array("x" => 0, "y" => '0', "width" => '', "height" => "", "crop" => ' ', "prefix" => false, "opacity" => null);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/x_0,y_0/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "x_0,y_0/test");
   }
 
   public function test_transformation_simple() {
     // should support named transformation        
     $options = array("transformation" => "blip");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/t_blip/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "t_blip/test");
   }
 
   public function test_transformation_array() {
     // should support array of named transformations        
     $options = array("transformation" => array("blip", "blop"));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/t_blip.blop/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "t_blip.blop/test");
   }
 
   public function test_base_transformations() {
@@ -102,7 +107,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array("transformation" => array("x" => 100, "y" => 100, "crop" => "fill"), "crop" => "crop", "width" => 100);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => 100), $options);
-    $this->assertEquals("http://res.cloudinary.com/test123/image/upload/c_fill,x_100,y_100/c_crop,w_100/test", $result);
+    $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,x_100,y_100/c_crop,w_100/test", $result);
   }
 
   public function test_base_transformation_array() {
@@ -110,13 +115,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array("transformation" => array(array("x" => 100, "y" => 100, "width" => 200, "crop" => "fill"), array("radius" => 10)), "crop" => "crop", "width" => 100);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => 100), $options);
-    $this->assertEquals("http://res.cloudinary.com/test123/image/upload/c_fill,w_200,x_100,y_100/r_10/c_crop,w_100/test", $result);
+    $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_200,x_100,y_100/r_10/c_crop,w_100/test", $result);
   }
 
   public function test_no_empty_transformation() {
     // should not include empty transformations        
     $options = array("transformation" => array(array(), array("x" => 100, "y" => 100, "crop" => "fill"), array()));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/c_fill,x_100,y_100/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,x_100,y_100/test");
   }
 
   public function test_size() {
@@ -124,19 +129,19 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array("size" => "10x10", "crop" => "crop");
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => "10", "height" => "10"), $options);
-    $this->assertEquals("http://res.cloudinary.com/test123/image/upload/c_crop,h_10,w_10/test", $result);
+    $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_10,w_10/test", $result);
   }
 
   public function test_type() {
     // should use type from $options
     $options = array("type" => "facebook");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/facebook/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/facebook/test");
   }
 
   public function test_resource_type() {
     // should use resource_type from $options
     $options = array("resource_type" => "raw");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/raw/upload/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "raw/upload/test");
   }
 
   public function test_ignore_http() {
@@ -144,13 +149,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array();
     $this->cloudinary_url_assertion("http://test", $options, "http://test");
     $options = array("type" => "fetch");
-    $this->cloudinary_url_assertion("http://test", $options, "http://res.cloudinary.com/test123/image/fetch/http://test");
+    $this->cloudinary_url_assertion("http://test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/http://test");
   }
 
   public function test_fetch() {
     // should escape fetch urls
     $options = array("type" => "fetch");
-    $this->cloudinary_url_assertion("http://blah.com/hello?a=b", $options, "http://res.cloudinary.com/test123/image/fetch/http://blah.com/hello%3Fa%3Db");
+    $this->cloudinary_url_assertion("http://blah.com/hello?a=b", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/http://blah.com/hello%3Fa%3Db");
   }
 
   public function test_cname() {
@@ -168,95 +173,95 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_http_escape() {
     // should escape http urls
     $options = array("type" => "youtube");
-    $result = $this->cloudinary_url_assertion("http://www.youtube.com/watch?v=d9NF2edxy-M", $options, "http://res.cloudinary.com/test123/image/youtube/http://www.youtube.com/watch%3Fv%3Dd9NF2edxy-M");
+    $result = $this->cloudinary_url_assertion("http://www.youtube.com/watch?v=d9NF2edxy-M", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/youtube/http://www.youtube.com/watch%3Fv%3Dd9NF2edxy-M");
   }
 
   public function test_background() {
     // should support background
     $options = array("background" => "red");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/b_red/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "b_red/test");
     $options = array("background" => "#112233");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/b_rgb:112233/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "b_rgb:112233/test");
   }
 
   public function test_default_image() {
     // should support default_image
     $options = array("default_image" => "default");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/d_default/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "d_default/test");
   }
 
   public function test_angle() {
     // should support angle
     $options = array("angle" => 12);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/a_12/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "a_12/test");
     $options = array("angle" => array("auto", 12));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/a_auto.12/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "a_auto.12/test");
   }
 
   public function test_overlay() {
     // should support overlay
     $options = array("overlay" => "text:hello");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/l_text:hello/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_text:hello/test");
     // should not pass width/height to html if overlay
     $options = array("overlay" => "text:hello", "width"=>100, "height"=>100);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/h_100,l_text:hello,w_100/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "h_100,l_text:hello,w_100/test");
   }
 
   public function test_underlay() {
     // should support underlay
     $options = array("underlay" => "text:hello");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/u_text:hello/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_text:hello/test");
     // should not pass width/height to html if underlay
     $options = array("underlay" => "text:hello", "width"=>100, "height"=>100);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/h_100,u_text:hello,w_100/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "h_100,u_text:hello,w_100/test");
   }
 
   public function test_fetch_format() {
     // should support format for fetch urls
     $options = array("format" => "jpg", "type" => "fetch");
-    $this->cloudinary_url_assertion("http://cloudinary.com/images/logo.png", $options, "http://res.cloudinary.com/test123/image/fetch/f_jpg/http://cloudinary.com/images/logo.png");
+    $this->cloudinary_url_assertion("http://cloudinary.com/images/logo.png", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/f_jpg/http://cloudinary.com/images/logo.png");
   }
 
   public function test_effect() {
     // should support effect
     $options = array("effect" => "sepia");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/e_sepia/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "e_sepia/test");
   }
 
   public function test_effect_with_array() {
     // should support effect with array
     $options = array("effect" => array("sepia", 10));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/e_sepia:10/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "e_sepia:10/test");
   }
 
   public function test_density() {
     // should support density
     $options = array("density" => 150);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/dn_150/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "dn_150/test");
   }
 
   public function test_page() {
     // should support page
     $options = array("page" => 5);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/pg_5/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "pg_5/test");
   }
 
   public function test_border() {
     // should support border
     $options = array("border" => array("width" => 5));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/bo_5px_solid_black/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "bo_5px_solid_black/test");
     $options = array("border" => array("width" => 5, "color"=>"#ffaabbdd"));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/bo_5px_solid_rgb:ffaabbdd/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "bo_5px_solid_rgb:ffaabbdd/test");
     $options = array("border" => "1px_solid_blue");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/bo_1px_solid_blue/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "bo_1px_solid_blue/test");
   }
 
   public function test_flags() {
     // should support flags
     $options = array("flags" => "abc");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/fl_abc/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "fl_abc/test");
     $options = array("flags" => array("abc", "def"));
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/upload/fl_abc.def/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "fl_abc.def/test");
   }
 
   public function test_cl_image_tag() {
@@ -272,12 +277,12 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array("width"=>100, "height"=>100, "crop"=>"crop", "responsive_width"=>TRUE);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals($options, array("responsive"=> TRUE));
-    $this->assertEquals($result, "http://res.cloudinary.com/test123/image/upload/c_crop,h_100,w_100/c_limit,w_auto/test");
+    $this->assertEquals($result, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_limit,w_auto/test");
     Cloudinary::config(array("responsive_width_transformation"=>array("width"=>"auto", "crop"=>"pad")));
     $options = array("width"=>100, "height"=>100, "crop"=>"crop", "responsive_width"=>TRUE);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals($options, array("responsive"=> TRUE));
-    $this->assertEquals($result, "http://res.cloudinary.com/test123/image/upload/c_crop,h_100,w_100/c_pad,w_auto/test");
+    $this->assertEquals($result, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_pad,w_auto/test");
   }
 
   public function test_width_auto() {
@@ -294,17 +299,17 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_folder_version() {
     // should add version if public_id contains /
-    $this->cloudinary_url_assertion("folder/test", array(), "http://res.cloudinary.com/test123/image/upload/v1/folder/test");
-    $this->cloudinary_url_assertion("folder/test", array("version"=>123), "http://res.cloudinary.com/test123/image/upload/v123/folder/test");
-    $this->cloudinary_url_assertion("v1234/test", array(), "http://res.cloudinary.com/test123/image/upload/v1234/test");
+    $this->cloudinary_url_assertion("folder/test", array(), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v1/folder/test");
+    $this->cloudinary_url_assertion("folder/test", array("version"=>123), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v123/folder/test");
+    $this->cloudinary_url_assertion("v1234/test", array(), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v1234/test");
   }
 
   public function test_shorten() {
     $options = array("shorten"=>TRUE);
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/iu/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "iu/test");
 
     $options = array("shorten"=>TRUE, "type"=>"private");
-    $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test123/image/private/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/private/test");
   }
 
   public function test_cl_sprite_tag() {
@@ -314,11 +319,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_signed_url() {
     // should correctly sign a url
-    $this->cloudinary_url_assertion("image.jpg", array("version"=> 1234, "transformation"=> array("crop"=> "crop", "width"=> 10, "height"=> 20), "sign_url"=> TRUE), "http://res.cloudinary.com/test123/image/upload/s--Ai4Znfl3--/c_crop,h_20,w_10/v1234/image.jpg");
-    $this->cloudinary_url_assertion("image.jpg", array("version"=> 1234, "sign_url"=> TRUE), "http://res.cloudinary.com/test123/image/upload/s----SjmNDA--/v1234/image.jpg");
-    $this->cloudinary_url_assertion("image.jpg", array("transformation"=> array("crop"=> "crop", "width"=> 10, "height"=> 20), "sign_url"=> TRUE), "http://res.cloudinary.com/test123/image/upload/s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg");
-    $this->cloudinary_url_assertion("image.jpg", array("transformation"=> array("crop"=> "crop", "width"=> 10, "height"=> 20), "type"=> "authenticated", "sign_url"=> TRUE), "http://res.cloudinary.com/test123/image/authenticated/s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg");
-    $this->cloudinary_url_assertion("http://google.com/path/to/image.png", array("type"=> "fetch", "version"=> 1234, "sign_url"=> TRUE), "http://res.cloudinary.com/test123/image/fetch/s--hH_YcbiS--/v1234/http://google.com/path/to/image.png");
+    $this->cloudinary_url_assertion("image.jpg", array("version"=> 1234, "transformation"=> array("crop"=> "crop", "width"=> 10, "height"=> 20), "sign_url"=> TRUE), CloudinaryTest::DEFAULT_UPLOAD_PATH . "s--Ai4Znfl3--/c_crop,h_20,w_10/v1234/image.jpg");
+    $this->cloudinary_url_assertion("image.jpg", array("version"=> 1234, "sign_url"=> TRUE), CloudinaryTest::DEFAULT_UPLOAD_PATH . "s----SjmNDA--/v1234/image.jpg");
+    $this->cloudinary_url_assertion("image.jpg", array("transformation"=> array("crop"=> "crop", "width"=> 10, "height"=> 20), "sign_url"=> TRUE), CloudinaryTest::DEFAULT_UPLOAD_PATH . "s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg");
+    $this->cloudinary_url_assertion("image.jpg", array("transformation"=> array("crop"=> "crop", "width"=> 10, "height"=> 20), "type"=> "authenticated", "sign_url"=> TRUE), CloudinaryTest::DEFAULT_ROOT_PATH . "image/authenticated/s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg");
+    $this->cloudinary_url_assertion("http://google.com/path/to/image.png", array("type"=> "fetch", "version"=> 1234, "sign_url"=> TRUE), CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/s--hH_YcbiS--/v1234/http://google.com/path/to/image.png");
   }
 
   public function test_escape_public_id() {
@@ -332,7 +337,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       "parentheses(interject)" => "parentheses%28interject%29");
     foreach ($tests as $source => $target) {
       $url = Cloudinary::cloudinary_url($source);
-      $this->assertEquals("http://res.cloudinary.com/test123/image/upload/$target", $url);                      
+      $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "$target", $url);                      
     }
   }
 
@@ -402,8 +407,8 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_allow_use_root_path_in_shared() {
 
-    $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE), "http://res.cloudinary.com/test123/test");
-    $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE, "transformation"=>array("angle"=>0)), "http://res.cloudinary.com/test123/a_0/test");
+    $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE), CloudinaryTest::DEFAULT_ROOT_PATH . "test");
+    $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE, "transformation"=>array("angle"=>0)), CloudinaryTest::DEFAULT_ROOT_PATH . "a_0/test");
   }
 
   public function test_use_root_path_for_private_cdn() {
@@ -433,6 +438,98 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     //should disallow use_root_path if not image/upload
     $options = array("use_root_path"=>TRUE, "private_cdn"=>TRUE, "resource_type"=>"raw");
     Cloudinary::cloudinary_url("test", $options);
+  }
+
+  public function test_norm_range_value() {
+    $method = new ReflectionMethod('Cloudinary', 'norm_range_value');
+    $method->setAccessible(true);
+    // should parse integer range values
+    $this->assertEquals($method->invoke(NULL, "200"), "200");
+    // should parse float range values
+    $this->assertEquals($method->invoke(NULL, "200.0"), "200.0");
+    // should parse a percent range value
+    $this->assertEquals($method->invoke(NULL, "20p"), "20p");
+    $this->assertEquals($method->invoke(NULL, "20P"), "20p");
+    $this->assertEquals($method->invoke(NULL, "20%"), "20p");
+    $this->assertNull($method->invoke(NULL, "p"));
+  }
+
+  public function test_video_codec(){
+    // should support a string value
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'video_codec' => 'auto' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "vc_auto/video_id");
+    // should support a hash value
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'video_codec' => array('codec' => 'h264', 'profile' => 'basic', 'level' => '3.1' )),
+                          CloudinaryTest::VIDEO_UPLOAD_PATH . "vc_h264:basic:3.1/video_id");
+  }
+
+  public function test_audio_codec(){
+    // should support a string value
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'audio_codec' => 'acc' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc/video_id");
+  }
+
+  public function test_bit_rate(){
+    // should support an integer value
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'bit_rate' => 2048 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "br_2048/video_id");
+    // should support "<integer>k" 
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'bit_rate' => '44k' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "br_44k/video_id");
+    // should support "<integer>m"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'bit_rate' => '1m' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "br_1m/video_id");
+  }
+
+  public function test_audio_frequency(){
+    // should support an integer value
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'audio_frequency' => 44100 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "af_44100/video_id");
+  }
+
+  public function test_video_sampling(){
+    // should support an integer value
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'video_sampling' => 20 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "vs_20/video_id");
+    // should support an string value in the a form of \"<float>s\"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'video_sampling' => "2.3s" ), CloudinaryTest::VIDEO_UPLOAD_PATH . "vs_2.3s/video_id");
+  }
+
+  public function test_start_offset(){
+    // should support decimal seconds 
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'start_offset' => 2.63 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "so_2.63/video_id");
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'start_offset' => '2.63' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "so_2.63/video_id");
+    // should support percents of the video length as "<number>p"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'start_offset' => '35p' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "so_35p/video_id");
+    // should support percents of the video length as "<number>%"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'start_offset' => '35%' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "so_35p/video_id");
+  }
+
+  public function test_end_offset(){
+    // should support decimal seconds 
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'end_offset' => 2.63 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "eo_2.63/video_id");
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'end_offset' => '2.63' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "eo_2.63/video_id");
+    // should support percents of the video length as "<number>p"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'end_offset' => '35p' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "eo_35p/video_id");
+    // should support percents of the video length as "<number>%"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'end_offset' => '35%' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "eo_35p/video_id");
+  }
+
+  public function test_duration(){
+    // should support decimal seconds 
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'duration' => 2.63 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "du_2.63/video_id");
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'duration' => '2.63' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "du_2.63/video_id");
+    // should support percents of the video length as "<number>p"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'duration' => '35p' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "du_35p/video_id");
+    // should support percents of the video length as "<number>%"
+    $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'duration' => '35%' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "du_35p/video_id");
+  }
+
+  public function test_offset(){
+    foreach(
+        array(
+        'eo_3.21,so_2.66' => '2.66..3.21',
+        'eo_3.22,so_2.67' => array(2.67, 3.22),
+        'eo_70p,so_35p' => array('35%', '70%'),
+        'eo_71p,so_36p' => array('36p', '71p'),
+        'eo_70.5p,so_35.5p' => array('35.5p', '70.5p')
+      ) as $transformation => $offset
+    ) {
+      $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'offset' => $offset ), CloudinaryTest::VIDEO_UPLOAD_PATH . $transformation . "/video_id");
+    }
   }
 
   private function cloudinary_url_assertion($source, $options, $expected) {
