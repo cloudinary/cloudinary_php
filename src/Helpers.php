@@ -4,7 +4,8 @@ namespace {
     function cl_upload_url($options = array()) 
     {
         if (!@$options["resource_type"]) $options["resource_type"] = "auto";
-        return Cloudinary::cloudinary_api_url("upload", $options);      
+        $endpoint = array_key_exists('chunk_size', $options) ? 'upload_chunked' : 'upload';
+        return Cloudinary::cloudinary_api_url($endpoint, $options);      
     }
 
     function cl_upload_tag_params($options = array()) 
@@ -25,6 +26,11 @@ namespace {
 
     function cl_image_upload_tag($field, $options = array())
     {
+        return cl_upload_tag($field, $options);
+    }
+
+    function cl_upload_tag($field, $options = array()) 
+    {
         $html_options = Cloudinary::option_get($options, "html", array());
 
         $classes = array("cloudinary-fileupload");
@@ -37,6 +43,7 @@ namespace {
             "data-cloudinary-field" => $field,
             "class" => implode(" ", $classes),
         ));
+        if (array_key_exists('chunk_size', $options)) $tag_options['data-max-chunk-size'] = $options['chunk_size'];
         return '<input ' . Cloudinary::html_attrs($tag_options) . '/>';
     }
 
@@ -182,7 +189,7 @@ namespace {
     #   cl_video_tag("mymovie.ogv", array('poster' => "myspecialplaceholder.jpg"))
     #   cl_video_tag("mymovie.webm", array('source_types' => array('webm', 'mp4'), 'poster' => array('effect' => 'sepia')))
     function cl_video_tag($source, $options = array()) {
-        $source = preg_replace('/' . implode('|', default_source_types()) . '$/', '', $source);
+        $source = preg_replace('/\.' . implode('|', default_source_types()) . '$/', '', $source);
 
         $video_attributes = array('autoplay','controls','loop','muted','poster', 'preload', 'width', 'height');
 
@@ -191,11 +198,7 @@ namespace {
         $fallback              = Cloudinary::option_consume($options, 'fallback_content', '');
 
         if (empty($source_types)) {
-            if (!empty($source_transformation)) {
-                $source_types = array_keys($source_transformation);
-            } else {
-                $source_types = default_source_types();
-            }
+            $source_types = default_source_types();
         }
         $video_options = $options;
 
@@ -216,8 +219,7 @@ namespace {
 
         $html = '<video ';
 
-        $video_options['resource_type'] = 'video';
-        $video_attributes = array_merge($video_attributes, array('width', 'height'));
+        if (!array_key_exists('resource_type', $video_options)) $video_options['resource_type'] = 'video';
         if (!is_array($source_types)){
             array_push($video_attributes, 'src');
             $source .= '.' . $source_types;

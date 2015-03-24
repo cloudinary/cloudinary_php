@@ -8,7 +8,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
 
   public function setUp() {
-    Cloudinary::config(array("cloud_name"=>"test123", "api_secret"=>"b",  "secure_distribution" => NULL, "private_cdn" => FALSE));
+    Cloudinary::config(array("cloud_name"=>"test123", "api_key" => "a", "api_secret"=>"b",  "secure_distribution" => NULL, "private_cdn" => FALSE));
   }
 
   public function test_cloud_name() {
@@ -645,8 +645,9 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       'ogv' => array('quality' => 70), 
       'mp4' => array('quality' => 30)))), 
       "<video poster=\"$expected_url.jpg\" width=\"100\">" .
-      "<source src=\"$expected_ogv_url.ogv\" type=\"video/ogg\">" .
+      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
       "<source src=\"$expected_mp4_url.mp4\" type=\"video/mp4\">" .
+      "<source src=\"$expected_ogv_url.ogv\" type=\"video/ogg\">" .
       "</video>");
 
     $this->assertEquals(cl_video_tag('movie', array('width' => 100, 'transformation' => array(array('quality' => 50)), 'source_transformation' => array(
@@ -681,6 +682,32 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       "<video src=\"$expected_url.mp4\"></video>");
   }
   
+  public function test_upload_tag(){
+    $pattern = "/<input class=\"cloudinary-fileupload\" ".
+      "data-cloudinary-field=\"image\" ".
+      "data-form-data=\"{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}\" ". 
+      "data-url=\"http[^\"]+\/v1_1\/test123\/auto\/upload\" ".
+      "name=\"file\" type=\"file\"\/>/";
+    $this->assertRegExp( $pattern, cl_upload_tag('image'));
+    $this->assertRegExp( $pattern, cl_image_upload_tag('image'));
+    
+    $pattern =  "/<input class=\"cloudinary-fileupload\" ".
+      "data-cloudinary-field=\"image\" ".
+      "data-form-data=\"{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}\" ".
+      "data-max-chunk-size=\"5000000\" ".  
+      "data-url=\"http[^\"]+\/v1_1\/test123\/auto\/upload_chunked\" ".
+      "name=\"file\" type=\"file\"\/>/";
+    $this->assertRegExp( $pattern,
+      cl_upload_tag('image', array('chunk_size' => 5000000)));
+
+     $pattern =  "/<input class=\"classy cloudinary-fileupload\" ".
+      "data-cloudinary-field=\"image\" ".
+      "data-form-data=\"{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}\" ".
+      "data-url=\"http[^\"]+\/v1_1\/test123\/auto\/upload\" ".
+      "name=\"file\" type=\"file\"\/>/";
+    $this->assertRegExp( $pattern,
+      cl_upload_tag('image', array("html" => array('class' => 'classy'))));
+  }
 
  
   private function cloudinary_url_assertion($source, $options, $expected) {
