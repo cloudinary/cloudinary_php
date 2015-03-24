@@ -550,10 +550,30 @@ class Cloudinary {
         $to_sign = implode("&", array_map($join_pair, array_keys($params), array_values($params)));
         return sha1($to_sign . $api_secret);
     }
-    public static function html_attrs($options) {
-        ksort($options);
-        $join_pair = function($key, $value) { return $key . "='" . $value . "'"; };
-        return implode(" ", array_map($join_pair, array_keys($options), array_values($options)));
+
+    public static function html_attrs($options, $only = NULL) {
+        $attrs = array();
+        foreach($options as $k => $v) {
+          $key = $k;
+          $value = $v;
+          if (is_int($k)) {
+            $key = $v;
+            $value = "";  
+          }
+          if (is_array($only) && array_search($key, $only) !== FALSE || !is_array($only)) {
+            $attrs[$key] = $value;
+          }
+        }
+        ksort($attrs);
+        
+        $join_pair = function($key, $value) { 
+          $out = $key;
+          if (!empty($value)) {
+            $out .= '="' . $value . '"';
+          }
+          return $out; 
+        };
+        return implode(" ", array_map($join_pair, array_keys($attrs), array_values($attrs)));
     }
 }
 

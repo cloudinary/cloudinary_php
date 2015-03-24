@@ -82,7 +82,7 @@ namespace {
             }
         }
         $html = "<img ";
-        if ($source) $html .= "src='$source' ";
+        if ($source) $html .= "src=\"$source\" ";
         $html .= Cloudinary::html_attrs($options) . "/>";
         return $html;
     }
@@ -148,4 +148,100 @@ namespace {
         return "<link rel='stylesheet' type='text/css' href='" . cl_sprite_url($tag, $options) . "'>";
     }
 
+    function default_poster_options() { return array( 'format' => 'jpg', 'resource_type' => 'video' ); }
+    function default_source_types() { return array('webm', 'mp4', 'ogv'); }
+    # Returns a url for the given source with +options+
+    function cl_video_path($source, $options = array()) {
+        $options = array_merge( array('resource_type' => 'video'), $options);
+        return cloudinary_url_internal($source, $options);
+    }
+
+    # Returns an HTML <tt>img</tt> tag with the thumbnail for the given video +source+ and +options+
+    function cl_video_thumbnail_tag($source, $options = array()) {
+        return cl_image_tag($source, array_merge(default_poster_options(),$options));
+    }
+
+    # Returns a url for the thumbnail for the given video +source+ and +options+
+    function cl_video_thumbnail_path($source, $options = array()) {
+        $options = array_merge(default_poster_options(), $options);
+        return cloudinary_url_internal($source, $options);
+    }
+
+    # Creates an HTML video tag for the provided +source+
+    #
+    # ==== Options
+    # * <tt>source_types</tt> - Specify which source type the tag should include. defaults to webm, mp4 and ogv.
+    # * <tt>source_transformation</tt> - specific transformations to use for a specific source type.
+    # * <tt>poster</tt> - override default thumbnail:
+    #   * url: provide an ad hoc url
+    #   * options: with specific poster transformations and/or Cloudinary +:public_id+
+    #
+    # ==== Examples
+    #   cl_video_tag("mymovie.mp4")
+    #   cl_video_tag("mymovie.mp4", array('source_types' => 'webm'))
+    #   cl_video_tag("mymovie.ogv", array('poster' => "myspecialplaceholder.jpg"))
+    #   cl_video_tag("mymovie.webm", array('source_types' => array('webm', 'mp4'), 'poster' => array('effect' => 'sepia')))
+    function cl_video_tag($source, $options = array()) {
+        $source = preg_replace('/' . implode('|', default_source_types()) . '$/', '', $source);
+
+        $video_attributes = array('autoplay','controls','loop','muted','poster', 'preload', 'width', 'height');
+
+        $source_types          = Cloudinary::option_consume($options, 'source_types', array());
+        $source_transformation = Cloudinary::option_consume($options, 'source_transformation', array());
+        $fallback              = Cloudinary::option_consume($options, 'fallback_content', '');
+
+        if (empty($source_types)) {
+            if (!empty($source_transformation)) {
+                $source_types = array_keys($source_transformation);
+            } else {
+                $source_types = default_source_types();
+            }
+        }
+        $video_options = $options;
+
+        if (array_key_exists('poster', $video_options)) {
+            if (is_array($video_options['poster'])) {
+                if (array_key_exists('public_id', $video_options['poster'])) {
+                    $video_options['poster'] = cloudinary_url_internal($video_options['poster']['public_id'], $video_options['poster']);
+                } else {
+                    $video_options['poster'] = cl_video_thumbnail_path($source, $video_options['poster']);
+                }
+            }
+        } else {
+            $video_options['poster'] = cl_video_thumbnail_path($source, $options);
+        }
+        
+        if (empty($video_options['poster'])) unset($video_options['poster']);
+
+
+        $html = '<video ';
+
+        $video_options['resource_type'] = 'video';
+        $video_attributes = array_merge($video_attributes, array('width', 'height'));
+        if (!is_array($source_types)){
+            array_push($video_attributes, 'src');
+            $source .= '.' . $source_types;
+        }
+        $video_options['src'] = cloudinary_url_internal($source, $video_options);
+        if (isset($video_options["html_width"])) $video_options['width'] = $video_options['html_width'];
+        if (isset($video_options['html_height'])) $video_options['height'] = $video_options['html_height'];
+        $html .= Cloudinary::html_attrs($video_options, $video_attributes ) . '>';
+
+        if (is_array($source_types)) {
+            
+            foreach($source_types as $source_type) {
+                $transformation = Cloudinary::option_consume($source_transformation, $source_type, array());
+                $transformation = array_merge($options, $transformation);
+                $src = cl_video_path($source . '.' . $source_type, $transformation);
+                $video_type = (($source_type == 'ogv') ? 'ogg' : $source_type);
+                $mime_type = "video/$video_type";
+                $html .= '<source '. Cloudinary::html_attrs(array('src' => $src, 'type' => $mime_type)) . '>';
+            }
+
+        }
+
+        $html .= $fallback;
+        $html .= '</video>';
+        return $html;
+    }
 }
