@@ -266,13 +266,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_cl_image_tag() {
     $tag = cl_image_tag("test", array("width"=>10, "height"=>10, "crop"=>"fill", "format"=>"png"));
-    $this->assertEquals("<img src=\"http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/test.png\" height=\"10\" width=\"10\"/>", $tag);
+    $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/test.png' height='10' width='10'/>", $tag);
   }
 
   public function test_responsive_width() {
     // should add responsive width transformation
     $tag = cl_image_tag("hello", array("responsive_width"=>True, "format"=>"png"));
-    $this->assertEquals("<img class=\"cld-responsive\" data-src=\"http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png\"/>", $tag);
+    $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>", $tag);
 
     $options = array("width"=>100, "height"=>100, "crop"=>"crop", "responsive_width"=>TRUE);
     $result = Cloudinary::cloudinary_url("test", $options);
@@ -288,13 +288,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_width_auto() {
     // should support width=auto
     $tag = cl_image_tag("hello", array("width"=>"auto", "crop"=>"limit", "format"=>"png"));
-    $this->assertEquals("<img class=\"cld-responsive\" data-src=\"http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png\"/>", $tag);
+    $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>", $tag);
   }
 
   public function test_dpr_auto() {
     // should support width=auto
     $tag = cl_image_tag("hello", array("dpr"=>"auto", "format"=>"png"));
-    $this->assertEquals("<img class=\"cld-hidpi\" data-src=\"http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png\"/>", $tag);
+    $this->assertEquals("<img class='cld-hidpi' data-src='http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png'/>", $tag);
   }
 
   public function test_folder_version() {
@@ -484,7 +484,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_video_sampling(){
     // should support an integer value
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'video_sampling' => 20 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "vs_20/video_id");
-    // should support an string value in the a form of \"<float>s\"
+    // should support an string value in the a form of '<float>s'
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'video_sampling' => "2.3s" ), CloudinaryTest::VIDEO_UPLOAD_PATH . "vs_2.3s/video_id");
   }
 
@@ -540,21 +540,21 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_cl_video_thumbnail_tag() {
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie_id.jpg";
     $this->assertEquals(cl_video_thumbnail_tag('movie_id'), 
-      "<img src=\"$expected_url\" />");
+      "<img src='$expected_url' />");
 
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "w_100/movie_id.jpg";
     $this->assertEquals(cl_video_thumbnail_tag('movie_id', array('width' => 100)), 
-      "<img src=\"$expected_url\" width=\"100\"/>");
+      "<img src='$expected_url' width='100'/>");
 
   }
 
   public function test_cl_video_tag(){
     //default
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
-    $this->assertEquals(cl_video_tag('movie'), "<video poster=\"$expected_url.jpg\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
+    $this->assertEquals(cl_video_tag('movie'), "<video poster='$expected_url.jpg'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
       "</video>");
   }
 
@@ -562,10 +562,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     //test video attributes
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
     $this->assertEquals(cl_video_tag('movie', array('autoplay' => TRUE, 'controls', 'loop', 'muted' => "true", 'preload')), 
-      "<video autoplay=\"1\" controls loop muted=\"true\" poster=\"$expected_url.jpg\" preload>" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
+      "<video autoplay='1' controls loop muted='true' poster='$expected_url.jpg' preload>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
       "</video>");
   }
 
@@ -580,14 +580,14 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
           'start_offset' => 3);
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,so_3,vc_h264/movie";
     $this->assertEquals(cl_video_tag('movie', $options), 
-      "<video height=\"100\" poster=\"$expected_url.jpg\" src=\"$expected_url.mp4\" width=\"200\"></video>");
+      "<video height='100' poster='$expected_url.jpg' src='$expected_url.mp4' width='200'></video>");
 
     unset($options['source_types']);
     $this->assertEquals(cl_video_tag('movie', $options), 
-      "<video height=\"100\" poster=\"$expected_url.jpg\" width=\"200\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
+      "<video height='100' poster='$expected_url.jpg' width='200'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
       "</video>");
 
     unset($options['html_height']);
@@ -595,34 +595,34 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options['width'] = 250;
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,so_3,vc_h264,w_250/movie";
     $this->assertEquals(cl_video_tag('movie', $options), 
-      "<video poster=\"$expected_url.jpg\" width=\"250\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
+      "<video poster='$expected_url.jpg' width='250'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
       "</video>");
 
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,c_fit,so_3,vc_h264,w_250/movie";
     $options['crop'] = 'fit';
     $this->assertEquals(cl_video_tag('movie', $options), 
-      "<video poster=\"$expected_url.jpg\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
+      "<video poster='$expected_url.jpg'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
       "</video>");
   }
 
   public function test_cl_video_tag_with_fallback(){
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
-    $fallback = "<span id=\"spanid\">Cannot display video</span>";
+    $fallback = "<span id='spanid'>Cannot display video</span>";
     $this->assertEquals(cl_video_tag('movie', array('fallback_content' => $fallback)), 
-      "<video poster=\"$expected_url.jpg\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
+      "<video poster='$expected_url.jpg'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
       $fallback .
       "</video>");
     $this->assertEquals(cl_video_tag('movie', array('fallback_content' => $fallback, 'source_types' => "mp4")), 
-      "<video poster=\"$expected_url.jpg\" src=\"$expected_url.mp4\">" .
+      "<video poster='$expected_url.jpg' src='$expected_url.mp4'>" .
       $fallback .
       "</video>");
 
@@ -631,9 +631,9 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_cl_video_tag_with_source_types(){
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
     $this->assertEquals(cl_video_tag('movie', array('source_types' => array('ogv', 'mp4'))), 
-      "<video poster=\"$expected_url.jpg\">" .
-      "<source src=\"$expected_url.ogv\" type=\"video/ogg\">" .
-      "<source src=\"$expected_url.mp4\" type=\"video/mp4\">" .
+      "<video poster='$expected_url.jpg'>" .
+      "<source src='$expected_url.ogv' type='video/ogg'>" .
+      "<source src='$expected_url.mp4' type='video/mp4'>" .
       "</video>");
   }
 
@@ -644,19 +644,19 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(cl_video_tag('movie', array('width' => 100, 'transformation' => array(array('quality' => 50)), 'source_transformation' => array(
       'ogv' => array('quality' => 70), 
       'mp4' => array('quality' => 30)))), 
-      "<video poster=\"$expected_url.jpg\" width=\"100\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_mp4_url.mp4\" type=\"video/mp4\">" .
-      "<source src=\"$expected_ogv_url.ogv\" type=\"video/ogg\">" .
+      "<video poster='$expected_url.jpg' width='100'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_mp4_url.mp4' type='video/mp4'>" .
+      "<source src='$expected_ogv_url.ogv' type='video/ogg'>" .
       "</video>");
 
     $this->assertEquals(cl_video_tag('movie', array('width' => 100, 'transformation' => array(array('quality' => 50)), 'source_transformation' => array(
       'ogv' => array('quality' => 70), 
       'mp4' => array('quality' => 30)),
       'source_types' => array('webm', 'mp4'))), 
-      "<video poster=\"$expected_url.jpg\" width=\"100\">" .
-      "<source src=\"$expected_url.webm\" type=\"video/webm\">" .
-      "<source src=\"$expected_mp4_url.mp4\" type=\"video/mp4\">" .
+      "<video poster='$expected_url.jpg' width='100'>" .
+      "<source src='$expected_url.webm' type='video/webm'>" .
+      "<source src='$expected_mp4_url.mp4' type='video/mp4'>" .
       "</video>");
   }
 
@@ -665,46 +665,46 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     
     $expected_poster_url = 'http://image/somewhere.jpg';
     $this->assertEquals(cl_video_tag('movie', array('poster' => $expected_poster_url, 'source_types' => "mp4")), 
-      "<video poster=\"$expected_poster_url\" src=\"$expected_url.mp4\"></video>");
+      "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
     $expected_poster_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "g_north/movie.jpg";
     $this->assertEquals(cl_video_tag('movie', array('poster' => array('gravity' => 'north'), 'source_types' => "mp4")), 
-      "<video poster=\"$expected_poster_url\" src=\"$expected_url.mp4\"></video>");
+      "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
     $expected_poster_url = CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_north/my_poster.jpg";
     $this->assertEquals(cl_video_tag('movie', array('poster' => array('gravity' => 'north', 'public_id' => 'my_poster', 'format' => 'jpg'), 'source_types' => "mp4")), 
-      "<video poster=\"$expected_poster_url\" src=\"$expected_url.mp4\"></video>");
+      "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
     $this->assertEquals(cl_video_tag('movie', array('poster' => NULL, 'source_types' => "mp4")), 
-      "<video src=\"$expected_url.mp4\"></video>");
+      "<video src='$expected_url.mp4'></video>");
 
     $this->assertEquals(cl_video_tag('movie', array('poster' => FALSE, 'source_types' => "mp4")), 
-      "<video src=\"$expected_url.mp4\"></video>");
+      "<video src='$expected_url.mp4'></video>");
   }
   
   public function test_upload_tag(){
-    $pattern = "/<input class=\"cloudinary-fileupload\" ".
-      "data-cloudinary-field=\"image\" ".
-      "data-form-data=\"{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}\" ". 
-      "data-url=\"http[^\"]+\/v1_1\/test123\/auto\/upload\" ".
-      "name=\"file\" type=\"file\"\/>/";
+    $pattern = "/<input class='cloudinary-fileupload' ".
+      "data-cloudinary-field='image' ".
+      "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' ". 
+      "data-url='http[^']+\/v1_1\/test123\/auto\/upload' ".
+      "name='file' type='file'\/>/";
     $this->assertRegExp( $pattern, cl_upload_tag('image'));
     $this->assertRegExp( $pattern, cl_image_upload_tag('image'));
     
-    $pattern =  "/<input class=\"cloudinary-fileupload\" ".
-      "data-cloudinary-field=\"image\" ".
-      "data-form-data=\"{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}\" ".
-      "data-max-chunk-size=\"5000000\" ".  
-      "data-url=\"http[^\"]+\/v1_1\/test123\/auto\/upload_chunked\" ".
-      "name=\"file\" type=\"file\"\/>/";
+    $pattern =  "/<input class='cloudinary-fileupload' ".
+      "data-cloudinary-field='image' ".
+      "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' ".
+      "data-max-chunk-size='5000000' ".  
+      "data-url='http[^']+\/v1_1\/test123\/auto\/upload_chunked' ".
+      "name='file' type='file'\/>/";
     $this->assertRegExp( $pattern,
       cl_upload_tag('image', array('chunk_size' => 5000000)));
 
-     $pattern =  "/<input class=\"classy cloudinary-fileupload\" ".
-      "data-cloudinary-field=\"image\" ".
-      "data-form-data=\"{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}\" ".
-      "data-url=\"http[^\"]+\/v1_1\/test123\/auto\/upload\" ".
-      "name=\"file\" type=\"file\"\/>/";
+     $pattern =  "/<input class='classy cloudinary-fileupload' ".
+      "data-cloudinary-field='image' ".
+      "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' ".
+      "data-url='http[^']+\/v1_1\/test123\/auto\/upload' ".
+      "name='file' type='file'\/>/";
     $this->assertRegExp( $pattern,
       cl_upload_tag('image', array("html" => array('class' => 'classy'))));
   }

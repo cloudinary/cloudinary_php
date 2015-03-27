@@ -89,7 +89,7 @@ namespace {
             }
         }
         $html = "<img ";
-        if ($source) $html .= "src=\"$source\" ";
+        if ($source) $html .= "src='$source' ";
         $html .= Cloudinary::html_attrs($options) . "/>";
         return $html;
     }

@@ -569,7 +569,7 @@ class Cloudinary {
         $join_pair = function($key, $value) { 
           $out = $key;
           if (!empty($value)) {
-            $out .= '="' . $value . '"';
+            $out .= '=\'' . $value . '\'';
           }
           return $out; 
         };

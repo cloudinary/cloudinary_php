@@ -250,7 +250,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException Cloudinary\Error
-     * @expectedExceptionMessage Operation timed out
+     * @expectedExceptionMessage timed out
      */
     function test_upload_timeout() {
       $timeout = Cloudinary::config_get("timeout");
