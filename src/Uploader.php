@@ -72,6 +72,10 @@ namespace Cloudinary {
             $index = 0;
             $file_size = filesize($file);
             while (!feof($src)) {
+                $current_loc = $index * $chunk_size;
+                if ($current_loc >= $file_size) {
+                    break;
+                }
                 $dest = fopen($temp_file_name, 'w');
                 stream_copy_to_stream($src, $dest, $chunk_size);
                 fclose($dest);
@@ -82,7 +86,6 @@ namespace Cloudinary {
                 }
 
                 $temp_file_size = filesize($temp_file_name);
-                $current_loc = $index * $chunk_size;
                 $range = "bytes ". $current_loc . "-" . ($current_loc + $temp_file_size - 1) . "/" . $file_size;
                 try {
                     $upload = Uploader::upload_large_part($temp_file_name, array_merge($options, 

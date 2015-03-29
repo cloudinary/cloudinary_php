@@ -216,6 +216,13 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($resource["resource_type"], "image");
         $this->assertEquals($resource["width"], 1400);
         $this->assertEquals($resource["height"], 1400);
+
+        #where chunk size equals file size
+        $resource = \Cloudinary\Uploader::upload_large($temp_file_name, array("chunk_size" => 5880138, "tags" => array("upload_large_tag"), "resource_type" => "image"));
+        $this->assertEquals($resource["tags"], array("upload_large_tag"));
+        $this->assertEquals($resource["resource_type"], "image");
+        $this->assertEquals($resource["width"], 1400);
+        $this->assertEquals($resource["height"], 1400);
     }
 
     function test_upload_preset() {
