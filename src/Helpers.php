@@ -191,8 +191,6 @@ namespace {
     function cl_video_tag($source, $options = array()) {
         $source = preg_replace('/\.' . implode('|', default_source_types()) . '$/', '', $source);
 
-        $video_attributes = array('autoplay','controls','loop','muted','poster', 'preload', 'width', 'height');
-
         $source_types          = Cloudinary::option_consume($options, 'source_types', array());
         $source_transformation = Cloudinary::option_consume($options, 'source_transformation', array());
         $fallback              = Cloudinary::option_consume($options, 'fallback_content', '');
@@ -220,16 +218,17 @@ namespace {
         $html = '<video ';
 
         if (!array_key_exists('resource_type', $video_options)) $video_options['resource_type'] = 'video';
-        if (!is_array($source_types)){
-            array_push($video_attributes, 'src');
+        $multi_source = is_array($source_types);
+        if (!$multi_source){
             $source .= '.' . $source_types;
         }
-        $video_options['src'] = cloudinary_url_internal($source, $video_options);
-        if (isset($video_options["html_width"])) $video_options['width'] = $video_options['html_width'];
-        if (isset($video_options['html_height'])) $video_options['height'] = $video_options['html_height'];
-        $html .= Cloudinary::html_attrs($video_options, $video_attributes ) . '>';
+        $src = cloudinary_url_internal($source, $video_options);
+        if (!$multi_source) $video_options['src'] = $src;
+        if (isset($video_options["html_width"])) $video_options['width'] = Cloudinary::option_consume($video_options, 'html_width');
+        if (isset($video_options['html_height'])) $video_options['height'] = Cloudinary::option_consume($video_options, 'html_height');
+        $html .= Cloudinary::html_attrs($video_options ) . '>';
 
-        if (is_array($source_types)) {
+        if ($multi_source) {
             
             foreach($source_types as $source_type) {
                 $transformation = Cloudinary::option_consume($source_transformation, $source_type, array());

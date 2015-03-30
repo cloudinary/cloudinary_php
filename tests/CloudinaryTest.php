@@ -561,8 +561,8 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_cl_video_tag_with_attributes(){
     //test video attributes
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
-    $this->assertEquals(cl_video_tag('movie', array('autoplay' => TRUE, 'controls', 'loop', 'muted' => "true", 'preload')), 
-      "<video autoplay='1' controls loop muted='true' poster='$expected_url.jpg' preload>" .
+    $this->assertEquals(cl_video_tag('movie', array('autoplay' => TRUE, 'controls', 'loop', 'muted' => "true", 'preload', 'style' => 'border: 1px')), 
+      "<video autoplay='1' controls loop muted='true' poster='$expected_url.jpg' preload style='border: 1px'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
       "<source src='$expected_url.ogv' type='video/ogg'>" .
