@@ -189,7 +189,7 @@ namespace {
     #   cl_video_tag("mymovie.ogv", array('poster' => "myspecialplaceholder.jpg"))
     #   cl_video_tag("mymovie.webm", array('source_types' => array('webm', 'mp4'), 'poster' => array('effect' => 'sepia')))
     function cl_video_tag($source, $options = array()) {
-        $source = preg_replace('/\.' . implode('|', default_source_types()) . '$/', '', $source);
+        $source = preg_replace('/\.(' . implode('|', default_source_types()) . ')$/', '', $source);
 
         $source_types          = Cloudinary::option_consume($options, 'source_types', array());
         $source_transformation = Cloudinary::option_consume($options, 'source_transformation', array());
