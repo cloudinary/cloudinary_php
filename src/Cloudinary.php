@@ -6,8 +6,8 @@ class Cloudinary {
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
     const SHARED_CDN = "res.cloudinary.com";
-    const VERSION = "1.0.17";
-    const USER_AGENT = "cld-php-1.0.17";
+    const VERSION = "1.1.0";
+    const USER_AGENT = "cld-php-1.1.0";
     const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     const RANGE_VALUE_RE = '/^(?P<value>(\d+\.)?\d+)(?P<modifier>[%pP])?$/';
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';

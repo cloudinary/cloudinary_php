@@ -1,5 +1,15 @@
 # Cloudinary_PHP Changelog
 
+### 1.1.0 (April 7, 2015)
+* support video tag generation and url helpers
+* support video transformation parameters: audio_codec, audio_frequency, bit_rate, video_sampling, duration, end_offset, start_offset, video_codec
+* support zoom transformation parameter
+* support ftp url
+* allow specifying request timeout
+* enable eager_async and eager_notification_url in explicit
+* change upload_large's endpoint to use upload with content_range header
+* support chunk_size in cl_upload_tag
+
 ### 1.0.17 (February 10, 2015)
 * Add a changelog
 * Add support for 'overwrite' option in upload
