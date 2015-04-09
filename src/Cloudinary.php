@@ -435,12 +435,12 @@ class Cloudinary {
           $shared_domain = ($secure_distribution == Cloudinary::SHARED_CDN);
         }
 
-        if (empty($secure_cdn_subdomain) && $shared_domain) {
+        if (is_null($secure_cdn_subdomain) && $shared_domain) {
           $secure_cdn_subdomain = $cdn_subdomain ;
         }
 
         if ($secure_cdn_subdomain) {
-          $secure_distribution = str_replace('res.cloudinary.com', "res-" . ((crc32($source) % 5) + 1) . "cloudinary.com", $secure_distribution);
+          $secure_distribution = str_replace('res.cloudinary.com', "res-" . ((crc32($source) % 5) + 1) . ".cloudinary.com", $secure_distribution);
         }
 
         $prefix = "https://" . $secure_distribution;

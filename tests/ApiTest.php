@@ -24,7 +24,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       self::$timestamp_tag = "api_test_tag_" . time();
       self::upload_sample_resources();
     } else {
-      self::fail("You need to configure the cloudinary api for the tests to work.");
+      self::markTestSkipped('Please setup environment for Api test to run');
     }
   }
 

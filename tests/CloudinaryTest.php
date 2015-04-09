@@ -60,6 +60,24 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->cloudinary_url_assertion("test", $options, "http://test123-res.cloudinary.com/image/upload/test");
   }
 
+  public function test_secure_shared_subdomain() {
+    // should support cdn_subdomain with secure on if using shared_domain
+    $options = array("cdn_subdomain" => TRUE, "secure" => TRUE);
+    $this->cloudinary_url_assertion("test", $options, "https://res-2.cloudinary.com/test123/image/upload/test");
+  }
+
+  public function test_secure_shared_subdomain_false() {
+    // should support secure_cdn_subdomain false override with secure
+    $options = array("cdn_subdomain" => TRUE, "secure" => TRUE, "secure_cdn_subdomain" => FALSE);
+    $this->cloudinary_url_assertion("test", $options, "https://res.cloudinary.com/test123/image/upload/test");
+  }
+
+  public function test_secure_subdomain_true() {
+    // should support secure_cdn_subdomain true override with secure
+    $options = array("cdn_subdomain" => TRUE, "secure" => TRUE, "secure_cdn_subdomain" => TRUE, "private_cdn" => TRUE);
+    $this->cloudinary_url_assertion("test", $options, "https://test123-res-2.cloudinary.com/image/upload/test");
+  }
+
   public function test_format() {
     // should use format from $options        
     $options = array("format" => "jpg");
