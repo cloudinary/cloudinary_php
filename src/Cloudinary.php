@@ -15,8 +15,11 @@ class Cloudinary {
     const USER_AGENT = "cld-php-1.1.0";
 
     /**
-     * Additional information to be passed with the USER_AGENT. This value is set in platform-specific
-     * implementations that use cloudinary_php.<br>
+     * Additional information to be passed with the USER_AGENT, e.g. "CloudinaryMagento/1.0.1". This value is set in platform-specific
+     * implementations that use cloudinary_php.
+     *
+     * The format of the value should be <ProductName>/Version[ (comment)].
+     * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
      *
      * <b>Do not set this value in application code!</b>
      *
@@ -31,11 +34,18 @@ class Cloudinary {
 
     /**
      * Provides the USER_AGENT string that is passed to the Cloudinary servers.
+     *
+     * Prepends {@link $USER_PLATFORM} if it is defined.
+     *
      * @return string
      */
     public static function userAgent()
     {
-        return self::USER_AGENT . ( self::$USER_PLATFORM == "" ? "" : "-" . self::$USER_PLATFORM );
+        if (self::$USER_PLATFORM == "") {
+            return self::USER_AGENT;
+        } else {
+            return self::$USER_PLATFORM . " " . self::USER_AGENT;
+        }
     }
 
     public static function config($values = NULL) {
