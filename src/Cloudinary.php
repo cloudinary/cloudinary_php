@@ -7,15 +7,36 @@ class Cloudinary {
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
     const SHARED_CDN = "res.cloudinary.com";
     const VERSION = "1.1.0";
-    const USER_AGENT = "cld-php-1.1.0";
     const BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     const RANGE_VALUE_RE = '/^(?P<value>(\d+\.)?\d+)(?P<modifier>[%pP])?$/';
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';
+
+    /** @internal Do not change this value */
+    const USER_AGENT = "cld-php-1.1.0";
+
+    /**
+     * Additional information to be passed with the USER_AGENT. This value is set in platform-specific
+     * implementations that use cloudinary_php.<br>
+     *
+     * <b>Do not set this value in application code!</b>
+     *
+     * @var string
+     */
+    public static $USER_PLATFORM = "";
 
     public static $DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = array("width"=>"auto", "crop"=>"limit");
 
     private static $config = NULL;
     public static $JS_CONFIG_PARAMS = array("api_key", "cloud_name", "private_cdn", "secure_distribution", "cdn_subdomain");
+
+    /**
+     * Provides the USER_AGENT string that is passed to the Cloudinary servers.
+     * @return string
+     */
+    public static function userAgent()
+    {
+        return self::USER_AGENT . ( self::$USER_PLATFORM == "" ? "" : "-" . self::$USER_PLATFORM );
+    }
 
     public static function config($values = NULL) {
         if (self::$config == NULL) {

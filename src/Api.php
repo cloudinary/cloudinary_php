@@ -222,7 +222,7 @@ class Api {
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
     curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
-    curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::USER_AGENT);
+    curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::userAgent());
     curl_setopt($ch, CURLOPT_PROXY, \Cloudinary::option_get($options, "api_proxy", \Cloudinary::config_get("api_proxy")));
     $response = $this->execute($ch);       
     $curl_error = NULL;

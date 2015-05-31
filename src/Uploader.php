@@ -270,7 +270,7 @@ namespace Cloudinary {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
             curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::USER_AGENT);
+            curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::userAgent());
             curl_setopt($ch, CURLOPT_PROXY, \Cloudinary::option_get($options, "api_proxy", \Cloudinary::config_get("api_proxy")));
 
             $range = \Cloudinary::option_get($options, "content_range");

@@ -23,6 +23,15 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->cloudinary_url_assertion("test", $options, "http://res.cloudinary.com/test321/image/upload/test");
   }
 
+    public function test_user_agent() {
+        $tmp = \Cloudinary::$USER_PLATFORM;
+        $platform_information       = 'test platform information';
+        \Cloudinary::$USER_PLATFORM = $platform_information;
+        $userAgent = \Cloudinary::userAgent();
+        \Cloudinary::$USER_PLATFORM = $tmp; // reset value
+        $this->assertContains($platform_information, $userAgent, "USER_AGENT should include platform information if set");
+    }
+
   public function test_secure_distribution() {
     // should use default secure distribution if secure=TRUE        
     $options = array("secure" => TRUE);

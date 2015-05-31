@@ -62,5 +62,3 @@ namespace PhotoAlbum {
     $id = \R::store($photo);
   }
 }
-
-?>
