@@ -149,9 +149,8 @@ class Cloudinary {
     }
 
     private static function generate_base_transformation($base_transformation) {
-        return is_array($base_transformation) ?
-               Cloudinary::generate_transformation_string($base_transformation) :
-               Cloudinary::generate_transformation_string(array("transformation"=>$base_transformation));
+        $options = is_array($base_transformation) ? $base_transformation : array("transformation"=>$base_transformation);
+        return Cloudinary::generate_transformation_string($options);
     }
 
     // Warning: $options are being destructively updated!

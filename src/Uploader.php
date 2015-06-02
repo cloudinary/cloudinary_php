@@ -65,7 +65,7 @@ namespace Cloudinary {
         public static function upload_large($file, $options=array())
         {
             $src = fopen($file, 'r');
-            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' + pathinfo($file, PATHINFO_EXTENSION));
+            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' . pathinfo($file, PATHINFO_EXTENSION));
             $upload = $upload_id = NULL;
             $chunk_size = \Cloudinary::option_get($options, "chunk_size", 20000000);
             $public_id = \Cloudinary::option_get($options, "public_id");
