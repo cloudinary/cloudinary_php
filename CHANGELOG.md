@@ -1,5 +1,10 @@
 # Cloudinary_PHP Changelog
 
+### 1.1.1 (June 2, 2015)
+* new format and method for USER_AGENT
+* support adding information to the USER_AGENT
+* solve bad URLs created with secure_cdn_subdomain. Resolves #28
+
 ### 1.1.0 (April 7, 2015)
 * support video tag generation and url helpers
 * support video transformation parameters: audio_codec, audio_frequency, bit_rate, video_sampling, duration, end_offset, start_offset, video_codec

@@ -25,10 +25,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
     public function test_user_agent() {
         $tmp = \Cloudinary::$USER_PLATFORM;
-        $platform_information       = 'test platform information';
+        $platform_information       = 'TestPlatformInformation (From \"CloudinaryTest.php\")';
         \Cloudinary::$USER_PLATFORM = $platform_information;
         $userAgent = \Cloudinary::userAgent();
         \Cloudinary::$USER_PLATFORM = $tmp; // reset value
+        $this->assertRegExp("/CloudinaryPHP\/\d+\.\d+\.\d+/", $userAgent);
         $this->assertContains($platform_information, $userAgent, "USER_AGENT should include platform information if set");
     }
 
