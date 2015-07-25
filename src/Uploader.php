@@ -312,7 +312,7 @@ namespace Cloudinary {
             $eager = array();
             foreach (\Cloudinary::build_array($transformations) as $trans) {
                 $transformation = $trans;
-                $format = \Cloudinary::option_consume($tranformation, "format");
+                $format = \Cloudinary::option_consume($transformation, "format");
                 $single_eager = implode("/", array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));
                 array_push($eager, $single_eager);
             }
