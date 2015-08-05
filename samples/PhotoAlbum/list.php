@@ -98,7 +98,7 @@
                   ),
                 );
                 foreach($thumbs as $params) {
-                  $merged_params = array_merge((\Cloudinary::option_consume($params, "override")) ? array() : $thumbs_params, $params);
+                  $merged_params = array_merge((\Cloudinary\Cloudinary::optionConsume($params, "override")) ? array() : $thumbs_params, $params);
                   echo "<td>";
 				  echo "<div class='thumbnail_holder'>";
                   echo "<a target='_blank' href='" . cloudinary_url($photo["public_id"], $merged_params) . "'>" . 
