@@ -1,11 +1,16 @@
 <?php
-$base = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
 
+namespace CloudinaryTests;
+
+use \Cloudinary;
+
+use CloudinaryField;
 use PHPUnit\Framework\TestCase;
 
-require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
-require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'CloudinaryField.php')));
-
+/**
+ * Class CloudinaryFieldTest
+ * @package CloudinaryTests
+ */
 class CloudinaryFieldTest extends TestCase
 {
     public function setUp()
@@ -17,17 +22,19 @@ class CloudinaryFieldTest extends TestCase
             "cname" => null));
     }
 
-    public function test_cloudinary_url_from_cloudinary_field()
+    public function testCloudinaryUrlFromCloudinaryField()
     {
+        // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
+
         // should use cloud_name from config
-        $result = Cloudinary::cloudinary_url(new CloudinaryField("test"));
-        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/test", $result);
+        $result = Cloudinary::cloudinary_url(new CloudinaryField('test'));
+        $this->assertEquals('http://res.cloudinary.com/test123/image/upload/test', $result);
 
         // should ignore signature
-        $result = Cloudinary::cloudinary_url(new CloudinaryField("test#signature"));
-        $this->assertEquals("http://res.cloudinary.com/test123/image/upload/test", $result);
+        $result = Cloudinary::cloudinary_url(new CloudinaryField('test#signature'));
+        $this->assertEquals('http://res.cloudinary.com/test123/image/upload/test', $result);
 
-        $result = Cloudinary::cloudinary_url(new CloudinaryField("rss/imgt/v123/test.jpg"));
-        $this->assertEquals("http://res.cloudinary.com/test123/rss/imgt/v123/test.jpg", $result);
+        $result = Cloudinary::cloudinary_url(new CloudinaryField('rss/imgt/v123/test.jpg'));
+        $this->assertEquals('http://res.cloudinary.com/test123/rss/imgt/v123/test.jpg', $result);
     }
 }
