@@ -1,7 +1,7 @@
 <?php
 require 'main.php';
 
-function create_photo( $file_path, $orig_name )
+function create_photo($file_path, $orig_name)
 {
     # Upload the received image file to Cloudinary
     $result = \Cloudinary\Uploader::upload($file_path, array(
@@ -11,7 +11,7 @@ function create_photo( $file_path, $orig_name )
 
     unlink($file_path);
     error_log("Upload result: " . \PhotoAlbum\ret_var_dump($result));
-    $photo = \PhotoAlbum\create_photo_model($result);
+    \PhotoAlbum\create_photo_model($result);
     return $result;
 }
 
