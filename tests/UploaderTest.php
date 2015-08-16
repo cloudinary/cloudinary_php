@@ -259,15 +259,18 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
      * @expectedException Cloudinary\Error
      * @expectedExceptionMessage timed out
      */
-    function test_upload_timeout() {
-      $timeout = Cloudinary::config_get("timeout");
-      Cloudinary::config(array("timeout" => 0.01));
-      $this->assertEquals(Cloudinary::config_get("timeout"), 0.01);
-      try {
-        \Cloudinary\Uploader::upload("tests/logo.png");
-      } finally {
-        Cloudinary::config(array("timeout", $timeout));
-      }
+    function test_upload_timeout()
+    {
+        $timeout = Cloudinary::config_get("timeout");
+        Cloudinary::config(array( "timeout" => 1 ));
+        $this->assertEquals(Cloudinary::config_get("timeout"), 1);
+        try {
+            \Cloudinary\Uploader::upload("tests/logo.png");
+        } catch ( Exception $e ) {
+            // Finally not supported in PHP 5.3
+            Cloudinary::config(array( "timeout", $timeout ));
+            throw $e;
+        }
+
     }
 }
-?>
