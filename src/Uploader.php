@@ -266,7 +266,7 @@ namespace Cloudinary {
 
             curl_setopt($ch, CURLOPT_POST, true);
             $timeout = \Cloudinary::option_get($options, "timeout", \Cloudinary::config_get("timeout", 60));
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout * 1000); # Added in cURL 7.16.2. Available since PHP 5.2.3
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
             curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); # no effect since PHP 5.1.3
