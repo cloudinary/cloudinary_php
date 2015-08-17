@@ -138,17 +138,19 @@ namespace Cloudinary {
         public static function explicit($public_id, $options = array())
         {
             $params = array(
-                "timestamp" => time(),
-                "public_id" => $public_id,
-                "type" => \Cloudinary::option_get($options, "type"),
                 "callback" => \Cloudinary::option_get($options, "callback"),
+                "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
+                "custom_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "custom_coordinates")),
                 "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
                 "eager_async" => \Cloudinary::option_get($options, "eager_async"),
                 "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
-                "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
-                "tags" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "tags")),
                 "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
-                "custom_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "custom_coordinates"))
+                "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
+                "invalidate" => \Cloudinary::option_get($options, "invalidate"),
+                "public_id" => $public_id,
+                "tags" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "tags")),
+                "timestamp" => time(),
+                "type" => \Cloudinary::option_get($options, "type")
             );
             return Uploader::call_api("explicit", $params, $options);
         }
