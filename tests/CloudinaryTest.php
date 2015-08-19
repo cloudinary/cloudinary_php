@@ -319,7 +319,15 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>", $tag);
   }
 
-  public function test_dpr_auto() {
+    public function test_aspect_ratio() {
+        // should support background
+        $options = array("aspect_ratio" => "1.0");
+        $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "ar_1.0/test");
+        $options = array("aspect_ratio" => "3:2");
+        $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "ar_3:2/test");
+    }
+
+    public function test_dpr_auto() {
     // should support width=auto
     $tag = cl_image_tag("hello", array("dpr"=>"auto", "format"=>"png"));
     $this->assertEquals("<img class='cld-hidpi' data-src='http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png'/>", $tag);
