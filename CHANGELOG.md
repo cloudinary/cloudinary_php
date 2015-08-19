@@ -1,4 +1,13 @@
 
+1.1.3 / 2015-08-19
+==================
+
+  * Add aspect_ratio
+  * Add `context` and `invalidate` to the explicit API parameters.
+  * Fix timeout test and make test compatible with PHP 5.3
+  * Replace CURLOPT_TIMEOUT_MS with CURLOPT_TIMEOUT as it is not supported before cURL 7.16.2.
+  * Added comments specifying curl option version requirements.
+
 1.1.2 / 2015-07-27
 ==================
 
