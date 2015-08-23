@@ -1,4 +1,10 @@
 
+1.1.4 / 2015-08-23
+==================
+
+  * Support passing array arguments in POST body for Uploader
+  * Add test for #33 - huge id list in `add_tag` api.
+
 1.1.3 / 2015-08-19
 ==================
 
