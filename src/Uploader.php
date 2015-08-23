@@ -247,12 +247,20 @@ namespace Cloudinary {
 
             $api_url = \Cloudinary::cloudinary_api_url($action, $options);
 
-            # Serialize params
-            $api_url .= "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params)); 
-
             $ch = curl_init($api_url);
 
             $post_params = array();
+            foreach ($params as $key => $value) {
+                if (is_array($value)) {
+                    $i = 0;
+                    foreach ($value as $item) {
+                        $post_params[$key . "[$i]"] = $item;
+                        $i++;
+                    }
+                } else {
+                    $post_params[$key] = $value;
+                }
+            }
             if ($file) {
                 if (!preg_match('/^@|^ftp:|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
                     if (function_exists("curl_file_create")) {
