@@ -75,9 +75,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Test issue #33
-     * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage Server returned unexpected status code - 502 -
+     * Test issue #33 - HTTP 502 when providing a large public ID list
      */
     public function test_huge_public_id_list() {
         $api = new \Cloudinary\Api();
