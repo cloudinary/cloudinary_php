@@ -74,6 +74,20 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($info["tags"], array("tag3"));
     }
 
+    /**
+     * Test issue #33
+     * @expectedException \Cloudinary\Error
+     * @expectedExceptionMessage Server returned unexpected status code - 502 -
+     */
+    public function test_huge_public_id_list() {
+        $api = new \Cloudinary\Api();
+        $ids = array();
+        for( $i=1; $i < 200; $i++){
+            $ids[] = "foobarfoobarfoobarfoobarfoobar";
+        }
+        Cloudinary\Uploader::add_tag("huge_list", $ids);
+
+    }
     public function test_use_filename() {
         $api = new \Cloudinary\Api();      
         $result = Cloudinary\Uploader::upload("tests/logo.png", array("use_filename"=>TRUE));
