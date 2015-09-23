@@ -81,6 +81,14 @@ class Api {
     $uri = array("resources", $resource_type, $type, $public_id);
     return $this->call_api("get", $uri, $this->only($options, array("exif", "colors", "faces", "image_metadata", "phash", "pages", "coordinates", "max_results")), $options);      
   }
+
+  function restore($public_ids, $options=array()) {
+    $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
+    $type = \Cloudinary::option_get($options, "type", "upload");
+    $uri = array("resources", $resource_type, $type, "restore");
+    $params = array_merge($options, array("public_ids" => $public_ids));
+    return $this->call_api("post", $uri, $params, $options);    
+  }
   
   function update($public_id, $options=array()) {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");

@@ -560,4 +560,22 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->api->subfolders("test_folder");
   }
 
+  function test34_test_restore() {
+    \Cloudinary\Uploader::upload("tests/logo.png", array("public_id" => "api_test_restore", "backup"=>TRUE));
+    $resource = $this->api->resource("api_test_restore");
+    $this->assertNotEquals($resource, NULL);
+    $this->assertEquals($resource["bytes"], 3381);
+    $this->api->delete_resources(array("api_test_restore"));
+    $resource = $this->api->resource("api_test_restore");
+    $this->assertNotEquals($resource, NULL);
+    $this->assertEquals($resource["bytes"], 0);
+    $this->assertEquals($resource["placeholder"], TRUE);
+    $response = $this->api->restore(array("api_test_restore"));
+    $info = $response["api_test_restore"];
+    $this->assertNotEquals($info, NULL);
+    $this->assertEquals($info["bytes"], 3381);
+    $resource = $this->api->resource("api_test_restore");
+    $this->assertNotEquals($resource, NULL);
+    $this->assertEquals($resource["bytes"], 3381);
+  }
 }
