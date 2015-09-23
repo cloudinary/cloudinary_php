@@ -130,6 +130,7 @@ namespace Cloudinary {
                 "type" => \Cloudinary::option_get($options, "type"),
                 "from_public_id" => $from_public_id,
                 "to_public_id" => $to_public_id,
+                "invalidate" => \Cloudinary::option_get($options, "invalidate"),
                 "overwrite" => \Cloudinary::option_get($options, "overwrite")
             );
             return Uploader::call_api("rename", $params, $options);
