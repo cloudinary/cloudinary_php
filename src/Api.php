@@ -211,6 +211,34 @@ class Api {
   function subfolders($of_folder_path, $options=array()) {
     return $this->call_api("get", array("folders", $of_folder_path), array(), $options);
   }
+
+  function upload_mappings($options=array()) {
+    return $this->call_api("get", array("upload_mappings"), $this->only($options, array("next_cursor", "max_results")), $options);    
+  }
+  
+  function upload_mapping($name, $options=array()) {
+    $uri = array("upload_mappings");
+    $params = array("folder"=>$name);
+    return $this->call_api("get", $uri, $params, $options);    
+  }
+  
+  function delete_upload_mapping($name, $options=array()) {
+    $uri = array("upload_mappings");
+    $params = array("folder"=>$name);
+    return $this->call_api("delete", $uri, $params, $options);    
+  }
+    
+  function update_upload_mapping($name, $options=array()) {
+    $uri = array("upload_mappings");
+    $params = array("folder"=>$name);
+    return $this->call_api("put", $uri, array_merge($params, $this->only($options, array("template"))), $options);    
+  }
+  
+  function create_upload_mapping($name, $options=array()) {
+    $uri = array("upload_mappings");
+    $params = array("folder"=>$name);
+    return $this->call_api("post", $uri, array_merge($params, $this->only($options, array("template"))), $options);    
+  }
     
   function call_api($method, $uri, $params, &$options) {
     $prefix = \Cloudinary::option_get($options, "upload_prefix", \Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com"));

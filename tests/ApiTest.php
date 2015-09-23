@@ -560,7 +560,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->api->subfolders("test_folder");
   }
 
-  function test34_test_restore() {
+  function test34_restore() {
     \Cloudinary\Uploader::upload("tests/logo.png", array("public_id" => "api_test_restore", "backup"=>TRUE));
     $resource = $this->api->resource("api_test_restore");
     $this->assertNotEquals($resource, NULL);
@@ -577,5 +577,20 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $resource = $this->api->resource("api_test_restore");
     $this->assertNotEquals($resource, NULL);
     $this->assertEquals($resource["bytes"], 3381);
+  }
+
+  function test35_upload_mapping() {
+    try{$this->api->delete_upload_mapping("api_test_upload_mapping");} catch (Exception $e) {}
+    $this->api->create_upload_mapping("api_test_upload_mapping", array("template"=>"http://cloudinary.com"));
+    $result = $this->api->upload_mapping("api_test_upload_mapping");
+    $this->assertEquals($result["template"], "http://cloudinary.com");
+    $this->api->update_upload_mapping("api_test_upload_mapping", array("template"=>"http://res.cloudinary.com"));
+    $result = $this->api->upload_mapping("api_test_upload_mapping");
+    $this->assertEquals($result["template"], "http://res.cloudinary.com");
+    $result = $this->api->upload_mappings();
+    $this->assertContains(array("folder"=>"api_test_upload_mapping","template"=>"http://res.cloudinary.com"), $result["mappings"]);
+    $this->api->delete_upload_mapping("api_test_upload_mapping");
+    $result = $this->api->upload_mappings();
+    $this->assertNotContains("api_test_upload_mapping", $result["mappings"]);
   }
 }
