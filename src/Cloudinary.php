@@ -197,12 +197,7 @@ class Cloudinary {
         $effect = Cloudinary::option_consume($options, "effect");
         if (is_array($effect)) $effect = implode(":", $effect);
 
-        $border = Cloudinary::option_consume($options, "border");
-        if (is_array($border)) {
-          $border_width = Cloudinary::option_get($border, "width", "2");
-          $border_color = preg_replace("/^#/", 'rgb:', Cloudinary::option_get($border, "color", "black"));
-          $border = $border_width . "px_solid_" . $border_color;
-        }
+        $border = Cloudinary::process_border(Cloudinary::option_consume($options, "border"));
 
         $flags = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "flags")), ".");
         $dpr = Cloudinary::option_consume($options, "dpr", Cloudinary::config_get("dpr"));
@@ -218,6 +213,9 @@ class Cloudinary {
         
         $video_codec = Cloudinary::process_video_codec_param(Cloudinary::option_consume($options, "video_codec"));
 
+        $overlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "overlay"), "overlay");
+        $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
+
         $params = array(
           "a"   => $angle, 
           "b"   => $background, 
@@ -230,8 +228,10 @@ class Cloudinary {
           "eo"  => $end_offset,
           "fl"  => $flags, 
           "h"   => $height, 
+          "l"   => $overlay,
           "so"  => $start_offset,
           "t"   => $named_transformation,
+          "u"   => $underlay,
           "vc"  => $video_codec,
           "w"   => $width);
 
@@ -246,13 +246,11 @@ class Cloudinary {
             "dn" => "density",
             "f"  => "fetch_format",
             "g"  => "gravity",
-            "l"  => "overlay",
             "o"  => "opacity",
             "p"  => "prefix",
             "pg" => "page",
             "q"  => "quality",
             "r"  => "radius",
-            "u"  => "underlay",
             "vs" => "video_sampling",
             "x"  => "x",
             "y"  => "y",
@@ -284,6 +282,90 @@ class Cloudinary {
         return implode("/", array_filter($base_transformations));
     }
     
+    private static $LAYER_KEYWORD_PARAMS = array(
+        "font_weight"=>"normal", "font_style"=>"normal", "text_decoration"=>"none", "text_align"=>NULL, "stroke"=>"none"
+    );
+
+    private static function process_text_options($layer, $layer_parameter) {
+        $font_family = Cloudinary::option_get($layer, "font_family");
+        $font_size = Cloudinary::option_get($layer, "font_size");
+        $keywords = array();
+        foreach (Cloudinary::$LAYER_KEYWORD_PARAMS as $attr=>$default_value) {
+            $attr_value = Cloudinary::option_get($layer, $attr, $default_value);
+            if ($attr_value != $default_value) {
+                array_push($keywords, $attr_value);
+            }
+        }                
+        $letter_spacing = Cloudinary::option_get($layer, "letter_spacing");
+        if ($letter_spacing != NULL) {
+            array_push($keywords, "letter_spacing_$letter_spacing");
+        }
+        $has_text_options = $font_size != NULL || $font_family != NULL || !empty($keywords);
+        if (!$has_text_options) {
+            return NULL;
+        }
+        if ($font_family == NULL) {
+            throw new InvalidArgumentException("Must supply font_family for text in $layer_parameter");            
+        }
+        if ($font_size == NULL) {
+            throw new InvalidArgumentException("Must supply font_size for text in $layer_parameter");            
+        }
+        array_unshift($keywords, $font_size);
+        array_unshift($keywords, $font_family);
+        return implode("_", $keywords);
+    }
+
+    private static function process_layer($layer, $layer_parameter) {
+        if (is_array($layer)) {
+            $resource_type = Cloudinary::option_get($layer, "resource_type");
+            $text = Cloudinary::option_get($layer, "text");
+            $type = Cloudinary::option_get($layer, "type");
+            $public_id = Cloudinary::option_get($layer, "public_id");
+            $format = Cloudinary::option_get($layer, "format");
+
+            $components = array();
+            if ($text != NULL && $resource_type == NULL) $resource_type = "text";
+            if ($public_id != NULL && $format != NULL) $public_id = $public_id . "." . $format;
+            if ($public_id == NULL && $resource_type != "text") {
+                throw new InvalidArgumentException("Must supply public_id for for non-text $layer_parameter");
+            }
+
+            if ($resource_type != NULL && $resource_type != "image") array_push($components, $resource_type);
+            if ($type != NULL && $type != "upload") array_push($components, $type);
+            if ($resource_type == "text" || $resource_type == "subtitles") {
+                if ($public_id == NULL && $text == NULL) {
+                    throw new InvalidArgumentException("Must supply either text or public_id in $layer_parameter");
+                }
+                $text_options = Cloudinary::process_text_options($layer, $layer_parameter);
+                if ($text_options != NULL) {
+                    array_push($components, $text_options);
+                }
+                if ($public_id != NULL) {
+                    array_push($components, $public_id);
+                }
+                if ($text != NULL) {
+                    $text = Cloudinary::smart_escape($text);
+                    $text = str_replace("%2C", "%E2%80%9A", $text);
+                    $text = str_replace("/", "%E2%81%84", $text);
+                    array_push($components, $text);
+                }
+            } else {
+                array_push($components, $public_id);
+            }
+            $layer = implode(":", $components);
+        }
+        return $layer;
+    }
+
+    private static function process_border($border) {
+        if (is_array($border)) {
+          $border_width = Cloudinary::option_get($border, "width", "2");
+          $border_color = preg_replace("/^#/", 'rgb:', Cloudinary::option_get($border, "color", "black"));
+          $border = $border_width . "px_solid_" . $border_color;
+        }
+        return $border;
+    }    
+
     private static function split_range($range) {
         if (is_array($range) && count($range) >= 2) {
             return array($range[0], end($range));
