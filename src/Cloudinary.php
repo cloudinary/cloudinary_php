@@ -554,21 +554,25 @@ class Cloudinary {
         }
 
         if ($secure_cdn_subdomain) {
-          $secure_distribution = str_replace('res.cloudinary.com', "res-" . ((crc32($source) % 5) + 1) . ".cloudinary.com", $secure_distribution);
+          $secure_distribution = str_replace('res.cloudinary.com', "res-" . Cloudinary::domain_shard($source) . ".cloudinary.com", $secure_distribution);
         }
 
         $prefix = "https://" . $secure_distribution;
       } else if ($cname) {
-        $subdomain = $cdn_subdomain ? "a" . ((crc32($source) % 5) + 1) . '.' : "";
+        $subdomain = $cdn_subdomain ? "a" . Cloudinary::domain_shard($source) . '.' : "";
         $prefix = "http://" . $subdomain . $cname;
       } else {
-        $host = implode(array($private_cdn ? $cloud_name . "-" : "", "res", $cdn_subdomain ? "-" . ((crc32($source) % 5) + 1) : "", ".cloudinary.com"));
+        $host = implode(array($private_cdn ? $cloud_name . "-" : "", "res", $cdn_subdomain ? "-" . Cloudinary::domain_shard($source) : "", ".cloudinary.com"));
         $prefix = "http://" . $host;
       }
       if ($shared_domain) {
         $prefix = $prefix . '/' . $cloud_name;
       }
       return $prefix;
+    }
+
+    private static function domain_shard($source) {
+        return (((crc32($source) % 5) + 5) % 5 + 1);
     } 
 
     // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
