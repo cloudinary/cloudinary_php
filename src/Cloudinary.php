@@ -341,6 +341,7 @@ class Cloudinary {
                     array_push($components, $text_options);
                 }
                 if ($public_id != NULL) {
+                    $public_id = str_replace("/", ":", $public_id);
                     array_push($components, $public_id);
                 }
                 if ($text != NULL) {
@@ -350,6 +351,7 @@ class Cloudinary {
                     array_push($components, $text);
                 }
             } else {
+                $public_id = str_replace("/", ":", $public_id);
                 array_push($components, $public_id);
             }
             $layer = implode(":", $components);

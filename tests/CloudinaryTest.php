@@ -748,6 +748,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_overlay_options() {
     $tests = array(
       array("public_id"=>"logo"),"logo",
+      array("public_id"=>"folder/logo"),"folder:logo",
       array("public_id"=>"logo","type"=>"private"),"private:logo",
       array("public_id"=>"logo","format"=>"png"),"logo.png",
       array("resource_type"=>"video","public_id"=>"cat"),"video:cat",
