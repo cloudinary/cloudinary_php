@@ -1,4 +1,15 @@
 
+1.2.0 / 2015-11-01
+==================
+
+  * Escape / in overlays
+  * Support crc32 on 32-bit systems
+  * Support upload_mappings API
+  * Support Backup restoration API
+  * Support easy overlay/underlay construction
+  * Add script to update and commit new version
+  * Add invalidate parameter to rename
+
 1.1.4 / 2015-08-23
 ==================
 
