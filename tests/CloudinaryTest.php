@@ -745,48 +745,58 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       cl_upload_tag('image', array("html" => array('class' => 'classy'))));
   }
 
-  public function test_overlay_options() {
-    $tests = array(
-      array("public_id"=>"logo"),"logo",
-      array("public_id"=>"folder/logo"),"folder:logo",
-      array("public_id"=>"logo","type"=>"private"),"private:logo",
-      array("public_id"=>"logo","format"=>"png"),"logo.png",
-      array("resource_type"=>"video","public_id"=>"cat"),"video:cat",
-      array("text"=>"Hello World, Nice/ to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F",
-      array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4, "line_spacing"=>5),"text:Arial_18_bold_italic_letter_spacing_4_line_spacing_5:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
-      array("resource_type"=>"subtitles","public_id"=>"sample_sub_en.srt"),"subtitles:sample_sub_en.srt",
-      array("resource_type"=>"subtitles","public_id"=>"sample_sub_he.srt", "font_family"=>"Arial", "font_size"=>"40"),"subtitles:Arial_40:sample_sub_he.srt"
-    );
+    public function layers_options() {
+        return array(
+            "public_id" => array(array("public_id"=>"logo"),"logo"),
+            "public_id with folder" => array(array("public_id"=>"folder/logo"),"folder:logo"),
+            "private" => array(array("public_id"=>"logo","type"=>"private"),"private:logo"),
+            "format" => array(array("public_id"=>"logo","format"=>"png"),"logo.png"),
+            "video" => array(array("resource_type"=>"video","public_id"=>"cat"),"video:cat"),
+            "text" => array(array("public_id"=>"logo","text"=>"Hello World, Nice to meet you?"),"text:logo:Hello%20World%E2%80%9A%20Nice%20to%20meet%20you%3F"),
+            "text with slash" => array("text"=>"Hello World, Nice/ to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F",
+            "text with font family and size" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%E2%80%9A%20Nice%20to%20meet%20you%3F"),
+            "text with style" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4),"text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%E2%80%9A%20Nice%20to%20meet%20you%3F"),
+            "subtitles" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_en.srt"),"subtitles:sample_sub_en.srt"),
+            "subtitles with font family and size" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_he.srt", "font_family"=>"Arial", "font_size"=>"40"),"subtitles:Arial_40:sample_sub_he.srt")
+            );
+    }
+
+    /**
+     * @dataProvider layers_options
+     */
+  public function test_overlay_options($options, $expected) {
     $reflector = new ReflectionClass('Cloudinary');
     $process_layer = $reflector->getMethod('process_layer');
     $process_layer->setAccessible(true);
-    $i = 0;
-    while ($i < count($tests)) {
-      $options = $tests[$i];
-      $expected = $tests[$i + 1];
-      $i += 2;
       $result = $process_layer->invoke(NULL, $options, "overlay");
-      $this->assertEquals($result, $expected);
-    }
+      $this->assertEquals($expected, $result);
   }
 
+    public function test_text_require_public_id_or_style(){
+
+    }
   /**
    * @expectedException InvalidArgumentException
    * @expectedExceptionMessage Must supply font_family for text in overlay
    */
-  public function test_overlay_error_1() {
+  public function test_overlay_style_requires_font_family() {
     $options = array("overlay"=>array("text"=>"text", "font_style"=>"italic"));
     Cloudinary::cloudinary_url("test", $options);  
   }
 
   /**
    * @expectedException InvalidArgumentException
-   * @expectedExceptionMessage Must supply public_id for for non-text underlay
+   * @expectedExceptionMessageRegExp #Must supply public_id for .* underlay#
+   * @dataProvider resource_types
    */
-  public function test_overlay_error_2() {
-    $options = array("underlay"=>array("resource_type"=>"video"));
+  public function test_underlay_require_public_id_for_non_text($resource_type) {
+    $options = array("underlay"=>array("resource_type"=>$resource_type));
     Cloudinary::cloudinary_url("test", $options);
   }
+
+    public function resource_types() {
+        return array( "image" => array("image"), "video" => array("video"), "raw" => array("raw"), "subtitles" => array("subtitles"));
+    }
 
   private function cloudinary_url_assertion($source, $options, $expected) {
     $url = Cloudinary::cloudinary_url($source, $options);
