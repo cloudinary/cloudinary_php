@@ -139,6 +139,7 @@ namespace Cloudinary {
         
         public static function explicit($public_id, $options = array())
         {
+            $options["public_id"] = $public_id;
             $params = Uploader::build_upload_params($options);
             return Uploader::call_api("explicit", $params, $options);
         }

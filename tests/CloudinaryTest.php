@@ -752,10 +752,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
             "private" => array(array("public_id"=>"logo","type"=>"private"),"private:logo"),
             "format" => array(array("public_id"=>"logo","format"=>"png"),"logo.png"),
             "video" => array(array("resource_type"=>"video","public_id"=>"cat"),"video:cat"),
-            "text" => array(array("public_id"=>"logo","text"=>"Hello World, Nice to meet you?"),"text:logo:Hello%20World%E2%80%9A%20Nice%20to%20meet%20you%3F"),
-            "text with slash" => array("text"=>"Hello World, Nice/ to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F",
-            "text with font family and size" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%E2%80%9A%20Nice%20to%20meet%20you%3F"),
-            "text with style" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4),"text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%E2%80%9A%20Nice%20to%20meet%20you%3F"),
+            "text" => array(array("public_id"=>"logo","text"=>"Hello World, Nice to meet you?"),"text:logo:Hello%20World%252C%20Nice%20to%20meet%20you%3F"),
+            "text with slash" => array(array("text"=>"Hello World, Nice/ to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F"),
+            "text with font family and size" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%20to%20meet%20you%3F"),
+            "text with style" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4),"text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%252C%20Nice%20to%20meet%20you%3F"),
             "subtitles" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_en.srt"),"subtitles:sample_sub_en.srt"),
             "subtitles with font family and size" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_he.srt", "font_family"=>"Arial", "font_size"=>"40"),"subtitles:Arial_40:sample_sub_he.srt")
             );
@@ -772,9 +772,26 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($expected, $result);
   }
 
-    public function test_text_require_public_id_or_style(){
+  public function test_ignore_default_values_in_overlay_options() {
+      $options = array("public_id"=>"logo","type"=>"upload", "resource_type"=>"image");
+      $expected= "logo";
+    $reflector = new ReflectionClass('Cloudinary');
+    $process_layer = $reflector->getMethod('process_layer');
+    $process_layer->setAccessible(true);
+      $result = $process_layer->invoke(NULL, $options, "overlay");
+      $this->assertEquals($expected, $result);
+  }
 
+
+  /**
+   * @expectedException InvalidArgumentException
+   * @expectedExceptionMessage Must supply either style parameters or a public_id when providing text parameter in a text overlay
+   */
+    public function test_text_require_public_id_or_style(){
+        $options = array("overlay"=>array("text"=>"text"));
+        Cloudinary::cloudinary_url("test", $options);
     }
+
   /**
    * @expectedException InvalidArgumentException
    * @expectedExceptionMessage Must supply font_family for text in overlay
@@ -783,6 +800,15 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array("overlay"=>array("text"=>"text", "font_style"=>"italic"));
     Cloudinary::cloudinary_url("test", $options);  
   }
+
+    public function resource_types() {
+        return array(
+            "image" => array("image"),
+            "video" => array("video"),
+            "raw" => array("raw"),
+            "subtitles" => array("subtitles")
+        );
+    }
 
   /**
    * @expectedException InvalidArgumentException
@@ -793,10 +819,6 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $options = array("underlay"=>array("resource_type"=>$resource_type));
     Cloudinary::cloudinary_url("test", $options);
   }
-
-    public function resource_types() {
-        return array( "image" => array("image"), "video" => array("video"), "raw" => array("raw"), "subtitles" => array("subtitles"));
-    }
 
   private function cloudinary_url_assertion($source, $options, $expected) {
     $url = Cloudinary::cloudinary_url($source, $options);
