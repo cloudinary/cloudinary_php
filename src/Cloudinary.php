@@ -346,8 +346,8 @@ class Cloudinary {
                 }
                 if ($text != NULL) {
                     $text = Cloudinary::smart_escape($text);
-                    $text = str_replace("%2C", "%E2%80%9A", $text);
-                    $text = str_replace("/", "%E2%81%84", $text);
+                    $text = str_replace("%2C", "%252C", $text);
+                    $text = str_replace("/", "%252F", $text);
                     array_push($components, $text);
                 }
             } else {
