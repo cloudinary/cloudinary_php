@@ -300,6 +300,10 @@ class Cloudinary {
         if ($letter_spacing != NULL) {
             array_push($keywords, "letter_spacing_$letter_spacing");
         }
+        $line_spacing = Cloudinary::option_get($layer, "line_spacing");
+        if ($line_spacing != NULL) {
+            array_push($keywords, "line_spacing_$line_spacing");
+        }
         $has_text_options = $font_size != NULL || $font_family != NULL || !empty($keywords);
         if (!$has_text_options) {
             return NULL;
@@ -624,12 +628,94 @@ class Cloudinary {
                (isset($result["format"]) ? "." . $result["format"] : "") . "#" . $result["signature"];
     }
 
+    # Utility method that uses the deprecated ZIP download API.
+    # @deprecated Replaced by {download_zip_url} that uses the more advanced and robust archive generation and download API
     public static function zip_download_url($tag, $options=array()) {
         $params = array("timestamp"=>time(), "tag"=>$tag, "transformation" => \Cloudinary::generate_transformation_string($options));
         $params = Cloudinary::sign_request($params, $options);
         return Cloudinary::cloudinary_api_url("download_tag.zip", $options) . "?" . http_build_query($params); 
     }
-    
+
+
+    # Returns a URL that when invokes creates an archive and returns it.
+    # @param options [Hash]
+    # @option options [String] resource_type  The resource type of files to include in the archive. Must be one of image | video | raw
+    # @option options [String] type (upload) The specific file type of resources upload|private|authenticated
+    # @option options [String|Array] tags (nil) list of tags to include in the archive
+    # @option options [String|Array<String>] public_ids (nil) list of public_ids to include in the archive
+    # @option options [String|Array<String>] prefixes (nil) Optional list of prefixes of public IDs (e.g., folders).
+    # @option options [String|Array<String>] transformations Optional list of transformations.
+    #   The derived images of the given transformations are included in the archive. Using the string representation of
+    #   multiple chained transformations as we use for the 'eager' upload parameter.
+    # @option options [String] mode (create) return the generated archive file or to store it as a raw resource and
+    #   return a JSON with URLs for accessing the archive. Possible values download, create
+    # @option options [String] target_format (zip)
+    # @option options [String] target_public_id Optional public ID of the generated raw resource.
+    #   Relevant only for the create mode. If not specified, random public ID is generated.
+    # @option options [boolean] flatten_folders (false) If true, flatten public IDs with folders to be in the root of the archive.
+    #   Add numeric counter to the file name in case of a name conflict.
+    # @option options [boolean] flatten_transformations (false) If true, and multiple transformations are given,
+    #   flatten the folder structure of derived images and store the transformation details on the file name instead.
+    # @option options [boolean] use_original_filename Use the original file name of included images (if available) instead of the public ID.
+    # @option options [boolean] async (false) If true, return immediately and perform the archive creation in the background.
+    #   Relevant only for the create mode.
+    # @option options [String] notification_url Optional URL to send an HTTP post request (webhook) when the archive creation is completed.
+    # @option options [String|Array<String] target_tags Optional array. Allows assigning one or more tag to the generated archive file (for later housekeeping via the admin API).
+    # @option options [String] keep_derived (false) keep the derived images used for generating the archive
+    # @return [String] archive url
+    public static function download_archive_url($options=array()) {
+        $options["mode"] = "download";
+        $params = Cloudinary::build_archive_params($options);
+        $params = Cloudinary::sign_request($params, $options);
+        return Cloudinary::cloudinary_api_url("generate_archive", $options) . "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params));
+    }
+
+    # Returns a URL that when invokes creates an zip archive and returns it.
+    # @see download_archive_url
+    public static function download_zip_url($options=array()) {
+        $options["target_format"] = "zip";
+        return Cloudinary::download_archive_url($options);
+    }
+
+
+    # Returns a Hash of parameters used to create an archive
+    # @param [Hash] options
+    # @private
+    public static function build_archive_params(&$options)
+    {
+        $params = array("timestamp" => time(),
+            "type" => \Cloudinary::option_get($options, "type"),
+            "mode" => \Cloudinary::option_get($options, "mode"),
+            "target_format" => \Cloudinary::option_get($options, "target_format"),
+            "target_public_id" => \Cloudinary::option_get($options, "target_public_id"),
+            "flatten_folders" => \Cloudinary::option_get($options, "flatten_folders"),
+            "flatten_transformations" => \Cloudinary::option_get($options, "flatten_transformations"),
+            "use_original_filename" => \Cloudinary::option_get($options, "use_original_filename"),
+            "async" => \Cloudinary::option_get($options, "async"),
+            "phash" => \Cloudinary::option_get($options, "phash"),
+            "notification_url" => \Cloudinary::option_get($options, "notification_url"),
+            "target_tags" => \Cloudinary::build_array(\Cloudinary::option_get($options, "target_tags")),
+            "keep_derived" => \Cloudinary::option_get($options, "keep_derived"),
+            "tags" => \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")),
+            "public_ids" => \Cloudinary::build_array(\Cloudinary::option_get($options, "public_ids")),
+            "prefixes" => \Cloudinary::build_array(\Cloudinary::option_get($options, "prefixes")),
+            "transformations" => \Cloudinary::build_eager(\Cloudinary::option_get($options, "transformations")),
+        );
+        array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
+        return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
+    }
+
+    public static function build_eager($transformations) {
+        $eager = array();
+        foreach (\Cloudinary::build_array($transformations) as $trans) {
+            $transformation = $trans;
+            $format = \Cloudinary::option_consume($transformation, "format");
+            $single_eager = implode("/", array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));
+            array_push($eager, $single_eager);
+        }
+        return implode("|", $eager);
+    }
+
     public static function private_download_url($public_id, $format, $options = array()) {
         $cloudinary_params = Cloudinary::sign_request(array(
           "timestamp"=>time(), 
@@ -662,7 +748,11 @@ class Cloudinary {
         $params = array();
         foreach ($params_to_sign as $param => $value) {
             if (isset($value) && $value !== "") {
-                $params[$param] = is_array($value) ? implode(",", $value) : $value;
+                if (!is_array($value)) {
+                    $params[$param] = $value;    
+                } else if (count($value) > 0) {
+                    $params[$param] = implode(",", $value);
+                }
             }
         }
         ksort($params);

@@ -753,7 +753,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       array("public_id"=>"logo","format"=>"png"),"logo.png",
       array("resource_type"=>"video","public_id"=>"cat"),"video:cat",
       array("text"=>"Hello World, Nice/ to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F",
-      array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4),"text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
+      array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4, "line_spacing"=>5),"text:Arial_18_bold_italic_letter_spacing_4_line_spacing_5:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
       array("resource_type"=>"subtitles","public_id"=>"sample_sub_en.srt"),"subtitles:sample_sub_en.srt",
       array("resource_type"=>"subtitles","public_id"=>"sample_sub_he.srt", "font_family"=>"Arial", "font_size"=>"40"),"subtitles:Arial_40:sample_sub_he.srt"
     );

@@ -44,7 +44,8 @@ namespace Cloudinary {
                 "type" => \Cloudinary::option_get($options, "type"),
                 "unique_filename" => \Cloudinary::option_get($options, "unique_filename"),
                 "upload_preset" => \Cloudinary::option_get($options, "upload_preset"),
-                "use_filename" => \Cloudinary::option_get($options, "use_filename")
+                "use_filename" => \Cloudinary::option_get($options, "use_filename"),
+                "responsive_breakpoints" => Uploader::build_responsive_breakpoints(\Cloudinary::option_get($options, "responsive_breakpoints"))
             );
             array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
             return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
@@ -138,21 +139,7 @@ namespace Cloudinary {
         
         public static function explicit($public_id, $options = array())
         {
-            $params = array(
-                "callback" => \Cloudinary::option_get($options, "callback"),
-                "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
-                "custom_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "custom_coordinates")),
-                "eager" => Uploader::build_eager(\Cloudinary::option_get($options, "eager")),
-                "eager_async" => \Cloudinary::option_get($options, "eager_async"),
-                "eager_notification_url" => \Cloudinary::option_get($options, "eager_notification_url"),
-                "face_coordinates" => \Cloudinary::encode_double_array(\Cloudinary::option_get($options, "face_coordinates")),
-                "headers" => Uploader::build_custom_headers(\Cloudinary::option_get($options, "headers")),
-                "invalidate" => \Cloudinary::option_get($options, "invalidate"),
-                "public_id" => $public_id,
-                "tags" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "tags")),
-                "timestamp" => time(),
-                "type" => \Cloudinary::option_get($options, "type")
-            );
+            $params = Uploader::build_upload_params($options);
             return Uploader::call_api("explicit", $params, $options);
         }
 
@@ -239,6 +226,22 @@ namespace Cloudinary {
             return Uploader::call_api("text", $params, $options);
         }
 
+        # Creates a new archive in the server and returns information in JSON format
+        public static function create_archive($options = array(), $target_format = NULL)
+        {
+            $params = \Cloudinary::build_archive_params($options);
+            if ($target_format != NULL) {
+                $params["target_format"] = $target_format;
+            }
+            return Uploader::call_api("generate_archive", $params, $options);
+        }
+
+        # Creates a new zip archive in the server and returns information in JSON format
+        public static function create_zip($options = array())
+        {
+            return Uploader::create_archive($options, "zip");
+        }
+
         public static function call_api($action, $params, $options = array(), $file = NULL)
         {
             $return_error = \Cloudinary::option_get($options, "return_error");
@@ -319,15 +322,26 @@ namespace Cloudinary {
             }
             return $result;
         }
+
         protected static function build_eager($transformations) {
-            $eager = array();
-            foreach (\Cloudinary::build_array($transformations) as $trans) {
-                $transformation = $trans;
-                $format = \Cloudinary::option_consume($transformation, "format");
-                $single_eager = implode("/", array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));
-                array_push($eager, $single_eager);
+            return \Cloudinary::build_eager($transformations);
+        }
+
+        protected static function build_responsive_breakpoints($breakpoints) {
+            if (!$breakpoints) {
+                return NULL;
             }
-            return implode("|", $eager);
+            $breakpoints_params = array();
+            foreach (\Cloudinary::build_array($breakpoints) as $breakpoint_settings) {
+                if ($breakpoint_settings) {
+                    $transformation = \Cloudinary::option_consume($breakpoint_settings, "transformation");
+                    if ($transformation) {
+                        $breakpoint_settings["transformation"] = \Cloudinary::generate_transformation_string($transformation);
+                    }
+                    array_push($breakpoints_params, $breakpoint_settings);
+                }
+            }
+            return json_encode($breakpoints_params);
         }
 
         protected static function build_custom_headers($headers) {

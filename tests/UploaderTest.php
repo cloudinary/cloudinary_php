@@ -285,4 +285,12 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
         }
 
     }
+
+    function test_upload_responsive_breakpoints()
+    {
+        $response = \Cloudinary\Uploader::upload("tests/logo.png", array("responsive_breakpoints"=>array(array("create_derived"=>FALSE))));        
+        $this->assertArrayHasKey("responsive_breakpoints", $response, "Should return responsive_breakpoints information");
+        $this->assertEquals(2, count($response["responsive_breakpoints"][0]["breakpoints"]));
+    }
+
 }
