@@ -1,4 +1,15 @@
 
+1.3.0 / 2016-01-28
+==================
+
+  * New ZIP generation API.
+  * Support responsive_breakpoints upload/explicit parameter.
+  * Support line_spacing text layer parameter.
+  * Support array parameters in Uploader.
+  * Fix layer processsing
+  * Implement parametrized test for layers
+  * Better escaping for , and / in text layer
+
 1.2.0 / 2015-11-01
 ==================
 
