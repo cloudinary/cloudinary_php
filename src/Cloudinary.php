@@ -48,6 +48,8 @@ class Cloudinary {
         }
     }
 
+    public static function is_not_null ($var) { return !is_null($var);}
+
     public static function config($values = NULL) {
         if (self::$config == NULL) {
             self::reset_config();
@@ -286,7 +288,7 @@ class Cloudinary {
         "font_weight"=>"normal", "font_style"=>"normal", "text_decoration"=>"none", "text_align"=>NULL, "stroke"=>"none"
     );
 
-    private static function process_text_options($layer, $layer_parameter) {
+    private static function text_style( $layer, $layer_parameter) {
         $font_family = Cloudinary::option_get($layer, "font_family");
         $font_size = Cloudinary::option_get($layer, "font_size");
         $keywords = array();
@@ -316,49 +318,51 @@ class Cloudinary {
         }
         array_unshift($keywords, $font_size);
         array_unshift($keywords, $font_family);
-        return implode("_", $keywords);
+        return implode("_", array_filter($keywords, 'Cloudinary::is_not_null'));
     }
 
     private static function process_layer($layer, $layer_parameter) {
         if (is_array($layer)) {
             $resource_type = Cloudinary::option_get($layer, "resource_type");
-            $text = Cloudinary::option_get($layer, "text");
             $type = Cloudinary::option_get($layer, "type");
+            $text = Cloudinary::option_get($layer, "text");
+            $text_style = NULL;
             $public_id = Cloudinary::option_get($layer, "public_id");
             $format = Cloudinary::option_get($layer, "format");
-
             $components = array();
-            if ($text != NULL && $resource_type == NULL) $resource_type = "text";
-            if ($public_id != NULL && $format != NULL) $public_id = $public_id . "." . $format;
-            if ($public_id == NULL && $resource_type != "text") {
-                throw new InvalidArgumentException("Must supply public_id for for non-text $layer_parameter");
+
+            if ($public_id != NULL){
+                $public_id = str_replace("/", ":", $public_id);
+                if($format != NULL) $public_id = $public_id . "." . $format;
             }
 
-            if ($resource_type != NULL && $resource_type != "image") array_push($components, $resource_type);
-            if ($type != NULL && $type != "upload") array_push($components, $type);
-            if ($resource_type == "text" || $resource_type == "subtitles") {
-                if ($public_id == NULL && $text == NULL) {
-                    throw new InvalidArgumentException("Must supply either text or public_id in $layer_parameter");
+            if ($text == NULL && $resource_type != "text"){
+                if ($public_id == NULL) {
+                    throw new InvalidArgumentException("Must supply public_id for $resource_type $layer_parameter");
                 }
-                $text_options = Cloudinary::process_text_options($layer, $layer_parameter);
-                if ($text_options != NULL) {
-                    array_push($components, $text_options);
+                if($resource_type == "subtitles") {
+                    $text_style = Cloudinary::text_style($layer, $layer_parameter);
                 }
-                if ($public_id != NULL) {
-                    $public_id = str_replace("/", ":", $public_id);
-                    array_push($components, $public_id);
-                }
-                if ($text != NULL) {
+
+            } else {
+                $resource_type = "text";
+                $type = NULL; // type is ignored for text layers
+                $text_style = Cloudinary::text_style($layer, $layer_parameter); #FIXME duplicate
+                if($text != NULL) {
+                    if(!($public_id != NULL xor $text_style != NULL)) {
+                        throw new InvalidArgumentException("Must supply either style parameters or a public_id when providing text parameter in a text $layer_parameter");
+                    }
                     $text = Cloudinary::smart_escape($text);
                     $text = str_replace("%2C", "%252C", $text);
                     $text = str_replace("/", "%252F", $text);
-                    array_push($components, $text);
                 }
-            } else {
-                $public_id = str_replace("/", ":", $public_id);
-                array_push($components, $public_id);
             }
-            $layer = implode(":", $components);
+            if($resource_type != "image") array_push($components, $resource_type);
+            if($type != "upload") array_push($components, $type);
+            array_push($components, $text_style);
+            array_push($components, $public_id);
+            array_push($components, $text);
+            $layer = implode(":", array_filter($components, 'Cloudinary::is_not_null'));
         }
         return $layer;
     }
@@ -749,7 +753,7 @@ class Cloudinary {
         foreach ($params_to_sign as $param => $value) {
             if (isset($value) && $value !== "") {
                 if (!is_array($value)) {
-                    $params[$param] = $value;    
+                    $params[$param] = $value;
                 } else if (count($value) > 0) {
                     $params[$param] = implode(",", $value);
                 }
