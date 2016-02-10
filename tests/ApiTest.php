@@ -223,18 +223,25 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertContains("value", $context_values);
     $this->assertNotContains(FALSE, $tags);
   }
-  
-  function test_resources_direction() {
-    // should allow listing resources and specify direction 
-    $asc_resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>"asc"))["resources"];
-    $desc_resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>"desc"))["resources"];
-    $this->assertEquals(array_reverse($asc_resources), $desc_resources);
-    $asc_resources_alt = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>1))["resources"];
-    $desc_resources_alt = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array("type"=>"upload", "direction"=>-1))["resources"];
-    $this->assertEquals(array_reverse($asc_resources_alt), $desc_resources_alt);
-    $this->assertEquals($asc_resources_alt, $asc_resources);
-  }
-  
+
+    function test_resources_direction() {
+        // should allow listing resources and specify direction
+        $resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag,
+                                                  array( "type" => "upload", "direction" => "asc" ));
+        $asc_resources = $resources["resources"];
+        $resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag,
+                                                  array( "type" => "upload", "direction" => "desc" ));
+        $desc_resources = $resources["resources"];
+        $this->assertEquals(array_reverse($asc_resources), $desc_resources);
+        $resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag, array( "type" => "upload", "direction" => 1 ));
+        $asc_resources_alt = $resources["resources"];
+        $resources = $this->api->resources_by_tag(ApiTest::$timestamp_tag,
+                                                  array( "type" => "upload", "direction" => - 1 ));
+        $desc_resources_alt = $resources["resources"];
+        $this->assertEquals(array_reverse($asc_resources_alt), $desc_resources_alt);
+        $this->assertEquals($asc_resources_alt, $asc_resources);
+    }
+
   function test06_resources_tag() {
     // should allow listing resources by tag 
     $result = $this->api->resources_by_tag("api_test_tag");
@@ -475,7 +482,8 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   function test27_start_at() {
       // should allow listing resources by start date
       sleep(2);
-      $start_at = (new DateTime())->format(DateTime::ISO8601);
+      $dateTime = new DateTime();
+      $start_at = $dateTime->format(DateTime::ISO8601);
       sleep(2);
       $response = \Cloudinary\Uploader::upload("tests/logo.png");
       $api_repsonse = $this->api->resources(array("type"=>"upload", "start_at"=>$start_at, "direction"=>"asc"));
@@ -491,13 +499,13 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       $this->api->create_upload_preset(array("name"=>"api_test_upload_preset3", "folder"=>"folder3"));
       $api_response = $this->api->upload_presets();
       $presets = $api_response["presets"];
+      $this->api->delete_upload_preset("api_test_upload_preset");
+      $this->api->delete_upload_preset("api_test_upload_preset2");
+      $this->api->delete_upload_preset("api_test_upload_preset3");
       $this->assertGreaterThanOrEqual(3, count($presets));
       $this->assertEquals($presets[0]["name"], "api_test_upload_preset3");
       $this->assertEquals($presets[1]["name"], "api_test_upload_preset2");
       $this->assertEquals($presets[2]["name"], "api_test_upload_preset");
-      $this->api->delete_upload_preset("api_test_upload_preset");
-      $this->api->delete_upload_preset("api_test_upload_preset2");
-      $this->api->delete_upload_preset("api_test_upload_preset3");
   }
 
   function test29_get_upload_presets() {
@@ -508,11 +516,11 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($preset["name"], $name);
       $this->assertEquals($preset["unsigned"], TRUE);
       $settings = $preset["settings"];
+      $this->api->delete_upload_preset($name);
       $this->assertEquals($settings["folder"], "folder");
       $this->assertEquals($settings["transformation"], array(array("width"=>100,"crop"=>"scale")));
       $this->assertEquals($settings["context"], array("a"=>"b", "c"=>"d"));
       $this->assertEquals($settings["tags"], array("a","b","c"));
-      $this->api->delete_upload_preset($name);
   }
 
   function test30_delete_upload_presets() {
@@ -534,9 +542,9 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       $preset = $this->api->upload_preset($name);
       $this->api->update_upload_preset($name, array_merge($preset["settings"], array("colors"=>TRUE, "unsigned"=>TRUE, "disallow_public_id"=>TRUE)));
       $preset = $this->api->upload_preset($name);
+      $this->api->delete_upload_preset($name);
       $this->assertEquals($preset["unsigned"], TRUE);
       $this->assertEquals($preset["settings"], array("folder"=>"folder", "colors"=>TRUE, "disallow_public_id"=>TRUE));
-      $this->api->delete_upload_preset($name);
   }
 
   function test32_folder_listing() {
