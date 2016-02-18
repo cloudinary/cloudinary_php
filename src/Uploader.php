@@ -186,12 +186,9 @@ namespace Cloudinary {
             return Uploader::call_api("explode", $params, $options);
         }
 
-        // options may include 'exclusive' (boolean) which causes clearing this tag from all other resources
         public static function add_tag($tag, $public_ids = array(), $options = array())
         {
-            $exclusive = \Cloudinary::option_get($options, "exclusive");
-            $command = $exclusive ? "set_exclusive" : "add";
-            return Uploader::call_tags_api($tag, $command, $public_ids, $options);
+            return Uploader::call_tags_api($tag, "add", $public_ids, $options);
         }
 
         public static function remove_tag($tag, $public_ids = array(), $options = array())
