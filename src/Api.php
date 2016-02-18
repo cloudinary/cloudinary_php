@@ -249,8 +249,31 @@ class Api {
     $api_secret = \Cloudinary::option_get($options, "api_secret", \Cloudinary::config_get("api_secret"));
     if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
     $api_url = implode("/", array_merge(array($prefix, "v1_1", $cloud_name), $uri));
-    $api_url .= "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params)); 
-    $ch = curl_init($api_url);    
+    if ($method == "get")
+    {
+        $api_url .= "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params));
+
+    }
+
+    $ch = curl_init($api_url);
+
+    if ($method != "get")
+    {
+        $post_params = array();
+        foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                $i = 0;
+                foreach ($value as $item) {
+                    $post_params[$key . "[$i]"] = $item;
+                    $i++;
+                }
+            } else {
+                $post_params[$key] = $value;
+            }
+        }
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
+
+    }
     curl_setopt($ch, CURLOPT_HEADER, 1);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -260,7 +283,7 @@ class Api {
     curl_setopt($ch, CURLOPT_CAINFO,realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR."cacert.pem");
     curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::userAgent());
     curl_setopt($ch, CURLOPT_PROXY, \Cloudinary::option_get($options, "api_proxy", \Cloudinary::config_get("api_proxy")));
-    $response = $this->execute($ch);       
+    $response = $this->execute($ch);
     $curl_error = NULL;
     if(curl_errno($ch))
     {
