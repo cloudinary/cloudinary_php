@@ -661,8 +661,8 @@ class Cloudinary {
 
     public static function cloudinary_api_url($action = 'upload', $options = array()) {
         $cloudinary = Cloudinary::option_get($options, "upload_prefix", Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com"));
-        $cloud_name = Cloudinary::config_get("cloud_name");
-        if (!$cloud_name) throw new InvalidArgumentException("Must supply cloud_name in tag or in configuration");
+        $cloud_name = Cloudinary::option_get($options, "cloud_name", Cloudinary::config_get("cloud_name"));
+        if (!$cloud_name) throw new InvalidArgumentException("Must supply cloud_name in options or in configuration");
         $resource_type = Cloudinary::option_get($options, "resource_type", "image");
         return implode("/", array($cloudinary, "v1_1", $cloud_name, $resource_type, $action));
     }
