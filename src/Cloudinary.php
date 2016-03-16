@@ -267,7 +267,7 @@ class Cloudinary {
         $param_filter = function($value) { return $value === 0 || $value === '0' || trim($value) == true; };
         $params = array_filter($params, $param_filter);
         ksort($params);
-        if ($if != NULL) {
+        if (isset($if)) {
             $params = array_merge(array("if"=>$if), $params);
         }
         $join_pair = function($key, $value) { return $key . "_" . $value; };
@@ -385,7 +385,7 @@ class Cloudinary {
         "pages" => "pg");
 
     private static function process_if($if) {
-        if ($if != NULL) {
+        if (isset($if)) {
             $if = preg_replace("/aspect_ratio/", "ar", $if);
             $components = preg_split("/[ _]+/", $if);
             $list = array();
