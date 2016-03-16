@@ -820,6 +820,28 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     Cloudinary::cloudinary_url("test", $options);
   }
 
+  /**
+    * should support and translate operators: '=', '!=', '<', '>', '<=', '>=', '&&', '||'
+    * and variables: width, height, pages, faces, aspect_ratio
+    */
+  public function test_translate_if() {
+      $allOperators =
+          'if_'           .
+          'w_eq_0_and'    .
+          '_h_ne_0_or'    .
+          '_ar_lt_0_and'   .
+          '_pg_gt_0_and'   .
+          '_faces_lte_0_and'  .
+          '_w_gte_0'      .
+          ',e_grayscale';
+      $condition = "width = 0 && height != 0 || aspect_ratio < 0 && pages > 0 and faces <= 0 and width >= 0";
+      $options = array("if"=>$condition, "effect"=>"grayscale");
+      $transformation = Cloudinary::generate_transformation_string($options);
+      $this->assertEquals($transformation, $allOperators);
+      $this->assertEquals(array(), $options);
+  }
+
+
   private function cloudinary_url_assertion($source, $options, $expected) {
     $url = Cloudinary::cloudinary_url($source, $options);
     $this->assertEquals(array(), $options);

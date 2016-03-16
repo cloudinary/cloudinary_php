@@ -217,6 +217,7 @@ class Cloudinary {
 
         $overlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "overlay"), "overlay");
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
+        $if = Cloudinary::process_if(Cloudinary::option_consume($options, "if"));
 
         $params = array(
           "a"   => $angle, 
@@ -229,7 +230,7 @@ class Cloudinary {
           "e"   => $effect, 
           "eo"  => $end_offset,
           "fl"  => $flags, 
-          "h"   => $height, 
+          "h"   => $height,
           "l"   => $overlay,
           "so"  => $start_offset,
           "t"   => $named_transformation,
@@ -266,6 +267,9 @@ class Cloudinary {
         $param_filter = function($value) { return $value === 0 || $value === '0' || trim($value) == true; };
         $params = array_filter($params, $param_filter);
         ksort($params);
+        if ($if != NULL) {
+            $params = array_merge(array("if"=>$if), $params);
+        }
         $join_pair = function($key, $value) { return $key . "_" . $value; };
         $transformation = implode(",", array_map($join_pair, array_keys($params), array_values($params)));
         $raw_transformation = Cloudinary::option_consume($options, "raw_transformation");
@@ -365,6 +369,32 @@ class Cloudinary {
             $layer = implode(":", array_filter($components, 'Cloudinary::is_not_null'));
         }
         return $layer;
+    }
+
+    private static $IF_TRANSLATIONS = array(
+        "=" => 'eq',
+        "!=" => 'ne',
+        "<" => 'lt',
+        ">" => 'gt',
+        "<=" => 'lte',
+        ">=" => 'gte',
+        "&&" => 'and',
+        "||" => 'or',
+        "width" => 'w',
+        "height" => 'h',
+        "pages" => "pg");
+
+    private static function process_if($if) {
+        if ($if != NULL) {
+            $if = preg_replace("/aspect_ratio/", "ar", $if);
+            $components = preg_split("/[ _]+/", $if);
+            $list = array();
+            foreach($components as $v) {
+                array_push($list, Cloudinary::option_get(self::$IF_TRANSLATIONS, $v, $v));
+            }
+            $if = implode("_", $list);
+        }
+        return $if;
     }
 
     private static function process_border($border) {
