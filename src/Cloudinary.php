@@ -383,7 +383,8 @@ class Cloudinary {
     private static $IF_PARAMETERS = array(
         "width" => 'w',
         "height" => 'h',
-        "pages" => "pg",
+        "page_count" => "pc",
+        "face_count" => "fc",
         "aspect_ratio" => "ar"
     );
 

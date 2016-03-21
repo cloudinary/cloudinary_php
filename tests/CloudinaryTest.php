@@ -830,11 +830,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
           'w_eq_0_and'    .
           '_h_ne_0_or'    .
           '_ar_lt_0_and'   .
-          '_pg_gt_0_and'   .
-          '_faces_lte_0_and'  .
+          '_pc_gt_0_and'   .
+          '_fc_lte_0_and'  .
           '_w_gte_0'      .
           ',e_grayscale';
-      $condition = "width = 0 && height != 0 || aspect_ratio < 0 && pages > 0 and faces <= 0 and width >= 0";
+      $condition = "width = 0 && height != 0 || aspect_ratio < 0 && page_count > 0 and face_count <= 0 and width >= 0";
       $options = array("if"=>$condition, "effect"=>"grayscale");
       $transformation = Cloudinary::generate_transformation_string($options);
       $this->assertEquals($allOperators, $transformation);
