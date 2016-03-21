@@ -175,7 +175,7 @@ class UploaderTest extends PHPUnit_Framework_TestCase {
   
     /**
      * @expectedException \Cloudinary\Error
-     * @expectedExceptionMessage illegal is not a valid
+     * @expectedExceptionMessage invalid
      */
     function test_categorization() {
         // should support requesting categorization 
