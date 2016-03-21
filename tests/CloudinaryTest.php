@@ -837,8 +837,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       $condition = "width = 0 && height != 0 || aspect_ratio < 0 && pages > 0 and faces <= 0 and width >= 0";
       $options = array("if"=>$condition, "effect"=>"grayscale");
       $transformation = Cloudinary::generate_transformation_string($options);
-      $this->assertEquals($transformation, $allOperators);
+      $this->assertEquals($allOperators, $transformation);
       $this->assertEquals(array(), $options);
+      $options = array("if"=>"aspect_ratio > 0.3 && aspect_ratio < 0.5", "effect"=>"grayscale");
+      $transformation = Cloudinary::generate_transformation_string($options);
+      $this->assertEquals("if_ar_gt_0.3_and_ar_lt_0.5,e_grayscale", $transformation);
+      $this->assertEquals(array(), $options);
+
   }
 
 
