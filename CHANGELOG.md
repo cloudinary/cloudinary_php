@@ -1,4 +1,22 @@
 
+1.3.1 / 2016-03-22
+==================
+
+New functionality and features
+------------------------------
+
+  * Conditional Transformations
+
+Other Changes
+-------------
+
+  * Fix categorization test
+  * Use original file name as `public_id` for server side upload (sample project).
+  * Remove support for `exclusive` in `add_tag`
+  * Pass parameters in body unless it's a `get` call
+  * Support PHP versions before 5.4
+  * Use `isset` instead of `!= NULL`
+
 1.3.0 / 2016-01-28
 ==================
 
