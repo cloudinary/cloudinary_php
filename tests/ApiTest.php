@@ -276,10 +276,10 @@ class ApiTest extends PHPUnit_Framework_TestCase {
    */
   function test09_delete_resources() {
     // should allow deleting resources 
-    \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_test3"));
-    $resource = $this->api->resource("api_test3");
+    \Cloudinary\Uploader::upload("tests/logo.png", array("public_id"=>"api_,test3"));
+    $resource = $this->api->resource("api_,test3");
     $this->assertNotEquals($resource, NULL);    
-    $this->api->delete_resources(array("apit_test", "api_test2", "api_test3"));
+    $this->api->delete_resources(array("apit_test", "api_test2", "api_,test3"));
     $this->api->resource("api_test3");
   }
 
