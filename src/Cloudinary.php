@@ -595,23 +595,30 @@ class Cloudinary {
       $shared_domain = !$private_cdn;
       $prefix = NULL;
       if ($secure) {
-        if (empty($secure_distribution) || $secure_distribution == Cloudinary::OLD_AKAMAI_SHARED_CDN) {
-          $secure_distribution = $private_cdn ? $cloud_name . '-res.cloudinary.com' : Cloudinary::SHARED_CDN;
-        }
-
-        if (empty($shared_domain)) {
-          $shared_domain = ($secure_distribution == Cloudinary::SHARED_CDN);
-        }
-
-        if (is_null($secure_cdn_subdomain) && $shared_domain) {
-          $secure_cdn_subdomain = $cdn_subdomain ;
-        }
-
-        if ($secure_cdn_subdomain) {
-          $secure_distribution = str_replace('res.cloudinary.com', "res-" . Cloudinary::domain_shard($source) . ".cloudinary.com", $secure_distribution);
-        }
-
-        $prefix = "https://" . $secure_distribution;
+      	
+      	if ($cname) {
+      		$subdomain = $cdn_subdomain ? "a" . Cloudinary::domain_shard($source) . '.' : "";
+        	$prefix = "http://" . $subdomain . $cname;
+      	} else {
+      	
+	        if (empty($secure_distribution) || $secure_distribution == Cloudinary::OLD_AKAMAI_SHARED_CDN) {
+	          $secure_distribution = $private_cdn ? $cloud_name . '-res.cloudinary.com' : Cloudinary::SHARED_CDN;
+	        }
+	
+	        if (empty($shared_domain)) {
+	          $shared_domain = ($secure_distribution == Cloudinary::SHARED_CDN);
+	        }
+	
+	        if (is_null($secure_cdn_subdomain) && $shared_domain) {
+	          $secure_cdn_subdomain = $cdn_subdomain ;
+	        }
+	
+	        if ($secure_cdn_subdomain) {
+	          $secure_distribution = str_replace('res.cloudinary.com', "res-" . Cloudinary::domain_shard($source) . ".cloudinary.com", $secure_distribution);
+	        }
+	
+	        $prefix = "https://" . $secure_distribution;
+      	}
       } else if ($cname) {
         $subdomain = $cdn_subdomain ? "a" . Cloudinary::domain_shard($source) . '.' : "";
         $prefix = "http://" . $subdomain . $cname;
