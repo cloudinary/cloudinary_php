@@ -598,7 +598,7 @@ class Cloudinary {
       	
       	if ($cname) {
       		$subdomain = $cdn_subdomain ? "a" . Cloudinary::domain_shard($source) . '.' : "";
-        	$prefix = "http://" . $subdomain . $cname;
+        	$prefix = "https://" . $subdomain . $cname;
       	} else {
       	
 	        if (empty($secure_distribution) || $secure_distribution == Cloudinary::OLD_AKAMAI_SHARED_CDN) {
