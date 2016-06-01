@@ -156,7 +156,7 @@ class Api {
   
   function transformation($transformation, $options=array()) {
     $uri = array("transformations", $this->transformation_string($transformation));
-    return $this->call_api("get", $uri, $this->only($options, array("max_results")), $options);    
+    return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results")), $options);
   }
   
   function delete_transformation($transformation, $options=array()) {
