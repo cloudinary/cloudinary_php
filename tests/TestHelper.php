@@ -20,6 +20,7 @@ namespace Cloudinary {
     /** @var array|null keeps the result of `curl_exec` */
     public $result = null;
     public $okResponse ;
+    public $url;
 
     public function __construct() {
       $this->parameters = array();
@@ -79,10 +80,18 @@ END;
       return \curl_getinfo($ch, $opt);
     }
 
+    public function init($url = null) {
+      $this->url = $url;
+      return \curl_init($url);
+    }
+
   }
 
 // Override global curl functions
 
+  function curl_init($url = null){
+    return Curl::$instance->init($url);
+  }
   function curl_exec($ch) {
     $result = Curl::$instance->exec($ch);
     return $result;
