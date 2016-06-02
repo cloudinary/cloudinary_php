@@ -1,4 +1,14 @@
 
+1.3.2 / 2016-06-02
+==================
+
+  * Add `next_cursor` to `Api->transformation()`.
+  * Remove empty parameters from `update()` calls
+  * Add tests
+  * Add TestHelper.php. Create new `Curl` class.
+  * Use constants in tests
+  * Use comma in delete resources test
+
 1.3.1 / 2016-03-22
 ==================
 
