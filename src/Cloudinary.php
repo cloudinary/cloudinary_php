@@ -179,7 +179,7 @@ class Cloudinary {
 
         $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit" || $responsive_width;
 
-        if (strlen($width) == 0 || $width && ($width == "auto" || floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
+        if (strlen($width) == 0 || $width && (substr($width, 0, 4) == "auto" || floatval($width) < 1 || $no_html_sizes)) unset($options["width"]);
         if (strlen($height) == 0 || $height && (floatval($height) < 1 || $no_html_sizes)) unset($options["height"]);
 
         $background = Cloudinary::option_consume($options, "background");
@@ -279,10 +279,10 @@ class Cloudinary {
             $responsive_width_transformation = Cloudinary::config_get("responsive_width_transformation", Cloudinary::$DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION);
             array_push($base_transformations, Cloudinary::generate_transformation_string($responsive_width_transformation));
         }
-        if ($width == "auto" || $responsive_width) {
+        if (substr($width, 0, 4) == "auto" || $responsive_width) {
             $options["responsive"] = true;
         }
-        if ($dpr == "auto") {
+        if (substr($dpr, 0, 4) == "auto") {
             $options["hidpi"] = true;
         }
         return implode("/", array_filter($base_transformations));

@@ -8,6 +8,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
 
   public function setUp() {
+      Cloudinary::reset_config();
     Cloudinary::config(array("cloud_name"=>"test123", "api_key" => "a", "api_secret"=>"b",  "secure_distribution" => NULL, "private_cdn" => FALSE));
   }
 
@@ -34,13 +35,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     }
 
   public function test_secure_distribution() {
-    // should use default secure distribution if secure=TRUE        
+    // should use default secure distribution if secure=TRUE
     $options = array("secure" => TRUE);
     $this->cloudinary_url_assertion("test", $options, "https://res.cloudinary.com/test123/image/upload/test");
   }
 
   public function test_secure_distribution_overwrite() {
-    // should allow overwriting secure distribution if secure=TRUE        
+    // should allow overwriting secure distribution if secure=TRUE
     $options = array("secure" => TRUE, "secure_distribution" => "something.else.com");
     $this->cloudinary_url_assertion("test", $options, "https://something.else.com/test123/image/upload/test");
   }
@@ -89,7 +90,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_format() {
-    // should use format from $options        
+    // should use format from $options
     $options = array("format" => "jpg");
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "test.jpg");
   }
@@ -107,10 +108,18 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_various_options() {
-    // should use x, y, radius, prefix, gravity and quality from $options        
+    // should use x, y, radius, prefix, gravity and quality from $options
     $options = array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => 0.4, "prefix" => "a", "opacity" => 20);
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test");
   }
+
+    public function test_quality() {
+        $this->cloudinary_url_assertion("test", array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => 80, "prefix" => "a"), CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,p_a,q_80,r_3,x_1,y_2/test");
+        $this->cloudinary_url_assertion("test", array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => "80:444", "prefix" => "a"), CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,p_a,q_80:444,r_3,x_1,y_2/test");
+        $this->cloudinary_url_assertion("test", array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => "auto", "prefix" => "a"), CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,p_a,q_auto,r_3,x_1,y_2/test");
+        $this->cloudinary_url_assertion("test", array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => "auto:good", "prefix" => "a"), CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,p_a,q_auto:good,r_3,x_1,y_2/test");
+    }
+
 
   public function test_no_empty_options() {
     // should use x, y, width, height, crop, prefix and opacity from $options
@@ -119,19 +128,19 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_transformation_simple() {
-    // should support named transformation        
+    // should support named transformation
     $options = array("transformation" => "blip");
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "t_blip/test");
   }
 
   public function test_transformation_array() {
-    // should support array of named transformations        
+    // should support array of named transformations
     $options = array("transformation" => array("blip", "blop"));
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "t_blip.blop/test");
   }
 
   public function test_base_transformations() {
-    // should support base transformation        
+    // should support base transformation
     $options = array("transformation" => array("x" => 100, "y" => 100, "crop" => "fill"), "crop" => "crop", "width" => 100);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => 100), $options);
@@ -139,7 +148,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_base_transformation_array() {
-    // should support array of base transformations        
+    // should support array of base transformations
     $options = array("transformation" => array(array("x" => 100, "y" => 100, "width" => 200, "crop" => "fill"), array("radius" => 10)), "crop" => "crop", "width" => 100);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => 100), $options);
@@ -147,13 +156,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_no_empty_transformation() {
-    // should not include empty transformations        
+    // should not include empty transformations
     $options = array("transformation" => array(array(), array("x" => 100, "y" => 100, "crop" => "fill"), array()));
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,x_100,y_100/test");
   }
 
   public function test_size() {
-    // should support size        
+    // should support size
     $options = array("size" => "10x10", "crop" => "crop");
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals(array("width" => "10", "height" => "10"), $options);
@@ -306,18 +315,64 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals($options, array("responsive"=> TRUE));
     $this->assertEquals($result, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_limit,w_auto/test");
-    Cloudinary::config(array("responsive_width_transformation"=>array("width"=>"auto", "crop"=>"pad")));
+    Cloudinary::config(array("responsive_width_transformation"=>array("width"=>"auto:breakpoints", "crop"=>"pad")));
     $options = array("width"=>100, "height"=>100, "crop"=>"crop", "responsive_width"=>TRUE);
     $result = Cloudinary::cloudinary_url("test", $options);
     $this->assertEquals($options, array("responsive"=> TRUE));
-    $this->assertEquals($result, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_pad,w_auto/test");
+    $this->assertEquals($result, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_pad,w_auto:breakpoints/test");
   }
 
   public function test_width_auto() {
     // should support width=auto
     $tag = cl_image_tag("hello", array("width"=>"auto", "crop"=>"limit", "format"=>"png"));
     $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>", $tag);
+    $tag = cl_image_tag("hello", array("width"=>"auto:breakpoints", "crop"=>"limit", "format"=>"png"));
+    $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto:breakpoints/hello.png'/>", $tag);
+      $this->cloudinary_url_assertion("test", array( "width" => "auto:20", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:20/test", array ('responsive' => true));
+      $this->cloudinary_url_assertion("test", array( "width" => "auto:20:350", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:20:350/test", array ('responsive' => true));
+      $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints/test", array ('responsive' => true));
+      $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints_100_1900_20_15", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints_100_1900_20_15/test", array ('responsive' => true));
+      $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints:json", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints:json/test", array ('responsive' => true));
   }
+    public function shared_client_hints($options, $message = ''){
+        $tag = cl_image_tag('sample.jpg', $options);
+        $this->assertEquals("<img src='http://res.cloudinary.com/test/image/upload/c_scale,dpr_auto,w_auto/sample.jpg' />", $tag, $message);
+        $tag = cl_image_tag('sample.jpg', array_merge(array( "responsive" => true ), $options));
+        $this->assertEquals("<img src='http://res.cloudinary.com/test/image/upload/c_scale,dpr_auto,w_auto/sample.jpg' />", $tag, $message);
+    }
+    public function test_client_hints_as_option() {
+        $this->shared_client_hints(array(
+                                       "dpr" => "auto",
+                                       "cloud_name" => "test",
+                                       "width" => "auto",
+                                       "crop" => "scale",
+                                       "client_hints" => TRUE
+                                   ), "support client_hints as an option");
+    }
+
+    public function test_client_hints_as_global() {
+        Cloudinary::config(array("client_hints" => TRUE));
+        $this->shared_client_hints(array(
+            "dpr" => "auto",
+            "cloud_name" => "test",
+            "width" => "auto",
+            "crop" => "scale"
+        ), "support client hints as global configuration");
+    }
+
+    public function test_client_hints_false() {
+        Cloudinary::config(array("responsive" => TRUE));
+        $tag = cl_image_tag('sample.jpg', array(
+            "width" => "auto",
+            "crop" => "scale",
+            "cloud_name" => "test123",
+            "client_hints" => FALSE
+        ));
+        $this->assertEquals("<img class='cld-responsive' data-src='" . CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_scale,w_auto/sample.jpg'/>",
+                            $tag,
+                            "should use normal responsive behaviour");
+    }
+
 
     public function test_aspect_ratio() {
         // should support background
@@ -373,7 +428,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       "parentheses(interject)" => "parentheses%28interject%29");
     foreach ($tests as $source => $target) {
       $url = Cloudinary::cloudinary_url($source);
-      $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "$target", $url);                      
+      $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . "$target", $url);
     }
   }
 
@@ -413,7 +468,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     Cloudinary::cloudinary_url("test", $options);
   }
 
-  
+
   public function test_url_suffix_for_private_cdn(){
     //should support url_suffix for private_cdn
     $this->cloudinary_url_assertion("test", array("url_suffix"=>"hello", "private_cdn"=>TRUE), "http://test123-res.cloudinary.com/images/test/hello");
@@ -506,7 +561,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_bit_rate(){
     // should support an integer value
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'bit_rate' => 2048 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "br_2048/video_id");
-    // should support "<integer>k" 
+    // should support "<integer>k"
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'bit_rate' => '44k' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "br_44k/video_id");
     // should support "<integer>m"
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'bit_rate' => '1m' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "br_1m/video_id");
@@ -525,7 +580,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_start_offset(){
-    // should support decimal seconds 
+    // should support decimal seconds
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'start_offset' => 2.63 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "so_2.63/video_id");
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'start_offset' => '2.63' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "so_2.63/video_id");
     // should support percents of the video length as "<number>p"
@@ -535,7 +590,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_end_offset(){
-    // should support decimal seconds 
+    // should support decimal seconds
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'end_offset' => 2.63 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "eo_2.63/video_id");
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'end_offset' => '2.63' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "eo_2.63/video_id");
     // should support percents of the video length as "<number>p"
@@ -545,7 +600,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test_duration(){
-    // should support decimal seconds 
+    // should support decimal seconds
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'duration' => 2.63 ), CloudinaryTest::VIDEO_UPLOAD_PATH . "du_2.63/video_id");
     $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'duration' => '2.63' ), CloudinaryTest::VIDEO_UPLOAD_PATH . "du_2.63/video_id");
     // should support percents of the video length as "<number>p"
@@ -575,11 +630,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_cl_video_thumbnail_tag() {
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie_id.jpg";
-    $this->assertEquals(cl_video_thumbnail_tag('movie_id'), 
+    $this->assertEquals(cl_video_thumbnail_tag('movie_id'),
       "<img src='$expected_url' />");
 
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "w_100/movie_id.jpg";
-    $this->assertEquals(cl_video_thumbnail_tag('movie_id', array('width' => 100)), 
+    $this->assertEquals(cl_video_thumbnail_tag('movie_id', array('width' => 100)),
       "<img src='$expected_url' width='100'/>");
 
   }
@@ -597,7 +652,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_cl_video_tag_with_attributes(){
     //test video attributes
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
-    $this->assertEquals(cl_video_tag('movie', array('autoplay' => TRUE, 'controls', 'loop', 'muted' => "true", 'preload', 'style' => 'border: 1px')), 
+    $this->assertEquals(cl_video_tag('movie', array('autoplay' => TRUE, 'controls', 'loop', 'muted' => "true", 'preload', 'style' => 'border: 1px')),
       "<video autoplay='1' controls loop muted='true' poster='$expected_url.jpg' preload style='border: 1px'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
@@ -615,11 +670,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
           'audio_codec'  => 'acc',
           'start_offset' => 3);
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,so_3,vc_h264/movie";
-    $this->assertEquals(cl_video_tag('movie', $options), 
+    $this->assertEquals(cl_video_tag('movie', $options),
       "<video height='100' poster='$expected_url.jpg' src='$expected_url.mp4' width='200'></video>");
 
     unset($options['source_types']);
-    $this->assertEquals(cl_video_tag('movie', $options), 
+    $this->assertEquals(cl_video_tag('movie', $options),
       "<video height='100' poster='$expected_url.jpg' width='200'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
@@ -630,7 +685,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     unset($options['html_width']);
     $options['width'] = 250;
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,so_3,vc_h264,w_250/movie";
-    $this->assertEquals(cl_video_tag('movie', $options), 
+    $this->assertEquals(cl_video_tag('movie', $options),
       "<video poster='$expected_url.jpg' width='250'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
@@ -639,7 +694,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,c_fit,so_3,vc_h264,w_250/movie";
     $options['crop'] = 'fit';
-    $this->assertEquals(cl_video_tag('movie', $options), 
+    $this->assertEquals(cl_video_tag('movie', $options),
       "<video poster='$expected_url.jpg'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
@@ -650,14 +705,14 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_cl_video_tag_with_fallback(){
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
     $fallback = "<span id='spanid'>Cannot display video</span>";
-    $this->assertEquals(cl_video_tag('movie', array('fallback_content' => $fallback)), 
+    $this->assertEquals(cl_video_tag('movie', array('fallback_content' => $fallback)),
       "<video poster='$expected_url.jpg'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
       "<source src='$expected_url.ogv' type='video/ogg'>" .
       $fallback .
       "</video>");
-    $this->assertEquals(cl_video_tag('movie', array('fallback_content' => $fallback, 'source_types' => "mp4")), 
+    $this->assertEquals(cl_video_tag('movie', array('fallback_content' => $fallback, 'source_types' => "mp4")),
       "<video poster='$expected_url.jpg' src='$expected_url.mp4'>" .
       $fallback .
       "</video>");
@@ -666,7 +721,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_cl_video_tag_with_source_types(){
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "movie";
-    $this->assertEquals(cl_video_tag('movie', array('source_types' => array('ogv', 'mp4'))), 
+    $this->assertEquals(cl_video_tag('movie', array('source_types' => array('ogv', 'mp4'))),
       "<video poster='$expected_url.jpg'>" .
       "<source src='$expected_url.ogv' type='video/ogg'>" .
       "<source src='$expected_url.mp4' type='video/mp4'>" .
@@ -678,8 +733,8 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $expected_ogv_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "q_50/q_70,w_100/movie";
     $expected_mp4_url = CloudinaryTest::VIDEO_UPLOAD_PATH. "q_50/q_30,w_100/movie";
     $this->assertEquals(cl_video_tag('movie', array('width' => 100, 'transformation' => array(array('quality' => 50)), 'source_transformation' => array(
-      'ogv' => array('quality' => 70), 
-      'mp4' => array('quality' => 30)))), 
+      'ogv' => array('quality' => 70),
+      'mp4' => array('quality' => 30)))),
       "<video poster='$expected_url.jpg' width='100'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_mp4_url.mp4' type='video/mp4'>" .
@@ -687,9 +742,9 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       "</video>");
 
     $this->assertEquals(cl_video_tag('movie', array('width' => 100, 'transformation' => array(array('quality' => 50)), 'source_transformation' => array(
-      'ogv' => array('quality' => 70), 
+      'ogv' => array('quality' => 70),
       'mp4' => array('quality' => 30)),
-      'source_types' => array('webm', 'mp4'))), 
+      'source_types' => array('webm', 'mp4'))),
       "<video poster='$expected_url.jpg' width='100'>" .
       "<source src='$expected_url.webm' type='video/webm'>" .
       "<source src='$expected_mp4_url.mp4' type='video/mp4'>" .
@@ -698,39 +753,39 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_cl_video_tag_with_poster(){
     $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "movie";
-    
+
     $expected_poster_url = 'http://image/somewhere.jpg';
-    $this->assertEquals(cl_video_tag('movie', array('poster' => $expected_poster_url, 'source_types' => "mp4")), 
+    $this->assertEquals(cl_video_tag('movie', array('poster' => $expected_poster_url, 'source_types' => "mp4")),
       "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
     $expected_poster_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "g_north/movie.jpg";
-    $this->assertEquals(cl_video_tag('movie', array('poster' => array('gravity' => 'north'), 'source_types' => "mp4")), 
+    $this->assertEquals(cl_video_tag('movie', array('poster' => array('gravity' => 'north'), 'source_types' => "mp4")),
       "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
     $expected_poster_url = CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_north/my_poster.jpg";
-    $this->assertEquals(cl_video_tag('movie', array('poster' => array('gravity' => 'north', 'public_id' => 'my_poster', 'format' => 'jpg'), 'source_types' => "mp4")), 
+    $this->assertEquals(cl_video_tag('movie', array('poster' => array('gravity' => 'north', 'public_id' => 'my_poster', 'format' => 'jpg'), 'source_types' => "mp4")),
       "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
-    $this->assertEquals(cl_video_tag('movie', array('poster' => NULL, 'source_types' => "mp4")), 
+    $this->assertEquals(cl_video_tag('movie', array('poster' => NULL, 'source_types' => "mp4")),
       "<video src='$expected_url.mp4'></video>");
 
-    $this->assertEquals(cl_video_tag('movie', array('poster' => FALSE, 'source_types' => "mp4")), 
+    $this->assertEquals(cl_video_tag('movie', array('poster' => FALSE, 'source_types' => "mp4")),
       "<video src='$expected_url.mp4'></video>");
   }
-  
+
   public function test_upload_tag(){
     $pattern = "/<input class='cloudinary-fileupload' ".
       "data-cloudinary-field='image' ".
-      "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' ". 
+      "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' ".
       "data-url='http[^']+\/v1_1\/test123\/auto\/upload' ".
       "name='file' type='file'\/>/";
     $this->assertRegExp( $pattern, cl_upload_tag('image'));
     $this->assertRegExp( $pattern, cl_image_upload_tag('image'));
-    
+
     $pattern =  "/<input class='cloudinary-fileupload' ".
       "data-cloudinary-field='image' ".
       "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' ".
-      "data-max-chunk-size='5000000' ".  
+      "data-max-chunk-size='5000000' ".
       "data-url='http[^']+\/v1_1\/test123\/auto\/upload_chunked' ".
       "name='file' type='file'\/>/";
     $this->assertRegExp( $pattern,
@@ -798,7 +853,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
    */
   public function test_overlay_style_requires_font_family() {
     $options = array("overlay"=>array("text"=>"text", "font_style"=>"italic"));
-    Cloudinary::cloudinary_url("test", $options);  
+    Cloudinary::cloudinary_url("test", $options);
   }
 
     public function resource_types() {
@@ -847,9 +902,9 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
 
-  private function cloudinary_url_assertion($source, $options, $expected) {
+  private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array()) {
     $url = Cloudinary::cloudinary_url($source, $options);
-    $this->assertEquals(array(), $options);
+    $this->assertEquals($expected_options, $options);
     $this->assertEquals($expected, $url);
   }
 }

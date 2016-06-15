@@ -75,9 +75,10 @@ namespace {
         if (isset($options["html_width"])) $options["width"] = Cloudinary::option_consume($options, "html_width");
         if (isset($options["html_height"])) $options["height"] = Cloudinary::option_consume($options, "html_height");
 
+        $client_hints = Cloudinary::option_consume($options, "client_hints", Cloudinary::config_get("client_hints"));
         $responsive = Cloudinary::option_consume($options, "responsive");
         $hidpi = Cloudinary::option_consume($options, "hidpi");
-        if ($responsive || $hidpi) {
+        if (($responsive || $hidpi) && !$client_hints) {
             $options["data-src"] = $source;
             $classes = array($responsive ? "cld-responsive" : "cld-hidpi");
             $current_class = Cloudinary::option_consume($options, "class");
