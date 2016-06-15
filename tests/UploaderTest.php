@@ -48,9 +48,10 @@ namespace Cloudinary {
       }
   
       public function test_explicit() {
-          $result = Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));        
+          $this->markTestSkipped("Not enabled by default - remove this line to test");
+          $result = Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));
           $url = cloudinary_url("cloudinary", array("type"=>"twitter_name", "crop"=>"scale", "width"=>"2.0", "format"=>"png", "version"=>$result["version"]));
-          $this->assertEquals($result["eager"][0]["url"], $url);        
+          $this->assertEquals($result["eager"][0]["url"], $url);
       }
   
       public function test_eager() {
