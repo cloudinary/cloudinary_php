@@ -1,4 +1,19 @@
 
+1.4.0 / 2016-06-22
+==================
+
+New functionality and features
+------------------------------
+
+  * New configuration parameter `:client_hints`
+  * Enhanced auto `width` values
+  * Enhanced `quality` values
+
+Other Changes
+-------------
+
+  * Disable explicit test
+
 1.3.2 / 2016-06-02
 ==================
 
