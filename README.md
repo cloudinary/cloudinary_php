@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cloudinary/cloudinary_php.svg)](https://travis-ci.org/cloudinary/cloudinary_php) [![license](https://img.shields.io/github/license/cloudinary/cloudinary_php.svg?maxAge=2592000)]()
+
 Cloudinary
 ==========
 
