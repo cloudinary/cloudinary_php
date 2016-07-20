@@ -14,14 +14,18 @@ namespace Cloudinary {
 
     const TEST_ICO = "tests/favicon.ico";
 
-    public function setUp() {
+      public function setUp() {
           \Cloudinary::reset_config();
           if (!Cloudinary::config_get("api_secret")) {
-            $this->markTestSkipped('Please setup environment for Upload test to run');
+              $this->markTestSkipped('Please setup environment for Upload test to run');
           }
       }
-  
-      public function test_upload() {
+
+      public function tearDown() {
+          Curl::$instance = new Curl();
+      }
+
+    public function test_upload() {
           $result = Uploader::upload(self::LOGO_PNG);
           $this->assertEquals($result["width"], 241);
           $this->assertEquals($result["height"], 51);
@@ -48,10 +52,11 @@ namespace Cloudinary {
       }
   
       public function test_explicit() {
-          $this->markTestSkipped("Not enabled by default - remove this line to test");
-          $result = Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));
-          $url = cloudinary_url("cloudinary", array("type"=>"twitter_name", "crop"=>"scale", "width"=>"2.0", "format"=>"png", "version"=>$result["version"]));
-          $this->assertEquals($result["eager"][0]["url"], $url);
+        Curl::mockUpload($this);
+
+        Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));
+        $fields = Curl::$instance->parameters[CURLOPT_POSTFIELDS];
+        $this->assertArraySubset(array("type"=>"twitter_name", "eager"=> "c_scale,w_2.0"),$fields);
       }
   
       public function test_eager() {
