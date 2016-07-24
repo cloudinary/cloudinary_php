@@ -483,15 +483,16 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   function test27_start_at() {
       // should allow listing resources by start date
-      sleep(2);
-      $dateTime = new \DateTime();
-      $start_at = $dateTime->format(\DateTime::ISO8601);
-      sleep(2);
-      $response = Uploader::upload(self::LOGO_PNG);
-      $api_repsonse = $this->api->resources(array("type"=>"upload", "start_at"=>$start_at, "direction"=>"asc"));
-      $resources = $api_repsonse["resources"];
-      $this->assertEquals(count($resources), 1);
-      $this->assertEquals($resources[0]["public_id"], $response["public_id"]);
+    Curl::mockApi($this);
+    $dateTime = new \DateTime();
+    $start_at = $dateTime->format(\DateTime::ISO8601);
+    $this->api->resources(array("type"=>"upload", "start_at"=>$start_at, "direction"=>"asc"));
+    $this->assertRegExp("#/image/upload$#", Curl::$instance->url_path());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals($start_at, $fields["start_at"]);
+    $this->assertEquals("asc", $fields["direction"]);
+
+
   }
 
   function test28_create_list_upload_presets() {
