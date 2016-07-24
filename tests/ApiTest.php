@@ -497,18 +497,17 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   function test28_create_list_upload_presets() {
       // should allow creating and listing upload_presets
-      $this->api->create_upload_preset(array("name"=> self::$api_test_upload_preset, "folder"=>"folder"));
-      $this->api->create_upload_preset(array("name"=> self::$api_test_upload_preset_2, "folder"=>"folder2"));
-      $this->api->create_upload_preset(array("name"=> self::$api_test_upload_preset_3, "folder"=>"folder3"));
-      $api_response = $this->api->upload_presets();
-      $presets = $api_response["presets"];
-      $this->api->delete_upload_preset(self::$api_test_upload_preset);
-      $this->api->delete_upload_preset(self::$api_test_upload_preset_2);
-      $this->api->delete_upload_preset(self::$api_test_upload_preset_3);
-      $this->assertGreaterThanOrEqual(3, count($presets));
-      $this->assertEquals($presets[0]["name"], self::$api_test_upload_preset_3);
-      $this->assertEquals($presets[1]["name"], self::$api_test_upload_preset_2);
-      $this->assertEquals($presets[2]["name"], self::$api_test_upload_preset);
+    Curl::mockApi($this);
+    $this->api->create_upload_preset(array("name"=> self::$api_test_upload_preset, "folder"=>"folder"));
+    $this->assertRegExp("#/upload_presets$#", Curl::$instance->url_path());
+    $this->assertEquals("POST", Curl::$instance->http_method());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals(self::$api_test_upload_preset, $fields["name"]);
+    $this->assertEquals("folder", $fields["folder"]);
+
+    $this->api->upload_presets();
+    $this->assertRegExp("#/upload_presets$#", Curl::$instance->url_path());
+    $this->assertEquals("GET", Curl::$instance->http_method());
   }
 
   function test29_get_upload_presets() {
@@ -528,14 +527,10 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   function test30_delete_upload_presets() {
       // should allow deleting upload_presets
-      $this->api->create_upload_preset(array("name"=>"api_test_upload_preset4", "folder"=>"folder"));
-      $this->api->upload_preset("api_test_upload_preset4");
-      $this->api->delete_upload_preset("api_test_upload_preset4");
-      try {
-        $this->api->upload_preset("api_test_upload_preset4");
-        $this->fail();
-      } catch (Api\NotFound $expected) {
-      }
+    Curl::mockApi($this);
+    $this->api->delete_upload_preset(self::$api_test_upload_preset);
+    $this->assertRegExp("#/upload_presets/" . self::$api_test_upload_preset . "$#", Curl::$instance->url_path());
+    $this->assertEquals("DELETE", Curl::$instance->http_method());
   }
 
   function test31_update_upload_presets() {
