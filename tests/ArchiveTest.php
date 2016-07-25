@@ -10,7 +10,7 @@ class ArchiveTest extends PHPUnit_Framework_TestCase {
         if (!Cloudinary::config_get("api_secret")) {
           $this->markTestSkipped('Please setup environment for Upload test to run');
         }
-        $this->tag = "php_test_" . time();
+        $this->tag = "php_test_" . rand(11111, 99999);
 
         Cloudinary\Uploader::upload("tests/logo.png", array("tags"=>array($this->tag)));
         Cloudinary\Uploader::upload("tests/logo.png", array("tags"=>array($this->tag), "width"=>10, "crop"=>"scale"));                
