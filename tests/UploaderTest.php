@@ -15,7 +15,9 @@ namespace Cloudinary {
     const TEST_ICO = "tests/favicon.ico";
 
     public $url_prefix;
-
+    public static function setUpBeforeClass() {
+      Curl::$instance = new Curl();
+    }
     public function setUp() {
           \Cloudinary::reset_config();
           if (!Cloudinary::config_get("api_secret")) {
@@ -59,12 +61,15 @@ namespace Cloudinary {
         Curl::mockUpload($this);
 
         Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));
-        $fields = Curl::$instance->parameters[CURLOPT_POSTFIELDS];
+        $fields = Curl::$instance->fields();
         $this->assertArraySubset(array("type"=>"twitter_name", "eager"=> "c_scale,w_2.0"),$fields);
       }
   
       public function test_eager() {
-          Uploader::upload(self::LOGO_PNG, array("eager"=>array("crop"=>"scale", "width"=>"2.0")));
+        Curl::mockUpload($this);
+        Uploader::upload(self::LOGO_PNG, array("eager"=>array("crop"=>"scale", "width"=>"2.0")));
+        $fields = Curl::$instance->fields();
+        $this->assertArraySubset(array("eager"=> "c_scale,w_2.0"),$fields);
       }
   
       public function test_headers() {
