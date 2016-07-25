@@ -289,7 +289,9 @@ TAG
           Cloudinary::config(array( "timeout" => 1 ));
           $this->assertEquals(Cloudinary::config_get("timeout"), 1);
           try {
-              Uploader::upload(self::LOGO_PNG);
+            // Use a lengthy PNG transformation
+            $transformation = array("crop" => "scale", "width" => "2.0", "angle" => 33);
+            Uploader::upload(self::LOGO_PNG, array("eager"=>array("transformation"=>array($transformation, $transformation))));
           } catch ( Exception $e ) {
               // Finally not supported in PHP 5.3
               Cloudinary::config(array( "timeout", $timeout ));
