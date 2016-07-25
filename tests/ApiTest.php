@@ -270,16 +270,17 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(count($resource["derived"]), 0);
   }
 
-  /**
-   * @expectedException \Cloudinary\Api\NotFound
-   */
   function test09_delete_resources() {
     // should allow deleting resources
-    Uploader::upload(self::LOGO_PNG, array("public_id"=> self::$api_test_3));
-    $resource = $this->api->resource(self::$api_test_3);
-    $this->assertNotEquals($resource, NULL);
-    $this->api->delete_resources(array("apit_test", self::$api_test_2, self::$api_test_3));
-    $this->api->resource(self::$api_test_3);
+
+    Curl::mockApi($this);
+    $this->api->delete_resources(array("apit_test", self::$api_test_2, self::$api_test_3), array("transformation"=>"c_crop,w_100"));
+    $this->assertRegExp("#/resources/image/upload$#", Curl::$instance->url_path());
+    $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+    $fields = Curl::$instance->fields();
+    $this->assertArrayHasKey("public_ids[0]", $fields);
+    $this->assertEquals("c_crop,w_100", $fields["transformation"]);
+
   }
 
   /**

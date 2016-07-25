@@ -116,7 +116,7 @@ class Api {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $type = \Cloudinary::option_get($options, "type", "upload");
     $uri = array("resources", $resource_type, $type);
-    return $this->call_api("delete", $uri, array_merge(array("public_ids"=>$public_ids), $this->only($options, array("keep_original", "invalidate"))), $options);      
+    return $this->call_api("delete", $uri, array_merge(array("public_ids"=>$public_ids), $this->only($options, array("keep_original", "invalidate", "transformation"))), $options);
   }
 
   function delete_resources_by_prefix($prefix, $options=array()) {
