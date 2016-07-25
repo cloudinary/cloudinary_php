@@ -278,27 +278,7 @@ TAG
           $api->delete_upload_preset($preset["name"]);
   
       }
-  
-      function test_overwrite_upload() {
-          $api = new \Cloudinary\Api();
-          $public_id = "api_test_overwrite";
-  
-          $api->delete_resources($public_id);
-  
-          $resource = Uploader::upload(self::LOGO_PNG, array("public_id"=> $public_id));
-          $this->assertArrayHasKey("etag", $resource, "Should return an etag when uploading a new resource");
-  
-          $resource = Uploader::upload(self::LOGO_PNG, array("public_id"=> $public_id, "overwrite" => false));
-          $this->assertArrayNotHasKey("etag", $resource, "Should not return an etag when uploading a existing resource with overwrite=false");
-          $this->assertArrayHasKey("existing", $resource, "Should return 'existing' when uploading a existing resource with overwrite=false");
-  
-          $resource = Uploader::upload(self::LOGO_PNG, array("public_id"=> $public_id, "overwrite" => true));
-          $this->assertArrayHasKey("etag", $resource, "Should return an etag when uploading an existing resource with overwrite=true");
-  
-          $api->delete_resources($public_id);
-  
-      }
-  
+
       /**
        * @expectedException Cloudinary\Error
        * @expectedExceptionMessage timed out
