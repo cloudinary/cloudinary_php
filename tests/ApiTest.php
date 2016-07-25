@@ -384,24 +384,13 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->api->delete_transformation(self::$api_test_transformation_2);
   }
 
-  /**
-   * @expectedException \Cloudinary\Api\NotFound
-   */
-  function test16b_transformation_delete() {
-    $this->api->transformation(self::$api_test_transformation_2);
-  }
-
   function test17a_transformation_delete_implicit() {
     // should allow deleting implicit transformation
-    $this->api->transformation("c_scale,w_100");
+    Curl::mockApi($this);
     $this->api->delete_transformation("c_scale,w_100");
-  }
+    $this->assertRegExp("#/transformations/c_scale,w_100$#", Curl::$instance->url_path());
+    $this->assertEquals("DELETE", Curl::$instance->http_method());
 
-  /**
-   * @expectedException \Cloudinary\Api\NotFound
-   */
-  function test17b_transformation_delete_implicit() {
-    $this->api->transformation("c_scale,w_100");
   }
 
   function test18_usage() {
@@ -567,37 +556,42 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   }
 
   function test34_restore() {
-    Uploader::upload(self::LOGO_PNG, array("public_id" => "api_test_restore", "backup"=>TRUE));
-    $resource = $this->api->resource("api_test_restore");
-    $this->assertNotEquals($resource, NULL);
-    $this->assertEquals($resource["bytes"], self::LOGO_SIZE);
-    $this->api->delete_resources(array("api_test_restore"));
-    $resource = $this->api->resource("api_test_restore");
-    $this->assertNotEquals($resource, NULL);
-    $this->assertEquals($resource["bytes"], 0);
-    $this->assertEquals($resource["placeholder"], TRUE);
+    Curl::mockApi($this);
     $response = $this->api->restore(array("api_test_restore"));
-    $info = $response["api_test_restore"];
-    $this->assertNotEquals($info, NULL);
-    $this->assertEquals($info["bytes"], self::LOGO_SIZE);
-    $resource = $this->api->resource("api_test_restore");
-    $this->assertNotEquals($resource, NULL);
-    $this->assertEquals($resource["bytes"], self::LOGO_SIZE);
+    $this->assertRegExp("#/resources/image/upload/restore$#", Curl::$instance->url_path());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals("api_test_restore", $fields["public_ids[0]"]);
   }
 
   function test35_upload_mapping() {
-    try{$this->api->delete_upload_mapping("api_test_upload_mapping");} catch (Exception $e) {}
+    Curl::mockApi($this);
+
     $this->api->create_upload_mapping("api_test_upload_mapping", array("template"=>"http://cloudinary.com"));
+    $this->assertRegExp("#/upload_mappings$#", Curl::$instance->url_path());
+    $this->assertEquals("POST", Curl::$instance->http_method());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals("api_test_upload_mapping", $fields["folder"]);
+    $this->assertEquals("http://cloudinary.com", $fields["template"]);
+
     $result = $this->api->upload_mapping("api_test_upload_mapping");
-    $this->assertEquals($result["template"], "http://cloudinary.com");
+    $this->assertRegExp("#/upload_mappings$#", Curl::$instance->url_path());
+    $this->assertEquals("GET", Curl::$instance->http_method());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals("api_test_upload_mapping", $fields["folder"]);
+
     $this->api->update_upload_mapping("api_test_upload_mapping", array("template"=>"http://res.cloudinary.com"));
-    $result = $this->api->upload_mapping("api_test_upload_mapping");
-    $this->assertEquals($result["template"], "http://res.cloudinary.com");
-    $result = $this->api->upload_mappings();
-    $this->assertContains(array("folder"=>"api_test_upload_mapping","template"=>"http://res.cloudinary.com"), $result["mappings"]);
+    $this->assertRegExp("#/upload_mappings$#", Curl::$instance->url_path());
+    $this->assertEquals("PUT", Curl::$instance->http_method());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals("api_test_upload_mapping", $fields["folder"]);
+    $this->assertEquals("http://res.cloudinary.com", $fields["template"]);
+
     $this->api->delete_upload_mapping("api_test_upload_mapping");
-    $result = $this->api->upload_mappings();
-    $this->assertNotContains("api_test_upload_mapping", $result["mappings"]);
+    $this->assertRegExp("#/upload_mappings$#", Curl::$instance->url_path());
+    $this->assertEquals("DELETE", Curl::$instance->http_method());
+    $fields = Curl::$instance->fields();
+    $this->assertEquals("api_test_upload_mapping", $fields["folder"]);
+
   }
   function test_update_parameters(){
     Curl::mockApi($this);
