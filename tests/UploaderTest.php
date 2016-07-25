@@ -14,11 +14,15 @@ namespace Cloudinary {
 
     const TEST_ICO = "tests/favicon.ico";
 
-      public function setUp() {
+    public $url_prefix;
+
+    public function setUp() {
           \Cloudinary::reset_config();
           if (!Cloudinary::config_get("api_secret")) {
               $this->markTestSkipped('Please setup environment for Upload test to run');
           }
+          $this->url_prefix = Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com");
+
       }
 
       public function tearDown() {
@@ -164,12 +168,12 @@ namespace Cloudinary {
   
           $form = cl_form_tag("http://callback.com", array("public_id"=>"hello", "form"=>array("class"=>"uploader")));
           $this->assertRegExp(<<<TAG
-/<form enctype='multipart\/form-data' action='https:\/\/api.cloudinary.com\/v1_1\/test123\/image\/upload' method='POST' class='uploader'>
+#<form enctype='multipart\/form-data' action='{$this->url_prefix}\/v1_1\/test123\/image\/upload' method='POST' class='uploader'>
 <input name='timestamp' type='hidden' value='\d+'\/>
 <input name='public_id' type='hidden' value='hello'\/>
 <input name='signature' type='hidden' value='[0-9a-f]+'\/>
 <input name='api_key' type='hidden' value='1234'\/>
-<\/form>/
+<\/form>#
 TAG
 , $form);
       }
@@ -177,7 +181,7 @@ TAG
           Cloudinary::config(array("cloud_name"=>"test123", "secure_distribution" => NULL, "private_cdn" => FALSE, "api_key" => "1234"));
   
           $tag = cl_image_upload_tag("image", array("public_id"=>"hello", "html"=>array("class"=>"uploader")));
-          $this->assertRegExp("/<input class='uploader cloudinary-fileupload' data-cloudinary-field='image' data-form-data='{\"timestamp\":\d+,\"public_id\":\"hello\",\"signature\":\"[0-9a-f]+\",\"api_key\":\"1234\"}' data-url='https:\/\/api.cloudinary.com\/v1_1\/test123\/auto\/upload' name='file' type='file'\/>/", $tag);
+          $this->assertRegExp("#<input class='uploader cloudinary-fileupload' data-cloudinary-field='image' data-form-data='{\"timestamp\":\d+,\"public_id\":\"hello\",\"signature\":\"[0-9a-f]+\",\"api_key\":\"1234\"}' data-url='{$this->url_prefix}\/v1_1\/test123\/auto\/upload' name='file' type='file'\/>#", $tag);
       }
     
       function test_manual_moderation() {
