@@ -113,7 +113,16 @@ END;
         }
 
         public function http_method(){
-          return Curl::$instance->getopt(CURLOPT_CUSTOMREQUEST);
+          if( array_key_exists(CURLOPT_CUSTOMREQUEST, $this->parameters)) {
+            return Curl::$instance->getopt(CURLOPT_CUSTOMREQUEST);
+          } else {
+            $method_array = array_keys(array_intersect_key($this->parameters, array("CURLOPT_POST"=>0, "CURLOPT_PUT"=>0,"CURLOPT_HTTPGET"=>0)));
+            if(count($method_array)>0){
+              return preg_replace( "/CURLOPT_(HTTP)?/", "", $method_array[0]);
+            } else {
+              return "POST";
+            }
+          }
         }
 
         public function url_path(){
