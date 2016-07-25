@@ -334,6 +334,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints_100_1900_20_15", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints_100_1900_20_15/test", array ('responsive' => true));
       $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints:json", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints:json/test", array ('responsive' => true));
   }
+  public function test_original_width_and_height() {
+    $options = array("crop" => "crop", "width"=> "ow", "height"=>"oh");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_oh,w_ow/test");
+
+  }
     public function shared_client_hints($options, $message = ''){
         $tag = cl_image_tag('sample.jpg', $options);
         $this->assertEquals("<img src='http://res.cloudinary.com/test/image/upload/c_scale,dpr_auto,w_auto/sample.jpg' />", $tag, $message);
