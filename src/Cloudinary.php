@@ -731,24 +731,26 @@ class Cloudinary {
     # @private
     public static function build_archive_params(&$options)
     {
-        $params = array("timestamp" => time(),
-            "type" => \Cloudinary::option_get($options, "type"),
-            "mode" => \Cloudinary::option_get($options, "mode"),
-            "target_format" => \Cloudinary::option_get($options, "target_format"),
-            "target_public_id" => \Cloudinary::option_get($options, "target_public_id"),
-            "flatten_folders" => \Cloudinary::option_get($options, "flatten_folders"),
-            "flatten_transformations" => \Cloudinary::option_get($options, "flatten_transformations"),
-            "use_original_filename" => \Cloudinary::option_get($options, "use_original_filename"),
-            "async" => \Cloudinary::option_get($options, "async"),
-            "phash" => \Cloudinary::option_get($options, "phash"),
-            "notification_url" => \Cloudinary::option_get($options, "notification_url"),
-            "target_tags" => \Cloudinary::build_array(\Cloudinary::option_get($options, "target_tags")),
-            "keep_derived" => \Cloudinary::option_get($options, "keep_derived"),
-            "tags" => \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")),
-            "public_ids" => \Cloudinary::build_array(\Cloudinary::option_get($options, "public_ids")),
-            "prefixes" => \Cloudinary::build_array(\Cloudinary::option_get($options, "prefixes")),
-            "transformations" => \Cloudinary::build_eager(\Cloudinary::option_get($options, "transformations")),
-            "expire_at" => \Cloudinary::option_get($options, "expire_at"),
+        $params = array(
+          "async"                    => \Cloudinary::option_get($options, "async"),
+          "expire_at"                => \Cloudinary::option_get($options, "expire_at"),
+          "flatten_folders"          => \Cloudinary::option_get($options, "flatten_folders"),
+          "flatten_transformations"  => \Cloudinary::option_get($options, "flatten_transformations"),
+          "keep_derived"             => \Cloudinary::option_get($options, "keep_derived"),
+          "mode"                     => \Cloudinary::option_get($options, "mode"),
+          "notification_url"         => \Cloudinary::option_get($options, "notification_url"),
+          "phash"                    => \Cloudinary::option_get($options, "phash"),
+          "prefixes"                 => \Cloudinary::build_array(\Cloudinary::option_get($options, "prefixes")),
+          "public_ids"               => \Cloudinary::build_array(\Cloudinary::option_get($options, "public_ids")),
+          "skip_transformation_name" => \Cloudinary::option_get($options, "skip_transformation_name"),
+          "tags"                     => \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")),
+          "target_format"            => \Cloudinary::option_get($options, "target_format"),
+          "target_public_id"         => \Cloudinary::option_get($options, "target_public_id"),
+          "target_tags"              => \Cloudinary::build_array(\Cloudinary::option_get($options, "target_tags")),
+          "timestamp"                => time(),
+          "transformations"          => \Cloudinary::build_eager(\Cloudinary::option_get($options, "transformations")),
+          "type"                     => \Cloudinary::option_get($options, "type"),
+          "use_original_filename"    => \Cloudinary::option_get($options, "use_original_filename"),
         );
         array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
         return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
@@ -767,12 +769,12 @@ class Cloudinary {
 
     public static function private_download_url($public_id, $format, $options = array()) {
         $cloudinary_params = Cloudinary::sign_request(array(
-          "timestamp"=>time(),
-          "public_id"=>$public_id,
-          "format"=>$format,
-          "type"=>Cloudinary::option_get($options, "type"),
-          "attachment"=>Cloudinary::option_get($options, "attachment"),
-          "expires_at"=>Cloudinary::option_get($options, "expires_at")
+          "timestamp"  => time(),
+          "public_id"  => $public_id,
+          "format"     => $format,
+          "type"       => Cloudinary::option_get($options, "type"),
+          "attachment" => Cloudinary::option_get($options, "attachment"),
+          "expires_at" => Cloudinary::option_get($options, "expires_at")
         ), $options);
 
         return Cloudinary::cloudinary_api_url("download", $options) . "?" . http_build_query($cloudinary_params);
