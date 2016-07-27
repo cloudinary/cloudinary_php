@@ -40,21 +40,12 @@ namespace Cloudinary {
       }
   
       public function test_rename() {
-          $result = Uploader::upload(self::LOGO_PNG);
-          Uploader::rename($result["public_id"], $result["public_id"]."2");
-          $api = new \Cloudinary\Api();      
-          $this->assertNotNull($api->resource($result["public_id"]."2"));
-  
-          $result2 = Uploader::upload(self::TEST_ICO);
-          $error_thrown = FALSE;
-          try {
-            Uploader::rename($result2["public_id"], $result["public_id"]."2");
-            $error_thrown = TRUE;
-          } catch (Exception $e) {}
-          $this->assertFalse($error_thrown);
-          Uploader::rename($result2["public_id"], $result["public_id"]."2", array("overwrite"=>TRUE));
-          $resource = $api->resource($result["public_id"]."2");
-          $this->assertEquals($resource["format"], "ico");        
+        Curl::mockUpload($this);
+        Uploader::rename("foobar", "foobar2", array("overwrite" => TRUE));
+        assertUrl($this, "/image/rename");
+        assertParam($this, "overwrite", 1);
+        assertParam($this, "from_public_id", "foobar");
+        assertParam($this, "to_public_id", "foobar2");
       }
   
       public function test_explicit() {
@@ -86,16 +77,27 @@ namespace Cloudinary {
       public function test_tags() {
           $api = new \Cloudinary\Api();      
           $result = Uploader::upload(self::LOGO_PNG);
-          Uploader::add_tag("tag1", $result["public_id"]);
-          Uploader::add_tag("tag2", $result["public_id"]);
-          $info = $api->resource($result["public_id"]);
-          $this->assertEquals($info["tags"], array("tag1", "tag2"));
-          Uploader::remove_tag("tag1", $result["public_id"]);
-          $info = $api->resource($result["public_id"]);
-          $this->assertEquals($info["tags"], array("tag2"));
-          Uploader::replace_tag("tag3", $result["public_id"]);
-          $info = $api->resource($result["public_id"]);
-          $this->assertEquals($info["tags"], array("tag3"));
+        Curl::mockUpload($this);
+        Uploader::add_tag("tag1", "foobar");
+        assertUrl($this, "/image/tags");
+        assertPost($this);
+        assertParam($this, "public_ids[0]", "foobar");
+        assertParam($this, "command", "add");
+        assertParam($this, "tag", "tag1");
+
+        Uploader::remove_tag("tag1", "foobar");
+        assertUrl($this, "/image/tags");
+        assertPost($this);
+        assertParam($this, "public_ids[0]", "foobar");
+        assertParam($this, "command", "remove");
+        assertParam($this, "tag", "tag1");
+
+        Uploader::replace_tag("tag3", "foobar");
+        assertUrl($this, "/image/tags");
+        assertPost($this);
+        assertParam($this, "public_ids[0]", "foobar");
+        assertParam($this, "command", "replace");
+        assertParam($this, "tag", "tag3");
       }
   
       /**

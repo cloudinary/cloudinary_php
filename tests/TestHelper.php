@@ -164,4 +164,42 @@ END;
     }
 
 
+    /**
+     * @param $fields
+     * @param $name
+     * @param $expectedValue
+     * @param $message
+     */
+    function assertParam($test, $name, $expectedValue = NULL, $message = '') {
+      $fields = Curl::$instance->fields();
+      if (strlen($message) == 0) {
+        $message = "should support the '$($name)' parameter";
+      }
+      $test->assertArrayHasKey($name, $fields, $message);
+      if ($expectedValue != NULL) {
+        $test->assertEquals($expectedValue, $fields[$name]);
+      }
+    }
+
+
+    function assertPost($test) {
+      $test->assertEquals("POST", Curl::$instance->http_method());
+    }
+
+    function assertPut($test) {
+      $test->assertEquals("PUT", Curl::$instance->http_method());
+    }
+
+    function assertGet($test) {
+      $test->assertEquals("GET", Curl::$instance->http_method());
+    }
+
+    function assertDelete($test) {
+      $test->assertEquals("DELETE", Curl::$instance->http_method());
+    }
+
+    function assertUrl($test, $path){
+      $cloud_name = \Cloudinary::config_get("cloud_name");
+      $test->assertEquals("/v1_1/" . $cloud_name . $path, Curl::$instance->url_path());
+    }
 }
