@@ -748,6 +748,8 @@ class Cloudinary {
             "public_ids" => \Cloudinary::build_array(\Cloudinary::option_get($options, "public_ids")),
             "prefixes" => \Cloudinary::build_array(\Cloudinary::option_get($options, "prefixes")),
             "transformations" => \Cloudinary::build_eager(\Cloudinary::option_get($options, "transformations")),
+            "skip_transformation_name" => \Cloudinary::option_get($options, "skip_transformation_name"),
+            "allow_missing" => \Cloudinary::option_get($options, "allow_missing")
         );
         array_walk($params, function (&$value, $key){ $value = (is_bool($value) ? ($value ? "1" : "0") : $value);});
         return array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
