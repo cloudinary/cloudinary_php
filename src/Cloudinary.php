@@ -732,6 +732,7 @@ class Cloudinary {
     public static function build_archive_params(&$options)
     {
         $params = array(
+          "allow_missing"            => \Cloudinary::option_get($options, "allow_missing"),
           "async"                    => \Cloudinary::option_get($options, "async"),
           "expire_at"                => \Cloudinary::option_get($options, "expire_at"),
           "flatten_folders"          => \Cloudinary::option_get($options, "flatten_folders"),
