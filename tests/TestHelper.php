@@ -173,7 +173,7 @@ END;
     function assertParam($test, $name, $expectedValue = NULL, $message = '') {
       $fields = Curl::$instance->fields();
       if (strlen($message) == 0) {
-        $message = "should support the '$($name)' parameter";
+        $message = "should support the '$name' parameter";
       }
       $test->assertArrayHasKey($name, $fields, $message);
       if ($expectedValue != NULL) {
