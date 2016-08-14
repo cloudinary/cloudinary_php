@@ -37,16 +37,18 @@ namespace Cloudinary {
       public function test_expire_at() {
         Curl::mockUpload($this);
         Uploader::create_zip(array("tags"=>$this->tag, "expire_at"=> date('Y-m-d H:i:s', time() + 3600)));
-        $fields = Curl::$instance->fields();
-        $this->assertArrayHasKey("expire_at", $fields, "should support the 'expire_at' parameter");
+        assertUrl($this, '/generate_archive');
+        assertParam($this, "target_format", "zip");
+        assertParam($this, "tags", $this->tag);
+        assertParam($this, "expire_at", NULL, "should support the 'expire_at' parameter");
       }
 
       public function test_skip_transformation_name() {
         Curl::mockUpload($this);
         Uploader::create_zip(array("tags"=>$this->tag, "skip_transformation_name"=> TRUE));
-        $fields = Curl::$instance->fields();
-        $this->assertArrayHasKey("skip_transformation_name", $fields, "should support the 'skip_transformation_name' parameter");
-        $this->assertEquals(1, $fields["skip_transformation_name"]);
+        assertUrl($this, '/generate_archive');
+        assertParam($this, "tags", $this->tag);
+        assertParam($this, "skip_transformation_name", 1, "should support the 'skip_transformation_name' parameter");
       }
 
       public function test_download_zip_url() {

@@ -182,24 +182,24 @@ END;
     }
 
 
-    function assertPost($test) {
-      $test->assertEquals("POST", Curl::$instance->http_method());
+    function assertPost($test, $message = "http method should be POST") {
+      $test->assertEquals("POST", Curl::$instance->http_method(), $message);
     }
 
-    function assertPut($test) {
-      $test->assertEquals("PUT", Curl::$instance->http_method());
+    function assertPut($test, $message = "http method should be PUT") {
+      $test->assertEquals("PUT", Curl::$instance->http_method(), $message);
     }
 
-    function assertGet($test) {
-      $test->assertEquals("GET", Curl::$instance->http_method());
+    function assertGet($test, $message = "http method should be GET") {
+      $test->assertEquals("GET", Curl::$instance->http_method(), $message);
     }
 
-    function assertDelete($test) {
-      $test->assertEquals("DELETE", Curl::$instance->http_method());
+    function assertDelete($test, $message = "http method should be DELETE") {
+      $test->assertEquals("DELETE", Curl::$instance->http_method(), $message);
     }
 
-    function assertUrl($test, $path){
+    function assertUrl($test, $path, $message = ''){
       $cloud_name = \Cloudinary::config_get("cloud_name");
-      $test->assertEquals("/v1_1/" . $cloud_name . $path, Curl::$instance->url_path());
+      $test->assertEquals("/v1_1/" . $cloud_name . $path, Curl::$instance->url_path(), $message);
     }
 }

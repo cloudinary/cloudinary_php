@@ -198,8 +198,10 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   function test04_resources_by_type() {
     // should allow listing resources by type
     Curl::mockApi($this);
-    $result = $this->api->resources(array("type"=>"upload", "context" => true, "tags" => true));
-      assertUrl($this, "/resources/image/upload");
+    $this->api->resources(array("type"=>"upload", "context" => true, "tags" => true));
+    assertUrl($this, "/resources/image/upload");
+    assertParam($this, "context", 1);
+    assertParam($this, "tags", 1);
   }
 
   function test05_resources_by_prefix() {
@@ -208,6 +210,8 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->api->resources(array("type"=>"upload", "prefix"=> "api_test", "context" => true, "tags" => true));
     assertUrl($this, "/resources/image/upload");
     assertParam($this, "prefix", "api_test");
+    assertParam($this, "context", 1);
+    assertParam($this, "tags", 1);
   }
 
   function test_resources_by_public_ids() {
@@ -215,10 +219,9 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     Curl::mockApi($this);
     $public_ids = array(self::$api_test, self::$api_test_2, self::$api_test_3);
     $this->api->resources_by_ids($public_ids, array("context" => true, "tags" => true));
-    $fields = Curl::$instance->fields();
-    $this->assertArrayHasKey("public_ids", $fields);
-    $this->assertArraySubset($public_ids, $fields["public_ids"]);
-
+    assertParam($this, "public_ids", $public_ids);
+    assertParam($this, "context", 1);
+    assertParam($this, "tags", 1);
   }
 
     function test_resources_direction() {
@@ -297,19 +300,19 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   }
 
   function test09b_delete_resources_by_tag() {
-      // should allow deleting resources
-      Curl::mockApi($this);
-      $this->api->delete_resources_by_tag("api_test_tag_for_delete");
-      assertUrl($this, "/resources/image/tags/api_test_tag_for_delete");
-      $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+    // should allow deleting resources
+    Curl::mockApi($this);
+    $this->api->delete_resources_by_tag("api_test_tag_for_delete");
+    assertUrl($this, "/resources/image/tags/api_test_tag_for_delete");
+    assertDelete($this);
   }
 
   function test10_tags() {
     // should allow listing tags
     Curl::mockApi($this);
-    $result = $this->api->tags();
+    $this->api->tags();
     assertUrl($this, "/tags/image");
-    $this->assertEquals("GET", Curl::$instance->http_method(), "http method should be GET");
+    assertGet($this);
   }
 
   function test11_tags_prefix() {
@@ -333,8 +336,10 @@ class ApiTest extends PHPUnit_Framework_TestCase {
   function test_transformation_cursor() {
     Curl::mockApi($this);
     $this->api->transformation("c_scale,w_100", array( "next_cursor"=>"234123132345"));
-    $this->assertArrayHasKey("next_cursor", Curl::$instance->fields(), "api->transformation should pass the next_cursor paramter");
+    assertUrl($this, "/transformations/c_scale,w_100");
+    assertParam($this, "next_cursor", "234123132345", "api->transformation should pass the next_cursor paramter");
   }
+
   function test13_transformation_metadata() {
     // should allow getting transformation metadata
     $transformation = $this->api->transformation("c_scale,w_100");
@@ -349,7 +354,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     // should allow updating transformation allowed_for_strict
     Curl::mockApi($this);
     $this->api->update_transformation("c_scale,w_100", array("allowed_for_strict" => TRUE));
-    $this->assertRegExp("#/transformations/c_scale,w_100$#", Curl::$instance->url_path());
+    assertUrl($this, "/transformations/c_scale,w_100");
     assertPut($this);
     assertParam($this, "allowed_for_strict", 1);
   }
@@ -358,7 +363,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     // should allow creating named transformation
     Curl::mockApi($this);
     $this->api->create_transformation(self::$api_test_transformation, array("crop" => "scale", "width" => 102));
-    $this->assertRegExp("#/transformations/" . self::$api_test_transformation ."$#", Curl::$instance->url_path());
+    assertUrl($this, "/transformations/" . self::$api_test_transformation);
     assertPost($this);
     assertParam($this, "transformation", "c_scale,w_102");
 
@@ -385,7 +390,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     // should allow deleting implicit transformation
     Curl::mockApi($this);
     $this->api->delete_transformation("c_scale,w_100");
-    $this->assertRegExp("#/transformations/c_scale,w_100$#", Curl::$instance->url_path());
+    assertUrl($this, "/transformations/c_scale,w_100");
     assertDelete($this);
 
   }
@@ -515,7 +520,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
       // should allow deleting upload_presets
     Curl::mockApi($this);
     $this->api->delete_upload_preset(self::$api_test_upload_preset);
-    $this->assertRegExp("#/upload_presets/" . self::$api_test_upload_preset . "$#", Curl::$instance->url_path());
+    assertUrl($this, "/upload_presets/" . self::$api_test_upload_preset);
     assertDelete($this);
   }
 
@@ -590,6 +595,8 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     Curl::mockApi($this);
 
     $this->api->update(self::$api_test, array("auto_tagging" => 0.5));
+    assertUrl($this, '/resources/image/upload/' . self::$api_test);
+    assertParam($this, "auto_tagging", 0.5);
     $fields = Curl::$instance->fields();
     $this->assertArrayNotHasKey("face_coordinates", $fields, "update() should not send empty parameters");
     $this->assertArrayNotHasKey("tags", $fields, "update() should not send empty parameters");
