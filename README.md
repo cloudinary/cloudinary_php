@@ -174,7 +174,7 @@ Optional parameters:
 
 ### Testing
 
-To run the PHPUnit test suite you must first set the evnironment variable containing your Cloudinary URL. This can be obtained via Cloudinary's Management Console.
+To run the PHPUnit test suite you must first set the environment variable containing your Cloudinary URL. This can be obtained via Cloudinary's Management Console.
 
     export CLOUDINARY_URL=cloudinary://123456789012345:abcdeghijklmnopqrstuvwxyz12@n07t21i7
 
