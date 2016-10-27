@@ -591,6 +591,84 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   }
 
+  static $predefined_profiles = array("4k", "full_hd", "hd", "sd", "full_hd_wifi", "full_hd_lean", "hd_lean");
+
+  function test_create_streaming_profile() {
+
+    $name = self::$api_test . "_streaming_profile";
+    $result = $this->api->create_streaming_profile($name, array(
+      "representations"=> array(
+        array( "transformation" => array("bit_rate"=>"5m", "height"=>1200, "width"=>1200, "crop"=>"limit")))));
+    $this->assertArrayHasKey("representations",
+                          $result["data"]);
+    $reps = $result["data"]["representations"];
+    $this->assertTrue(is_array($reps));
+    // "transformation is returned as an array
+    $this->assertTrue(is_array($reps[0]["transformation"]));
+
+    $tr = $reps[0]["transformation"][0];
+    $expected = array("bit_rate" => "5m", "height" => 1200, "width" => 1200, "crop" => "limit");
+    $this->assertEquals($expected, $tr);
+
+  }
+
+  function test_update_delete_streaming_profile() {
+
+    $name = self::$api_test . "_streaming_profile_delete";
+    try {
+      $result = $this->api->create_streaming_profile($name, array(
+        "representations"=> array(
+          array( "transformation" => array("bit_rate"=>"5m", "height"=>1200, "width"=>1200, "crop"=>"limit")))));
+    } catch (Cloudinary\Api\AlreadyExists $e) {
+
+    }
+    $result = $this->api->update_streaming_profile($name, array(
+      "representations"=> array(
+        array( "transformation" => array("bit_rate"=>"5m", "height"=>1000, "width"=>1000, "crop"=>"scale")))));
+    $this->assertArrayHasKey("representations",
+                          $result["data"]);
+    $reps = $result["data"]["representations"];
+    $this->assertTrue(is_array($reps));
+    // "transformation is returned as an array
+    $this->assertTrue(is_array($reps[0]["transformation"]));
+
+    $tr = $reps[0]["transformation"][0];
+    $expected = array("bit_rate" => "5m", "height" => 1000, "width" => 1000, "crop" => "scale");
+    $this->assertEquals($expected, $tr);
+
+    $result = $this->api->delete_streaming_profile($name);
+    $result = $this->api->list_streaming_profiles($name);
+    $this->assertArrayNotHasKey($name,array_map(function($profile){
+      return $profile["name"];
+    }, $result["data"]));
+  }
+
+  function test_get_streaming_profile() {
+
+    $result = $this->api->get_streaming_profile(self::$predefined_profiles[0]);
+    $this->assertArrayHasKey("representations",
+                          $result["data"]);
+    $reps = $result["data"]["representations"];
+    $this->assertTrue(is_array($reps));
+    // "transformation is returned as an array
+    $this->assertTrue(is_array($reps[0]["transformation"]));
+
+    $tr = $reps[0]["transformation"][0];
+    $this->assertArrayHasKey("bit_rate", $tr);
+    $this->assertArrayHasKey("height", $tr);
+    $this->assertArrayHasKey("width", $tr);
+    $this->assertArrayHasKey("crop", $tr);
+  }
+
+  function test_list_streaming_profile() {
+
+    $result = $this->api->list_streaming_profiles();
+    $names = array_map(function ($profile) {
+      return $profile["name"];
+    }, $result["data"]);
+    $this->assertEmpty(array_diff(self::$predefined_profiles, $names));
+  }
+
   function test_update_parameters(){
     Curl::mockApi($this);
 

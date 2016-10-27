@@ -33,6 +33,16 @@ namespace Cloudinary {
 
     public function test_upload() {
           $result = Uploader::upload(self::LOGO_PNG);
+          print_r($result);
+    switch ($result["resource_type"]) {
+      case "image":
+        // generate image tag
+        break;
+      case "video":
+        // generate video tag
+        break;
+    }
+
           $this->assertEquals($result["width"], 241);
           $this->assertEquals($result["height"], 51);
           $expected_signature = Cloudinary::api_sign_request(array("public_id"=>$result["public_id"], "version"=>$result["version"]), Cloudinary::config_get("api_secret"));
