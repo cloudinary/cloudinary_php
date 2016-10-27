@@ -1,4 +1,14 @@
 
+1.4.2 / 2016-10-28
+==================
+
+New functionality and features
+------------------------------
+
+  * Add streaming profiles API
+  * Merge pull request #40 from sergey-safonov/feature/config-connection-timeout
+    * Allow specify connection timeout in config
+
 1.4.1 / 2016-08-14
 ==================
 
