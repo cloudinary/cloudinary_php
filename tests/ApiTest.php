@@ -637,7 +637,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, $tr);
 
     $result = $this->api->delete_streaming_profile($name);
-    $result = $this->api->list_streaming_profiles($name);
+    $result = $this->api->list_streaming_profiles();
     $this->assertArrayNotHasKey($name,array_map(function($profile){
       return $profile["name"];
     }, $result["data"]));
