@@ -734,7 +734,7 @@ class Cloudinary {
         $params = array(
           "allow_missing"            => \Cloudinary::option_get($options, "allow_missing"),
           "async"                    => \Cloudinary::option_get($options, "async"),
-          "expire_at"                => \Cloudinary::option_get($options, "expire_at"),
+          "expires_at"                => \Cloudinary::option_get($options, "expires_at"),
           "flatten_folders"          => \Cloudinary::option_get($options, "flatten_folders"),
           "flatten_transformations"  => \Cloudinary::option_get($options, "flatten_transformations"),
           "keep_derived"             => \Cloudinary::option_get($options, "keep_derived"),
