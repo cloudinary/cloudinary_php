@@ -213,6 +213,26 @@ namespace Cloudinary {
             return Uploader::call_api("tags", $params, $options);
         }
 
+        public static function add_context($context, $public_ids = array(), $options = array()) {
+          return Uploader::call_context_api($context, 'add', $public_ids, $options);
+        }
+
+        public static function remove_all_context($public_ids = array(), $options = array()) {
+          return Uploader::call_context_api(null, 'remove_all', $public_ids, $options);
+        }
+
+        public static function call_context_api($context, $command, $public_ids = array(), &$options = array())
+        {
+            $params = array(
+                "timestamp" => time(),
+                "context" => $context,
+                "public_ids" => \Cloudinary::build_array($public_ids),
+                "type" => \Cloudinary::option_get($options, "type"),
+                "command" => $command
+            );
+            return Uploader::call_api("context", $params, $options);
+        }
+
         private static $TEXT_PARAMS = array("public_id", "font_family", "font_size", "font_color", "text_align", "font_weight", "font_style", "background", "opacity", "text_decoration");
 
         public static function text($text, $options = array())
