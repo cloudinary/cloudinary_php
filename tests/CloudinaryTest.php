@@ -395,6 +395,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("<img class='cld-hidpi' data-src='http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png'/>", $tag);
   }
 
+  public function test_e_art_incognito() {
+    $tag = cl_image_tag("hello", array("effect"=>"art:incognito", "format"=>"png"));
+    $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/e_art:incognito/hello.png' />", $tag);
+  }
+
   public function test_folder_version() {
     // should add version if public_id contains /
     $this->cloudinary_url_assertion("folder/test", array(), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v1/folder/test");
