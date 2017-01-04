@@ -158,7 +158,7 @@ namespace Cloudinary {
       
       public function test_face_coordinates() {
           //should allow sending face and custom coordinates
-          $face_coordinates = array(array(120, 30, 109, 150), array(121, 31, 110, 151));
+          $face_coordinates = array(array(120, 30, 109, 51), array(121, 31, 110, 51));
           $result = Uploader::upload(self::LOGO_PNG, array("face_coordinates" => $face_coordinates, "faces" => TRUE));
           $this->assertEquals($face_coordinates, $result["faces"]);
   
