@@ -367,6 +367,9 @@ class Cloudinary {
             array_push($components, $public_id);
             array_push($components, $text);
             $layer = implode(":", array_filter($components, 'Cloudinary::is_not_null'));
+        } elseif (filter_var($layer, FILTER_VALIDATE_URL)) {
+          $b64 = base64_encode($layer);
+          $layer = 'fetch:' . $b64;
         }
         return $layer;
     }
