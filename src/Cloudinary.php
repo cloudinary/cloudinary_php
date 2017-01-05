@@ -137,6 +137,10 @@ class Cloudinary {
       if (Cloudinary::is_assoc($array)){
         $encoded = array();
         foreach ($array as $key => $value) {
+          $value = !empty($value)
+            ? preg_replace('/([\|=])/', '\\\$1', $value)
+            : $value;
+
           array_push($encoded, $key . '=' . $value);
         }
         return implode("|", $encoded);
