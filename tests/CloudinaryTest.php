@@ -503,6 +503,17 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->cloudinary_url_assertion("test", array("url_suffix"=>"hello", "private_cdn"=>TRUE, "resource_type"=>"raw"), "http://test123-res.cloudinary.com/files/test/hello");
   }
 
+  public function test_url_suffix_for_private(){
+    //should support url_suffix for private uploads
+    $this->cloudinary_url_assertion("test",
+      array("url_suffix"=>"hello", "private_cdn"=>TRUE, "resource_type"=>"image", "type" => "private"),
+      "http://test123-res.cloudinary.com/private_images/test/hello");
+
+    $this->cloudinary_url_assertion("test",
+      array("url_suffix"=>"hello", "private_cdn"=>TRUE, "format" => "jpg", "resource_type"=>"image", "type" => "private"),
+      "http://test123-res.cloudinary.com/private_images/test/hello.jpg");
+  }
+
   public function test_allow_use_root_path_in_shared() {
 
     $this->cloudinary_url_assertion("test", array("use_root_path"=>TRUE, "private_cdn"=>FALSE), CloudinaryTest::DEFAULT_ROOT_PATH . "test");
