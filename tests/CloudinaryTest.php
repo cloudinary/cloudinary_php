@@ -257,13 +257,13 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_overlay_fetch() {
     // should support overlay from a fetch url
-    $options = array("overlay" => "http://cloudinary.com/images/old_logo.png");
+    $options = array("overlay" => "fetch:http://cloudinary.com/images/old_logo.png");
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test");
   }
 
   public function test_underlay_fetch() {
     // should support underlay from a fetch url
-    $options = array("underlay" => "http://cloudinary.com/images/old_logo.png");
+    $options = array("underlay" => "fetch:http://cloudinary.com/images/old_logo.png");
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test");
   }
 
