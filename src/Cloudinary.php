@@ -325,13 +325,20 @@ class Cloudinary {
         return implode("_", array_filter($keywords, 'Cloudinary::is_not_null'));
     }
 
+    /**
+     * Handle overlays.
+     * Overlay properties can came as array or as string.
+     * @param $layer
+     * @param $layer_parameter
+     * @return string
+     */
     private static function process_layer($layer, $layer_parameter) {
-        $fetch = 'fetch:';
-
-        if (is_array($layer)) {
+       // When overlay is array.
+       if (is_array($layer)) {
             $resource_type = Cloudinary::option_get($layer, "resource_type");
             $type = Cloudinary::option_get($layer, "type");
             $text = Cloudinary::option_get($layer, "text");
+            $fetch = Cloudinary::option_get($layer, "fetch");
             $text_style = NULL;
             $public_id = Cloudinary::option_get($layer, "public_id");
             $format = Cloudinary::option_get($layer, "format");
@@ -342,38 +349,54 @@ class Cloudinary {
                 if($format != NULL) $public_id = $public_id . "." . $format;
             }
 
-            if ($text == NULL && $resource_type != "text"){
-                if ($public_id == NULL) {
-                    throw new InvalidArgumentException("Must supply public_id for $resource_type $layer_parameter");
-                }
-                if($resource_type == "subtitles") {
-                    $text_style = Cloudinary::text_style($layer, $layer_parameter);
-                }
+           // Fetch overlay.
+           if (!empty($fetch || $resource_type === "fetch")) {
+             $public_id = NULL;
+             $resource_type = "fetch";
+             $fetch = base64_encode($fetch);
+           }
 
-            } else {
-                $resource_type = "text";
-                $type = NULL; // type is ignored for text layers
-                $text_style = Cloudinary::text_style($layer, $layer_parameter); #FIXME duplicate
-                if($text != NULL) {
-                    if(!($public_id != NULL xor $text_style != NULL)) {
-                        throw new InvalidArgumentException("Must supply either style parameters or a public_id when providing text parameter in a text $layer_parameter");
-                    }
-                    $text = Cloudinary::smart_escape($text);
-                    $text = str_replace("%2C", "%252C", $text);
-                    $text = str_replace("/", "%252F", $text);
-                }
-            }
+           // Text overlay.
+           elseif (!empty($text) || $resource_type === "text") {
+             $resource_type = "text";
+             $type = NULL; // type is ignored for text layers
+             $text_style = Cloudinary::text_style($layer, $layer_parameter); #FIXME duplicate
+             if ($text != NULL) {
+               if (!($public_id != NULL xor $text_style != NULL)) {
+                 throw new InvalidArgumentException("Must supply either style parameters or a public_id when providing text parameter in a text $layer_parameter");
+               }
+               $text = Cloudinary::smart_escape($text);
+               $text = str_replace("%2C", "%252C", $text);
+               $text = str_replace("/", "%252F", $text);
+             }
+           } else {
+             if ($public_id == NULL) {
+               throw new InvalidArgumentException("Must supply public_id for $resource_type $layer_parameter");
+             }
+             if ($resource_type == "subtitles") {
+               $text_style = Cloudinary::text_style($layer, $layer_parameter);
+             }
+           }
+
+            // Build a components array.
             if($resource_type != "image") array_push($components, $resource_type);
             if($type != "upload") array_push($components, $type);
             array_push($components, $text_style);
             array_push($components, $public_id);
             array_push($components, $text);
+            array_push($components, $fetch);
+
+            // Build a valid overlay string.
             $layer = implode(":", array_filter($components, 'Cloudinary::is_not_null'));
-        } elseif (substr($layer, 0, strlen($fetch)) === $fetch) {
-          $url = substr($layer, strlen($fetch));
-          $b64 = base64_encode($url);
-          $layer = $fetch . $b64;
         }
+
+        // Handle fetch overlay from string definition.
+        elseif (substr($layer, 0, strlen('fetch:')) === 'fetch:') {
+          $url = substr($layer, strlen('fetch:'));
+          $b64 = base64_encode($url);
+          $layer = 'fetch:' . $b64;
+        }
+
         return $layer;
     }
 

@@ -831,8 +831,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
             "text with font family and size" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18"),"text:Arial_18:Hello%20World%252C%20Nice%20to%20meet%20you%3F"),
             "text with style" => array(array("text"=>"Hello World, Nice to meet you?", "font_family"=>"Arial", "font_size"=>"18", "font_weight"=>"bold", "font_style"=>"italic", "letter_spacing"=>4),"text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%252C%20Nice%20to%20meet%20you%3F"),
             "subtitles" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_en.srt"),"subtitles:sample_sub_en.srt"),
-            "subtitles with font family and size" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_he.srt", "font_family"=>"Arial", "font_size"=>"40"),"subtitles:Arial_40:sample_sub_he.srt")
-            );
+            "subtitles with font family and size" => array(array("resource_type"=>"subtitles","public_id"=>"sample_sub_he.srt", "font_family"=>"Arial", "font_size"=>"40"),"subtitles:Arial_40:sample_sub_he.srt"),
+            "fetch" => array(array("public_id"=>"logo",'fetch' => 'https://cloudinary.com/images/old_logo.png'), 'fetch:aHR0cHM6Ly9jbG91ZGluYXJ5LmNvbS9pbWFnZXMvb2xkX2xvZ28ucG5n'),
+
+        );
     }
 
     /**
@@ -880,7 +882,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
             "image" => array("image"),
             "video" => array("video"),
             "raw" => array("raw"),
-            "subtitles" => array("subtitles")
+            "subtitles" => array("subtitles"),
         );
     }
 
