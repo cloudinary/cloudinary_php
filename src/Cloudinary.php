@@ -557,11 +557,14 @@ class Cloudinary {
         if ($resource_type == "image" && $type == "upload") {
           $resource_type = "images";
           $type = NULL;
-        } else if ($resource_type == "raw" && $type == "upload") {
+        } else if ($resource_type == "image" && $type == "private") {
+          $resource_type = "private_images";
+          $type = NULL;
+        }  else if ($resource_type == "raw" && $type == "upload") {
           $resource_type = "files";
           $type = NULL;
         } else {
-          throw new InvalidArgumentException("URL Suffix only supported for image/upload and raw/upload");
+          throw new InvalidArgumentException("URL Suffix only supported for image/upload, image/private and raw/upload");
         }
       }
 
