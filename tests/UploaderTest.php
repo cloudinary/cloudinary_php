@@ -182,11 +182,15 @@ namespace Cloudinary {
       
       public function test_context() {
           //should allow sending context
-          $context = array("caption" => "some caption", "alt" => "alternative");
+          $context = array("caption" => "cap=caps", "alt" => "alternative|alt=a");
           $result = Uploader::upload(self::LOGO_PNG, array("context" => $context));
+
           $api = new \Cloudinary\Api();
-          $info = $api->resource($result["public_id"], array("context" => true));
-          $this->assertEquals(array("custom" => $context), $info["context"]);
+          $info = $api->resource($result["public_id"]);
+          $this->assertEquals($context, $info["context"]["custom"]);
+
+          $fields = Curl::$instance->parameters[CURLOPT_POSTFIELDS];
+          $this->assertEquals('caption=cap\=caps|alt=alternative\|alt\=a', $fields['context']);
       }
 
       public function test_context_api() {
