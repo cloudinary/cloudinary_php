@@ -552,7 +552,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
    * @expectedException \Cloudinary\Api\NotFound
    */
   function test33_folder_listing_error() {
-    $this->api->subfolders("test_folder");
+    $this->api->subfolders("I-do-not-exist");
   }
 
   function test34_restore() {
