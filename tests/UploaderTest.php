@@ -188,6 +188,28 @@ namespace Cloudinary {
           $info = $api->resource($result["public_id"], array("context" => true));
           $this->assertEquals(array("custom" => $context), $info["context"]);
       }
+
+      public function test_context_api() {
+        $api = new \Cloudinary\Api();
+        $result = Uploader::upload(self::LOGO_PNG);
+        Uploader::add_context('alt=testAlt|custom=testCustom', $result['public_id']);
+        // fwrite(STDERR, print_r($result['public_id'], TRUE));
+        assertUrl($this, "/image/context");
+        assertPost($this);
+        assertParam($this, "public_ids[0]", $result['public_id']);
+        assertParam($this, "command", "add");
+        assertParam($this, "context", "alt=testAlt|custom=testCustom");
+
+        $info = $api->resource($result["public_id"]);
+        $this->assertEquals(array("custom" => array("alt" => "testAlt", "custom" => "testCustom")), $info["context"]);
+
+        Uploader::remove_all_context($result['public_id']);
+        assertUrl($this, "/image/context");
+        assertGet($this);
+
+        $info = $api->resource($result["public_id"]);
+        $this->assertEquals(false, isset($info["context"]));
+      }
       
       public function test_cl_form_tag() {
           Cloudinary::config(array("cloud_name"=>"test123", "secure_distribution" => NULL, "private_cdn" => FALSE, "api_key" => "1234"));
