@@ -58,6 +58,15 @@ namespace Cloudinary {
         assertParam($this, "to_public_id", "foobar2");
       }
   
+      public function test_rename_to_type() {
+        Curl::mockUpload($this);
+        Uploader::rename("foobar", "foobar", array("to_type" => "private"));
+        assertUrl($this, "/image/rename");
+        assertParam($this, "to_type", "private");
+        assertParam($this, "from_public_id", "foobar");
+        assertParam($this, "to_public_id", "foobar");
+      }
+
       public function test_explicit() {
         Curl::mockUpload($this);
 
@@ -158,7 +167,7 @@ namespace Cloudinary {
       
       public function test_face_coordinates() {
           //should allow sending face and custom coordinates
-          $face_coordinates = array(array(120, 30, 109, 150), array(121, 31, 110, 151));
+          $face_coordinates = array(array(120, 30, 109, 51), array(121, 31, 110, 51));
           $result = Uploader::upload(self::LOGO_PNG, array("face_coordinates" => $face_coordinates, "faces" => TRUE));
           $this->assertEquals($face_coordinates, $result["faces"]);
   

@@ -326,7 +326,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   function test12_transformations() {
     // should allow listing transformations
-    $result = $this->api->transformations();
+    $result = $this->api->transformations(array("max_results" => "500"));
     $transformation = $this->find_by_attr($result["transformations"], "name", "c_scale,w_100");
 
     $this->assertNotEquals($transformation, NULL);
