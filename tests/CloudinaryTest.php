@@ -926,6 +926,54 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
 
+  public function test_akamai_token() {
+  	\Cloudinary::config(array("akamai_key"=>"00112233FF99"));
+	  $token = Cloudinary::generate_akamai_token(
+		  array(
+			  "start_time" => 1111111111,
+			  "acl"        => '/image/*',
+			  "window"     => 300
+		  ) );
+	  $this->assertEquals(
+		  '__cld_token__=st=1111111111~exp=1111111411~acl=/image/*~' .
+		  'hmac=0854e8b6b6a46471a80b2dc28c69bd352d977a67d031755cc6f3486c121b43af',
+		  $token,
+		  "should generate an Akamai token with start_time and window" );
+	  $first_exp = time() + 300;
+	  $token = Cloudinary::generate_akamai_token(
+		  array(
+			  "acl"        => '*',
+			  "window"     => 300
+		  ) );
+	  $second_exp = time() + 300;
+	  preg_match('/exp=(\d+)/', $token, $matches);
+	  $this->assertNotEmpty($matches);
+	  $this->assertNotEmpty($matches[1]);
+	  $expiration = 0+ $matches[1];
+	  $this->assertGreaterThanOrEqual($first_exp, $expiration);
+	  $this->assertLessThanOrEqual($second_exp, $expiration);
+  }
+  public function test_accepts_key() {
+	$this->assertEquals('__cld_token__=exp=10000000~acl=*~' .
+	                   'hmac=030eafb6b19e499659d699b3d43e7595e35e3c0060e8a71904b3b8c8759f4890',
+	                   Cloudinary::generate_akamai_token(
+	                   	array(
+		                    "acl"        => '*',
+		                    "end_time"     => 10000000,
+		                    "key"        => '00aabbff'
+	                    )
+	                   ));
+  }
+	/**
+	 * @expectedException Cloudinary\Error
+	 */
+  public function test_requires_end_time_or_window() {
+	  Cloudinary::generate_akamai_token(
+		  array(
+			  "acl"        => '*'
+		  ) );
+  }
+
   private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array()) {
     $url = Cloudinary::cloudinary_url($source, $options);
     $this->assertEquals($expected_options, $options);

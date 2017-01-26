@@ -1,7 +1,9 @@
 <?php
+require_once 'Akamai.php';
 
 class Cloudinary {
 
+	use \Cloudinary\Akamai;
     const CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
