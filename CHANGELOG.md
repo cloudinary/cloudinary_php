@@ -1,4 +1,18 @@
 
+1.6.0 / 2017-01-30
+==================
+
+New functionality and features
+------------------------------
+
+  * Add Akamai token generator
+
+Other Changes
+-------------
+
+  * Revert using VERSION to set USER_AGENT. Fixes #58.
+  * Fix USER_AGENT version.
+
 1.5.0 / 2017-01-19
 ==================
 
