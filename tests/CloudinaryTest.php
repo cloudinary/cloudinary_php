@@ -965,9 +965,10 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 	                   ));
   }
 	/**
-	 * @expectedException Cloudinary\Error
+	 * @expectedException \Cloudinary\Error
 	 */
   public function test_requires_end_time_or_window() {
+	  \Cloudinary::config(array("akamai_key"=>"00112233FF99"));
 	  Cloudinary::generate_akamai_token(
 		  array(
 			  "acl"        => '*'

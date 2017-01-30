@@ -13,7 +13,7 @@ trait Akamai {
 
 	public static function generate_akamai_token($options=array()){
 		$key = \Cloudinary::option_get($options, "key", \Cloudinary::config_get("akamai_key"));
-		if(!isset($key)) throw new \Exception("Missing akamai_key configuration");
+		if(!isset($key)) throw new \Cloudinary\Error("Missing akamai_key configuration");
 		$name = \Cloudinary::option_get($options, "token_name", "__cld_token__");
 		$start = \Cloudinary::option_get($options, "start_time");
 		$expiration = \Cloudinary::option_get($options, "end_time");
