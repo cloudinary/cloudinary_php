@@ -161,9 +161,13 @@ class Api {
   
   function delete_transformation($transformation, $options=array()) {
     $uri = array("transformations", $this->transformation_string($transformation));
-    return $this->call_api("delete", $uri, array(), $options);    
+    $params = array();
+    if (isset($options["invalidate"]) && $options["invalidate"] == true) {
+      $params["invalidate"] = true;
+    }
+    return $this->call_api("delete", $uri, $params, $options);
   }
-    
+
   # updates - currently only supported update is the "allowed_for_strict" boolean flag
   function update_transformation($transformation, $updates=array(), $options=array()) {
     $uri = array("transformations", $this->transformation_string($transformation));

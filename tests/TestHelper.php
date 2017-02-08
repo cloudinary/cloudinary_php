@@ -181,6 +181,10 @@ END;
       }
     }
 
+    function assertNoParam($test, $name, $message = '') {
+      $fields = Curl::$instance->fields();
+      $test->assertArrayNotHasKey($name, $fields, $message);
+    }
 
     function assertPost($test, $message = "http method should be POST") {
       $test->assertEquals("POST", Curl::$instance->http_method(), $message);
