@@ -162,8 +162,8 @@ class Api {
   function delete_transformation($transformation, $options=array()) {
     $uri = array("transformations", $this->transformation_string($transformation));
     $params = array();
-    if (isset($options["invalidate"]) && $options["invalidate"] == true) {
-      $params["invalidate"] = true;
+    if (isset($options["invalidate"])) {
+      $params["invalidate"] = $options["invalidate"];
     }
     return $this->call_api("delete", $uri, $params, $options);
   }

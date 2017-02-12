@@ -405,13 +405,13 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     assertDelete($this);
     assertParam($this, "invalidate", "1");
 
-    // should not pass 'invalidate' param when 'invalidate' is set to false
+    // should pass 'invalidate' param when 'invalidate' is set to false
     $this->api->delete_transformation("c_scale,w_100,a_90", array("invalidate" => false));
     assertUrl($this, "/transformations/c_scale,w_100,a_90");
     assertDelete($this);
-    assertNoParam($this, "invalidate");
+    assertParam($this, "invalidate", "");
 
-    // should not pass 'invalidate' param by default
+    // should not pass 'invalidate' param if not set
     $this->api->delete_transformation("c_scale,w_100,a_90");
     assertUrl($this, "/transformations/c_scale,w_100,a_90");
     assertDelete($this);
