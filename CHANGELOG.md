@@ -1,4 +1,13 @@
 
+1.6.1 / 2017-02-16
+==================
+
+  * Allow 'invalidate' param in 'delete_transformation'
+  * Upgrade Travis test from 7.0 to 7.1
+  * Merge pull request #61 from dragosprotung/patch-1
+  * Merge pull request #63 from cloudinary/support-invalidate-in-delete-transformation
+  * Deleted stub file
+
 1.6.0 / 2017-01-30
 ==================
 
