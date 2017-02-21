@@ -1,9 +1,8 @@
 <?php
-require_once 'Akamai.php';
+require_once 'AuthToken.php';
 
 class Cloudinary {
 
-	use \Cloudinary\Akamai;
     const CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
     const OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
     const AKAMAI_SHARED_CDN = "res.cloudinary.com";
@@ -495,6 +494,12 @@ class Cloudinary {
         $api_secret = Cloudinary::option_consume($options, "api_secret", Cloudinary::config_get("api_secret"));
         $url_suffix = Cloudinary::option_consume($options, "url_suffix", Cloudinary::config_get("url_suffix"));
         $use_root_path = Cloudinary::option_consume($options, "use_root_path", Cloudinary::config_get("use_root_path"));
+        $auth_token = Cloudinary::option_consume($options, "auth_token");
+        if (is_array($auth_token) ) {
+        	$auth_token = array_merge(self::config_get("auth_token", array()), $auth_token);
+        } elseif (is_null($auth_token)) {
+        	$auth_token = self::config_get("auth_token");
+        }
 
         if (!$private_cdn and !empty($url_suffix)) {
             throw new InvalidArgumentException("URL Suffix only supported in private CDN");
@@ -517,7 +522,7 @@ class Cloudinary {
         $version = $version ? "v" . $version : NULL;
 
         $signature = NULL;
-        if ($sign_url) {
+        if ($sign_url && !$auth_token) {
           $to_sign = implode("/", array_filter(array($transformation, $source_to_sign)));
           $signature = str_replace(array('+','/','='), array('-','_',''), base64_encode(sha1($to_sign . $api_secret, TRUE)));
           $signature = 's--' . substr($signature, 0, 8) . '--';
@@ -526,8 +531,21 @@ class Cloudinary {
         $prefix = Cloudinary::unsigned_download_url_prefix($source, $cloud_name, $private_cdn, $cdn_subdomain, $secure_cdn_subdomain,
           $cname, $secure, $secure_distribution);
 
-        return preg_replace("/([^:])\/+/", "$1/", implode("/", array_filter(array($prefix, $resource_type_and_type,
-          $signature, $transformation, $version, $source))));
+	    $source = preg_replace( "/([^:])\/+/", "$1/", implode( "/", array_filter( array(
+		                                                                              $prefix,
+		                                                                              $resource_type_and_type,
+		                                                                              $signature,
+		                                                                              $transformation,
+		                                                                              $version,
+		                                                                              $source
+	                                                                              ) ) ) );
+
+	    if( $sign_url && $auth_token) {
+	    	$path = parse_url($source, PHP_URL_PATH);
+	    	$token = \Cloudinary\AuthToken::generate(array_merge($auth_token, array( "url" => $path)));
+	    	$source = $source . "?" . $token;
+	    }
+	    return $source;
     }
 
     private static function finalize_source($source, $format, $url_suffix) {
@@ -734,6 +752,24 @@ class Cloudinary {
         return Cloudinary::download_archive_url($options);
     }
 
+	/**
+	 *  Generate an authorization token.
+	 *  Options:
+	 *      string key - the secret key required to sign the token
+	 *      string ip - the IP address of the client
+	 *      number start_time - the start time of the token in seconds from epoch
+	 *      string expiration - the expiration time of the token in seconds from epoch
+	 *      string duration - the duration of the token (from start_time)
+	 *      string acl - the ACL for the token
+	 *      string url - the URL to authentication in case of a URL token
+	 *
+	 * @param array $options token configuration, merge with the global configuration "auth_token".
+	 * @return string the authorization token
+	 */
+    public static function generate_auth_token($options){
+    	$token_options = array_merge(self::config_get("auth_token", array()), $options);
+    	return \Cloudinary\AuthToken::generate($token_options);
+    }
 
     # Returns a Hash of parameters used to create an archive
     # @param [Hash] options
