@@ -74,7 +74,28 @@ namespace Cloudinary {
         $fields = Curl::$instance->fields();
         $this->assertArraySubset(array("type"=>"twitter_name", "eager"=> "c_scale,w_2.0"),$fields);
       }
-  
+
+	  public function test_build_eager() {
+		  $eager = array(
+			  "0" => array(
+				  "0" => array(
+					  "width" => 3204,
+					  "crop"  => "scale"
+				  ),
+			  ),
+			  "1" => array(
+				  "angle" => array(
+					  "0" => 127
+				  ),
+
+				  "format" => "jpg"
+			  )
+
+
+		  );
+		  $this->assertEquals("c_scale,w_3204|a_127/jpg",Cloudinary::build_eager($eager));
+	  }
+
       public function test_eager() {
         Curl::mockUpload($this);
         Uploader::upload(self::LOGO_PNG, array("eager"=>array("crop"=>"scale", "width"=>"2.0")));
