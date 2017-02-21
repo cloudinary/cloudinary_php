@@ -61,7 +61,7 @@ namespace Cloudinary {
 
       public function test_download_zip_url() {
           $result = \Cloudinary::download_zip_url(array("tags"=>$this->tag));
-          $file = tempnam("tmp", "zip");
+          $file = tempnam(".", "zip");
           file_put_contents($file, file_get_contents($result));
           $zip = new \ZipArchive();
           $zip->open($file);
