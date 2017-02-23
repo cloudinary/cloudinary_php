@@ -1,4 +1,13 @@
 
+1.6.2 / 2017-02-23
+==================
+
+  * Add URL authentication.
+  * Rename `auth_token`. 
+  * Support nested values in `CLOUDINARY_URL`
+  * Fix archive test.
+  * Add a test for `build_eager`.
+
 1.6.1 / 2017-02-16
 ==================
 
