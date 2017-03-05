@@ -7,7 +7,7 @@ namespace Cloudinary {
   require_once( 'TestHelper.php');
   use Cloudinary;
   use Exception;
-  use PHPUnit\Framework\TestCase;
+	use PHPUnit\Framework\TestCase;
 
   class UploaderTest extends TestCase {
     const LOGO_PNG = "tests/logo.png";
@@ -31,16 +31,17 @@ namespace Cloudinary {
           Curl::$instance = new Curl();
       }
 
-	  public function test_upload() {
-		  $result = Uploader::upload( self::LOGO_PNG );
-		  switch ( $result["resource_type"] ) {
-			  case "image":
-				  // generate image tag
-				  break;
-			  case "video":
-				  // generate video tag
-				  break;
-		  }
+    public function test_upload() {
+          $result = Uploader::upload(self::LOGO_PNG);
+
+    switch ($result["resource_type"]) {
+      case "image":
+        // generate image tag
+        break;
+      case "video":
+        // generate video tag
+        break;
+    }
 
           $this->assertEquals($result["width"], 241);
           $this->assertEquals($result["height"], 51);
@@ -117,7 +118,7 @@ namespace Cloudinary {
         $fields = Curl::$instance->fields();
         $this->assertArraySubset(array("async"=> TRUE),$fields);
       }
-  
+
       public function test_headers() {
           Uploader::upload(self::LOGO_PNG, array("headers"=>array("Link: 1")));
           Uploader::upload(self::LOGO_PNG, array("headers"=>array("Link" => "1")));
