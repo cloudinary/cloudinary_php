@@ -33,7 +33,6 @@ namespace Cloudinary {
 
     public function test_upload() {
           $result = Uploader::upload(self::LOGO_PNG);
-          print_r($result);
     switch ($result["resource_type"]) {
       case "image":
         // generate image tag
@@ -101,6 +100,13 @@ namespace Cloudinary {
         Uploader::upload(self::LOGO_PNG, array("eager"=>array("crop"=>"scale", "width"=>"2.0")));
         $fields = Curl::$instance->fields();
         $this->assertArraySubset(array("eager"=> "c_scale,w_2.0"),$fields);
+      }
+  
+      public function test_upload_async() {
+        Curl::mockUpload($this);
+        Uploader::upload(self::LOGO_PNG, array("transformation"=>array("crop"=>"scale", "width"=>"2.0"), "async"=>TRUE));
+        $fields = Curl::$instance->fields();
+        $this->assertArraySubset(array("async"=> TRUE),$fields);
       }
   
       public function test_headers() {
