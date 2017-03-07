@@ -110,7 +110,7 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_various_options() {
     // should use x, y, radius, prefix, gravity and quality from $options
     $options = array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => 0.4, "prefix" => "a", "opacity" => 20);
-    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,opacity_20,p_a,q_0.4,r_3,x_1,y_2/test");
     $options = array("gravity" => "auto", "crop" => "crop", "width" => 0.5);
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,g_auto,w_0.5/test");
   }
@@ -926,11 +926,67 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
 
+  public function test_array_should_define_set_of_variables() {
+    $options = array(
+      'if' => "face_count > 2",
+      'crop' => "scale",
+      'width' => '$foo * 200',
+      'variables' => array(
+        '$z' => 5,
+        '$foo' => '$z * 2'
+      ),
+    );
+
+    $t = Cloudinary::generate_transformation_string($options);
+    $this->assertEquals('if_fc_gt_2,$z_5,$foo_$z_mul_2,c_scale,w_$foo_mul_200', $t);
+  }
+
+  public function test_key_should_define_variable() {
+    $options = array(
+      'transformation' => array(
+          array('$foo' => 10),
+          array('if' => "face_count > 2"),
+          array('crop' => "scale", 'width' => '$foo * 200 / face_count'),
+          array('if' => "end"),
+        )
+    );
+
+    $t = Cloudinary::generate_transformation_string($options);
+    $this->assertEquals($t, '$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end');
+  }
+
+  public function test_should_support_text_values() {
+    $e =  array(
+      'effect' => '$efname:100',
+      '$efname' => '!blur!'
+    );
+    $t = Cloudinary::generate_transformation_string($e);
+
+    $this->assertEquals('$efname_!blur!,e_$efname:100', $t);
+  }
+
+  public function test_should_support_string_interpolation() {
+    $this->cloudinary_url_assertion(
+      "sample",
+      array(
+        'crop' => 'scale',
+        'overlay' => array(
+          'text' => '$(start)Hello $(name)$(ext), $(no ) $( no)$(end)',
+          'font_family' => "Arial",
+          'font_size' => "18",
+        ),
+      ),
+      CloudinaryTest::DEFAULT_UPLOAD_PATH . 'c_scale,l_text:Arial_18:$(start)Hello%20$(name)$(ext)%252C%20%24%28no%20%29%20%24%28%20no%29$(end)/sample'
+    );
+  }
+
+
   private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array()) {
     $url = Cloudinary::cloudinary_url($source, $options);
     $this->assertEquals($expected_options, $options);
     $this->assertEquals($expected, $url);
   }
+
 }
 ?>
 

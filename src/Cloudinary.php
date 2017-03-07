@@ -224,29 +224,44 @@ class Cloudinary {
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
         $if = Cloudinary::process_if(Cloudinary::option_consume($options, "if"));
 
+        $aspect_ratio = Cloudinary::option_consume($options, "aspect_ratio");
+        $opacity = Cloudinary::option_consume($options, "opacity");
+        $quality = Cloudinary::option_consume($options, "quality");
+        $radius = Cloudinary::option_consume($options, "radius");
+        $x = Cloudinary::option_consume($options, "x");
+        $y = Cloudinary::option_consume($options, "y");
+        $zoom = Cloudinary::option_consume($options, "zoom");
+
         $params = array(
-          "a"   => $angle,
+          "a"   => self::parse_expression($angle),
+          "ar"  => self::parse_expression($aspect_ratio),
           "b"   => $background,
           "bo"  => $border,
           "c"   => $crop,
           "co"  => $color,
-          "dpr" => $dpr,
+          "dpr" => self::parse_expression($dpr),
           "du"  => $duration,
           "e"   => $effect,
           "eo"  => $end_offset,
           "fl"  => $flags,
-          "h"   => $height,
+          "h"   => self::parse_expression($height),
           "l"   => $overlay,
+          "opacity" => self::parse_expression($opacity),
+          "q"  => self::parse_expression($quality),
+          "r"  => self::parse_expression($radius),
           "so"  => $start_offset,
           "t"   => $named_transformation,
           "u"   => $underlay,
           "vc"  => $video_codec,
-          "w"   => $width);
+          "w"   => self::parse_expression($width),
+          "x"  => self::parse_expression($x),
+          "y"  => self::parse_expression($y),
+          "z"  => self::parse_expression($zoom),
+        );
 
         $simple_params = array(
             "ac" => "audio_codec",
             "af" => "audio_frequency",
-            "ar" => "aspect_ratio",
             "br" => "bit_rate",
             "cs" => "color_space",
             "d"  => "default_image",
@@ -254,31 +269,45 @@ class Cloudinary {
             "dn" => "density",
             "f"  => "fetch_format",
             "g"  => "gravity",
-            "o"  => "opacity",
             "p"  => "prefix",
             "pg" => "page",
-            "q"  => "quality",
-            "r"  => "radius",
             "vs" => "video_sampling",
-            "x"  => "x",
-            "y"  => "y",
-            "z"  => "zoom"
         );
 
         foreach ($simple_params as $param=>$option) {
             $params[$param] = Cloudinary::option_consume($options, $option);
         }
 
+        $variables = !empty($options["variables"]) ? $options["variables"] : [];
+        
+        $var_params = [];
+        foreach($options as $key => $value) {
+          if (preg_match('/^\$/', $key)) {
+            $var_params[] = $key . '_' . self::parse_expression((string)$value);
+          }
+        }
+
+        ksort($var_params);
+
+        if (!empty($variables)) {
+          foreach($variables as $key => $value) {
+            $var_params[] = $key . '_' . self::parse_expression((string)$value);
+            }
+        }
+
+        $variables = join(',', $var_params);
+
+
         $param_filter = function($value) { return $value === 0 || $value === '0' || trim($value) == true; };
         $params = array_filter($params, $param_filter);
         ksort($params);
         if (isset($if)) {
-            $params = array_merge(array("if"=>$if), $params);
+            $if = 'if_' . $if;
         }
         $join_pair = function($key, $value) { return $key . "_" . $value; };
         $transformation = implode(",", array_map($join_pair, array_keys($params), array_values($params)));
         $raw_transformation = Cloudinary::option_consume($options, "raw_transformation");
-        $transformation = implode(",", array_filter(array($transformation, $raw_transformation)));
+        $transformation = implode(",", array_filter(array($if, $variables, $transformation, $raw_transformation)));
         array_push($base_transformations, $transformation);
         if ($responsive_width) {
             $responsive_width_transformation = Cloudinary::config_get("responsive_width_transformation", Cloudinary::$DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION);
@@ -361,9 +390,19 @@ class Cloudinary {
                     if(!($public_id != NULL xor $text_style != NULL)) {
                         throw new InvalidArgumentException("Must supply either style parameters or a public_id when providing text parameter in a text $layer_parameter");
                     }
-                    $text = Cloudinary::smart_escape($text);
-                    $text = str_replace("%2C", "%252C", $text);
-                    $text = str_replace("/", "%252F", $text);
+
+                  $escaped = Cloudinary::smart_escape($text);
+                  $escaped = str_replace("%2C", "%252C", $escaped);
+                  $escaped = str_replace("/", "%252F", $escaped);
+
+                  # Don't encode interpolation expressions e.g. $(variable)
+                  preg_match_all('/\$\([a-zA-Z]\w+\)/', $text, $matches);
+                  foreach ($matches[0] as $match) {
+                    $escaped_match = Cloudinary::smart_escape($match);
+                    $escaped = str_replace($escaped_match, $match, $escaped);
+                  }
+
+                  $text = $escaped;
                 }
             }
             if($resource_type != "image") array_push($components, $resource_type);
@@ -384,13 +423,19 @@ class Cloudinary {
         "<=" => 'lte',
         ">=" => 'gte',
         "&&" => 'and',
-        "||" => 'or');
+        "||" => 'or',
+        "*" => 'mul',
+        "/" => 'div',
+        "+" => 'add',
+        "-" => 'min'
+    );
     private static $IF_PARAMETERS = array(
         "width" => 'w',
         "height" => 'h',
         "page_count" => "pc",
         "face_count" => "fc",
-        "aspect_ratio" => "ar"
+        "aspect_ratio" => "ar",
+        "current_page" => "cp"
     );
 
     private static function translate_if( $source )
@@ -404,16 +449,27 @@ class Cloudinary {
         }
     }
 
-    private  static $IF_REPLACE_RE;
+    private static $IF_REPLACE_RE;
+
     private static function process_if($if) {
-        if (empty(self::$IF_REPLACE_RE)) {
-            self::$IF_REPLACE_RE = '/(' . implode('|', array_keys(self::$IF_PARAMETERS)) . '|[=<>&|!]+)/';
-        }
-        if (isset($if)) {
-            $if = preg_replace('/[ _]+/', '_', $if);
-            $if = preg_replace_callback(self::$IF_REPLACE_RE, array("Cloudinary", "translate_if"), $if);
-        }
+        $if = self::parse_expression($if);
         return $if;
+    }
+
+    private static function parse_expression($exp) {
+      if (preg_match('/^!.+!$/', $exp)) {
+        return $exp;
+      } else {
+        if (empty(self::$IF_REPLACE_RE)) {
+          self::$IF_REPLACE_RE = '/(' . implode('|', array_keys(self::$IF_PARAMETERS)) . '|[=<>&|!*+\-\/]+)/';
+        }
+        if (isset($exp)) {
+          $exp = preg_replace('/[ _]+/', '_', $exp);
+          $exp = preg_replace_callback(self::$IF_REPLACE_RE, array("Cloudinary", "translate_if"), $exp);
+        }
+        return $exp;
+      }
+
     }
 
     private static function process_border($border) {
