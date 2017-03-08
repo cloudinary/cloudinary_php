@@ -255,6 +255,18 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "h_100,u_text:hello,w_100/test");
   }
 
+  public function test_overlay_fetch() {
+    // should support overlay from a fetch url
+    $options = array("overlay" => "fetch:http://cloudinary.com/images/old_logo.png");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test");
+  }
+
+  public function test_underlay_fetch() {
+    // should support underlay from a fetch url
+    $options = array("underlay" => "fetch:http://cloudinary.com/images/old_logo.png");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test");
+  }
+
   public function test_fetch_format() {
     // should support format for fetch urls
     $options = array("format" => "jpg", "type" => "fetch");

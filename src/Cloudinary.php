@@ -331,6 +331,8 @@ class Cloudinary {
     }
 
     private static function process_layer($layer, $layer_parameter) {
+        $fetch = 'fetch:';
+
         if (is_array($layer)) {
             $resource_type = Cloudinary::option_get($layer, "resource_type");
             $type = Cloudinary::option_get($layer, "type");
@@ -372,6 +374,10 @@ class Cloudinary {
             array_push($components, $public_id);
             array_push($components, $text);
             $layer = implode(":", array_filter($components, 'Cloudinary::is_not_null'));
+        } elseif (substr($layer, 0, strlen($fetch)) === $fetch) {
+          $url = substr($layer, strlen($fetch));
+          $b64 = base64_encode($url);
+          $layer = $fetch . $b64;
         }
         return $layer;
     }
