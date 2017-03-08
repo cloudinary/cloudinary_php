@@ -233,30 +233,30 @@ class Cloudinary {
         $zoom = Cloudinary::option_consume($options, "zoom");
 
         $params = array(
-          "a"   => self::parse_expression($angle),
-          "ar"  => self::parse_expression($aspect_ratio),
+          "a"   => self::normalize_expression($angle),
+          "ar"  => self::normalize_expression($aspect_ratio),
           "b"   => $background,
           "bo"  => $border,
           "c"   => $crop,
           "co"  => $color,
-          "dpr" => self::parse_expression($dpr),
+          "dpr" => self::normalize_expression($dpr),
           "du"  => $duration,
-          "e"   => $effect,
+          "e"   => self::normalize_expression($effect),
           "eo"  => $end_offset,
           "fl"  => $flags,
-          "h"   => self::parse_expression($height),
+          "h"   => self::normalize_expression($height),
           "l"   => $overlay,
-          "opacity" => self::parse_expression($opacity),
-          "q"  => self::parse_expression($quality),
-          "r"  => self::parse_expression($radius),
+          "o" => self::normalize_expression($opacity),
+          "q"  => self::normalize_expression($quality),
+          "r"  => self::normalize_expression($radius),
           "so"  => $start_offset,
           "t"   => $named_transformation,
           "u"   => $underlay,
           "vc"  => $video_codec,
-          "w"   => self::parse_expression($width),
-          "x"  => self::parse_expression($x),
-          "y"  => self::parse_expression($y),
-          "z"  => self::parse_expression($zoom),
+          "w"   => self::normalize_expression($width),
+          "x"  => self::normalize_expression($x),
+          "y"  => self::normalize_expression($y),
+          "z"  => self::normalize_expression($zoom),
         );
 
         $simple_params = array(
@@ -283,7 +283,7 @@ class Cloudinary {
         $var_params = [];
         foreach($options as $key => $value) {
           if (preg_match('/^\$/', $key)) {
-            $var_params[] = $key . '_' . self::parse_expression((string)$value);
+            $var_params[] = $key . '_' . self::normalize_expression((string)$value);
           }
         }
 
@@ -291,7 +291,7 @@ class Cloudinary {
 
         if (!empty($variables)) {
           foreach($variables as $key => $value) {
-            $var_params[] = $key . '_' . self::parse_expression((string)$value);
+            $var_params[] = $key . '_' . self::normalize_expression((string)$value);
             }
         }
 
@@ -415,7 +415,7 @@ class Cloudinary {
         return $layer;
     }
 
-    private static $IF_OPERATORS = array(
+    private static $CONDITIONAL_OPERATORS = array(
         "=" => 'eq',
         "!=" => 'ne',
         "<" => 'lt',
@@ -427,23 +427,29 @@ class Cloudinary {
         "*" => 'mul',
         "/" => 'div',
         "+" => 'add',
-        "-" => 'min'
+        "-" => 'sub'
     );
-    private static $IF_PARAMETERS = array(
-        "width" => 'w',
-        "height" => 'h',
-        "page_count" => "pc",
-        "face_count" => "fc",
+    private static $PREDEFINED_VARS = array(
         "aspect_ratio" => "ar",
-        "current_page" => "cp"
+        "current_page" => "cp",
+        "face_count" => "fc",
+        "height" => "h",
+        "initial_aspect_ratio" => "iar",
+        "initial_height" => "ih",
+        "initial_width" => "iw",
+        "page_count" => "pc",
+        "page_x" => "px",
+        "page_y" => "py",
+        "tags" => "tags",
+        "width" => "w"
     );
 
     private static function translate_if( $source )
     {
-        if (isset(self::$IF_OPERATORS[$source[0]])) {
-            return self::$IF_OPERATORS[$source[0]];
-        } elseif (isset(self::$IF_PARAMETERS[$source[0]])) {
-            return self::$IF_PARAMETERS[$source[0]];
+        if (isset(self::$CONDITIONAL_OPERATORS[$source[0]])) {
+            return self::$CONDITIONAL_OPERATORS[$source[0]];
+        } elseif (isset(self::$PREDEFINED_VARS[$source[0]])) {
+            return self::$PREDEFINED_VARS[$source[0]];
         } else {
             return $source[0];
         }
@@ -452,16 +458,16 @@ class Cloudinary {
     private static $IF_REPLACE_RE;
 
     private static function process_if($if) {
-        $if = self::parse_expression($if);
+        $if = self::normalize_expression($if);
         return $if;
     }
 
-    private static function parse_expression($exp) {
+    private static function normalize_expression($exp) {
       if (preg_match('/^!.+!$/', $exp)) {
         return $exp;
       } else {
         if (empty(self::$IF_REPLACE_RE)) {
-          self::$IF_REPLACE_RE = '/(' . implode('|', array_keys(self::$IF_PARAMETERS)) . '|[=<>&|!*+\-\/]+)/';
+          self::$IF_REPLACE_RE = '/(\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*|' . implode('|', array_keys(self::$PREDEFINED_VARS)) . ')/';
         }
         if (isset($exp)) {
           $exp = preg_replace('/[ _]+/', '_', $exp);
