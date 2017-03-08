@@ -326,7 +326,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
 
   function test12_transformations() {
     // should allow listing transformations
-    $result = $this->api->transformations();
+    $result = $this->api->transformations(array("max_results" => "500"));
     $transformation = $this->find_by_attr($result["transformations"], "name", "c_scale,w_100");
 
     $this->assertNotEquals($transformation, NULL);
@@ -393,6 +393,29 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     assertUrl($this, "/transformations/c_scale,w_100");
     assertDelete($this);
 
+  }
+
+  function test_transformation_delete_with_invalidate() {
+    // should allow deleting and invalidating a transformation
+    Curl::mockApi($this);
+
+    // should pass 'invalidate' param when 'invalidate' is set to true
+    $this->api->delete_transformation("c_scale,w_100,a_90", array("invalidate" => true));
+    assertUrl($this, "/transformations/c_scale,w_100,a_90");
+    assertDelete($this);
+    assertParam($this, "invalidate", "1");
+
+    // should pass 'invalidate' param when 'invalidate' is set to false
+    $this->api->delete_transformation("c_scale,w_100,a_90", array("invalidate" => false));
+    assertUrl($this, "/transformations/c_scale,w_100,a_90");
+    assertDelete($this);
+    assertParam($this, "invalidate", "");
+
+    // should not pass 'invalidate' param if not set
+    $this->api->delete_transformation("c_scale,w_100,a_90");
+    assertUrl($this, "/transformations/c_scale,w_100,a_90");
+    assertDelete($this);
+    assertNoParam($this, "invalidate");
   }
 
   function test18_usage() {
@@ -552,7 +575,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
    * @expectedException \Cloudinary\Api\NotFound
    */
   function test33_folder_listing_error() {
-    $this->api->subfolders("test_folder");
+    $this->api->subfolders("I-do-not-exist");
   }
 
   function test34_restore() {
@@ -637,7 +660,7 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, $tr);
 
     $result = $this->api->delete_streaming_profile($name);
-    $result = $this->api->list_streaming_profiles($name);
+    $result = $this->api->list_streaming_profiles();
     $this->assertArrayNotHasKey($name,array_map(function($profile){
       return $profile["name"];
     }, $result["data"]));

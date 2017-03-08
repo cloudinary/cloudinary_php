@@ -348,11 +348,12 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
       $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints_100_1900_20_15", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints_100_1900_20_15/test", array ('responsive' => true));
       $this->cloudinary_url_assertion("test", array( "width" => "auto:breakpoints:json", "crop" => 'fill' ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,w_auto:breakpoints:json/test", array ('responsive' => true));
   }
-  public function test_original_width_and_height() {
-    $options = array("crop" => "crop", "width"=> "ow", "height"=>"oh");
-    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_oh,w_ow/test");
 
+  public function test_initial_width_and_height() {
+    $options = array("crop" => "crop", "width"=> "iw", "height"=>"ih");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_ih,w_iw/test");
   }
+
     public function shared_client_hints($options, $message = ''){
         $tag = cl_image_tag('sample.jpg', $options);
         $this->assertEquals("<img src='http://res.cloudinary.com/test/image/upload/c_scale,dpr_auto,w_auto/sample.jpg' />", $tag, $message);
@@ -405,6 +406,11 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
     // should support width=auto
     $tag = cl_image_tag("hello", array("dpr"=>"auto", "format"=>"png"));
     $this->assertEquals("<img class='cld-hidpi' data-src='http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png'/>", $tag);
+  }
+
+  public function test_e_art_incognito() {
+    $tag = cl_image_tag("hello", array("effect"=>"art:incognito", "format"=>"png"));
+    $this->assertEquals("<img src='http://res.cloudinary.com/test123/image/upload/e_art:incognito/hello.png' />", $tag);
   }
 
   public function test_folder_version() {
@@ -513,6 +519,17 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   public function test_url_suffix_for_raw(){
     //should support url_suffix for raw uploads
     $this->cloudinary_url_assertion("test", array("url_suffix"=>"hello", "private_cdn"=>TRUE, "resource_type"=>"raw"), "http://test123-res.cloudinary.com/files/test/hello");
+  }
+
+  public function test_url_suffix_for_private(){
+    //should support url_suffix for private uploads
+    $this->cloudinary_url_assertion("test",
+      array("url_suffix"=>"hello", "private_cdn"=>TRUE, "resource_type"=>"image", "type" => "private"),
+      "http://test123-res.cloudinary.com/private_images/test/hello");
+
+    $this->cloudinary_url_assertion("test",
+      array("url_suffix"=>"hello", "private_cdn"=>TRUE, "format" => "jpg", "resource_type"=>"image", "type" => "private"),
+      "http://test123-res.cloudinary.com/private_images/test/hello.jpg");
   }
 
   public function test_allow_use_root_path_in_shared() {
@@ -923,11 +940,67 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
   }
 
 
+  public function test_array_should_define_set_of_variables() {
+    $options = array(
+      'if' => "face_count > 2",
+      'crop' => "scale",
+      'width' => '$foo * 200',
+      'variables' => array(
+        '$z' => 5,
+        '$foo' => '$z * 2'
+      ),
+    );
+
+    $t = Cloudinary::generate_transformation_string($options);
+    $this->assertEquals('if_fc_gt_2,$z_5,$foo_$z_mul_2,c_scale,w_$foo_mul_200', $t);
+  }
+
+  public function test_key_should_define_variable() {
+    $options = array(
+      'transformation' => array(
+          array('$foo' => 10),
+          array('if' => "face_count > 2"),
+          array('crop' => "scale", 'width' => '$foo * 200 / face_count'),
+          array('if' => "end"),
+        )
+    );
+
+    $t = Cloudinary::generate_transformation_string($options);
+    $this->assertEquals($t, '$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end');
+  }
+
+  public function test_should_support_text_values() {
+    $e =  array(
+      'effect' => '$efname:100',
+      '$efname' => '!blur!'
+    );
+    $t = Cloudinary::generate_transformation_string($e);
+
+    $this->assertEquals('$efname_!blur!,e_$efname:100', $t);
+  }
+
+  public function test_should_support_string_interpolation() {
+    $this->cloudinary_url_assertion(
+      "sample",
+      array(
+        'crop' => 'scale',
+        'overlay' => array(
+          'text' => '$(start)Hello $(name)$(ext), $(no ) $( no)$(end)',
+          'font_family' => "Arial",
+          'font_size' => "18",
+        ),
+      ),
+      CloudinaryTest::DEFAULT_UPLOAD_PATH . 'c_scale,l_text:Arial_18:$(start)Hello%20$(name)$(ext)%252C%20%24%28no%20%29%20%24%28%20no%29$(end)/sample'
+    );
+  }
+
+
   private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array()) {
     $url = Cloudinary::cloudinary_url($source, $options);
     $this->assertEquals($expected_options, $options);
     $this->assertEquals($expected, $url);
   }
+
 }
 ?>
 
