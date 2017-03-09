@@ -1,4 +1,20 @@
 
+1.7.0 / 2017-03-09
+==================
+
+New functionality and features
+------------------------------
+
+  * User defined variables
+  * Add `async` parameter to upload params (#65)
+  * Add `fetch` prefix to overlay path
+  * Support fetch overlay underlay
+
+Other Changes
+-------------
+
+  * Rename items and add missing variables.
+
 1.6.2 / 2017-02-23
 ==================
 
