@@ -1,7 +1,9 @@
 <?php
-\Cloudinary::config(array(
-    "cloud_name" => "my_cloud_name",
-    "api_key" => "my_api_key",
-    "api_secret" => "my_api_secret"
+
+use Cloudinary\Cloudinary;
+
+Cloudinary::config(array(
+    'cloud_name' => 'my_cloud_name',
+    'api_key' => 'my_api_key',
+    'api_secret' => 'my_api_secret'
 ));
-?>

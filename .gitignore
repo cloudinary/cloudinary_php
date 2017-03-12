@@ -3,4 +3,6 @@ samples/PhotoAlbumCake/Config/CloudinaryPrivate.php
 vendor/
 coverage/
 phpdocs/
+.idea
+dbfile.db
 *.bak

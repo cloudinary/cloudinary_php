@@ -65,11 +65,11 @@ require 'main.php';
         if ($unsigned) {
           # For the sake of simplicity of the sample site, we generate the preset on the fly. It only needs to be created once, in advance.
           $api = new \Cloudinary\Api();
-          $upload_preset = "sample_" . substr(sha1(Cloudinary::config_get("api_key") . Cloudinary::config_get("api_secret")), 0, 10);
+          $upload_preset = "sample_" . substr(sha1(\Cloudinary\Cloudinary::configGet("api_key") . \Cloudinary\Cloudinary::configGet("api_secret")), 0, 10);
           try {
-              $api->upload_preset($upload_preset);
+              $api->uploadPreset($upload_preset);
           } catch (\Cloudinary\Api\NotFound $e) {
-              $api->create_upload_preset(array("name"=>$upload_preset, "unsigned"=>TRUE, "folder"=>"preset_folder"));
+              $api->createUploadPreset(array("name"=>$upload_preset, "unsigned"=>TRUE, "folder"=>"preset_folder"));
           }
           # The callback URL is set to point to an HTML file on the local server which works-around restrictions 
           # in older browsers (e.g., IE) which don't full support CORS.
@@ -130,4 +130,3 @@ require 'main.php';
     </script>
   </body> 
 </html>
-

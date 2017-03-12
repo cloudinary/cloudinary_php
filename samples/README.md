@@ -1,5 +1,4 @@
-Cloudinary PHP Sample Project
-=============================
+# Cloudinary PHP Sample Project
 
 Included in this folder are two sample projects for demonstrating the common Cloudinary's usage in PHP.
 
@@ -7,7 +6,7 @@ Included in this folder are two sample projects for demonstrating the common Clo
 
 ## Installation
 
-The cloudinary\_php package is ready to be used as-is in your Apache server. (other servers are also supported, but the access restrictions set in .htaccess might not work).
+The cloudinary_php package is ready to be used as-is in your Apache server. (other servers are also supported, but the access restrictions set in .htaccess might not work).
 As described in cloudinary\_php main README.md file, you have to set up your Cloudinary credentials either by passing it as the `CLOUDINARY_URL` environment variable or calling Cloudinary::config().
 Each sample tries to include `settings.php` (`Config/CloudinaryPrivate.php` for PhotoAlbumCake) for configuration data - you can use the included `settings.php.sample` as a basis for such file.
 
@@ -17,14 +16,21 @@ This sample is a synchronous script that shows the upload process from local fil
 
 You can access it through http://YOUR\_SERVER/PATH\_TO\_CLOUDINARY\_PHP/samples/basic/basic.php
 
-Another option is available if you are using PHP 5.4 or higher. Go to the `samples/basic` directory and run:
+Another option is available if you are using PHP 5.4 or higher.
 
-    php -S localhost:8001
+First install the library:
 
-Then you can simply browse to:
+```bash
+php composer.phar dump-autoload --optimize
+```
 
-	http://localhost:8001/basic.php
+Then run the basic sample:
 
+```bash
+php -S localhost:8001 -t samples/basic
+```
+
+Then you can simply browse to: [http://localhost:8001/basic.php](http://localhost:8001/basic.php)
 
 ## Photo Album
 
@@ -36,13 +42,21 @@ Make sure to first create a MySQL database (e.g., `create database photo_album`)
 
 You can access it through http://YOUR\_SERVER/PATH\_TO\_CLOUDINARY\_PHP/samples/PhotoAlbum/list.php
 
-Another option is available if you are using PHP 5.4 or higher. Go to the `samples/PhotoAlbum` directory and run:
+Another option is available if you are using PHP 5.4 or higher.
 
-    php -S localhost:8001
+First install the library:
 
-Then you can simply browse to:
+```bash
+php composer.phar dump-autoload --optimize
+```
 
-	http://localhost:8001/list.php
+Then run the basic sample:
+
+```bash
+php -S localhost:8001 -t samples/PhotoAlbum
+```
+
+Then you can simply browse to: [http://localhost:8001/list.php](http://localhost:8001/list.php)
 
 ## Photo Album Cake
 
