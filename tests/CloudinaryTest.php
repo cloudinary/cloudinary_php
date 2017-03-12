@@ -281,8 +281,8 @@ class CloudinaryTest extends PHPUnit_Framework_TestCase {
 
   public function test_effect_with_array() {
     // should support effect with array
-    $options = array("effect" => array("sepia", 10));
-    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "e_sepia:10/test");
+    $options = array("effect" => array("sepia", -10));
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "e_sepia:-10/test");
   }
 
   public function test_density() {
