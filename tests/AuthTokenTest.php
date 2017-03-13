@@ -4,7 +4,9 @@ use Cloudinary\AuthToken;
 $base = realpath( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . '..' );
 require_once( join( DIRECTORY_SEPARATOR, array( $base, 'src', 'Cloudinary.php' ) ) );
 
-class AuthTokenTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class AuthTokenTest extends TestCase {
 	const KEY = "00112233FF99";
 	const ALT_KEY = "CCBB2233FF00";
 

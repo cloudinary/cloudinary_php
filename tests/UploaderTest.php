@@ -7,9 +7,9 @@ namespace Cloudinary {
   require_once( 'TestHelper.php');
   use Cloudinary;
   use Exception;
-  use PHPUnit_Framework_TestCase;
+  use PHPUnit\Framework\TestCase;
 
-  class UploaderTest extends PHPUnit_Framework_TestCase {
+  class UploaderTest extends TestCase {
     const LOGO_PNG = "tests/logo.png";
 
     const TEST_ICO = "tests/favicon.ico";

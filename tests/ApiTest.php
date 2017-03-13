@@ -9,9 +9,9 @@ namespace Cloudinary {
 
   use Cloudinary;
   use Exception;
-  use PHPUnit_Framework_TestCase;
+  use PHPUnit\Framework\TestCase;
 
-class ApiTest extends PHPUnit_Framework_TestCase {
+  class ApiTest extends TestCase {
   static $api_test_tag = "cloudinary_php_test";
   static $initialized = FALSE;
   static $timestamp_tag;
