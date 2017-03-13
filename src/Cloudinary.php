@@ -11,9 +11,9 @@ class Cloudinary {
     const RANGE_VALUE_RE = '/^(?P<value>(\d+\.)?\d+)(?P<modifier>[%pP])?$/';
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';
 
-    const VERSION = "1.7.0";
+    const VERSION = "1.7.1";
     /** @internal Do not change this value */
-    const USER_AGENT = "CloudinaryPHP/1.7.0";
+    const USER_AGENT = "CloudinaryPHP/1.7.1";
 
     /**
      * Additional information to be passed with the USER_AGENT, e.g. "CloudinaryMagento/1.0.1". This value is set in platform-specific

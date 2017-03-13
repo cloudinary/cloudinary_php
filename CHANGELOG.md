@@ -1,4 +1,11 @@
 
+1.7.1 / 2017-03-13
+==================
+
+  * Update phpunit to 5.7.*
+  * Update travis.yml to test 5.6 and 7.0 (matching phpunit)
+  * Don't normalize negative numbers. Fixed #68.
+
 1.7.0 / 2017-03-09
 ==================
 
