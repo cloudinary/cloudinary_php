@@ -967,7 +967,31 @@ class CloudinaryTest extends TestCase {
     );
 
     $t = Cloudinary::generate_transformation_string($options);
-    $this->assertEquals($t, '$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end');
+    $this->assertEquals('$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end', $t);
+  }
+
+  public function test_should_sort_defined_variable() {
+    $options = array(
+          '$second' => 1,
+          '$first' => 2,
+    );
+
+    $t = Cloudinary::generate_transformation_string($options);
+    $this->assertEquals('$first_2,$second_1', $t);
+  }
+
+  public function test_should_place_defined_variables_before_ordered(){
+      $options = array(
+          'variables' => array(
+              '$z' => 5,
+              '$foo' => '$z * 2'
+          ),
+          '$second' => 1,
+          '$first' => 2,
+      );
+
+      $t = Cloudinary::generate_transformation_string($options);
+      $this->assertEquals('$first_2,$second_1,$z_5,$foo_$z_mul_2', $t);
   }
 
   public function test_should_support_text_values() {

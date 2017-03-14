@@ -287,7 +287,7 @@ class Cloudinary {
           }
         }
 
-        ksort($var_params);
+        sort($var_params);
 
         if (!empty($variables)) {
           foreach($variables as $key => $value) {
