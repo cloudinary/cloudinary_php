@@ -177,6 +177,7 @@ class Cloudinary {
 
         $width = Cloudinary::option_get($options, "width");
         $height = Cloudinary::option_get($options, "height");
+        $streaming_profile = Cloudinary::option_get($options, "streaming_profile");
 
         $has_layer = Cloudinary::option_get($options, "underlay") || Cloudinary::option_get($options, "overlay");
         $angle = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "angle")), ".");
@@ -257,6 +258,7 @@ class Cloudinary {
           "x"  => self::normalize_expression($x),
           "y"  => self::normalize_expression($y),
           "z"  => self::normalize_expression($zoom),
+          "sp"  => $streaming_profile,
         );
 
         $simple_params = array(
