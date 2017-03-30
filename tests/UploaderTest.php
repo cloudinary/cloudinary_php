@@ -31,22 +31,28 @@ namespace Cloudinary {
           Curl::$instance = new Curl();
       }
 
-    public function test_upload() {
-          $result = Uploader::upload(self::LOGO_PNG);
-    switch ($result["resource_type"]) {
-      case "image":
-        // generate image tag
-        break;
-      case "video":
-        // generate video tag
-        break;
-    }
+	  public function test_upload() {
+		  $result = Uploader::upload( self::LOGO_PNG );
+		  switch ( $result["resource_type"] ) {
+			  case "image":
+				  // generate image tag
+				  break;
+			  case "video":
+				  // generate video tag
+				  break;
+		  }
 
           $this->assertEquals($result["width"], 241);
           $this->assertEquals($result["height"], 51);
           $expected_signature = Cloudinary::api_sign_request(array("public_id"=>$result["public_id"], "version"=>$result["version"]), Cloudinary::config_get("api_secret"));
           $this->assertEquals($result["signature"], $expected_signature);
-      }
+		  Curl::mockUpload($this);
+
+		  Uploader::upload(self::LOGO_PNG, array("ocr"=>"adv_ocr"));
+		  $fields = Curl::$instance->fields();
+		  $this->assertArraySubset(array("ocr"=>"adv_ocr"),$fields);
+
+	  }
   
       public function test_rename() {
         Curl::mockUpload($this);
@@ -72,6 +78,9 @@ namespace Cloudinary {
         Uploader::explicit("cloudinary", array("type"=>"twitter_name", "eager"=>array("crop"=>"scale", "width"=>"2.0")));
         $fields = Curl::$instance->fields();
         $this->assertArraySubset(array("type"=>"twitter_name", "eager"=> "c_scale,w_2.0"),$fields);
+        Uploader::explicit("cloudinary", array("ocr" => "adv_ocr"));
+        $fields = Curl::$instance->fields();
+        $this->assertArraySubset(array("ocr" => "adv_ocr"),$fields);
       }
 
 	  public function test_build_eager() {
