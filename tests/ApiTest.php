@@ -495,6 +495,13 @@ namespace Cloudinary {
     assertParam($this, "auto_tagging", 0.5);
   }
 
+  function test26_1_ocr() {
+    // should support requesting auto_tagging
+    Curl::mockApi($this);
+    $this->api->update("foobar", array("ocr" => "adv_ocr"));
+    assertParam($this, "ocr", "adv_ocr");
+  }
+
   function test27_start_at() {
       // should allow listing resources by start date
     Curl::mockApi($this);
