@@ -1,4 +1,13 @@
 
+1.7.2 / 2017-04-03
+==================
+
+  * Add update ocr parameters test
+  * Merge pull request #71 from jtabet/fix-floats-issue
+    * Added a number_format on float values in the transformation string
+  * Add ocr parameters tests
+  * Fix variables order. Add variables order tests.
+
 1.7.1 / 2017-03-13
 ==================
 
