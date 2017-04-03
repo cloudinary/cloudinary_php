@@ -490,6 +490,9 @@ class Cloudinary {
     }
 
     private static function normalize_expression($exp) {
+      if (is_float($exp)) {
+          return number_format($exp, 1);
+      }
       if (preg_match('/^!.+!$/', $exp)) {
         return $exp;
       } else {
