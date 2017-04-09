@@ -104,7 +104,6 @@ class Cloudinary {
             unset($options[$option]);
             return $value;
         } else {
-            unset($options[$option]);
             return $default;
         }
     }
