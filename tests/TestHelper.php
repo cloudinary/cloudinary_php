@@ -181,6 +181,13 @@ END;
       }
     }
 
+    function assertJson($test, $actualValue, $expectedValue = NULL, $message = '') {
+      if (strlen($message) == 0) {
+        $message = "should coorectly encode JSON parameters";
+      }
+      $test->assertJsonStringEqualsJsonString($actualValue, $expectedValue, $message);
+    }
+
     function assertNoParam($test, $name, $message = '') {
       $fields = Curl::$instance->fields();
       $test->assertArrayNotHasKey($name, $fields, $message);

@@ -320,7 +320,16 @@ class Api {
 
     if ($method != "get")
     {
-        $post_params = array();
+      $post_params = array();
+      if (array_key_exists("content_type", $options) && $options["content_type"] == 'application/json')
+      {
+        $headers = array( 
+          "Content-type: application/json", 
+          "Accept: application/json", 
+        ); 
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); 
+        $post_params = json_encode($params);
+      } else {
         foreach ($params as $key => $value) {
             if (is_array($value)) {
                 $i = 0;
@@ -332,8 +341,8 @@ class Api {
                 $post_params[$key] = $value;
             }
         }
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
-
+      }
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
     }
     curl_setopt($ch, CURLOPT_HEADER, 1);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
