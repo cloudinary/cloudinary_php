@@ -50,7 +50,7 @@ class Search {
 		});
 	}
 
-	public function execute($options) {
+	public function execute($options = array()) {
 		$api = new Api();
 		$uri = array('resources/search');
 		$options = array_merge($options, array('content_type' => 'application/json'));
