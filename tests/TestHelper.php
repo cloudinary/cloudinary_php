@@ -6,6 +6,13 @@
  * Time: 08:32
  */
 namespace Cloudinary {
+
+    // For compatibility with the new versions of phpunit
+    if (!class_exists('\PHPUnit_Framework_TestCase') &&
+        class_exists('\PHPUnit\Framework\TestCase')) {
+        class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
+    }
+
     /**
      * Class Curl
      * Allows mocking Curl operations in the tests
