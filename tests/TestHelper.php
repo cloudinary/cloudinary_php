@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: amir
- * Date: 02/06/2016
- * Time: 08:32
- */
 namespace Cloudinary {
 
 	const RAW_FILE = "tests/docx.docx";
