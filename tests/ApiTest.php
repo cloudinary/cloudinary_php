@@ -9,9 +9,9 @@ namespace Cloudinary {
 
   use Cloudinary;
   use Exception;
-  use PHPUnit_Framework_TestCase;
+  use PHPUnit\Framework\TestCase;
 
-class ApiTest extends PHPUnit_Framework_TestCase {
+  class ApiTest extends TestCase {
   static $api_test_tag = "cloudinary_php_test";
   static $initialized = FALSE;
   static $timestamp_tag;
@@ -493,6 +493,13 @@ class ApiTest extends PHPUnit_Framework_TestCase {
     assertUrl($this, "/resources/image/upload/foobar");
     assertPost($this);
     assertParam($this, "auto_tagging", 0.5);
+  }
+
+  function test26_1_ocr() {
+    // should support requesting auto_tagging
+    Curl::mockApi($this);
+    $this->api->update("foobar", array("ocr" => "adv_ocr"));
+    assertParam($this, "ocr", "adv_ocr");
   }
 
   function test27_start_at() {
