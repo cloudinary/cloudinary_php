@@ -5,9 +5,9 @@ namespace Cloudinary {
   require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Uploader.php')));
   require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Api.php')));
   require_once( 'TestHelper.php');
-  use PHPUnit_Framework_TestCase;
+  use PHPUnit\Framework\TestCase;
 
-  class ArchiveTest extends PHPUnit_Framework_TestCase {
+  class ArchiveTest extends TestCase {
     public static function setUpBeforeClass() {
       Curl::$instance = new Curl();
     }
