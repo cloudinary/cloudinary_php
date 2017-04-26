@@ -6,6 +6,13 @@
  * Time: 08:32
  */
 namespace Cloudinary {
+
+    // For compatibility with the new versions of phpunit
+    if (!class_exists('\PHPUnit_Framework_TestCase') &&
+        class_exists('\PHPUnit\Framework\TestCase')) {
+        class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
+    }
+
     /**
      * Class Curl
      * Allows mocking Curl operations in the tests
@@ -179,6 +186,13 @@ END;
       if ($expectedValue != NULL) {
         $test->assertEquals($expectedValue, $fields[$name]);
       }
+    }
+
+    function assertJson($test, $actualValue, $expectedValue = NULL, $message = '') {
+      if (strlen($message) == 0) {
+        $message = "should coorectly encode JSON parameters";
+      }
+      $test->assertJsonStringEqualsJsonString($actualValue, $expectedValue, $message);
     }
 
     function assertNoParam($test, $name, $message = '') {
