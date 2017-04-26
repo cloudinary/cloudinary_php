@@ -18,12 +18,19 @@ namespace Cloudinary {
           if (!\Cloudinary::config_get("api_secret")) {
             $this->markTestSkipped("Please setup environment for Search test to run");
           }
-          $this->search = new \Cloudinary\Search();
+          $this->search = new \Cloudinary\Search();      
+          $this->tag = "php_test_" . rand(11111, 99999);
       }
 
+    public function tearDown() {
+          Curl::$instance = new Curl();
+          $api = new \Cloudinary\Api();
+          $api->delete_resources_by_tag($this->tag);
+    }
+
       public function test_empty_query() {
-          $result = $this->search->to_query();
-          $this->assertEmpty($result, "Should generate an empty query JSON");
+        $result = $this->search->to_query();
+        $this->assertEmpty($result, "Should generate an empty query JSON");
       }
 
       public function test_query_with_params() {
@@ -42,6 +49,17 @@ namespace Cloudinary {
           $this->assertEquals(array("format","resource_type"), $result["aggregate"], "Aggregate should be consistent");
           $this->assertArrayHasKey("with_field", $result, "With_field should be present in generated query");
           $this->assertEquals(array("tags","image_metadata"), $result["with_field"], "With_field should be consistent");
+      }
+
+      public function test_integration() {
+        Uploader::upload("tests/logo.png", array("tags"=>array($this->tag), "public_id"=>"sampleImage1"));
+        Uploader::upload("tests/logo.png", array("tags"=>array($this->tag), "public_id"=>"sampleImage2"));
+        Uploader::upload("tests/logo.png", array("tags"=>array($this->tag), "public_id"=>"sampleRaw1", "resource_type"=>"raw"));
+        sleep(4); # indexing is done asynchronously 
+
+        $result = $this->search->expression("tags:".$this->tag)->aggregate("resource_type")->execute();
+        $this->assertEquals($result["total_count"], 3, "should list 3 matching resources");
+        $this->assertEquals($result["aggregations"]["resource_type"]["image"], 2, "should list 2 resources of type image");
       }
 
       public function test_execute_with_params() {
