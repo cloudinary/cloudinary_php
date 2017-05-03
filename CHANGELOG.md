@@ -1,4 +1,19 @@
 
+1.8.0 / 2017-05-03
+==================
+
+New functionality and features
+------------------------------
+
+  * Advanced search API
+  * Add `async` parameter to upload parameters.
+
+Other Changes
+-------------
+
+  * Update tests to use `TestHelper`
+  * Add compatibility for newer PHPUnit versions
+
 1.7.2 / 2017-04-03
 ==================
 
