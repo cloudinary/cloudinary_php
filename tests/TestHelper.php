@@ -10,10 +10,12 @@ namespace Cloudinary {
 	define('UNIQUE_TEST_TAG', TEST_TAG . "_" . SUFFIX);
 
 	// For compatibility with the new versions of phpunit
-    if (!class_exists('\PHPUnit_Framework_TestCase') &&
-        class_exists('\PHPUnit\Framework\TestCase')) {
-        class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
-    }
+	if ( ! class_exists( '\PHPUnit\Framework\TestCase' ) &&
+	     class_exists( '\PHPUnit_Framework_TestCase' )
+	) {
+		/** @noinspection PhpUndefinedClassInspection */
+		class_alias( '\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase' );
+	}
 
     /**
      * Class Curl

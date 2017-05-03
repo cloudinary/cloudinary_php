@@ -9,9 +9,8 @@ namespace Cloudinary {
 
   use Cloudinary;
   use Exception;
-  use PHPUnit\Framework\TestCase;
 
-  class ApiTest extends TestCase {
+  class ApiTest extends \PHPUnit\Framework\TestCase {
   static $api_test_tag = "cloudinary_php_test";
   static $initialized = FALSE;
   static $timestamp_tag;
@@ -25,35 +24,32 @@ namespace Cloudinary {
   static $api_test_upload_preset_2;
   static $api_test_upload_preset_3;
 
-  const LOGO_PNG = "tests/logo.png";
-  const LOGO_SIZE = 3381;
-  const RAW_FILE = "tests/docx.docx";
   static $api_test_transformation = "api_test_transformation";
   static $api_test_transformation_2 = "api_test_transformation2";
   static $api_test_transformation_3 = "api_test_transformation3";
   const URL_QUERY_REGEX = "\??(\w+=\w*&?)*";
-  /** @var  \Cloudinary\Api $api */
+
+	  /** @var  \Cloudinary\Api $api */
   private $api;
 
   public static function setUpBeforeClass()
   {
     Curl::$instance = new Curl();
     if (Cloudinary::config_get("api_secret")) {
-      $random_suffix = "_" . rand(11111, 99999);
-      self::$api_test_tag = self::$api_test_tag . "_". $random_suffix;
-      self::$api_test_upload_preset = "api_test_upload_preset" . $random_suffix;
-      self::$api_test_upload_preset_2 = "api_test_upload_preset2" . $random_suffix;
-      self::$api_test_upload_preset_3 = "api_test_upload_preset3" . $random_suffix;
+      self::$api_test_tag = self::$api_test_tag . "_". SUFFIX;
+      self::$api_test_upload_preset = "api_test_upload_preset" . SUFFIX;
+      self::$api_test_upload_preset_2 = "api_test_upload_preset2" . SUFFIX;
+      self::$api_test_upload_preset_3 = "api_test_upload_preset3" . SUFFIX;
 
-      self::$api_test = "api_test" . $random_suffix;
-      self::$api_test_2 = "api_test2" . $random_suffix;
-      self::$api_test_3 = "api_test,3" . $random_suffix;
-      self::$api_test_4 = "api_test4" . $random_suffix;
-      self::$api_test_5 = "api_test5" . $random_suffix;
+      self::$api_test = "api_test" . SUFFIX;
+      self::$api_test_2 = "api_test2" . SUFFIX;
+      self::$api_test_3 = "api_test,3" . SUFFIX;
+      self::$api_test_4 = "api_test4" . SUFFIX;
+      self::$api_test_5 = "api_test5" . SUFFIX;
 
-      self::$api_test_transformation = "api_test_transformation" . $random_suffix;
-      self::$api_test_transformation_2 = "api_test_transformation2" . $random_suffix;
-      self::$api_test_transformation_3 = "api_test_transformation3" . $random_suffix;
+      self::$api_test_transformation = "api_test_transformation" . SUFFIX;
+      self::$api_test_transformation_2 = "api_test_transformation2" . SUFFIX;
+      self::$api_test_transformation_3 = "api_test_transformation3" . SUFFIX;
 
       self::$timestamp_tag = self::$api_test_tag . "_" . time();
       self::upload_sample_resources();
@@ -144,9 +140,9 @@ namespace Cloudinary {
    */
   protected static function upload_sample_resources()
   {
-    Uploader::upload(self::LOGO_PNG,
+    Uploader::upload(TEST_IMG,
                                  array("public_id" => self::$api_test, "tags" => array(self::$api_test_tag, self::$timestamp_tag), "context" => "key=value", "eager" => array("transformation" => array("width" => 100, "crop" => "scale"))));
-    Uploader::upload(self::LOGO_PNG,
+    Uploader::upload(TEST_IMG,
                                  array("public_id" => self::$api_test_2, "tags" => array(self::$api_test_tag, self::$timestamp_tag), "context" => "key=value", "eager" => array("transformation" => array("width" => 100, "crop" => "scale"))));
   }
 
@@ -252,7 +248,7 @@ namespace Cloudinary {
     $resource = $this->api->resource(self::$api_test);
     $this->assertNotEquals($resource, NULL);
     $this->assertEquals($resource["public_id"], self::$api_test);
-    $this->assertEquals($resource["bytes"], self::LOGO_SIZE);
+    $this->assertEquals($resource["bytes"], LOGO_SIZE);
     $this->assertEquals(count($resource["derived"]), 1);
   }
 
@@ -427,7 +423,7 @@ namespace Cloudinary {
   function test19_delete_derived() {
     // should allow deleting all resources
     $this->markTestSkipped("Not enabled by default - remove this line to test");
-    Uploader::upload(self::LOGO_PNG, array("public_id"=> self::$api_test_5, "eager"=>array("transformation"=>array("width"=> 101,"crop" => "scale"))));
+    Uploader::upload(TEST_IMG, array("public_id"=> self::$api_test_5, "eager"=>array("transformation"=>array("width"=> 101,"crop" => "scale"))));
     $resource = $this->api->resource(self::$api_test_5);
     $this->assertNotEquals($resource, NULL);
     $this->assertEquals(count($resource["derived"]), 1);
@@ -440,7 +436,7 @@ namespace Cloudinary {
 
   function test20_manual_moderation() {
     // should support setting manual moderation status
-    $resource = Uploader::upload(self::LOGO_PNG, array("moderation"=>"manual"));
+    $resource = Uploader::upload(TEST_IMG, array("moderation"=>"manual"));
     $this->assertEquals($resource["moderation"][0]["status"], "pending");
     $this->assertEquals($resource["moderation"][0]["kind"], "manual");
 
@@ -455,7 +451,7 @@ namespace Cloudinary {
    */
   function test22_raw_conversion() {
     // should support requesting raw_convert
-    $resource = Uploader::upload(self::RAW_FILE, array("resource_type"=>"raw"));
+    $resource = Uploader::upload(RAW_FILE, array("resource_type"=>"raw"));
     $this->api->update($resource["public_id"], array("raw_convert" => "illegal", "resource_type"=>"raw"));
   }
 
@@ -566,10 +562,10 @@ namespace Cloudinary {
 
   function test32_folder_listing() {
     $this->markTestSkipped("For this test to work, 'Auto-create folders' should be enabled in the Upload Settings, and the account should be empty of folders. Comment out this line if you really want to test it.");
-    Uploader::upload(self::LOGO_PNG, array("public_id" => "test_folder1/item"));
-    Uploader::upload(self::LOGO_PNG, array("public_id" => "test_folder2/item"));
-    Uploader::upload(self::LOGO_PNG, array("public_id" => "test_folder1/test_subfolder1/item"));
-    Uploader::upload(self::LOGO_PNG, array("public_id" => "test_folder1/test_subfolder2/item"));
+    Uploader::upload(TEST_IMG, array("public_id" => "test_folder1/item"));
+    Uploader::upload(TEST_IMG, array("public_id" => "test_folder2/item"));
+    Uploader::upload(TEST_IMG, array("public_id" => "test_folder1/test_subfolder1/item"));
+    Uploader::upload(TEST_IMG, array("public_id" => "test_folder1/test_subfolder2/item"));
     $result = $this->api->root_folders();
     $this->assertContains(array("name" => "test_folder1", "path" => "test_folder1"), $result["folders"]);
     $this->assertContains(array("name" => "test_folder2", "path" => "test_folder2"), $result["folders"]);

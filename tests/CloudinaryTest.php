@@ -2,7 +2,7 @@
 $base = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..');
 use PHPUnit\Framework\TestCase;
 require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
-class CloudinaryTest extends TestCase {
+class CloudinaryTest extends \PHPUnit\Framework\TestCase {
 
   const DEFAULT_ROOT_PATH = 'http://res.cloudinary.com/test123/';
   const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';

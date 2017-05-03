@@ -14,6 +14,7 @@ namespace Cloudinary {
 
 		public static function setUpBeforeClass() {
 			Curl::$instance = new Curl();
+			\Cloudinary::reset_config();
 			foreach ( range( 1, 3 ) as $i ) {
 				Uploader::upload( TEST_IMG,
 				                  array(
@@ -111,7 +112,6 @@ namespace Cloudinary {
 		public function test_should_return_resource() {
 
 			$results = $this->search->expression( "public_id:" . UNIQUE_TEST_TAG . "_1" )->execute();
-			print_r( $results );
 			$this->assertEquals( count( $results['resources'] ), 1 );
 		}
 
