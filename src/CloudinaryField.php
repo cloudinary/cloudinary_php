@@ -9,14 +9,13 @@ require_once 'PreloadedFile.php';
 
 class CloudinaryField {
     private $_identifier = NULL;
-    private $verifyUpload = false;
 
     public function __construct($identifier = "") {
         $this->_identifier = $identifier;
     }
 
     public function __toString() {
-        return explode("#", $this->identifier())[0];
+        return (string) explode("#", $this->identifier())[0];
     }
 
     public function identifier() {
@@ -26,7 +25,7 @@ class CloudinaryField {
     public function url($options = array()) {
         if (!$this->_identifier) {
             // TODO: Error?
-            return;
+            return null;
         }
         return cloudinary_url($this, $options);
     }
@@ -35,9 +34,6 @@ class CloudinaryField {
         $options['return_error'] = false;
         $ret = \Cloudinary\Uploader::upload($file, $options);
         $preloaded = new \Cloudinary\PreloadedFile(\Cloudinary::signed_preloaded_image($ret));
-        if ($this->verifyUpload && !$preloaded.is_valid()) {
-            throw new \Exception("Error! Couldn't verify cloudinary response!");
-        }
         $this->_identifier = $preloaded->extended_identifier();
     }
 
