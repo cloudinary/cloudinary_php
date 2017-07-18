@@ -7,3 +7,4 @@ samples/basic/settings.php
 samples/PhotoAlbum/settings.php
 *.bak
 .idea
+composer.lock
