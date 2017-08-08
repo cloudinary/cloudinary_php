@@ -24,7 +24,7 @@ namespace Cloudinary {
             if (!\Cloudinary::config_get("api_secret")) {
                 $this->markTestSkipped('Please setup environment for Upload test to run');
             }
-            $this->tag = "php_test_" . rand(11111, 99999);
+            $this->tag = sprintf('php_test_%s', getenv("TRAVIS_JOB_ID") ?: uniqid('', true));
 
             Uploader::upload("tests/logo.png", array("tags" => array($this->tag)));
             Uploader::upload("tests/logo.png", array("tags" => array($this->tag), "width" => 10, "crop" => "scale"));
@@ -43,31 +43,25 @@ namespace Cloudinary {
             $this->assertEquals(2, $result["file_count"]);
         }
 
-        public function test_expires_at()
+        public function testOptionalParams()
         {
-//        Curl::mockUpload($this);
-            Uploader::create_zip(array("tags" => $this->tag, "expires_at" => time() + 3600));
+            Uploader::create_zip(array(
+                    "tags" => $this->tag,
+                    "expires_at" => time() + 3600,
+                    "skip_transformation_name" => true,
+                    "allow_missing" => true
+                )
+            );
             assertUrl($this, '/image/generate_archive');
-            assertParam($this, "target_format", "zip");
+            assertParam($this, "target_format", Uploader::TARGET_FORMAT_ZIP);
             assertParam($this, "tags[0]", $this->tag);
             assertParam($this, "expires_at", null, "should support the 'expires_at' parameter");
-        }
-
-        public function test_skip_transformation_name()
-        {
-            Curl::mockUpload($this);
-            Uploader::create_zip(array("tags" => $this->tag, "skip_transformation_name" => true));
-            assertUrl($this, '/image/generate_archive');
-            assertParam($this, "tags[0]", $this->tag);
-            assertParam($this, "skip_transformation_name", 1, "should support the 'skip_transformation_name' parameter");
-        }
-
-        public function test_allow_missing()
-        {
-            Curl::mockUpload($this);
-            Uploader::create_zip(array("tags" => $this->tag, "allow_missing" => true));
-            assertUrl($this, '/image/generate_archive');
-            assertParam($this, "tags[0]", $this->tag);
+            assertParam(
+                $this,
+                "skip_transformation_name",
+                1,
+                "should support the 'skip_transformation_name' parameter"
+            );
             assertParam($this, "allow_missing", 1, "should support the 'allow_missing' parameter");
         }
 
@@ -79,6 +73,7 @@ namespace Cloudinary {
             $zip = new \ZipArchive();
             $zip->open($file);
             $this->assertEquals(2, $zip->numFiles);
+            $zip->close();
             unlink($file);
         }
     }
