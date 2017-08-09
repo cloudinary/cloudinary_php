@@ -278,9 +278,9 @@ class Cloudinary {
             $params[$param] = Cloudinary::option_consume($options, $option);
         }
 
-        $variables = !empty($options["variables"]) ? $options["variables"] : [];
+        $variables = !empty($options["variables"]) ? $options["variables"] : array();
 
-        $var_params = [];
+        $var_params = array();
         foreach($options as $key => $value) {
           if (preg_match('/^\$/', $key)) {
             $var_params[] = $key . '_' . self::normalize_expression((string)$value);

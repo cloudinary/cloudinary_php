@@ -15,7 +15,8 @@ class CloudinaryField {
     }
 
     public function __toString() {
-        return (string) explode("#", $this->identifier())[0];
+        $exploded = explode("#", $this->identifier());
+        return (string) reset($exploded);
     }
 
     public function identifier() {
