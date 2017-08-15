@@ -1075,6 +1075,16 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end', $t);
     }
 
+    public function test_key_should_define_streaming_profile()
+    {
+        $options = array(
+            'streaming_profile' => 'profile',
+        );
+
+        $t = Cloudinary::generate_transformation_string($options);
+        $this->assertEquals('sp_profile', $t);
+    }
+
     public function test_should_sort_defined_variable()
     {
         $options = array(
