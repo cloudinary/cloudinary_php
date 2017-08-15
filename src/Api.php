@@ -227,7 +227,7 @@ namespace Cloudinary {
                 $uri,
                 array_merge(
                     array("prefix" => $prefix),
-                    $this->only($options, array("keep_original", "next_cursor", "invalidate"))),
+                    $this->only($options, array("keep_original", "next_cursor", "invalidate", "transformation"))),
                 $options
             );
         }
@@ -243,7 +243,7 @@ namespace Cloudinary {
                 $uri,
                 array_merge(
                     array("all" => true),
-                    $this->only($options, array("keep_original", "next_cursor", "invalidate"))
+                    $this->only($options, array("keep_original", "next_cursor", "invalidate", "transformation"))
                 ),
                 $options
             );
@@ -257,7 +257,7 @@ namespace Cloudinary {
             return $this->call_api(
                 "delete",
                 $uri,
-                $this->only($options, array("keep_original", "next_cursor", "invalidate")),
+                $this->only($options, array("keep_original", "next_cursor", "invalidate", "transformation")),
                 $options
             );
         }

@@ -334,10 +334,28 @@ namespace Cloudinary {
             // should allow deleting resources
 
             Curl::mockApi($this);
-            $this->api->delete_resources(array("apit_test", self::$api_test_2, self::$api_test_3), array("transformation" => "c_crop,w_100"));
+            $this->api->delete_resources(
+                array(
+                    "apit_test",
+                    self::$api_test_2,
+                    self::$api_test_3,
+                ),
+                array("transformation" => "c_crop,w_100")
+            );
             assertUrl($this, "/resources/image/upload");
             $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
             assertParam($this, "public_ids[0]", "apit_test");
+            assertParam($this, "transformation", "c_crop,w_100");
+        }
+
+        function test09_delete_all_resources()
+        {
+            Curl::mockApi($this);
+            $this->api->delete_all_resources(
+                array("transformation" => "c_crop,w_100")
+            );
+            assertUrl($this, "/resources/image/upload");
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
             assertParam($this, "transformation", "c_crop,w_100");
         }
 
@@ -345,19 +363,21 @@ namespace Cloudinary {
         {
             // should allow deleting resources
             Curl::mockApi($this);
-            $this->api->delete_resources_by_prefix("fooba");
+            $this->api->delete_resources_by_prefix("fooba", array("transformation" => "c_crop,w_100"));
             assertUrl($this, "/resources/image/upload");
             assertDelete($this);
             assertParam($this, "prefix", "fooba");
+            assertParam($this, "transformation", "c_crop,w_100");
         }
 
         function test09b_delete_resources_by_tag()
         {
             // should allow deleting resources
             Curl::mockApi($this);
-            $this->api->delete_resources_by_tag("api_test_tag_for_delete");
+            $this->api->delete_resources_by_tag("api_test_tag_for_delete", array("transformation" => "c_crop,w_100"));
             assertUrl($this, "/resources/image/tags/api_test_tag_for_delete");
             assertDelete($this);
+            assertParam($this, "transformation", "c_crop,w_100");
         }
 
         function test10_tags()
