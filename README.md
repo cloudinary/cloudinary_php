@@ -22,7 +22,11 @@ Dedicated CakePHP plugin is also available. You can browse the code, installatio
 
 ## Setup ######################################################################
 
-Download cloudinary_php from [here](https://github.com/cloudinary/cloudinary_php/tarball/master)
+You can install through composer with:
+
+`composer require cloudinary/cloudinary_php`
+
+Or download cloudinary_php from [here](https://github.com/cloudinary/cloudinary_php/tarball/master)
 
 *Note: cloudinary_php require PHP 5.3*
 
