@@ -125,6 +125,27 @@ namespace Cloudinary {
             $this->assertArraySubset(array("async" => true), $fields);
         }
 
+        public function test_update_quality_explicit()
+        {
+            Curl::mockUpload($this);
+            $resultFirstUpload = Uploader::upload(TEST_IMG, array("quality_override" => "auto:good"));
+            Uploader::explicit(
+                $resultFirstUpload["public_id"],
+                array("quality_override" => "auto:best", "type" => "upload")
+            );
+            $fields = Curl::$instance->fields();
+            $this->assertArraySubset(array("quality_override" => "auto:best"), $fields);
+        }
+
+        public function test_update_quality_resource()
+        {
+            $result = Uploader::upload(TEST_IMG, array("context" => array("quality_override" => "auto:good")));
+            $api = new \Cloudinary\Api();
+            $api->update($result["public_id"], array("context" => array("quality_override" => "auto:best")));
+            $fields = Curl::$instance->parameters[CURLOPT_POSTFIELDS];
+            $this->assertEquals("quality_override=auto:best", $fields['context']);
+        }
+
         public function test_headers()
         {
             Uploader::upload(TEST_IMG, array("headers" => array("Link: 1")));

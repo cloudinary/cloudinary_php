@@ -43,6 +43,7 @@ namespace Cloudinary {
                 "phash" => \Cloudinary::option_get($options, "phash"),
                 "proxy" => \Cloudinary::option_get($options, "proxy"),
                 "public_id" => \Cloudinary::option_get($options, "public_id"),
+                "quality_override" => \Cloudinary::option_get($options, "quality_override"),
                 "raw_convert" => \Cloudinary::option_get($options, "raw_convert"),
                 "return_delete_token" => \Cloudinary::option_get($options, "return_delete_token"),
                 "similarity_search" => \Cloudinary::option_get($options, "similarity_search"),

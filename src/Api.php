@@ -185,7 +185,9 @@ namespace Cloudinary {
                         "detection",
                         "similarity_search",
                         "auto_tagging",
-                        "background_removal")
+                        "background_removal",
+                        "quality_override"
+                    )
                 ),
                 array(
                     "tags" => $tags ? implode(",", \Cloudinary::build_array($tags)) : $tags,
