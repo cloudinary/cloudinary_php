@@ -401,6 +401,17 @@ TAG
             $this->assertEquals($resource["height"], 1400);
         }
 
+        function test_upload_large_url()
+        {
+            $resource = Uploader::upload_large(
+                TEST_LARGE_IMAGE_URL,
+                array("chunk_size" => 5243000, "tags" => array("upload_large_tag"), "resource_type" => "image")
+            );
+            $this->assertEquals($resource["tags"], array("upload_large_tag"));
+            $this->assertEquals($resource["resource_type"], "image");
+            $this->assertEquals($resource["done"], 1);
+        }
+
         function test_upload_preset()
         {
             // should support unsigned uploading using presets
