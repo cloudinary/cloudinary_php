@@ -76,5 +76,24 @@ namespace Cloudinary {
             $zip->close();
             unlink($file);
         }
+
+        public function test_create_archive_raw_public_ids()
+        {
+            $publicId = "archive_id_" . time();
+            $resource = Uploader::create_archive(
+                array("target_public_id" => $publicId, "tags" => $this->tag, "resource_type" => "image"),
+                Uploader::TARGET_FORMAT_ZIP
+            );
+            $this->assertEquals($resource["resource_type"], "raw");
+            $this->assertEquals(sprintf("%s.zip", $publicId), $resource["public_id"]);
+
+            $resource = Uploader::create_archive(
+                array("public_id" => $publicId, "tags" => $this->tag, "resource_type" => "image"),
+                Uploader::TARGET_FORMAT_ZIP
+            );
+            $this->assertEquals($resource["resource_type"], "raw");
+            $this->assertNotContains($publicId, $resource["public_id"]);
+            $this->assertRegExp("/\\.zip/", $resource["public_id"]);
+        }
     }
 }
