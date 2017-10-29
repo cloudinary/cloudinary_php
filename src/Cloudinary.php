@@ -233,30 +233,31 @@ class Cloudinary {
         $zoom = Cloudinary::option_consume($options, "zoom");
 
         $params = array(
-          "a"   => self::normalize_expression($angle),
-          "ar"  => self::normalize_expression($aspect_ratio),
-          "b"   => $background,
-          "bo"  => $border,
-          "c"   => $crop,
-          "co"  => $color,
-          "dpr" => self::normalize_expression($dpr),
-          "du"  => $duration,
-          "e"   => self::normalize_expression($effect),
-          "eo"  => $end_offset,
-          "fl"  => $flags,
-          "h"   => self::normalize_expression($height),
-          "l"   => $overlay,
-          "o" => self::normalize_expression($opacity),
-          "q"  => self::normalize_expression($quality),
-          "r"  => self::normalize_expression($radius),
-          "so"  => $start_offset,
-          "t"   => $named_transformation,
-          "u"   => $underlay,
-          "vc"  => $video_codec,
-          "w"   => self::normalize_expression($width),
-          "x"  => self::normalize_expression($x),
-          "y"  => self::normalize_expression($y),
-          "z"  => self::normalize_expression($zoom),
+            "a" => self::normalize_expression($angle),
+            "ar" => self::normalize_expression($aspect_ratio),
+            "b" => $background,
+            "bo" => $border,
+            "c" => $crop,
+            "co" => $color,
+            "dpr" => self::normalize_expression($dpr),
+            "du" => $duration,
+            "e" => self::normalize_expression($effect),
+            "eo" => $end_offset,
+            "fl" => $flags,
+            "h" => self::normalize_expression($height),
+            "l" => $overlay,
+            "o" => self::normalize_expression($opacity),
+            "q" => self::normalize_expression($quality),
+            "r" => self::normalize_expression($radius),
+            "so" => $start_offset,
+            "t" => $named_transformation,
+            "u" => $underlay,
+            "vc" => $video_codec,
+            "w" => self::normalize_expression($width),
+            "x" => self::normalize_expression($x),
+            "y" => self::normalize_expression($y),
+            "z" => self::normalize_expression($zoom),
+            "sp" => Cloudinary::option_get($options, "streaming_profile"),
         );
 
         $simple_params = array(
@@ -264,12 +265,12 @@ class Cloudinary {
             "af" => "audio_frequency",
             "br" => "bit_rate",
             "cs" => "color_space",
-            "d"  => "default_image",
+            "d" => "default_image",
             "dl" => "delay",
             "dn" => "density",
-            "f"  => "fetch_format",
-            "g"  => "gravity",
-            "p"  => "prefix",
+            "f" => "fetch_format",
+            "g" => "gravity",
+            "p" => "prefix",
             "pg" => "page",
             "vs" => "video_sampling",
         );
@@ -278,9 +279,9 @@ class Cloudinary {
             $params[$param] = Cloudinary::option_consume($options, $option);
         }
 
-        $variables = !empty($options["variables"]) ? $options["variables"] : [];
+        $variables = !empty($options["variables"]) ? $options["variables"] : array();
 
-        $var_params = [];
+        $var_params = array();
         foreach($options as $key => $value) {
           if (preg_match('/^\$/', $key)) {
             $var_params[] = $key . '_' . self::normalize_expression((string)$value);
