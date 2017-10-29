@@ -212,7 +212,7 @@ namespace Cloudinary {
                 $uri,
                 array_merge(
                     array("public_ids" => $public_ids),
-                    $this->only($options, array("keep_original", "invalidate", "transformation"))
+                    $this->only($options, array("keep_original", "invalidate", "transformation", "transformations",))
                 ),
                 $options
             );
