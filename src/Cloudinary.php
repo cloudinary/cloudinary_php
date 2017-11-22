@@ -251,6 +251,7 @@ class Cloudinary {
           "q"  => self::normalize_expression($quality),
           "r"  => self::normalize_expression($radius),
           "so"  => $start_offset,
+          "sp"  => $streaming_profile,
           "t"   => $named_transformation,
           "u"   => $underlay,
           "vc"  => $video_codec,
@@ -258,7 +259,6 @@ class Cloudinary {
           "x"  => self::normalize_expression($x),
           "y"  => self::normalize_expression($y),
           "z"  => self::normalize_expression($zoom),
-          "sp"  => $streaming_profile,
         );
 
         $simple_params = array(

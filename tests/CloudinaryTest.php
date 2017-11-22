@@ -274,6 +274,12 @@ class CloudinaryTest extends TestCase {
     $this->cloudinary_url_assertion("http://cloudinary.com/images/logo.png", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/f_jpg/http://cloudinary.com/images/logo.png");
   }
 
+  public function streaming_profile() {
+    // should support streaming profile
+    $options = array("streaming_profile" => "some-profile");
+    $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "sp_some-profile/test");
+  }
+
   public function test_effect() {
     // should support effect
     $options = array("effect" => "sepia");
