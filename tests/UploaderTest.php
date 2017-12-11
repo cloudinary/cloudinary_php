@@ -307,6 +307,7 @@ TAG
        * @expectedExceptionMessage Must use
        */
       function test_auto_tagging() {
+          self::markTestSkipped("Marked as skipped because API doesn't sends error anymore");
           // should support requesting auto_tagging 
           Uploader::upload(TEST_IMG, array("auto_tagging" => 0.5));
       }
