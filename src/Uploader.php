@@ -1,8 +1,6 @@
 <?php
 namespace Cloudinary {
 
-    class Error extends \Exception {};  
-
     class Uploader {
         public static function build_upload_params(&$options)
         {
