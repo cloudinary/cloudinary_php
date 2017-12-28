@@ -1119,11 +1119,15 @@ class Cloudinary
         $eager = array();
         foreach (\Cloudinary::build_array($transformations) as $trans) {
             $transformation = $trans;
-            $format = \Cloudinary::option_consume($transformation, "format");
-            $single_eager = implode(
-                "/",
-                array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format))
-            );
+            if (is_string($transformation)) {
+                $single_eager = $transformation;
+            } else {
+                $format = \Cloudinary::option_consume($transformation, "format");
+                $single_eager = implode(
+                    "/",
+                    array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format))
+                );
+            }
             array_push($eager, $single_eager);
         }
 

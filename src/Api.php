@@ -172,10 +172,7 @@ namespace Cloudinary {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
             $type = \Cloudinary::option_get($options, "type", "upload");
             $uri = array("resources", $resource_type, $type);
-            $params = array_merge(
-                array("public_ids" => $public_ids),
-                $this->only($options, array("keep_original", "invalidate", "transformation"))
-            );
+            $params = $this->prepare_delete_resource_params($options, ["public_ids" => $public_ids]);
 
             return $this->call_api("delete", $uri, $params, $options);
         }
@@ -185,10 +182,7 @@ namespace Cloudinary {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
             $type = \Cloudinary::option_get($options, "type", "upload");
             $uri = array("resources", $resource_type, $type);
-            $params = array_merge(
-                array("prefix" => $prefix),
-                $this->only($options, array("keep_original", "next_cursor", "invalidate"))
-            );
+            $params = $this->prepare_delete_resource_params($options, ["prefix" => $prefix]);
 
             return $this->call_api("delete", $uri, $params, $options);
         }
@@ -198,10 +192,7 @@ namespace Cloudinary {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
             $type = \Cloudinary::option_get($options, "type", "upload");
             $uri = array("resources", $resource_type, $type);
-            $params = array_merge(
-                array("all" => true),
-                $this->only($options, array("keep_original", "next_cursor", "invalidate"))
-            );
+            $params = $this->prepare_delete_resource_params($options, ["all" => true]);
 
             return $this->call_api("delete", $uri, $params, $options);
         }
@@ -210,7 +201,7 @@ namespace Cloudinary {
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
             $uri = array("resources", $resource_type, "tags", $tag);
-            $params = $this->only($options, array("keep_original", "next_cursor", "invalidate"));
+            $params = $this->prepare_delete_resource_params($options);
 
             return $this->call_api("delete", $uri, $params, $options);
         }
@@ -622,6 +613,15 @@ namespace Cloudinary {
             }
 
             return $params;
+        }
+
+        protected function prepare_delete_resource_params($options, $params = [])
+        {
+            $filtered = $this->only($options, ["keep_original", "next_cursor", "invalidate"]);
+            if (isset($options["transformations"])) {
+                $filtered["transformations"] = \Cloudinary::build_eager($options["transformations"]);
+            }
+            return array_merge($params, $filtered);
         }
     }
 
