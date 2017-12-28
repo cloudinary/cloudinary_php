@@ -423,6 +423,20 @@ namespace Cloudinary {
             $this->assertEquals($transformation["used"], true);
         }
 
+        public function test_transformations_cursor()
+        {
+            $result = $this->api->transformations(array("max_results" => 1));
+            $this->assertNotEquals($result["transformations"], null);
+            $this->assertEquals(count($result["transformations"]), 1);
+            $this->assertNotEquals($result["next_cursor"], null);
+            $this->assertNotEquals($result["transformations"][0]["name"], null);
+
+            $result2 = $this->api->transformations(array("max_results" => 1, "next_cursor" => $result["next_cursor"]));
+            $this->assertNotEquals($result2["transformations"], null);
+            $this->assertEquals(count($result2["transformations"]), 1);
+            $this->assertNotEquals($result2["transformations"][0]["name"], null);
+        }
+
         public function test_transformation_cursor()
         {
             Curl::mockApi($this);
