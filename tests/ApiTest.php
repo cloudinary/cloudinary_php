@@ -345,6 +345,36 @@ namespace Cloudinary {
             assertParam($this, "transformation", "c_crop,w_100");
         }
 
+        function test09_delete_all_resources()
+        {
+            Curl::mockApi($this);
+            $this->api->delete_all_resources(
+                array("transformation" => "c_crop,w_100")
+            );
+            assertUrl($this, "/resources/image/upload");
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+            assertParam($this, "transformation", "c_crop,w_100");
+        }
+
+        public function test09_delete_resources_with_transformations()
+        {
+            // should allow deleting resources
+
+            Curl::mockApi($this);
+            $this->api->delete_resources(
+                array(
+                    "apit_test",
+                    self::$api_test_2,
+                    self::$api_test_3,
+                ),
+                array("transformations" => array("c_crop,w_100"))
+            );
+            assertUrl($this, "/resources/image/upload");
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+            assertParam($this, "public_ids[0]", "apit_test");
+            assertParam($this, "transformations[0]", "c_crop,w_100");
+        }
+
         public function test09a_delete_resources_by_prefix()
         {
             // should allow deleting resources
