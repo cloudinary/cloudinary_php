@@ -1,8 +1,6 @@
 <?php
 namespace Cloudinary {
 
-    class Error extends \Exception {};  
-
     class Uploader {
         public static function build_upload_params(&$options)
         {
@@ -37,6 +35,7 @@ namespace Cloudinary {
                 "phash" => \Cloudinary::option_get($options, "phash"),
                 "proxy" => \Cloudinary::option_get($options, "proxy"),
                 "public_id" => \Cloudinary::option_get($options, "public_id"),
+                "quality_override" => \Cloudinary::option_get($options, "quality_override"),
                 "raw_convert" => \Cloudinary::option_get($options, "raw_convert"),
                 "return_delete_token" => \Cloudinary::option_get($options, "return_delete_token"),
                 "similarity_search" => \Cloudinary::option_get($options, "similarity_search"),
@@ -63,7 +62,38 @@ namespace Cloudinary {
             return Uploader::call_api("upload", $params, $options, $file);
         }
 
-        // Upload large raw files. Note that public_id should include an extension for best results.
+        /**
+         * Returns file size
+         *
+         * @param string $file
+         *
+         * @return mixed
+         */
+        protected static function get_filesize($file)
+        {
+            if ($file && preg_match('/^ftp:|^https?:/', $file)) {
+                $ch = curl_init($file);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, true);
+                curl_setopt($ch, CURLOPT_NOBODY, true);
+                curl_exec($ch);
+                $size = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+                curl_close($ch);
+
+                return $size;
+            } else {
+                return filesize($file);
+            }
+        }
+
+        /**
+         * Upload large raw files. Note that public_id should include an extension for best results.
+         *
+         * @param $file
+         * @param array $options
+         *
+         * @return mixed|null
+         */
         public static function upload_large($file, $options=array())
         {
             $src = fopen($file, 'r');
@@ -72,7 +102,7 @@ namespace Cloudinary {
             $chunk_size = \Cloudinary::option_get($options, "chunk_size", 20000000);
             $public_id = \Cloudinary::option_get($options, "public_id");
             $index = 0;
-            $file_size = filesize($file);
+            $file_size = Uploader::get_filesize($file);
             while (!feof($src)) {
                 $current_loc = $index * $chunk_size;
                 if ($current_loc >= $file_size) {
