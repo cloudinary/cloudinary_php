@@ -323,13 +323,11 @@ namespace Cloudinary {
 
             Curl::mockApi($this);
             $this->api->delete_resources(
-                array("apit_test", self::$api_test_2, self::$api_test_3),
-                array("transformation" => "c_crop,w_100")
+                array("apit_test", self::$api_test_2, self::$api_test_3)
             );
             assertUrl($this, "/resources/image/upload");
             $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
             assertParam($this, "public_ids[0]", "apit_test");
-            assertParam($this, "transformation", "c_crop,w_100");
         }
 
         public function test09a_delete_resources_by_prefix()
@@ -349,6 +347,28 @@ namespace Cloudinary {
             $this->api->delete_resources_by_tag("api_test_tag_for_delete");
             assertUrl($this, "/resources/image/tags/api_test_tag_for_delete");
             assertDelete($this);
+        }
+
+        public function test09c_delete_resources_by_transformations()
+        {
+            Curl::mockApi($this);
+            $this->api->delete_resources(["api_test", "api_test2"], ["transformations" => "c_crop,w_100"]);
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+            assertParam($this, "transformations", "c_crop,w_100");
+
+            $this->api->delete_all_resources(
+                ["transformations" => ["c_crop,w_100", ["crop" => "scale", "width" => 107]]]
+            );
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+            assertParam($this, "transformations", "c_crop,w_100|c_scale,w_107");
+
+            $this->api->delete_resources_by_prefix("api_test_by", ["transformations" => "c_crop,w_100"]);
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+            assertParam($this, "transformations", "c_crop,w_100");
+
+            $this->api->delete_resources_by_tag("api_test_tag", ["transformations" => "c_crop,w_100"]);
+            $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
+            assertParam($this, "transformations", "c_crop,w_100");
         }
 
         public function test10_tags()
