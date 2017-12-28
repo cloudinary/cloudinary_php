@@ -216,6 +216,12 @@ namespace Cloudinary {
             );
         }
 
+        /**
+         * @param array $derived_resource_ids
+         * @param array $options
+         *
+         * @return Api\Response
+         */
         public function delete_derived_resources($derived_resource_ids, $options = array())
         {
             $uri = array("derived_resources");
@@ -223,6 +229,40 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, array("derived_resource_ids" => $derived_resource_ids), $options);
         }
 
+        /**
+         * @param $derived_resource_ids
+         * @param array|string $transformation
+         * @param array $options
+         *
+         * @return Api\Response
+         */
+        public function delete_derived_by_transformation(
+            $derived_resource_ids,
+            $transformation = array(),
+            $options = array()
+        ) {
+
+            $uri = array("derived_resources");
+
+            $params = array(
+                'derived_resource_ids' => $derived_resource_ids,
+            );
+
+            if (!empty($transformation)) {
+                if (is_array($transformation)) {
+                    $transformation = self::transformation_string($transformation);
+                }
+                $params['transformation'] = $transformation;
+            }
+
+            return $this->call_api("delete", $uri, $params, $options);
+        }
+
+        /**
+         * @param array $options
+         *
+         * @return Api\Response
+         */
         public function tags($options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -493,6 +533,7 @@ namespace Cloudinary {
             $api_secret = \Cloudinary::option_get($options, "api_secret", \Cloudinary::config_get("api_secret"));
             if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
             $api_url = implode("/", array_merge(array($prefix, "v1_1", $cloud_name), $uri));
+
             $params = array_filter($params, function ($v) {
                 return !is_null($v) && ($v !== "");
             });

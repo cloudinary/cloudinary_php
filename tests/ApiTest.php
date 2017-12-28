@@ -319,6 +319,20 @@ namespace Cloudinary {
             assertParam($this, "derived_resource_ids[0]", $derived_resource_id);
         }
 
+        public function test_delete_derived_by_transformation()
+        {
+            // should allow deleting derived resource by transformation
+            // Following commented code provided as reference
+
+            $derived_resource_id = "foobar";
+            Curl::mockApi($this);
+            $this->api->delete_derived_by_transformation(array($derived_resource_id), "c_crop,w_100");
+            assertDelete($this);
+            assertUrl($this, "/derived_resources");
+            assertParam($this, "derived_resource_ids[0]", $derived_resource_id);
+            assertParam($this, "transformation", "c_crop,w_100");
+        }
+
         public function test09_delete_resources()
         {
             // should allow deleting resources
