@@ -317,6 +317,34 @@ namespace Cloudinary {
             assertParam($this, "derived_resource_ids[0]", $derived_resource_id);
         }
 
+        public function test08a_delete_derived_by_transformation()
+        {
+            $public_id = "public_id";
+            $transformations = "c_crop,w_100";
+            Curl::mockApi($this);
+            $this->api->delete_derived_by_transformation(array($public_id), $transformations);
+            assertUrl($this, "/resources/image/upload");
+            assertDelete($this);
+            assertParam($this, "keep_original", true);
+            assertParam($this, "public_ids[0]", $public_id);
+            assertParam($this, "transformations", "c_crop,w_100");
+
+            $transformations = ["crop" => "crop", "width" => 100];
+            $options = ["resource_type" => "raw", "type" => "fetch", "invalidate" => true];
+            $this->api->delete_derived_by_transformation(array($public_id), $transformations, $options);
+            assertDelete($this);
+            assertUrl($this, "/resources/raw/fetch");
+            assertParam($this, "public_ids[0]", $public_id);
+            assertParam($this, "invalidate", true);
+            assertParam($this, "transformations", "c_crop,w_100");
+
+            $transformations = [["crop" => "crop", "width" => 100], ["crop" => "scale", "width" => 300]];
+            $this->api->delete_derived_by_transformation(array($public_id), $transformations);
+            assertDelete($this);
+            assertParam($this, "public_ids[0]", $public_id);
+            assertParam($this, "transformations", "c_crop,w_100|c_scale,w_300");
+        }
+
         public function test09_delete_resources()
         {
             // should allow deleting resources

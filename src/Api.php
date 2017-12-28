@@ -214,6 +214,27 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        public function delete_derived_by_transformation(
+            $public_ids,
+            $transformations = array(),
+            $options = array()
+        ) {
+            $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
+            $type          = \Cloudinary::option_get($options, "type", "upload");
+            $uri           = ["resources", $resource_type, $type];
+            $params = [
+                "public_ids" => $public_ids,
+                "keep_original" => true,
+            ];
+            if (is_array($transformations)) {
+                $params["transformations"] = \Cloudinary::build_eager($transformations);
+            } else {
+                $params["transformations"] = $transformations;
+            }
+            $params = array_merge($params, $this->only($options, ["invalidate"]));
+            return $this->call_api("delete", $uri, $params, $options);
+        }
+
         public function tags($options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
