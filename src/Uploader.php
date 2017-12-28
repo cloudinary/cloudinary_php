@@ -4,6 +4,8 @@ namespace Cloudinary {
 
     class Uploader
     {
+        const REMOTE_URL_REGEX = '/^@|^ftp:|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/';
+
         public static function build_upload_params(&$options)
         {
             $params = array(
@@ -88,6 +90,9 @@ namespace Cloudinary {
         // Upload large raw files. Note that public_id should include an extension for best results.
         public static function upload_large($file, $options = array())
         {
+            if (preg_match(self::REMOTE_URL_REGEX, $file)) {
+                return self::upload($file, $options);
+            }
             $src = fopen($file, 'r');
             $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' . pathinfo($file, PATHINFO_EXTENSION));
             $upload = $upload_id = null;
@@ -349,7 +354,7 @@ namespace Cloudinary {
                 }
             }
             if ($file) {
-                if (!preg_match('/^@|^ftp:|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/', $file)) {
+                if (!preg_match(self::REMOTE_URL_REGEX, $file)) {
                     if (function_exists("curl_file_create")) {
                         $post_params['file'] = curl_file_create($file);
                         $post_params['file']->setPostFilename($file);

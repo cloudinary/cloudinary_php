@@ -439,6 +439,16 @@ TAG
             $this->assertEquals($resource["height"], 1400);
         }
 
+        public function test_upload_large_url()
+        {
+            $file = "http://cloudinary.com/images/old_logo.png";
+            Curl::mockUpload($this);
+            Uploader::upload_large($file);
+            // we can't mock "upload" method due to static modifier,
+            // so we check that file is passed as url
+            assertParam($this, "file", $file);
+        }
+
         public function test_upload_preset()
         {
             // should support unsigned uploading using presets
