@@ -393,6 +393,21 @@ namespace Cloudinary {
             );
         }
 
+        public function test_transformation_cursor_results()
+        {
+            $transformation = "c_scale,w_100";
+            $result = $this->api->transformation($transformation, array("max_results" => 1));
+            $this->assertEquals(count($result["derived"]), 1);
+            $this->assertNotEmpty($result["next_cursor"]);
+
+            $result2 = $this->api->transformation(
+                $transformation,
+                array("max_results" => 1, "next_cursor" => $result["next_cursor"])
+            );
+            $this->assertEquals(count($result2["derived"]), 1);
+            $this->assertNotEquals($result["derived"][0]["id"], $result2["derived"][0]["id"]);
+        }
+
         public function test13_transformation_metadata()
         {
             // should allow getting transformation metadata
