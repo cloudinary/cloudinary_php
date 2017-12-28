@@ -4,3 +4,6 @@ vendor/
 coverage/
 phpdocs/
 *.bak
+bin
+.idea
+composer.lock
