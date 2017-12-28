@@ -148,6 +148,7 @@ namespace Cloudinary {
                     "similarity_search",
                     "auto_tagging",
                     "background_removal",
+                    "quality_override",
                 )
             );
 

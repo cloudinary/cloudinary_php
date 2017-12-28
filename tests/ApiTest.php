@@ -631,6 +631,16 @@ namespace Cloudinary {
             assertParam($this, "ocr", "adv_ocr");
         }
 
+        public function test26_2_quality_override()
+        {
+            Curl::mockApi($this);
+            $values = ['auto:advanced', 'auto:best', '80:420', 'none'];
+            foreach ($values as $value) {
+                $this->api->update("api_test", array("quality_override" => $value));
+                assertParam($this, "quality_override", $value);
+            }
+        }
+
         public function test27_start_at()
         {
             // should allow listing resources by start date
