@@ -124,6 +124,21 @@ namespace Cloudinary {
             $this->assertArraySubset(array("async" => true), $fields);
         }
 
+        public function test_quality_override()
+        {
+            Curl::mockUpload($this);
+            $values = ['auto:advanced', 'auto:best', '80:420', 'none'];
+            foreach ($values as $value) {
+                Uploader::upload(TEST_IMG, ["quality_override" => $value]);
+                assertParam($this, "quality_override", $value);
+                Uploader::explicit(
+                    "api_test",
+                    array("quality_override" => $value, "type" => "upload")
+                );
+                assertParam($this, "quality_override", $value);
+            }
+        }
+
         public function test_headers()
         {
             Curl::mockUpload($this);
