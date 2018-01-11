@@ -243,6 +243,28 @@ namespace Cloudinary {
     assertGet($this);
   }
 
+  function test_resources_by_context(){
+    // should allow listing resources by context key and value(if provided)
+    Curl::mockApi($this);
+    $this->api->resources_by_context("k");
+    assertGet($this);
+    assertUrl($this, "/resources/image/context");
+    assertParam($this, "key", "k");
+    assertNoParam($this, "value");
+
+    $this->api->resources_by_context("k", "");
+    assertGet($this);
+    assertUrl($this, "/resources/image/context");
+    assertParam($this, "key", "k");
+    assertNoParam($this, "value");
+
+    $this->api->resources_by_context("k", "v");
+    assertGet($this);
+    assertUrl($this, "/resources/image/context");
+    assertParam($this, "key", "k");
+    assertParam($this, "value", "v");
+  }
+
   function test07_resource_metadata() {
     // should allow get resource metadata
     $resource = $this->api->resource(self::$api_test);
