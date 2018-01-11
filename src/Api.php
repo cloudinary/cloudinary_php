@@ -61,6 +61,15 @@ class Api {
     return $this->call_api("get", $uri, $this->only($options, array("next_cursor", "max_results", "tags", "context", "moderations", "direction")), $options);    
   }
 
+  function resources_by_context($key, $value=null, $options=array()) {
+    $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
+    $uri = array("resources", $resource_type, "context");
+    $params = $this->only($options, array("next_cursor", "max_results", "tags", "context", "moderations", "direction"));
+    $params["key"] = $key;
+    $params["value"] = $value;
+    return $this->call_api("get", $uri, $params, $options);
+  }
+
   function resources_by_moderation($kind, $status, $options=array()) {
     $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
     $uri = array("resources", $resource_type, "moderations", $kind, $status);
