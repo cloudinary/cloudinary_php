@@ -301,16 +301,7 @@ TAG
           // should support requesting detection 
           Uploader::upload(TEST_IMG, array("detection" => "illegal"));
       }
-    
-      /**
-       * @expectedException \Cloudinary\Error
-       * @expectedExceptionMessage Must use
-       */
-      function test_auto_tagging() {
-          // should support requesting auto_tagging 
-          Uploader::upload(TEST_IMG, array("auto_tagging" => 0.5));
-      }
-      
+
       /**
        * @expectedException \Cloudinary\Error
        * @expectedExceptionMessage Background removal is invalid
