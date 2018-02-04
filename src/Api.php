@@ -317,7 +317,7 @@ class Api {
     if (!$api_key) throw new \InvalidArgumentException("Must supply api_key");
     $api_secret = \Cloudinary::option_get($options, "api_secret", \Cloudinary::config_get("api_secret"));
     if (!$api_secret) throw new \InvalidArgumentException("Must supply api_secret");
-    $api_url = implode("/", array_merge(array($prefix, "v1_1", $cloud_name), $uri));
+    $api_url = implode("/", array_merge(array($prefix, "v1_1", $cloud_name), array_map('rawurlencode', $uri)));
     $params = array_filter($params,function($v){ return !is_null($v) && ($v !== "" );});
     if ($method == "get")
     {
