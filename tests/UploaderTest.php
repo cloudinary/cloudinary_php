@@ -10,8 +10,9 @@ namespace Cloudinary {
 
     use Cloudinary;
     use Exception;
+    use PHPUnit\Framework\TestCase;
 
-    class UploaderTest extends \PHPUnit\Framework\TestCase
+    class UploaderTest extends TestCase
     {
 
         public $url_prefix;
@@ -162,6 +163,20 @@ namespace Cloudinary {
             assertParam($this, "command", "replace");
             assertParam($this, "tag", "tag3");
         }
+
+        /**
+         * Should successfully remove all tags for specified public IDs
+         */
+        public function test_remove_all_tags()
+        {
+            Curl::mockUpload($this);
+            $public_id = UNIQUE_TEST_ID;
+            Uploader::remove_all_tags($public_id);
+            assertPost($this);
+            assertUrl($this, '/image/tags');
+            assertParam($this, "command", "remove_all");
+        }
+
 
         /**
          * Test issue #33 - HTTP 502 when providing a large public ID list
