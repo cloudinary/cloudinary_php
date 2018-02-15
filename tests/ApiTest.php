@@ -450,6 +450,7 @@ namespace Cloudinary {
             );
             $this->api->transformation(self::$api_test_transformation_2);
             $this->api->delete_transformation(self::$api_test_transformation_2);
+            assertDelete($this);
         }
 
         public function test17a_transformation_delete_implicit()
