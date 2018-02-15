@@ -22,6 +22,7 @@ class CloudinaryTest extends TestCase
                 "api_secret" => "b",
                 "secure_distribution" => null,
                 "private_cdn" => false,
+                "cname" => null
             )
         );
     }

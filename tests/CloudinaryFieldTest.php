@@ -10,7 +10,11 @@ class CloudinaryFieldTest extends TestCase
 {
     public function setUp()
     {
-        Cloudinary::config(array("cloud_name" => "test123", "secure_distribution" => null, "private_cdn" => false));
+        Cloudinary::config(array(
+            "cloud_name" => "test123",
+            "secure_distribution" => null,
+            "private_cdn" => false,
+            "cname" => null));
     }
 
     public function test_cloudinary_url_from_cloudinary_field()
