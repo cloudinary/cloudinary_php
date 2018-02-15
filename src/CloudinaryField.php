@@ -7,22 +7,27 @@ require_once 'Cloudinary.php';
 require_once 'Uploader.php';
 require_once 'PreloadedFile.php';
 
-class CloudinaryField {
+class CloudinaryField
+{
     private $_identifier = NULL;
 
-    public function __construct($identifier = "") {
+    public function __construct($identifier = "")
+    {
         $this->_identifier = $identifier;
     }
 
-    public function __toString() {
-        return (string) explode("#", $this->identifier())[0];
+    public function __toString()
+    {
+        return (string)explode("#", $this->identifier())[0];
     }
 
-    public function identifier() {
+    public function identifier()
+    {
         return $this->_identifier;
     }
 
-    public function url($options = array()) {
+    public function url($options = array())
+    {
         if (!$this->_identifier) {
             // TODO: Error?
             return null;
@@ -30,20 +35,23 @@ class CloudinaryField {
         return cloudinary_url($this, $options);
     }
 
-    public function upload($file, $options = array()) {
+    public function upload($file, $options = array())
+    {
         $options['return_error'] = false;
         $ret = \Cloudinary\Uploader::upload($file, $options);
         $preloaded = new \Cloudinary\PreloadedFile(\Cloudinary::signed_preloaded_image($ret));
         $this->_identifier = $preloaded->extended_identifier();
     }
 
-    public function delete() {
+    public function delete()
+    {
         $options['return_error'] = false;
         $ret = \Cloudinary\Uploader::destroy($this->_identifier);
         unset($this->_identifier);
     }
 
-    public function verify() {
+    public function verify()
+    {
         $preloaded = new \Cloudinary\PreloadedFile($this->_identifier);
         return $preloaded->is_valid();
     }
