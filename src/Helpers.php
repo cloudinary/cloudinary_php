@@ -26,8 +26,10 @@ namespace {
 
     function cl_unsigned_image_upload_tag($field, $upload_preset, $options = array())
     {
-        return cl_image_upload_tag($field,
-            array_merge($options, array("unsigned" => TRUE, "upload_preset" => $upload_preset)));
+        return cl_image_upload_tag(
+            $field,
+            array_merge($options, array("unsigned" => true, "upload_preset" => $upload_preset))
+        );
     }
 
     function cl_image_upload_tag($field, $options = array())
@@ -68,12 +70,13 @@ namespace {
 
         $api_url = Cloudinary::cloudinary_api_url("upload", $options);
 
-        $form = "<form enctype='multipart/form-data' action='" . $api_url . "' method='POST' " . Cloudinary::html_attrs($form_options) . ">\n";
+        $form = "<form enctype='multipart/form-data' action='" . $api_url . "' method='POST' " .
+            Cloudinary::html_attrs($form_options) . ">\n";
         foreach ($params as $key => $value) {
             $form .= "<input " . Cloudinary::html_attrs(array(
                     "name" => $key,
                     "value" => $value,
-                    "type" => "hidden"
+                    "type" => "hidden",
                 )) . "/>\n";
         }
         $form .= "</form>\n";
@@ -105,8 +108,11 @@ namespace {
                 array_unshift($classes, $current_class);
             }
             $options["class"] = implode(" ", $classes);
-            $source = Cloudinary::option_consume($options, "responsive_placeholder",
-                Cloudinary::config_get("responsive_placeholder"));
+            $source = Cloudinary::option_consume(
+                $options,
+                "responsive_placeholder",
+                Cloudinary::config_get("responsive_placeholder")
+            );
             if ($source == "blank") {
                 $source = Cloudinary::BLANK;
             }
@@ -253,8 +259,10 @@ namespace {
         if (array_key_exists('poster', $video_options)) {
             if (is_array($video_options['poster'])) {
                 if (array_key_exists('public_id', $video_options['poster'])) {
-                    $video_options['poster'] = cloudinary_url_internal($video_options['poster']['public_id'],
-                        $video_options['poster']);
+                    $video_options['poster'] = cloudinary_url_internal(
+                        $video_options['poster']['public_id'],
+                        $video_options['poster']
+                    );
                 } else {
                     $video_options['poster'] = cl_video_thumbnail_path($source, $video_options['poster']);
                 }
@@ -290,7 +298,6 @@ namespace {
         $html .= Cloudinary::html_attrs($video_options) . '>';
 
         if ($multi_source) {
-
             foreach ($source_types as $source_type) {
                 $transformation = Cloudinary::option_consume($source_transformation, $source_type, array());
                 $transformation = array_merge($options, $transformation);

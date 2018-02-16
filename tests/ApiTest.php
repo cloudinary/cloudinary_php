@@ -13,22 +13,22 @@ namespace Cloudinary {
 
     class ApiTest extends \PHPUnit\Framework\TestCase
     {
-        static $api_test_tag = "cloudinary_php_test";
-        static $initialized = FALSE;
-        static $timestamp_tag;
-        static $api_test;
-        static $api_test_2;
-        static $api_test_3;
-        static $api_test_4;
-        static $api_test_5;
+        protected static $api_test_tag = "cloudinary_php_test";
+        protected static $initialized = false;
+        protected static $timestamp_tag;
+        protected static $api_test;
+        protected static $api_test_2;
+        protected static $api_test_3;
+        protected static $api_test_4;
+        protected static $api_test_5;
 
-        static $api_test_upload_preset;
-        static $api_test_upload_preset_2;
-        static $api_test_upload_preset_3;
+        protected static $api_test_upload_preset;
+        protected static $api_test_upload_preset_2;
+        protected static $api_test_upload_preset_3;
 
-        static $api_test_transformation = "api_test_transformation";
-        static $api_test_transformation_2 = "api_test_transformation2";
-        static $api_test_transformation_3 = "api_test_transformation3";
+        protected static $api_test_transformation = "api_test_transformation";
+        protected static $api_test_transformation_2 = "api_test_transformation2";
+        protected static $api_test_transformation_3 = "api_test_transformation3";
         const URL_QUERY_REGEX = "\??(\w+=\w*&?)*";
 
         /** @var  \Cloudinary\Api $api */
@@ -63,13 +63,11 @@ namespace Cloudinary {
         public function tearDown()
         {
             Curl::$instance = new Curl();
-
         }
 
         public static function tearDownAfterClass()
         {
             if (Cloudinary::config_get("api_secret")) {
-
                 $api = new Cloudinary\Api();
 
 
@@ -80,7 +78,6 @@ namespace Cloudinary {
             } else {
                 self::fail("You need to configure the cloudinary api for the tests to work.");
             }
-
         }
 
 
@@ -106,7 +103,7 @@ namespace Cloudinary {
             $transformations = array(
                 self::$api_test_transformation,
                 self::$api_test_transformation_2,
-                self::$api_test_transformation_3
+                self::$api_test_transformation_3,
             );
 
             foreach ($transformations as $t) {
@@ -116,8 +113,6 @@ namespace Cloudinary {
                 }
 
             }
-
-
         }
 
         /**
@@ -130,7 +125,7 @@ namespace Cloudinary {
                 self::$api_test_upload_preset,
                 self::$api_test_upload_preset_2,
                 self::$api_test_upload_preset_3,
-                "api_test_upload_preset4"
+                "api_test_upload_preset4",
             );
             foreach ($presets as $p) {
                 try {
@@ -138,8 +133,6 @@ namespace Cloudinary {
                 } catch (Exception $e) {
                 }
             }
-
-
         }
 
         /**
@@ -147,20 +140,24 @@ namespace Cloudinary {
          */
         protected static function upload_sample_resources()
         {
-            Uploader::upload(TEST_IMG,
+            Uploader::upload(
+                TEST_IMG,
                 array(
                     "public_id" => self::$api_test,
                     "tags" => array(self::$api_test_tag, self::$timestamp_tag),
                     "context" => "key=value",
-                    "eager" => array("transformation" => array("width" => 100, "crop" => "scale"))
-                ));
-            Uploader::upload(TEST_IMG,
+                    "eager" => array("transformation" => array("width" => 100, "crop" => "scale")),
+                )
+            );
+            Uploader::upload(
+                TEST_IMG,
                 array(
                     "public_id" => self::$api_test_2,
                     "tags" => array(self::$api_test_tag, self::$timestamp_tag),
                     "context" => "key=value",
-                    "eager" => array("transformation" => array("width" => 100, "crop" => "scale"))
-                ));
+                    "eager" => array("transformation" => array("width" => 100, "crop" => "scale")),
+                )
+            );
         }
 
 
@@ -172,27 +169,26 @@ namespace Cloudinary {
             if (!isset($this->api)) {
                 $this->api = new Api();
             }
-
         }
 
-        function find_by_attr($elements, $attr, $value)
+        protected function find_by_attr($elements, $attr, $value)
         {
             foreach ($elements as $element) {
                 if ($element[$attr] == $value) {
                     return $element;
                 }
             }
-            return NULL;
+            return null;
         }
 
-        function test01_resource_types()
+        public function test01_resource_types()
         {
             // should allow listing resource_types
             $result = $this->api->resource_types();
             $this->assertContains("image", $result["resource_types"]);
         }
 
-        function test02_resources()
+        public function test02_resources()
         {
             // should allow listing resources
             Curl::mockApi($this);
@@ -201,21 +197,21 @@ namespace Cloudinary {
             assertUrl($this, "/resources/image");
         }
 
-        function test03_resources_cursor()
+        public function test03_resources_cursor()
         {
             // should allow listing resources with cursor
             $result = $this->api->resources(array("max_results" => 1));
-            $this->assertNotEquals($result["resources"], NULL);
+            $this->assertNotEquals($result["resources"], null);
             $this->assertEquals(count($result["resources"]), 1);
-            $this->assertNotEquals($result["next_cursor"], NULL);
+            $this->assertNotEquals($result["next_cursor"], null);
 
             $result2 = $this->api->resources(array("max_results" => 1, "next_cursor" => $result["next_cursor"]));
-            $this->assertNotEquals($result2["resources"], NULL);
+            $this->assertNotEquals($result2["resources"], null);
             $this->assertEquals(count($result2["resources"]), 1);
             $this->assertNotEquals($result2["resources"][0]["public_id"], $result["resources"][0]["public_id"]);
         }
 
-        function test04_resources_by_type()
+        public function test04_resources_by_type()
         {
             // should allow listing resources by type
             Curl::mockApi($this);
@@ -225,7 +221,7 @@ namespace Cloudinary {
             assertParam($this, "tags", 1);
         }
 
-        function test05_resources_by_prefix()
+        public function test05_resources_by_prefix()
         {
             // should allow listing resources by prefix
             Curl::mockApi($this);
@@ -236,7 +232,7 @@ namespace Cloudinary {
             assertParam($this, "tags", 1);
         }
 
-        function test_resources_by_public_ids()
+        public function test_resources_by_public_ids()
         {
             // should allow listing resources by public ids
             Curl::mockApi($this);
@@ -247,23 +243,27 @@ namespace Cloudinary {
             assertParam($this, "tags", 1);
         }
 
-        function test_resources_direction()
+        public function test_resources_direction()
         {
             // should allow listing resources and specify direction
             Curl::mockApi($this);
-            $this->api->resources_by_tag("foobar",
-                array("type" => "upload", "direction" => "asc"));
+            $this->api->resources_by_tag(
+                "foobar",
+                array("type" => "upload", "direction" => "asc")
+            );
             assertGet($this);
             assertUrl($this, "/resources/image/tags/foobar");
             assertParam($this, "direction", "asc");
-            $this->api->resources_by_tag("foobar",
-                array("type" => "upload", "direction" => "desc"));
+            $this->api->resources_by_tag(
+                "foobar",
+                array("type" => "upload", "direction" => "desc")
+            );
             assertGet($this);
             assertUrl($this, "/resources/image/tags/foobar");
             assertParam($this, "direction", "desc");
         }
 
-        function test06_resources_tag()
+        public function test06_resources_tag()
         {
             // should allow listing resources by tag
             Curl::mockApi($this);
@@ -272,7 +272,7 @@ namespace Cloudinary {
             assertGet($this);
         }
 
-        function test_resources_by_context()
+        public function test_resources_by_context()
         {
             // should allow listing resources by context key and value(if provided)
             Curl::mockApi($this);
@@ -295,26 +295,19 @@ namespace Cloudinary {
             assertParam($this, "value", "v");
         }
 
-        function test07_resource_metadata()
+        public function test07_resource_metadata()
         {
             // should allow get resource metadata
             $resource = $this->api->resource(self::$api_test);
-            $this->assertNotEquals($resource, NULL);
+            $this->assertNotEquals($resource, null);
             $this->assertEquals($resource["public_id"], self::$api_test);
             $this->assertEquals($resource["bytes"], LOGO_SIZE);
             $this->assertEquals(count($resource["derived"]), 1);
         }
 
-        function test08_delete_derived()
+        public function test08_delete_derived()
         {
             // should allow deleting derived resource
-            // Following commented code provided as reference
-
-//    Uploader::upload(self::LOGO_PNG, array("public_id"=>self::$api_test_3, "eager"=>array("transformation"=>array("width"=> 101,"crop" => "scale"))));
-//    $resource = $this->api->resource(self::$api_test_3);
-//    $this->assertNotEquals($resource, NULL);
-//    $this->assertEquals(count($resource["derived"]), 1);
-//    $derived_resource_id = $resource["derived"][0]["id"];
 
             $derived_resource_id = "foobar";
             Curl::mockApi($this);
@@ -322,27 +315,24 @@ namespace Cloudinary {
             assertDelete($this);
             assertUrl($this, "/derived_resources");
             assertParam($this, "derived_resource_ids[0]", $derived_resource_id);
-
-//    $resource = $this->api->resource(self::$api_test_3);
-//    $this->assertNotEquals($resource, NULL);
-//    $this->assertEquals(count($resource["derived"]), 0);
         }
 
-        function test09_delete_resources()
+        public function test09_delete_resources()
         {
             // should allow deleting resources
 
             Curl::mockApi($this);
-            $this->api->delete_resources(array("apit_test", self::$api_test_2, self::$api_test_3),
-                array("transformation" => "c_crop,w_100"));
+            $this->api->delete_resources(
+                array("apit_test", self::$api_test_2, self::$api_test_3),
+                array("transformation" => "c_crop,w_100")
+            );
             assertUrl($this, "/resources/image/upload");
             $this->assertEquals("DELETE", Curl::$instance->http_method(), "http method should be DELETE");
             assertParam($this, "public_ids[0]", "apit_test");
             assertParam($this, "transformation", "c_crop,w_100");
-
         }
 
-        function test09a_delete_resources_by_prefix()
+        public function test09a_delete_resources_by_prefix()
         {
             // should allow deleting resources
             Curl::mockApi($this);
@@ -352,7 +342,7 @@ namespace Cloudinary {
             assertParam($this, "prefix", "fooba");
         }
 
-        function test09b_delete_resources_by_tag()
+        public function test09b_delete_resources_by_tag()
         {
             // should allow deleting resources
             Curl::mockApi($this);
@@ -361,7 +351,7 @@ namespace Cloudinary {
             assertDelete($this);
         }
 
-        function test10_tags()
+        public function test10_tags()
         {
             // should allow listing tags
             Curl::mockApi($this);
@@ -370,7 +360,7 @@ namespace Cloudinary {
             assertGet($this);
         }
 
-        function test11_tags_prefix()
+        public function test11_tags_prefix()
         {
             // should allow listing tag by prefix
             Curl::mockApi($this);
@@ -380,17 +370,17 @@ namespace Cloudinary {
             assertParam($this, "prefix", "fooba");
         }
 
-        function test12_transformations()
+        public function test12_transformations()
         {
             // should allow listing transformations
             $result = $this->api->transformations(array("max_results" => "500"));
             $transformation = $this->find_by_attr($result["transformations"], "name", "c_scale,w_100");
 
-            $this->assertNotEquals($transformation, NULL);
-            $this->assertEquals($transformation["used"], TRUE);
+            $this->assertNotEquals($transformation, null);
+            $this->assertEquals($transformation["used"], true);
         }
 
-        function test_transformation_cursor()
+        public function test_transformation_cursor()
         {
             Curl::mockApi($this);
             $this->api->transformation("c_scale,w_100", array("next_cursor" => "234123132345"));
@@ -399,28 +389,28 @@ namespace Cloudinary {
                 "api->transformation should pass the next_cursor paramter");
         }
 
-        function test13_transformation_metadata()
+        public function test13_transformation_metadata()
         {
             // should allow getting transformation metadata
             $transformation = $this->api->transformation("c_scale,w_100");
-            $this->assertNotEquals($transformation, NULL);
+            $this->assertNotEquals($transformation, null);
             $this->assertEquals($transformation["info"], array(array("crop" => "scale", "width" => 100)));
             $transformation = $this->api->transformation(array("crop" => "scale", "width" => 100));
-            $this->assertNotEquals($transformation, NULL);
+            $this->assertNotEquals($transformation, null);
             $this->assertEquals($transformation["info"], array(array("crop" => "scale", "width" => 100)));
         }
 
-        function test14_transformation_update()
+        public function test14_transformation_update()
         {
             // should allow updating transformation allowed_for_strict
             Curl::mockApi($this);
-            $this->api->update_transformation("c_scale,w_100", array("allowed_for_strict" => TRUE));
+            $this->api->update_transformation("c_scale,w_100", array("allowed_for_strict" => true));
             assertUrl($this, "/transformations/c_scale,w_100");
             assertPut($this);
             assertParam($this, "allowed_for_strict", 1);
         }
 
-        function test15_transformation_create()
+        public function test15_transformation_create()
         {
             // should allow creating named transformation
             Curl::mockApi($this);
@@ -428,42 +418,46 @@ namespace Cloudinary {
             assertUrl($this, "/transformations/" . self::$api_test_transformation);
             assertPost($this);
             assertParam($this, "transformation", "c_scale,w_102");
-
         }
 
-        function test15a_transformation_unsafe_update()
+        public function test15a_transformation_unsafe_update()
         {
             // should allow unsafe update of named transformation
-            $this->api->create_transformation(self::$api_test_transformation_3,
-                array("crop" => "scale", "width" => 102));
-            $this->api->update_transformation(self::$api_test_transformation_3,
-                array("unsafe_update" => array("crop" => "scale", "width" => 103)));
+            $this->api->create_transformation(
+                self::$api_test_transformation_3,
+                array("crop" => "scale", "width" => 102)
+            );
+            $this->api->update_transformation(
+                self::$api_test_transformation_3,
+                array("unsafe_update" => array("crop" => "scale", "width" => 103))
+            );
             $transformation = $this->api->transformation(self::$api_test_transformation_3);
-            $this->assertNotEquals($transformation, NULL);
+            $this->assertNotEquals($transformation, null);
             $this->assertEquals($transformation["info"], array(array("crop" => "scale", "width" => 103)));
-            $this->assertEquals($transformation["used"], FALSE);
+            $this->assertEquals($transformation["used"], false);
         }
 
-        function test16a_transformation_delete()
+        public function test16a_transformation_delete()
         {
             // should allow deleting named transformation
-            $this->api->create_transformation(self::$api_test_transformation_2,
-                array("crop" => "scale", "width" => 103));
+            $this->api->create_transformation(
+                self::$api_test_transformation_2,
+                array("crop" => "scale", "width" => 103)
+            );
             $this->api->transformation(self::$api_test_transformation_2);
             $this->api->delete_transformation(self::$api_test_transformation_2);
         }
 
-        function test17a_transformation_delete_implicit()
+        public function test17a_transformation_delete_implicit()
         {
             // should allow deleting implicit transformation
             Curl::mockApi($this);
             $this->api->delete_transformation("c_scale,w_100");
             assertUrl($this, "/transformations/c_scale,w_100");
             assertDelete($this);
-
         }
 
-        function test_transformation_delete_with_invalidate()
+        public function test_transformation_delete_with_invalidate()
         {
             // should allow deleting and invalidating a transformation
             Curl::mockApi($this);
@@ -487,32 +481,32 @@ namespace Cloudinary {
             assertNoParam($this, "invalidate");
         }
 
-        function test18_usage()
+        public function test18_usage()
         {
             // should allow listing resource_types
             $result = $this->api->usage();
-            $this->assertNotEquals($result["last_updated"], NULL);
+            $this->assertNotEquals($result["last_updated"], null);
         }
 
-        function test19_delete_derived()
+        public function test19_delete_derived()
         {
             // should allow deleting all resources
             $this->markTestSkipped("Not enabled by default - remove this line to test");
             Uploader::upload(TEST_IMG, array(
                 "public_id" => self::$api_test_5,
-                "eager" => array("transformation" => array("width" => 101, "crop" => "scale"))
+                "eager" => array("transformation" => array("width" => 101, "crop" => "scale")),
             ));
             $resource = $this->api->resource(self::$api_test_5);
-            $this->assertNotEquals($resource, NULL);
+            $this->assertNotEquals($resource, null);
             $this->assertEquals(count($resource["derived"]), 1);
-            $this->api->delete_all_resources(array("keep_original" => True));
+            $this->api->delete_all_resources(array("keep_original" => true));
             $resource = $this->api->resource(self::$api_test_5);
-            $this->assertNotEquals($resource, NULL);
+            $this->assertNotEquals($resource, null);
             $this->assertEquals(count($resource["derived"]), 0);
         }
 
 
-        function test20_manual_moderation()
+        public function test20_manual_moderation()
         {
             // should support setting manual moderation status
             $resource = Uploader::upload(TEST_IMG, array("moderation" => "manual"));
@@ -528,7 +522,7 @@ namespace Cloudinary {
          * @expectedException \Cloudinary\Api\BadRequest
          * @expectedExceptionMessage Illegal value
          */
-        function test22_raw_conversion()
+        public function test22_raw_conversion()
         {
             // should support requesting raw_convert
             $resource = Uploader::upload(RAW_FILE, array("resource_type" => "raw"));
@@ -539,7 +533,7 @@ namespace Cloudinary {
          * @expectedException \Cloudinary\Api\BadRequest
          * @expectedExceptionMessage Illegal value
          */
-        function test23_categorization()
+        public function test23_categorization()
         {
             // should support requesting categorization
             $this->api->update(self::$api_test, array("categorization" => "illegal"));
@@ -549,7 +543,7 @@ namespace Cloudinary {
          * @expectedException \Cloudinary\Api\BadRequest
          * @expectedExceptionMessage Illegal value
          */
-        function test24_detection()
+        public function test24_detection()
         {
             // should support requesting detection
             $this->api->update(self::$api_test, array("detection" => "illegal"));
@@ -559,13 +553,13 @@ namespace Cloudinary {
          * @expectedException \Cloudinary\Api\BadRequest
          * @expectedExceptionMessage Illegal value
          */
-        function test25_background_removal()
+        public function test25_background_removal()
         {
             // should support requesting background_removal
             $this->api->update(self::$api_test, array("background_removal" => "illegal"));
         }
 
-        function test26_auto_tagging()
+        public function test26_auto_tagging()
         {
             // should support requesting auto_tagging
             Curl::mockApi($this);
@@ -575,7 +569,7 @@ namespace Cloudinary {
             assertParam($this, "auto_tagging", 0.5);
         }
 
-        function test26_1_ocr()
+        public function test26_1_ocr()
         {
             // should support requesting auto_tagging
             Curl::mockApi($this);
@@ -583,7 +577,7 @@ namespace Cloudinary {
             assertParam($this, "ocr", "adv_ocr");
         }
 
-        function test27_start_at()
+        public function test27_start_at()
         {
             // should allow listing resources by start date
             Curl::mockApi($this);
@@ -595,7 +589,7 @@ namespace Cloudinary {
             assertParam($this, "direction", "asc");
         }
 
-        function test28_create_upload_presets()
+        public function test28_create_upload_presets()
         {
             // should allow creating and listing upload_presets
             Curl::mockApi($this);
@@ -606,7 +600,7 @@ namespace Cloudinary {
             assertParam($this, "folder", "folder");
         }
 
-        function test28a_list_upload_presets()
+        public function test28a_list_upload_presets()
         {
             // should allow creating and listing upload_presets
             Curl::mockApi($this);
@@ -615,21 +609,21 @@ namespace Cloudinary {
             assertGet($this);
         }
 
-        function test29_get_upload_presets()
+        public function test29_get_upload_presets()
         {
             // should allow getting a single upload_preset
             $result = $this->api->create_upload_preset(array(
-                "unsigned" => TRUE,
+                "unsigned" => true,
                 "folder" => "folder",
                 "width" => 100,
                 "crop" => "scale",
                 "tags" => array("a", "b", "c"),
-                "context" => array("a" => "b", "c" => "d")
+                "context" => array("a" => "b", "c" => "d"),
             ));
             $name = $result["name"];
             $preset = $this->api->upload_preset($name);
             $this->assertEquals($preset["name"], $name);
-            $this->assertEquals($preset["unsigned"], TRUE);
+            $this->assertEquals($preset["unsigned"], true);
             $settings = $preset["settings"];
             $this->api->delete_upload_preset($name);
             $this->assertEquals($settings["folder"], "folder");
@@ -638,7 +632,7 @@ namespace Cloudinary {
             $this->assertEquals($settings["tags"], array("a", "b", "c"));
         }
 
-        function test30_delete_upload_presets()
+        public function test30_delete_upload_presets()
         {
             // should allow deleting upload_presets
             Curl::mockApi($this);
@@ -647,11 +641,11 @@ namespace Cloudinary {
             assertDelete($this);
         }
 
-        function test31_update_upload_presets()
+        public function test31_update_upload_presets()
         {
             Curl::mockApi($this);
             $this->api->update_upload_preset("foobar",
-                array("colors" => TRUE, "unsigned" => TRUE, "disallow_public_id" => TRUE));
+                array("colors" => true, "unsigned" => true, "disallow_public_id" => true));
             assertPut($this);
             assertUrl($this, "/upload_presets/foobar");
             assertParam($this, "colors", 1);
@@ -659,7 +653,7 @@ namespace Cloudinary {
             assertParam($this, "disallow_public_id", 1);
         }
 
-        function test32_folder_listing()
+        public function test32_folder_listing()
         {
             $this->markTestSkipped("For this test to work, 'Auto-create folders' should be enabled in the Upload Settings, and the account should be empty of folders. Comment out this line if you really want to test it.");
             Uploader::upload(TEST_IMG, array("public_id" => "test_folder1/item"));
@@ -679,12 +673,12 @@ namespace Cloudinary {
         /**
          * @expectedException \Cloudinary\Api\NotFound
          */
-        function test33_folder_listing_error()
+        public function test33_folder_listing_error()
         {
             $this->api->subfolders("I-do-not-exist");
         }
 
-        function test34_restore()
+        public function test34_restore()
         {
             Curl::mockApi($this);
             $this->api->restore(array("api_test_restore"));
@@ -694,7 +688,7 @@ namespace Cloudinary {
 
         }
 
-        function test35_upload_mapping()
+        public function test35_upload_mapping()
         {
             Curl::mockApi($this);
 
@@ -725,7 +719,7 @@ namespace Cloudinary {
 
         static $predefined_profiles = array("4k", "full_hd", "hd", "sd", "full_hd_wifi", "full_hd_lean", "hd_lean");
 
-        function test_create_streaming_profile()
+        public function test_create_streaming_profile()
         {
 
             $name = self::$api_test . "_streaming_profile";
@@ -736,10 +730,10 @@ namespace Cloudinary {
                             "bit_rate" => "5m",
                             "height" => 1200,
                             "width" => 1200,
-                            "crop" => "limit"
-                        )
-                    )
-                )
+                            "crop" => "limit",
+                        ),
+                    ),
+                ),
             ));
             $this->assertArrayHasKey("representations",
                 $result["data"]);
@@ -754,7 +748,7 @@ namespace Cloudinary {
 
         }
 
-        function test_update_delete_streaming_profile()
+        public function test_update_delete_streaming_profile()
         {
 
             $name = self::$api_test . "_streaming_profile_delete";
@@ -766,10 +760,10 @@ namespace Cloudinary {
                                 "bit_rate" => "5m",
                                 "height" => 1200,
                                 "width" => 1200,
-                                "crop" => "limit"
-                            )
-                        )
-                    )
+                                "crop" => "limit",
+                            ),
+                        ),
+                    ),
                 ));
             } catch (Cloudinary\Api\AlreadyExists $e) {
 
@@ -781,10 +775,10 @@ namespace Cloudinary {
                             "bit_rate" => "5m",
                             "height" => 1000,
                             "width" => 1000,
-                            "crop" => "scale"
-                        )
-                    )
-                )
+                            "crop" => "scale",
+                        ),
+                    ),
+                ),
             ));
             $this->assertArrayHasKey("representations",
                 $result["data"]);
@@ -804,7 +798,7 @@ namespace Cloudinary {
             }, $result["data"]));
         }
 
-        function test_get_streaming_profile()
+        public function test_get_streaming_profile()
         {
 
             $result = $this->api->get_streaming_profile(self::$predefined_profiles[0]);
@@ -822,7 +816,7 @@ namespace Cloudinary {
             $this->assertArrayHasKey("crop", $tr);
         }
 
-        function test_list_streaming_profile()
+        public function test_list_streaming_profile()
         {
 
             $result = $this->api->list_streaming_profiles();
@@ -832,7 +826,7 @@ namespace Cloudinary {
             $this->assertEmpty(array_diff(self::$predefined_profiles, $names));
         }
 
-        function test_update_parameters()
+        public function test_update_parameters()
         {
             Curl::mockApi($this);
 

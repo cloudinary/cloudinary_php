@@ -19,8 +19,8 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             "cloud_name" => "test123",
             "api_key" => "a",
             "api_secret" => "b",
-            "secure_distribution" => NULL,
-            "private_cdn" => FALSE
+            "secure_distribution" => null,
+            "private_cdn" => false,
         ));
     }
 
@@ -53,14 +53,14 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_secure_distribution()
     {
         // should use default secure distribution if secure=TRUE
-        $options = array("secure" => TRUE);
+        $options = array("secure" => true);
         $this->cloudinary_url_assertion("test", $options, "https://res.cloudinary.com/test123/image/upload/test");
     }
 
     public function test_secure_distribution_overwrite()
     {
         // should allow overwriting secure distribution if secure=TRUE
-        $options = array("secure" => TRUE, "secure_distribution" => "something.else.com");
+        $options = array("secure" => true, "secure_distribution" => "something.else.com");
         $this->cloudinary_url_assertion("test", $options, "https://something.else.com/test123/image/upload/test");
     }
 
@@ -68,7 +68,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         // should take secure distribution from config if secure=TRUE
         Cloudinary::config(array("secure_distribution" => "config.secure.distribution.com"));
-        $options = array("secure" => TRUE);
+        $options = array("secure" => true);
         $this->cloudinary_url_assertion("test", $options,
             "https://config.secure.distribution.com/test123/image/upload/test");
     }
@@ -76,35 +76,35 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_secure_akamai()
     {
         // should default to akamai if secure is given with private_cdn and no secure_distribution
-        $options = array("secure" => TRUE, "private_cdn" => TRUE);
+        $options = array("secure" => true, "private_cdn" => true);
         $this->cloudinary_url_assertion("test", $options, "https://test123-res.cloudinary.com/image/upload/test");
     }
 
     public function test_secure_non_akamai()
     {
         // should not add cloud_name if private_cdn and secure non akamai secure_distribution
-        $options = array("secure" => TRUE, "private_cdn" => TRUE, "secure_distribution" => "something.cloudfront.net");
+        $options = array("secure" => true, "private_cdn" => true, "secure_distribution" => "something.cloudfront.net");
         $this->cloudinary_url_assertion("test", $options, "https://something.cloudfront.net/image/upload/test");
     }
 
     public function test_http_private_cdn()
     {
         // should not add cloud_name if private_cdn and not secure
-        $options = array("private_cdn" => TRUE);
+        $options = array("private_cdn" => true);
         $this->cloudinary_url_assertion("test", $options, "http://test123-res.cloudinary.com/image/upload/test");
     }
 
     public function test_secure_shared_subdomain()
     {
         // should support cdn_subdomain with secure on if using shared_domain
-        $options = array("cdn_subdomain" => TRUE, "secure" => TRUE);
+        $options = array("cdn_subdomain" => true, "secure" => true);
         $this->cloudinary_url_assertion("test", $options, "https://res-2.cloudinary.com/test123/image/upload/test");
     }
 
     public function test_secure_shared_subdomain_false()
     {
         // should support secure_cdn_subdomain false override with secure
-        $options = array("cdn_subdomain" => TRUE, "secure" => TRUE, "secure_cdn_subdomain" => FALSE);
+        $options = array("cdn_subdomain" => true, "secure" => true, "secure_cdn_subdomain" => false);
         $this->cloudinary_url_assertion("test", $options, "https://res.cloudinary.com/test123/image/upload/test");
     }
 
@@ -112,10 +112,10 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         // should support secure_cdn_subdomain true override with secure
         $options = array(
-            "cdn_subdomain" => TRUE,
-            "secure" => TRUE,
-            "secure_cdn_subdomain" => TRUE,
-            "private_cdn" => TRUE
+            "cdn_subdomain" => true,
+            "secure" => true,
+            "secure_cdn_subdomain" => true,
+            "private_cdn" => true,
         );
         $this->cloudinary_url_assertion("test", $options, "https://test123-res-2.cloudinary.com/image/upload/test");
     }
@@ -150,7 +150,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             "gravity" => "center",
             "quality" => 0.4,
             "prefix" => "a",
-            "opacity" => 20
+            "opacity" => 20,
         );
         $this->cloudinary_url_assertion("test", $options,
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,o_20,p_a,q_0.4,r_3,x_1,y_2/test");
@@ -192,7 +192,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             "height" => "",
             "crop" => ' ',
             "prefix" => false,
-            "opacity" => null
+            "opacity" => null,
         );
         $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "x_0,y_0/test");
     }
@@ -217,7 +217,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $options = array(
             "transformation" => array("x" => 100, "y" => 100, "crop" => "fill"),
             "crop" => "crop",
-            "width" => 100
+            "width" => 100,
         );
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array("width" => 100), $options);
@@ -230,10 +230,10 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $options = array(
             "transformation" => array(
                 array("x" => 100, "y" => 100, "width" => 200, "crop" => "fill"),
-                array("radius" => 10)
+                array("radius" => 10),
             ),
             "crop" => "crop",
-            "width" => 100
+            "width" => 100,
         );
         $result = Cloudinary::cloudinary_url("test", $options);
         $this->assertEquals(array("width" => 100), $options);
@@ -300,7 +300,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_cname_subdomain()
     {
         // should support extenal cname with cdn_subdomain on
-        $options = array("cname" => "hello.com", "cdn_subdomain" => TRUE);
+        $options = array("cname" => "hello.com", "cdn_subdomain" => true);
         $this->cloudinary_url_assertion("test", $options, "http://a2.hello.com/test123/image/upload/test");
     }
 
@@ -451,23 +451,23 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_responsive_width()
     {
         // should add responsive width transformation
-        $tag = cl_image_tag("hello", array("responsive_width" => True, "format" => "png"));
+        $tag = cl_image_tag("hello", array("responsive_width" => true, "format" => "png"));
         $this->assertEquals("<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>",
             $tag);
 
-        $options = array("width" => 100, "height" => 100, "crop" => "crop", "responsive_width" => TRUE);
+        $options = array("width" => 100, "height" => 100, "crop" => "crop", "responsive_width" => true);
         $result = Cloudinary::cloudinary_url("test", $options);
-        $this->assertEquals($options, array("responsive" => TRUE));
+        $this->assertEquals($options, array("responsive" => true));
         $this->assertEquals($result, CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_limit,w_auto/test");
         Cloudinary::config(array(
             "responsive_width_transformation" => array(
                 "width" => "auto:breakpoints",
-                "crop" => "pad"
-            )
+                "crop" => "pad",
+            ),
         ));
-        $options = array("width" => 100, "height" => 100, "crop" => "crop", "responsive_width" => TRUE);
+        $options = array("width" => 100, "height" => 100, "crop" => "crop", "responsive_width" => true);
         $result = Cloudinary::cloudinary_url("test", $options);
-        $this->assertEquals($options, array("responsive" => TRUE));
+        $this->assertEquals($options, array("responsive" => true));
         $this->assertEquals($result,
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_crop,h_100,w_100/c_pad,w_auto:breakpoints/test");
     }
@@ -518,29 +518,29 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             "cloud_name" => "test",
             "width" => "auto",
             "crop" => "scale",
-            "client_hints" => TRUE
+            "client_hints" => true,
         ), "support client_hints as an option");
     }
 
     public function test_client_hints_as_global()
     {
-        Cloudinary::config(array("client_hints" => TRUE));
+        Cloudinary::config(array("client_hints" => true));
         $this->shared_client_hints(array(
             "dpr" => "auto",
             "cloud_name" => "test",
             "width" => "auto",
-            "crop" => "scale"
+            "crop" => "scale",
         ), "support client hints as global configuration");
     }
 
     public function test_client_hints_false()
     {
-        Cloudinary::config(array("responsive" => TRUE));
+        Cloudinary::config(array("responsive" => true));
         $tag = cl_image_tag('sample.jpg', array(
             "width" => "auto",
             "crop" => "scale",
             "cloud_name" => "test123",
-            "client_hints" => FALSE
+            "client_hints" => false,
         ));
         $this->assertEquals("<img class='cld-responsive' data-src='" . CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_scale,w_auto/sample.jpg'/>",
             $tag,
@@ -583,10 +583,10 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
 
     public function test_shorten()
     {
-        $options = array("shorten" => TRUE);
+        $options = array("shorten" => true);
         $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "iu/test");
 
-        $options = array("shorten" => TRUE, "type" => "private");
+        $options = array("shorten" => true, "type" => "private");
         $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_ROOT_PATH . "image/private/test");
     }
 
@@ -603,20 +603,20 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $this->cloudinary_url_assertion("image.jpg", array(
             "version" => 1234,
             "transformation" => array("crop" => "crop", "width" => 10, "height" => 20),
-            "sign_url" => TRUE
+            "sign_url" => true,
         ), CloudinaryTest::DEFAULT_UPLOAD_PATH . "s--Ai4Znfl3--/c_crop,h_20,w_10/v1234/image.jpg");
-        $this->cloudinary_url_assertion("image.jpg", array("version" => 1234, "sign_url" => TRUE),
+        $this->cloudinary_url_assertion("image.jpg", array("version" => 1234, "sign_url" => true),
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "s----SjmNDA--/v1234/image.jpg");
         $this->cloudinary_url_assertion("image.jpg",
-            array("transformation" => array("crop" => "crop", "width" => 10, "height" => 20), "sign_url" => TRUE),
+            array("transformation" => array("crop" => "crop", "width" => 10, "height" => 20), "sign_url" => true),
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg");
         $this->cloudinary_url_assertion("image.jpg", array(
             "transformation" => array("crop" => "crop", "width" => 10, "height" => 20),
             "type" => "authenticated",
-            "sign_url" => TRUE
+            "sign_url" => true,
         ), CloudinaryTest::DEFAULT_ROOT_PATH . "image/authenticated/s--Ai4Znfl3--/c_crop,h_20,w_10/image.jpg");
         $this->cloudinary_url_assertion("http://google.com/path/to/image.png",
-            array("type" => "fetch", "version" => 1234, "sign_url" => TRUE),
+            array("type" => "fetch", "version" => 1234, "sign_url" => true),
             CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/s--hH_YcbiS--/v1234/http://google.com/path/to/image.png");
     }
 
@@ -629,7 +629,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             "a%20b" => "a%20b",
             "a-b" => "a-b",
             "a??b" => "a%3F%3Fb",
-            "parentheses(interject)" => "parentheses%28interject%29"
+            "parentheses(interject)" => "parentheses%28interject%29",
         );
         foreach ($tests as $source => $target) {
             $url = Cloudinary::cloudinary_url($source);
@@ -653,7 +653,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_disallow_url_suffix_with_non_upload_types()
     {
         //should disallow url_suffix in non upload types
-        $options = array("url_suffix" => "hello", "private_cdn" => TRUE, "type" => "facebook");
+        $options = array("url_suffix" => "hello", "private_cdn" => true, "type" => "facebook");
         Cloudinary::cloudinary_url("test", $options);
     }
 
@@ -663,7 +663,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_disallow_suffix_with_dot()
     {
         //should disallow url_suffix with .
-        $options = array("url_suffix" => "hello/world", "private_cdn" => TRUE);
+        $options = array("url_suffix" => "hello/world", "private_cdn" => true);
         Cloudinary::cloudinary_url("test", $options);
     }
 
@@ -673,7 +673,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_disallow_suffix_with_slash()
     {
         //should disallow url_suffix with /
-        $options = array("url_suffix" => "hello/world", "private_cdn" => TRUE);
+        $options = array("url_suffix" => "hello/world", "private_cdn" => true);
         Cloudinary::cloudinary_url("test", $options);
     }
 
@@ -681,10 +681,10 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_url_suffix_for_private_cdn()
     {
         //should support url_suffix for private_cdn
-        $this->cloudinary_url_assertion("test", array("url_suffix" => "hello", "private_cdn" => TRUE),
+        $this->cloudinary_url_assertion("test", array("url_suffix" => "hello", "private_cdn" => true),
             "http://test123-res.cloudinary.com/images/test/hello");
         $this->cloudinary_url_assertion("test",
-            array("url_suffix" => "hello", "transformation" => array("angle" => 0), "private_cdn" => TRUE),
+            array("url_suffix" => "hello", "transformation" => array("angle" => 0), "private_cdn" => true),
             "http://test123-res.cloudinary.com/images/a_0/test/hello");
     }
 
@@ -692,27 +692,27 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         //should put format after url_suffix
         $this->cloudinary_url_assertion("test",
-            array("url_suffix" => "hello", "private_cdn" => TRUE, "format" => "jpg"),
+            array("url_suffix" => "hello", "private_cdn" => true, "format" => "jpg"),
             "http://test123-res.cloudinary.com/images/test/hello.jpg");
     }
 
     public function test_dont_sign_the_url_suffix()
     {
         //should not sign the url_suffix
-        $options = array("format" => "jpg", "sign_url" => TRUE);
+        $options = array("format" => "jpg", "sign_url" => true);
         preg_match('/s--[0-9A-Za-z_-]{8}--/', Cloudinary::cloudinary_url("test", $options), $matches);
         $this->cloudinary_url_assertion("test",
-            array("url_suffix" => "hello", "private_cdn" => TRUE, "format" => "jpg", "sign_url" => TRUE),
+            array("url_suffix" => "hello", "private_cdn" => true, "format" => "jpg", "sign_url" => true),
             "http://test123-res.cloudinary.com/images/" . $matches[0] . "/test/hello.jpg");
 
-        $options = array("format" => "jpg", "angle" => 0, "sign_url" => TRUE);
+        $options = array("format" => "jpg", "angle" => 0, "sign_url" => true);
         preg_match('/s--[0-9A-Za-z_-]{8}--/', Cloudinary::cloudinary_url("test", $options), $matches);
         $this->cloudinary_url_assertion("test", array(
             "url_suffix" => "hello",
-            "private_cdn" => TRUE,
+            "private_cdn" => true,
             "format" => "jpg",
             "transformation" => array("angle" => 0),
-            "sign_url" => TRUE
+            "sign_url" => true,
         ), "http://test123-res.cloudinary.com/images/" . $matches[0] . "/a_0/test/hello.jpg");
     }
 
@@ -720,7 +720,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         //should support url_suffix for raw uploads
         $this->cloudinary_url_assertion("test",
-            array("url_suffix" => "hello", "private_cdn" => TRUE, "resource_type" => "raw"),
+            array("url_suffix" => "hello", "private_cdn" => true, "resource_type" => "raw"),
             "http://test123-res.cloudinary.com/files/test/hello");
     }
 
@@ -728,16 +728,16 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         //should support url_suffix for private uploads
         $this->cloudinary_url_assertion("test",
-            array("url_suffix" => "hello", "private_cdn" => TRUE, "resource_type" => "image", "type" => "private"),
+            array("url_suffix" => "hello", "private_cdn" => true, "resource_type" => "image", "type" => "private"),
             "http://test123-res.cloudinary.com/private_images/test/hello");
 
         $this->cloudinary_url_assertion("test",
             array(
                 "url_suffix" => "hello",
-                "private_cdn" => TRUE,
+                "private_cdn" => true,
                 "format" => "jpg",
                 "resource_type" => "image",
-                "type" => "private"
+                "type" => "private",
             ),
             "http://test123-res.cloudinary.com/private_images/test/hello.jpg");
     }
@@ -745,20 +745,20 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_allow_use_root_path_in_shared()
     {
 
-        $this->cloudinary_url_assertion("test", array("use_root_path" => TRUE, "private_cdn" => FALSE),
+        $this->cloudinary_url_assertion("test", array("use_root_path" => true, "private_cdn" => false),
             CloudinaryTest::DEFAULT_ROOT_PATH . "test");
         $this->cloudinary_url_assertion("test",
-            array("use_root_path" => TRUE, "private_cdn" => FALSE, "transformation" => array("angle" => 0)),
+            array("use_root_path" => true, "private_cdn" => false, "transformation" => array("angle" => 0)),
             CloudinaryTest::DEFAULT_ROOT_PATH . "a_0/test");
     }
 
     public function test_use_root_path_for_private_cdn()
     {
         //should support use_root_path for private_cdn
-        $this->cloudinary_url_assertion("test", array("use_root_path" => TRUE, "private_cdn" => TRUE),
+        $this->cloudinary_url_assertion("test", array("use_root_path" => true, "private_cdn" => true),
             "http://test123-res.cloudinary.com/test");
         $this->cloudinary_url_assertion("test",
-            array("use_root_path" => TRUE, "private_cdn" => TRUE, "transformation" => array("angle" => 0)),
+            array("use_root_path" => true, "private_cdn" => true, "transformation" => array("angle" => 0)),
             "http://test123-res.cloudinary.com/a_0/test");
     }
 
@@ -766,7 +766,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         //should support use_root_path together with url_suffix for private_cdn
         $this->cloudinary_url_assertion("test",
-            array("use_root_path" => TRUE, "url_suffix" => "hello", "private_cdn" => TRUE),
+            array("use_root_path" => true, "url_suffix" => "hello", "private_cdn" => true),
             "http://test123-res.cloudinary.com/test/hello");
     }
 
@@ -776,7 +776,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_disallow_use_root_path_if_not_image_upload_1()
     {
         //should disallow use_root_path if not image/upload
-        $options = array("use_root_path" => TRUE, "private_cdn" => TRUE, "type" => "facebook");
+        $options = array("use_root_path" => true, "private_cdn" => true, "type" => "facebook");
         Cloudinary::cloudinary_url("test", $options);
     }
 
@@ -786,7 +786,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     public function test_disallow_use_root_path_if_not_image_upload_2()
     {
         //should disallow use_root_path if not image/upload
-        $options = array("use_root_path" => TRUE, "private_cdn" => TRUE, "resource_type" => "raw");
+        $options = array("use_root_path" => true, "private_cdn" => true, "resource_type" => "raw");
         Cloudinary::cloudinary_url("test", $options);
     }
 
@@ -795,14 +795,14 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $method = new ReflectionMethod('Cloudinary', 'norm_range_value');
         $method->setAccessible(true);
         // should parse integer range values
-        $this->assertEquals($method->invoke(NULL, "200"), "200");
+        $this->assertEquals($method->invoke(null, "200"), "200");
         // should parse float range values
-        $this->assertEquals($method->invoke(NULL, "200.0"), "200.0");
+        $this->assertEquals($method->invoke(null, "200.0"), "200.0");
         // should parse a percent range value
-        $this->assertEquals($method->invoke(NULL, "20p"), "20p");
-        $this->assertEquals($method->invoke(NULL, "20P"), "20p");
-        $this->assertEquals($method->invoke(NULL, "20%"), "20p");
-        $this->assertNull($method->invoke(NULL, "p"));
+        $this->assertEquals($method->invoke(null, "20p"), "20p");
+        $this->assertEquals($method->invoke(null, "20P"), "20p");
+        $this->assertEquals($method->invoke(null, "20%"), "20p");
+        $this->assertNull($method->invoke(null, "p"));
     }
 
     public function test_video_codec()
@@ -813,7 +813,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         // should support a hash value
         $this->cloudinary_url_assertion("video_id", array(
             'resource_type' => 'video',
-            'video_codec' => array('codec' => 'h264', 'profile' => 'basic', 'level' => '3.1')
+            'video_codec' => array('codec' => 'h264', 'profile' => 'basic', 'level' => '3.1'),
         ),
             CloudinaryTest::VIDEO_UPLOAD_PATH . "vc_h264:basic:3.1/video_id");
     }
@@ -908,7 +908,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
                 'eo_3.22,so_2.67' => array(2.67, 3.22),
                 'eo_70p,so_35p' => array('35%', '70%'),
                 'eo_71p,so_36p' => array('36p', '71p'),
-                'eo_70.5p,so_35.5p' => array('35.5p', '70.5p')
+                'eo_70.5p,so_35.5p' => array('35.5p', '70.5p'),
             ) as $transformation => $offset
         ) {
             $this->cloudinary_url_assertion("video_id", array('resource_type' => 'video', 'offset' => $offset),
@@ -951,7 +951,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         //test video attributes
         $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "movie";
         $this->assertEquals(cl_video_tag('movie',
-            array('autoplay' => TRUE, 'controls', 'loop', 'muted' => "true", 'preload', 'style' => 'border: 1px')),
+            array('autoplay' => true, 'controls', 'loop', 'muted' => "true", 'preload', 'style' => 'border: 1px')),
             "<video autoplay='1' controls loop muted='true' poster='$expected_url.jpg' preload style='border: 1px'>" .
             "<source src='$expected_url.webm' type='video/webm'>" .
             "<source src='$expected_url.mp4' type='video/mp4'>" .
@@ -968,7 +968,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             'html_width' => "200",
             'video_codec' => array('codec' => 'h264'),
             'audio_codec' => 'acc',
-            'start_offset' => 3
+            'start_offset' => 3,
         );
         $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "ac_acc,so_3,vc_h264/movie";
         $this->assertEquals(cl_video_tag('movie', $options),
@@ -1041,8 +1041,8 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             'transformation' => array(array('quality' => 50)),
             'source_transformation' => array(
                 'ogv' => array('quality' => 70),
-                'mp4' => array('quality' => 30)
-            )
+                'mp4' => array('quality' => 30),
+            ),
         )),
             "<video poster='$expected_url.jpg' width='100'>" .
             "<source src='$expected_url.webm' type='video/webm'>" .
@@ -1055,9 +1055,9 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             'transformation' => array(array('quality' => 50)),
             'source_transformation' => array(
                 'ogv' => array('quality' => 70),
-                'mp4' => array('quality' => 30)
+                'mp4' => array('quality' => 30),
             ),
-            'source_types' => array('webm', 'mp4')
+            'source_types' => array('webm', 'mp4'),
         )),
             "<video poster='$expected_url.jpg' width='100'>" .
             "<source src='$expected_url.webm' type='video/webm'>" .
@@ -1081,14 +1081,14 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $expected_poster_url = CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_north/my_poster.jpg";
         $this->assertEquals(cl_video_tag('movie', array(
             'poster' => array('gravity' => 'north', 'public_id' => 'my_poster', 'format' => 'jpg'),
-            'source_types' => "mp4"
+            'source_types' => "mp4",
         )),
             "<video poster='$expected_poster_url' src='$expected_url.mp4'></video>");
 
-        $this->assertEquals(cl_video_tag('movie', array('poster' => NULL, 'source_types' => "mp4")),
+        $this->assertEquals(cl_video_tag('movie', array('poster' => null, 'source_types' => "mp4")),
             "<video src='$expected_url.mp4'></video>");
 
-        $this->assertEquals(cl_video_tag('movie', array('poster' => FALSE, 'source_types' => "mp4")),
+        $this->assertEquals(cl_video_tag('movie', array('poster' => false, 'source_types' => "mp4")),
             "<video src='$expected_url.mp4'></video>");
     }
 
@@ -1130,23 +1130,23 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             "video" => array(array("resource_type" => "video", "public_id" => "cat"), "video:cat"),
             "text" => array(
                 array("public_id" => "logo", "text" => "Hello World, Nice to meet you?"),
-                "text:logo:Hello%20World%252C%20Nice%20to%20meet%20you%3F"
+                "text:logo:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
             ),
             "text with slash" => array(
                 array(
                     "text" => "Hello World, Nice/ to meet you?",
                     "font_family" => "Arial",
-                    "font_size" => "18"
+                    "font_size" => "18",
                 ),
-                "text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F"
+                "text:Arial_18:Hello%20World%252C%20Nice%252F%20to%20meet%20you%3F",
             ),
             "text with font family and size" => array(
                 array(
                     "text" => "Hello World, Nice to meet you?",
                     "font_family" => "Arial",
-                    "font_size" => "18"
+                    "font_size" => "18",
                 ),
-                "text:Arial_18:Hello%20World%252C%20Nice%20to%20meet%20you%3F"
+                "text:Arial_18:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
             ),
             "text with style" => array(
                 array(
@@ -1155,26 +1155,26 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
                     "font_size" => "18",
                     "font_weight" => "bold",
                     "font_style" => "italic",
-                    "letter_spacing" => 4
+                    "letter_spacing" => 4,
                 ),
-                "text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%252C%20Nice%20to%20meet%20you%3F"
+                "text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
             ),
             "subtitles" => array(
                 array("resource_type" => "subtitles", "public_id" => "sample_sub_en.srt"),
-                "subtitles:sample_sub_en.srt"
+                "subtitles:sample_sub_en.srt",
             ),
             "subtitles with font family and size" => array(
                 array(
                     "resource_type" => "subtitles",
                     "public_id" => "sample_sub_he.srt",
                     "font_family" => "Arial",
-                    "font_size" => "40"
+                    "font_size" => "40",
                 ),
-                "subtitles:Arial_40:sample_sub_he.srt"
+                "subtitles:Arial_40:sample_sub_he.srt",
             ),
             "fetch" => array(
                 array("public_id" => "logo", 'fetch' => 'https://cloudinary.com/images/old_logo.png'),
-                'fetch:aHR0cHM6Ly9jbG91ZGluYXJ5LmNvbS9pbWFnZXMvb2xkX2xvZ28ucG5n'
+                'fetch:aHR0cHM6Ly9jbG91ZGluYXJ5LmNvbS9pbWFnZXMvb2xkX2xvZ28ucG5n',
             ),
 
         );
@@ -1188,7 +1188,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $reflector = new ReflectionClass('Cloudinary');
         $process_layer = $reflector->getMethod('process_layer');
         $process_layer->setAccessible(true);
-        $result = $process_layer->invoke(NULL, $options, "overlay");
+        $result = $process_layer->invoke(null, $options, "overlay");
         $this->assertEquals($expected, $result);
     }
 
@@ -1199,7 +1199,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $reflector = new ReflectionClass('Cloudinary');
         $process_layer = $reflector->getMethod('process_layer');
         $process_layer->setAccessible(true);
-        $result = $process_layer->invoke(NULL, $options, "overlay");
+        $result = $process_layer->invoke(null, $options, "overlay");
         $this->assertEquals($expected, $result);
     }
 
@@ -1281,7 +1281,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
             'width' => '$foo * 200',
             'variables' => array(
                 '$z' => 5,
-                '$foo' => '$z * 2'
+                '$foo' => '$z * 2',
             ),
         );
 
@@ -1297,7 +1297,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
                 array('if' => "face_count > 2"),
                 array('crop' => "scale", 'width' => '$foo * 200 / face_count'),
                 array('if' => "end"),
-            )
+            ),
         );
 
         $t = Cloudinary::generate_transformation_string($options);
@@ -1320,7 +1320,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
         $options = array(
             'variables' => array(
                 '$z' => 5,
-                '$foo' => '$z * 2'
+                '$foo' => '$z * 2',
             ),
             '$second' => 1,
             '$first' => 2,
@@ -1334,7 +1334,7 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     {
         $e = array(
             'effect' => '$efname:100',
-            '$efname' => '!blur!'
+            '$efname' => '!blur!',
         );
         $t = Cloudinary::generate_transformation_string($e);
 
@@ -1366,6 +1366,3 @@ class CloudinaryTest extends \PHPUnit\Framework\TestCase
     }
 
 }
-
-?>
-

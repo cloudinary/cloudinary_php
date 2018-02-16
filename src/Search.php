@@ -12,7 +12,7 @@ namespace Cloudinary {
             $this->query_hash = array(
                 'sort_by' => array(),
                 'aggregate' => array(),
-                'with_field' => array()
+                'with_field' => array(),
             );
         }
 
@@ -55,7 +55,7 @@ namespace Cloudinary {
         public function as_array()
         {
             return array_filter($this->query_hash, function ($value) {
-                return ((is_array($value) && !empty($value)) || ($value != NULL));
+                return ((is_array($value) && !empty($value)) || ($value != null));
             });
         }
 
@@ -67,9 +67,6 @@ namespace Cloudinary {
             $method = 'post';
             return $api->call_api($method, $uri, $this->as_array(), $options);
         }
-
     }
 
 }
-
-?>

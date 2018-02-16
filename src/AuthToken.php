@@ -2,7 +2,6 @@
 
 namespace Cloudinary;
 
-
 class AuthToken
 {
 
@@ -68,7 +67,7 @@ class AuthToken
         return "$name=" . join("~", $token);
     }
 
-    private static function digest($message, $key = NULL)
+    private static function digest($message, $key = null)
     {
         if (!isset($key)) {
             $key = \Cloudinary::config_get("akamai_key");

@@ -6,7 +6,12 @@ namespace Cloudinary {
     {
         public static $PRELOADED_CLOUDINARY_PATH = "/^([^\/]+)\/([^\/]+)\/v(\d+)\/([^#]+)#([^\/]+)$/";
 
-        public $filename, $version, $public_id, $signature, $resource_type, $type;
+        public $filename;
+        public $version;
+        public $public_id;
+        public $signature;
+        public $resource_type;
+        public $type;
 
         public function __construct($file_info)
         {
@@ -29,7 +34,7 @@ namespace Cloudinary {
             $public_id = $this->resource_type == "raw" ? $this->filename : $this->public_id;
             $expected_signature = \Cloudinary::api_sign_request(array(
                 "public_id" => $public_id,
-                "version" => $this->version
+                "version" => $this->version,
             ), \Cloudinary::config_get("api_secret"));
             return $this->signature == $expected_signature;
         }
@@ -39,7 +44,7 @@ namespace Cloudinary {
             $last_dot = strrpos($identifier, ".");
 
             if ($last_dot === false) {
-                return array($identifier, NULL);
+                return array($identifier, null);
             }
             $public_id = substr($identifier, 0, $last_dot);
             $format = substr($identifier, $last_dot + 1);
@@ -58,7 +63,8 @@ namespace Cloudinary {
 
         public function __toString()
         {
-            return $this->resource_type . "/" . $this->type . "/v" . $this->version . "/" . $this->filename . "#" . $this->signature;
+            return $this->resource_type . "/" . $this->type . "/v" . $this->version . "/" .
+                $this->filename . "#" . $this->signature;
         }
     }
 }

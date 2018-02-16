@@ -49,13 +49,13 @@ namespace Cloudinary {
             assertUrl($this, '/image/generate_archive');
             assertParam($this, "target_format", "zip");
             assertParam($this, "tags[0]", $this->tag);
-            assertParam($this, "expires_at", NULL, "should support the 'expires_at' parameter");
+            assertParam($this, "expires_at", null, "should support the 'expires_at' parameter");
         }
 
         public function test_skip_transformation_name()
         {
             Curl::mockUpload($this);
-            Uploader::create_zip(array("tags" => $this->tag, "skip_transformation_name" => TRUE));
+            Uploader::create_zip(array("tags" => $this->tag, "skip_transformation_name" => true));
             assertUrl($this, '/image/generate_archive');
             assertParam($this, "tags[0]", $this->tag);
             assertParam($this, "skip_transformation_name", 1,
@@ -65,7 +65,7 @@ namespace Cloudinary {
         public function test_allow_missing()
         {
             Curl::mockUpload($this);
-            Uploader::create_zip(array("tags" => $this->tag, "allow_missing" => TRUE));
+            Uploader::create_zip(array("tags" => $this->tag, "allow_missing" => true));
             assertUrl($this, '/image/generate_archive');
             assertParam($this, "tags[0]", $this->tag);
             assertParam($this, "allow_missing", 1, "should support the 'allow_missing' parameter");
@@ -83,4 +83,3 @@ namespace Cloudinary {
         }
     }
 }
-?>

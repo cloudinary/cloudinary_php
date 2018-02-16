@@ -9,7 +9,7 @@ require_once 'PreloadedFile.php';
 
 class CloudinaryField
 {
-    private $_identifier = NULL;
+    private $_identifier = null;
 
     public function __construct($identifier = "")
     {

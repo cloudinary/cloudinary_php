@@ -66,7 +66,6 @@ END;
 }
 END;
             $this->uploadResponse = str_replace("\n", "\r\n", $this->uploadResponse);
-
         }
 
         public static function mockApi($test)
@@ -139,8 +138,12 @@ END;
             if (array_key_exists(CURLOPT_CUSTOMREQUEST, $this->parameters)) {
                 return Curl::$instance->getopt(CURLOPT_CUSTOMREQUEST);
             } else {
-                $method_array = array_keys(array_intersect_key($this->parameters,
-                    array("CURLOPT_POST" => 0, "CURLOPT_PUT" => 0, "CURLOPT_HTTPGET" => 0)));
+                $method_array = array_keys(
+                    array_intersect_key(
+                        $this->parameters,
+                        array("CURLOPT_POST" => 0, "CURLOPT_PUT" => 0, "CURLOPT_HTTPGET" => 0)
+                    )
+                );
                 if (count($method_array) > 0) {
                     return preg_replace("/CURLOPT_(HTTP)?/", "", $method_array[0]);
                 } else {
@@ -167,7 +170,6 @@ END;
                 return $this->parameters[CURLOPT_POSTFIELDS];
             }
         }
-
     }
 
 // Override global curl functions
@@ -200,19 +202,19 @@ END;
      * @param $expectedValue
      * @param $message
      */
-    function assertParam($test, $name, $expectedValue = NULL, $message = '')
+    function assertParam($test, $name, $expectedValue = null, $message = '')
     {
         $fields = Curl::$instance->fields();
         if (strlen($message) == 0) {
             $message = "should support the '$name' parameter";
         }
         $test->assertArrayHasKey($name, $fields, $message);
-        if ($expectedValue != NULL) {
+        if ($expectedValue != null) {
             $test->assertEquals($expectedValue, $fields[$name]);
         }
     }
 
-    function assertJson($test, $actualValue, $expectedValue = NULL, $message = '')
+    function assertJson($test, $actualValue, $expectedValue = null, $message = '')
     {
         if (strlen($message) == 0) {
             $message = "should coorectly encode JSON parameters";
