@@ -38,21 +38,15 @@ namespace Cloudinary {
         public function test_upload()
         {
             $result = Uploader::upload(TEST_IMG);
-            switch ($result["resource_type"]) {
-                case "image":
-                    // generate image tag
-                    break;
-                case "video":
-                    // generate video tag
-                    break;
-            }
-
             $this->assertEquals($result["width"], 241);
             $this->assertEquals($result["height"], 51);
-            $expected_signature = Cloudinary::api_sign_request(array(
-                "public_id" => $result["public_id"],
-                "version" => $result["version"],
-            ), Cloudinary::config_get("api_secret"));
+            $expected_signature = Cloudinary::api_sign_request(
+                array(
+                    "public_id" => $result["public_id"],
+                    "version" => $result["version"],
+                ),
+                Cloudinary::config_get("api_secret")
+            );
             $this->assertEquals($result["signature"], $expected_signature);
             Curl::mockUpload($this);
 
@@ -229,12 +223,15 @@ namespace Cloudinary {
 
             $different_face_coordinates = array(array(122, 32, 111, 152));
             $custom_coordinates = array(1, 2, 3, 4);
-            Uploader::explicit($result["public_id"], array(
-                "face_coordinates" => $different_face_coordinates,
-                "custom_coordinates" => $custom_coordinates,
-                "faces" => true,
-                "type" => "upload",
-            ));
+            Uploader::explicit(
+                $result["public_id"],
+                array(
+                    "face_coordinates" => $different_face_coordinates,
+                    "custom_coordinates" => $custom_coordinates,
+                    "faces" => true,
+                    "type" => "upload",
+                )
+            );
             $api = new \Cloudinary\Api();
             $info = $api->resource($result["public_id"], array("faces" => true, "coordinates" => true));
             $this->assertEquals($info["faces"], $different_face_coordinates);
@@ -263,7 +260,6 @@ namespace Cloudinary {
             $api = new \Cloudinary\Api();
             $result = Uploader::upload(TEST_IMG);
             Uploader::add_context('alt=testAlt|custom=testCustom', $result['public_id']);
-            // fwrite(STDERR, print_r($result['public_id'], TRUE));
             assertUrl($this, "/image/context");
             assertPost($this);
             assertParam($this, "public_ids[0]", $result['public_id']);
@@ -286,18 +282,21 @@ namespace Cloudinary {
 
         public function test_cl_form_tag()
         {
-            Cloudinary::config(array(
-                "cloud_name" => "test123",
-                "secure_distribution" => null,
-                "private_cdn" => false,
-                "api_key" => "1234",
-            ));
+            Cloudinary::config(
+                array(
+                    "cloud_name" => "test123",
+                    "secure_distribution" => null,
+                    "private_cdn" => false,
+                    "api_key" => "1234",
+                )
+            );
 
             $form = cl_form_tag(
                 "http://callback.com",
                 array("public_id" => "hello", "form" => array("class" => "uploader"))
             );
-            $this->assertRegExp(<<<TAG
+            $this->assertRegExp(
+                <<<TAG
 #<form enctype='multipart\/form-data' action='{$this->url_prefix}\/v1_1\/test123\/image\/upload' method='POST' class='uploader'>
 <input name='timestamp' type='hidden' value='\d+'\/>
 <input name='public_id' type='hidden' value='hello'\/>
@@ -305,17 +304,21 @@ namespace Cloudinary {
 <input name='api_key' type='hidden' value='1234'\/>
 <\/form>#
 TAG
-                , $form);
+                ,
+                $form
+            );
         }
 
         public function test_cl_image_upload_tag()
         {
-            Cloudinary::config(array(
-                "cloud_name" => "test123",
-                "secure_distribution" => null,
-                "private_cdn" => false,
-                "api_key" => "1234",
-            ));
+            Cloudinary::config(
+                array(
+                    "cloud_name" => "test123",
+                    "secure_distribution" => null,
+                    "private_cdn" => false,
+                    "api_key" => "1234",
+                )
+            );
 
             $tag = cl_image_upload_tag("image", array("public_id" => "hello", "html" => array("class" => "uploader")));
             $this->assertRegExp(

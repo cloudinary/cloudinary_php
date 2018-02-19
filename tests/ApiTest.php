@@ -385,8 +385,12 @@ namespace Cloudinary {
             Curl::mockApi($this);
             $this->api->transformation("c_scale,w_100", array("next_cursor" => "234123132345"));
             assertUrl($this, "/transformations/c_scale,w_100");
-            assertParam($this, "next_cursor", "234123132345",
-                "api->transformation should pass the next_cursor paramter");
+            assertParam(
+                $this,
+                "next_cursor",
+                "234123132345",
+                "api->transformation should pass the next_cursor paramter"
+            );
         }
 
         public function test13_transformation_metadata()
@@ -492,10 +496,11 @@ namespace Cloudinary {
         {
             // should allow deleting all resources
             $this->markTestSkipped("Not enabled by default - remove this line to test");
-            Uploader::upload(TEST_IMG, array(
+            $options = array(
                 "public_id" => self::$api_test_5,
                 "eager" => array("transformation" => array("width" => 101, "crop" => "scale")),
-            ));
+            );
+            Uploader::upload(TEST_IMG, $options);
             $resource = $this->api->resource(self::$api_test_5);
             $this->assertNotEquals($resource, null);
             $this->assertEquals(count($resource["derived"]), 1);
@@ -644,7 +649,8 @@ namespace Cloudinary {
         public function test31_update_upload_presets()
         {
             Curl::mockApi($this);
-            $this->api->update_upload_preset("foobar",
+            $this->api->update_upload_preset(
+                "foobar",
                 array("colors" => true, "unsigned" => true, "disallow_public_id" => true));
             assertPut($this);
             assertUrl($this, "/upload_presets/foobar");
@@ -664,10 +670,14 @@ namespace Cloudinary {
             $this->assertContains(array("name" => "test_folder1", "path" => "test_folder1"), $result["folders"]);
             $this->assertContains(array("name" => "test_folder2", "path" => "test_folder2"), $result["folders"]);
             $result = $this->api->subfolders("test_folder1");
-            $this->assertContains(array("name" => "test_subfolder1", "path" => "test_folder1/test_subfolder1"),
-                $result["folders"]);
-            $this->assertContains(array("name" => "test_subfolder2", "path" => "test_folder1/test_subfolder2"),
-                $result["folders"]);
+            $this->assertContains(
+                array("name" => "test_subfolder1", "path" => "test_folder1/test_subfolder1"),
+                $result["folders"]
+            );
+            $this->assertContains(
+                array("name" => "test_subfolder2", "path" => "test_folder1/test_subfolder2"),
+                $result["folders"]
+            );
         }
 
         /**
@@ -717,13 +727,21 @@ namespace Cloudinary {
 
         }
 
-        static $predefined_profiles = array("4k", "full_hd", "hd", "sd", "full_hd_wifi", "full_hd_lean", "hd_lean");
+        private static $predefined_profiles = array(
+            "4k",
+            "full_hd",
+            "hd",
+            "sd",
+            "full_hd_wifi",
+            "full_hd_lean",
+            "hd_lean",
+        );
 
         public function test_create_streaming_profile()
         {
-
             $name = self::$api_test . "_streaming_profile";
-            $result = $this->api->create_streaming_profile($name, array(
+
+            $options = array(
                 "representations" => array(
                     array(
                         "transformation" => array(
@@ -734,9 +752,9 @@ namespace Cloudinary {
                         ),
                     ),
                 ),
-            ));
-            $this->assertArrayHasKey("representations",
-                $result["data"]);
+            );
+            $result = $this->api->create_streaming_profile($name, $options);
+            $this->assertArrayHasKey("representations", $result["data"]);
             $reps = $result["data"]["representations"];
             $this->assertTrue(is_array($reps));
             // "transformation is returned as an array
@@ -752,23 +770,25 @@ namespace Cloudinary {
         {
 
             $name = self::$api_test . "_streaming_profile_delete";
-            try {
-                $result = $this->api->create_streaming_profile($name, array(
-                    "representations" => array(
-                        array(
-                            "transformation" => array(
-                                "bit_rate" => "5m",
-                                "height" => 1200,
-                                "width" => 1200,
-                                "crop" => "limit",
-                            ),
+            $options = array(
+                "representations" => array(
+                    array(
+                        "transformation" => array(
+                            "bit_rate" => "5m",
+                            "height" => 1200,
+                            "width" => 1200,
+                            "crop" => "limit",
                         ),
                     ),
-                ));
+                ),
+            );
+            try {
+                $result = $this->api->create_streaming_profile($name, $options);
             } catch (Cloudinary\Api\AlreadyExists $e) {
 
             }
-            $result = $this->api->update_streaming_profile($name, array(
+
+            $options = array(
                 "representations" => array(
                     array(
                         "transformation" => array(
@@ -779,9 +799,10 @@ namespace Cloudinary {
                         ),
                     ),
                 ),
-            ));
-            $this->assertArrayHasKey("representations",
-                $result["data"]);
+            );
+            $result = $this->api->update_streaming_profile($name, $options);
+
+            $this->assertArrayHasKey("representations", $result["data"]);
             $reps = $result["data"]["representations"];
             $this->assertTrue(is_array($reps));
             // "transformation is returned as an array
@@ -791,7 +812,7 @@ namespace Cloudinary {
             $expected = array("bit_rate" => "5m", "height" => 1000, "width" => 1000, "crop" => "scale");
             $this->assertEquals($expected, $tr);
 
-            $result = $this->api->delete_streaming_profile($name);
+            $this->api->delete_streaming_profile($name);
             $result = $this->api->list_streaming_profiles();
             $this->assertArrayNotHasKey($name, array_map(function ($profile) {
                 return $profile["name"];
@@ -802,8 +823,7 @@ namespace Cloudinary {
         {
 
             $result = $this->api->get_streaming_profile(self::$predefined_profiles[0]);
-            $this->assertArrayHasKey("representations",
-                $result["data"]);
+            $this->assertArrayHasKey("representations", $result["data"]);
             $reps = $result["data"]["representations"];
             $this->assertTrue(is_array($reps));
             // "transformation is returned as an array

@@ -9,9 +9,9 @@ namespace Cloudinary {
     require_once(join(DIRECTORY_SEPARATOR, array($base, "src", "Search.php")));
     require_once("TestHelper.php");
 
-    use PHPUnit_Framework_TestCase;
+    use PHPUnit\Framework\TestCase;
 
-    class SearchTest extends PHPUnit_Framework_TestCase
+    class SearchTest extends TestCase
     {
         public $search;
 
@@ -74,12 +74,15 @@ namespace Cloudinary {
         public function test_should_add_sort_by_as_array()
         {
             $query = $this->search->sort_by('created_at', 'asc')->sort_by('updated_at', 'desc')->as_array();
-            $this->assertEquals($query, array(
-                "sort_by" => array(
-                    array('created_at' => 'asc'),
-                    array('updated_at' => 'desc'),
-                ),
-            ));
+            $this->assertEquals(
+                $query,
+                array(
+                    "sort_by" => array(
+                        array('created_at' => 'asc'),
+                        array('updated_at' => 'desc'),
+                    ),
+                )
+            );
         }
 
         public function test_should_add_max_results_as_array()
@@ -91,7 +94,11 @@ namespace Cloudinary {
         public function test_should_add_next_cursor_as_array()
         {
 
-            $query = $this->search->next_cursor('ec471a97ba510904ab57460b3ba3150ec29b6f8563eb1c10f6925ed0c6813f33cfa62ec6cf5ad96be6d6fa3ac3a76ccb')->as_array();
+            $query = $this
+                ->search
+                ->next_cursor('ec471a97ba510904ab57460b3ba3150ec29b6f8563eb1c10f6925ed0c6813f33cfa62ec6cf5ad96be6d6fa3ac3a76ccb')
+                ->as_array();
+
             $this->assertEquals(
                 $query,
                 array("next_cursor" => 'ec471a97ba510904ab57460b3ba3150ec29b6f8563eb1c10f6925ed0c6813f33cfa62ec6cf5ad96be6d6fa3ac3a76ccb')
@@ -139,17 +146,23 @@ namespace Cloudinary {
                 ->with_field("image_metadata")
                 ->execute();
 
-            assertJson($this, json_encode(array(
-                "sort_by" => array(
-                    array("created_at" => "asc"),
-                    array("updated_at" => "desc"),
+            assertJson(
+                $this,
+                json_encode(
+                    array(
+                        "sort_by" => array(
+                            array("created_at" => "asc"),
+                            array("updated_at" => "desc"),
+                        ),
+                    "aggregate" => array("format", "resource_type"),
+                    "with_field" => array("tags", "image_metadata"),
+                    "expression" => "format:jpg",
+                    "max_results" => 10,
+                    "next_cursor" => "abcd",
+                    )
                 ),
-                "aggregate" => array("format", "resource_type"),
-                "with_field" => array("tags", "image_metadata"),
-                "expression" => "format:jpg",
-                "max_results" => 10,
-                "next_cursor" => "abcd",
-            )), Curl::$instance->fields(), "Should correctly encode JSON into the HTTP request");
+                Curl::$instance->fields(), "Should correctly encode JSON into the HTTP request"
+            );
 
             assertJson(
                 $this,

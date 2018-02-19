@@ -44,7 +44,6 @@ namespace Cloudinary {
 
         public function test_expires_at()
         {
-//        Curl::mockUpload($this);
             Uploader::create_zip(array("tags" => $this->tag, "expires_at" => time() + 3600));
             assertUrl($this, '/image/generate_archive');
             assertParam($this, "target_format", "zip");

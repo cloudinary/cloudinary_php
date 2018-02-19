@@ -7,7 +7,6 @@ require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
 
 class ConfigTest extends TestCase
 {
-
     public function test_config_nested_values()
     {
         \Cloudinary::config_from_url('cloudinary://key:secret@test123?foo[bar]=value');
@@ -15,5 +14,4 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('bar', \Cloudinary::config()['foo']);
         $this->assertEquals('value', \Cloudinary::config()['foo']['bar']);
     }
-
 }

@@ -27,4 +27,3 @@ class CloudinaryFieldTest extends TestCase
         $this->assertEquals("http://res.cloudinary.com/test123/rss/imgt/v123/test.jpg", $result);
     }
 }
-// [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]

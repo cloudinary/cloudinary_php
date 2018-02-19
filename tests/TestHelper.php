@@ -70,23 +70,33 @@ END;
 
         public static function mockApi($test)
         {
-            Curl::$instance = $test->getMockBuilder("\\Cloudinary\\Curl")
+            Curl::$instance = $test
+                ->getMockBuilder("\\Cloudinary\\Curl")
                 ->setMethods(array("exec", "getinfo"))
                 ->getMock();
-            Curl::$instance->method("exec")
+
+            Curl::$instance
+                ->method("exec")
                 ->will($test->returnValue(Curl::$instance->apiResponse));
-            Curl::$instance->method("getinfo")
+
+            Curl::$instance
+                ->method("getinfo")
                 ->will($test->returnValue(200));
         }
 
         public static function mockUpload($test)
         {
-            Curl::$instance = $test->getMockBuilder("\\Cloudinary\\Curl")
+            Curl::$instance = $test
+                ->getMockBuilder("\\Cloudinary\\Curl")
                 ->setMethods(array("exec", "getinfo"))
                 ->getMock();
-            Curl::$instance->method("exec")
+
+            Curl::$instance
+                ->method("exec")
                 ->will($test->returnValue(Curl::$instance->uploadResponse));
-            Curl::$instance->method("getinfo")
+
+            Curl::$instance
+                ->method("getinfo")
                 ->will($test->returnValue(200));
         }
 
@@ -125,7 +135,7 @@ END;
 
         /**
          * Returns the option that was set in the curl object
-         * @param $option the name of the option
+         * @param string $option the name of the option
          * @return mixed the value of the option
          */
         public function getopt($option)
@@ -172,7 +182,7 @@ END;
         }
     }
 
-// Override global curl functions
+    // Override global curl functions
 
     function curl_init($url = null)
     {
@@ -197,10 +207,10 @@ END;
 
 
     /**
-     * @param $fields
+     * @param $test
      * @param $name
      * @param $expectedValue
-     * @param $message
+     * @param string $message
      */
     function assertParam($test, $name, $expectedValue = null, $message = '')
     {
