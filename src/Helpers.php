@@ -45,14 +45,17 @@ namespace {
         if (isset($html_options["class"])) {
             array_unshift($classes, Cloudinary::option_consume($html_options, "class"));
         }
-        $tag_options = array_merge($html_options, array(
-            "type" => "file",
-            "name" => "file",
-            "data-url" => cl_upload_url($options),
-            "data-form-data" => cl_upload_tag_params($options),
-            "data-cloudinary-field" => $field,
-            "class" => implode(" ", $classes),
-        ));
+        $tag_options = array_merge(
+            $html_options,
+            array(
+                "type" => "file",
+                "name" => "file",
+                "data-url" => cl_upload_url($options),
+                "data-form-data" => cl_upload_tag_params($options),
+                "data-cloudinary-field" => $field,
+                "class" => implode(" ", $classes),
+            )
+        );
         if (array_key_exists('chunk_size', $options)) {
             $tag_options['data-max-chunk-size'] = $options['chunk_size'];
         }
@@ -178,8 +181,8 @@ namespace {
     function cloudinary_url_internal($source, &$options = array())
     {
         if (!isset($options["secure"])) {
-            $options["secure"] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+            $options["secure"] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ||
+                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         }
 
         return Cloudinary::cloudinary_url($source, $options);

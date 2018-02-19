@@ -127,12 +127,8 @@ namespace Cloudinary {
         public static function upload_large_part($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);
-            return Uploader::call_api(
-                "upload_chunked",
-                $params,
-                array_merge(array("resource_type" => "raw"), $options),
-                $file
-            );
+            $full_options = array_merge(array("resource_type" => "raw"), $options);
+            return Uploader::call_api("upload_chunked", $params, $full_options, $file);
         }
 
         public static function destroy($public_id, $options = array())
@@ -424,7 +420,8 @@ namespace Cloudinary {
             } elseif ($headers == array_values($headers)) {
                 return implode("\n", $headers);
             } else {
-                $join_pair = function ($key, $value) {
+                $join_pair = function ($key, $value)
+                {
                     return $key . ": " . $value;
                 };
                 return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));
