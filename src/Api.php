@@ -50,6 +50,7 @@ namespace Cloudinary {
                     "start_at",
                 )
             );
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -61,6 +62,7 @@ namespace Cloudinary {
                 $options,
                 array("next_cursor", "max_results", "tags", "context", "moderations", "direction")
             );
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -74,6 +76,7 @@ namespace Cloudinary {
             );
             $params["key"] = $key;
             $params["value"] = $value;
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -85,6 +88,7 @@ namespace Cloudinary {
                 $options,
                 array("next_cursor", "max_results", "tags", "context", "moderations", "direction")
             );
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -95,6 +99,7 @@ namespace Cloudinary {
             $uri = array("resources", $resource_type, $type);
             $params = array_merge($options, array("public_ids" => $public_ids));
             $params = $this->only($params, array("public_ids", "tags", "moderations", "context"));
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -107,6 +112,7 @@ namespace Cloudinary {
                 $options,
                 array("exif", "colors", "faces", "image_metadata", "phash", "pages", "coordinates", "max_results")
             );
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -116,6 +122,7 @@ namespace Cloudinary {
             $type = \Cloudinary::option_get($options, "type", "upload");
             $uri = array("resources", $resource_type, $type, "restore");
             $params = array_merge($options, array("public_ids" => $public_ids));
+
             return $this->call_api("post", $uri, $params, $options);
         }
 
@@ -147,11 +154,16 @@ namespace Cloudinary {
             $array_options = array(
                 "tags" => $tags ? implode(",", \Cloudinary::build_array($tags)) : $tags,
                 "context" => $context ? \Cloudinary::encode_assoc_array($context) : $context,
-                "face_coordinates" => $face_coordinates ? \Cloudinary::encode_double_array($face_coordinates) : $face_coordinates,
-                "custom_coordinates" => $custom_coordinates ? \Cloudinary::encode_double_array($custom_coordinates) : $custom_coordinates,
+                "face_coordinates" => $face_coordinates ? \Cloudinary::encode_double_array(
+                    $face_coordinates
+                ) : $face_coordinates,
+                "custom_coordinates" => $custom_coordinates ? \Cloudinary::encode_double_array(
+                    $custom_coordinates
+                ) : $custom_coordinates,
             );
 
             $update_options = array_merge($primitive_options, $array_options);
+
             return $this->call_api("post", $uri, $update_options, $options);
         }
 
@@ -164,6 +176,7 @@ namespace Cloudinary {
                 array("public_ids" => $public_ids),
                 $this->only($options, array("keep_original", "invalidate", "transformation"))
             );
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -176,6 +189,7 @@ namespace Cloudinary {
                 array("prefix" => $prefix),
                 $this->only($options, array("keep_original", "next_cursor", "invalidate"))
             );
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -188,6 +202,7 @@ namespace Cloudinary {
                 array("all" => true),
                 $this->only($options, array("keep_original", "next_cursor", "invalidate"))
             );
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -196,6 +211,7 @@ namespace Cloudinary {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
             $uri = array("resources", $resource_type, "tags", $tag);
             $params = $this->only($options, array("keep_original", "next_cursor", "invalidate"));
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -203,6 +219,7 @@ namespace Cloudinary {
         {
             $uri = array("derived_resources");
             $params = array("derived_resource_ids" => $derived_resource_ids);
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -211,6 +228,7 @@ namespace Cloudinary {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
             $uri = array("tags", $resource_type);
             $params = $this->only($options, array("next_cursor", "max_results", "prefix"));
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -218,13 +236,15 @@ namespace Cloudinary {
         {
             $uri = array("transformations");
             $params = $this->only($options, array("next_cursor", "max_results"));
-            return $this->call_api("get",  $uri, $params, $options);
+
+            return $this->call_api("get", $uri, $params, $options);
         }
 
         public function transformation($transformation, $options = array())
         {
             $uri = array("transformations", $this->transformation_string($transformation));
             $params = $this->only($options, array("next_cursor", "max_results"));
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -235,6 +255,7 @@ namespace Cloudinary {
             if (isset($options["invalidate"])) {
                 $params["invalidate"] = $options["invalidate"];
             }
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -246,6 +267,7 @@ namespace Cloudinary {
             if (isset($updates["unsafe_update"])) {
                 $params["unsafe_update"] = $this->transformation_string($updates["unsafe_update"]);
             }
+
             return $this->call_api("put", $uri, $params, $options);
         }
 
@@ -253,6 +275,7 @@ namespace Cloudinary {
         {
             $uri = array("transformations", $name);
             $params = array("transformation" => $this->transformation_string($definition));
+
             return $this->call_api("post", $uri, $params, $options);
         }
 
@@ -260,18 +283,21 @@ namespace Cloudinary {
         {
             $uri = array("upload_presets");
             $params = $this->only($options, array("next_cursor", "max_results"));
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
         public function upload_preset($name, $options = array())
         {
             $uri = array("upload_presets", $name);
+
             return $this->call_api("get", $uri, $this->only($options, array("max_results")), $options);
         }
 
         public function delete_upload_preset($name, $options = array())
         {
             $uri = array("upload_presets", $name);
+
             return $this->call_api("delete", $uri, array(), $options);
         }
 
@@ -280,6 +306,7 @@ namespace Cloudinary {
             $uri = array("upload_presets", $name);
             $params = \Cloudinary\Uploader::build_upload_params($options);
             $params = array_merge($params, $this->only($options, array("unsigned", "disallow_public_id")));
+
             return $this->call_api("put", $uri, $params, $options);
         }
 
@@ -287,6 +314,7 @@ namespace Cloudinary {
         {
             $params = \Cloudinary\Uploader::build_upload_params($options);
             $params = array_merge($params, $this->only($options, array("name", "unsigned", "disallow_public_id")));
+
             return $this->call_api("post", array("upload_presets"), $params, $options);
         }
 
@@ -298,6 +326,7 @@ namespace Cloudinary {
         public function subfolders($of_folder_path, $options = array())
         {
             $uri = array("folders", $of_folder_path);
+
             return $this->call_api("get", $uri, array(), $options);
         }
 
@@ -305,6 +334,7 @@ namespace Cloudinary {
         {
             $uri = array("upload_mappings");
             $params = $this->only($options, array("next_cursor", "max_results"));
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -312,6 +342,7 @@ namespace Cloudinary {
         {
             $uri = array("upload_mappings");
             $params = array("folder" => $name);
+
             return $this->call_api("get", $uri, $params, $options);
         }
 
@@ -319,6 +350,7 @@ namespace Cloudinary {
         {
             $uri = array("upload_mappings");
             $params = array("folder" => $name);
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
@@ -326,13 +358,15 @@ namespace Cloudinary {
         {
             $uri = array("upload_mappings");
             $params = array_merge(array("folder" => $name), $this->only($options, array("template")));
+
             return $this->call_api("put", $uri, $params, $options);
         }
 
-        function create_upload_mapping($name, $options = array())
+        public function create_upload_mapping($name, $options = array())
         {
             $uri = array("upload_mappings");
             $params = array_merge(array("folder" => $name), $this->only($options, array("template")));
+
             return $this->call_api("post", $uri, $params, $options);
         }
 
@@ -391,7 +425,7 @@ namespace Cloudinary {
          * Create a new streaming profile
          * @param string $name the name of the new profile. if the name is of a predefined profile,
          * the profile will be modified.
-         * @param array  $options additional options
+         * @param array $options additional options
          * @return Api\Response
          * @throws Api\GeneralError
          */
@@ -400,6 +434,7 @@ namespace Cloudinary {
             $uri = array("streaming_profiles");
             $params = $this->prepare_streaming_profile_params($options);
             $params["name"] = $name;
+
             return $this->call_api("post", $uri, $params, $options);
         }
 
@@ -423,12 +458,14 @@ namespace Cloudinary {
                 throw new \InvalidArgumentException("Must supply api_secret");
             }
             $api_url = implode("/", array_merge(array($prefix, "v1_1", $cloud_name), $uri));
-            $params = array_filter($params, function ($v) {
-                return !is_null($v) && ($v !== "");
-            });
+            $params = array_filter(
+                $params,
+                function ($v) {
+                    return !is_null($v) && ($v !== "");
+                }
+            );
             if ($method == "get") {
                 $api_url .= "?" . preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params));
-
             }
 
             $ch = curl_init($api_url);
@@ -528,10 +565,11 @@ namespace Cloudinary {
             $result->headers = $headers;
             $result->body = trim($content);
             $result->responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
             return $result;
         }
 
-        static function parse_json_response($response)
+        public static function parse_json_response($response)
         {
             $result = json_decode($response->body, true);
             if ($result == null) {
@@ -540,6 +578,7 @@ namespace Cloudinary {
                     "Error parsing server response ({$response->responseCode}) - {$response->body}. Got - {$error}"
                 );
             }
+
             return $result;
         }
 
@@ -560,6 +599,7 @@ namespace Cloudinary {
             if (is_string($transformation)) {
                 return $transformation;
             }
+
             return \Cloudinary::generate_transformation_string($transformation);
         }
 
@@ -580,6 +620,7 @@ namespace Cloudinary {
                 );
                 $params["representations"] = json_encode($array_map);
             }
+
             return $params;
         }
     }

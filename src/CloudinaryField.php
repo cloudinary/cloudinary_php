@@ -32,6 +32,7 @@ class CloudinaryField
             // TODO: Error?
             return null;
         }
+
         return cloudinary_url($this, $options);
     }
 
@@ -53,6 +54,7 @@ class CloudinaryField
     public function verify()
     {
         $preloaded = new \Cloudinary\PreloadedFile($this->_identifier);
+
         return $preloaded->is_valid();
     }
 }

@@ -8,6 +8,7 @@ namespace {
             $options["resource_type"] = "auto";
         }
         $endpoint = array_key_exists('chunk_size', $options) ? 'upload_chunked' : 'upload';
+
         return Cloudinary::cloudinary_api_url($endpoint, $options);
     }
 
@@ -15,12 +16,16 @@ namespace {
     {
         $params = Cloudinary\Uploader::build_upload_params($options);
         if (Cloudinary::option_get($options, "unsigned")) {
-            $params = array_filter($params, function ($v) {
-                return !is_null($v) && ($v !== "");
-            });
+            $params = array_filter(
+                $params,
+                function ($v) {
+                    return !is_null($v) && ($v !== "");
+                }
+            );
         } else {
             $params = Cloudinary::sign_request($params, $options);
         }
+
         return json_encode($params);
     }
 
@@ -59,6 +64,7 @@ namespace {
         if (array_key_exists('chunk_size', $options)) {
             $tag_options['data-max-chunk-size'] = $options['chunk_size'];
         }
+
         return '<input ' . Cloudinary::html_attrs($tag_options) . '/>';
     }
 
@@ -76,11 +82,12 @@ namespace {
         $form = "<form enctype='multipart/form-data' action='" . $api_url . "' method='POST' " .
             Cloudinary::html_attrs($form_options) . ">\n";
         foreach ($params as $key => $value) {
-            $form .= "<input " . Cloudinary::html_attrs(array(
-                    "name" => $key,
-                    "value" => $value,
-                    "type" => "hidden",
-                )) . "/>\n";
+            $attributes =  array(
+                "name" => $key,
+                "value" => $value,
+                "type" => "hidden",
+            );
+            $form .= "<input " . Cloudinary::html_attrs($attributes) . "/>\n";
         }
         $form .= "</form>\n";
 
@@ -125,18 +132,21 @@ namespace {
             $html .= "src='$source' ";
         }
         $html .= Cloudinary::html_attrs($options) . "/>";
+
         return $html;
     }
 
     function fetch_image_tag($url, $options = array())
     {
         $options["type"] = "fetch";
+
         return cl_image_tag($url, $options);
     }
 
     function facebook_profile_image_tag($profile, $options = array())
     {
         $options["type"] = "facebook";
+
         return cl_image_tag($profile, $options);
     }
 
@@ -144,18 +154,21 @@ namespace {
     {
         $options["type"] = "gravatar";
         $options["format"] = "jpg";
+
         return cl_image_tag(md5(strtolower(trim($email))), $options);
     }
 
     function twitter_profile_image_tag($profile, $options = array())
     {
         $options["type"] = "twitter";
+
         return cl_image_tag($profile, $options);
     }
 
     function twitter_name_profile_image_tag($profile, $options = array())
     {
         $options["type"] = "twitter_name";
+
         return cl_image_tag($profile, $options);
     }
 
@@ -168,6 +181,7 @@ namespace {
                 $params[$param] = $value;
             }
         }
+
         return "<script type='text/javascript'>\n" .
             "$.cloudinary.config(" . json_encode($params) . ");\n" .
             "</script>\n";
@@ -194,6 +208,7 @@ namespace {
             $options["format"] = "css";
         }
         $options["type"] = "sprite";
+
         return cloudinary_url_internal($tag, $options);
     }
 
@@ -216,6 +231,7 @@ namespace {
     function cl_video_path($source, $options = array())
     {
         $options = array_merge(array('resource_type' => 'video'), $options);
+
         return cloudinary_url_internal($source, $options);
     }
 
@@ -229,6 +245,7 @@ namespace {
     function cl_video_thumbnail_path($source, $options = array())
     {
         $options = array_merge(default_poster_options(), $options);
+
         return cloudinary_url_internal($source, $options);
     }
 
@@ -309,11 +326,11 @@ namespace {
                 $mime_type = "video/$video_type";
                 $html .= '<source ' . Cloudinary::html_attrs(array('src' => $src, 'type' => $mime_type)) . '>';
             }
-
         }
 
         $html .= $fallback;
         $html .= '</video>';
+
         return $html;
     }
 }

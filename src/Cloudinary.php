@@ -69,6 +69,7 @@ class Cloudinary
         if ($values != null) {
             self::$config = array_merge(self::$config, $values);
         }
+
         return self::$config;
     }
 
@@ -122,9 +123,11 @@ class Cloudinary
         if (isset($options[$option])) {
             $value = $options[$option];
             unset($options[$option]);
+
             return $value;
         } else {
             unset($options[$option]);
+
             return $default;
         }
     }
@@ -165,10 +168,11 @@ class Cloudinary
             $encoded = array();
             foreach ($array as $key => $value) {
                 if (!empty($value)) {
-                    $value =  preg_replace('/([\|=])/', '\\\$1', $value);
+                    $value = preg_replace('/([\|=])/', '\\\$1', $value);
                 }
                 array_push($encoded, $key . '=' . $value);
             }
+
             return implode("|", $encoded);
         } else {
             return $array;
@@ -180,12 +184,16 @@ class Cloudinary
         if (!is_array($array)) {
             return false;
         }
+
         return $array != array_values($array);
     }
 
     private static function generate_base_transformation($base_transformation)
     {
-        $options = is_array($base_transformation) ? $base_transformation : array("transformation" => $base_transformation);
+        $options = is_array(
+            $base_transformation
+        ) ? $base_transformation : array("transformation" => $base_transformation);
+
         return Cloudinary::generate_transformation_string($options);
     }
 
@@ -378,6 +386,7 @@ class Cloudinary
         if (substr($dpr, 0, 4) == "auto") {
             $options["hidpi"] = true;
         }
+
         return implode("/", array_filter($base_transformations));
     }
 
@@ -420,6 +429,7 @@ class Cloudinary
         }
         array_unshift($keywords, $font_size);
         array_unshift($keywords, $font_family);
+
         return implode("_", array_filter($keywords, 'Cloudinary::is_not_null'));
     }
 
@@ -462,7 +472,9 @@ class Cloudinary
                 $text_style = Cloudinary::text_style($layer, $layer_parameter); #FIXME duplicate
                 if ($text != null) {
                     if (!($public_id != null xor $text_style != null)) {
-                        throw new InvalidArgumentException("Must supply either style parameters or a public_id when providing text parameter in a text $layer_parameter");
+                        throw new InvalidArgumentException(
+                            "Must supply either style parameters or a public_id when providing text parameter in a text $layer_parameter"
+                        );
                     }
                     $escaped = Cloudinary::smart_escape($text);
                     $escaped = str_replace("%2C", "%252C", $escaped);
@@ -554,6 +566,7 @@ class Cloudinary
     private static function process_if($if)
     {
         $if = self::normalize_expression($if);
+
         return $if;
     }
 
@@ -566,13 +579,14 @@ class Cloudinary
             return $exp;
         } else {
             if (empty(self::$IF_REPLACE_RE)) {
-                self::$IF_REPLACE_RE = '/((\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*)(?=[ _])|' . implode('|',
-                        array_keys(self::$PREDEFINED_VARS)) . ')/';
+                self::$IF_REPLACE_RE = '/((\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*)(?=[ _])|'.
+                    implode('|', array_keys(self::$PREDEFINED_VARS)) . ')/';
             }
             if (isset($exp)) {
                 $exp = preg_replace('/[ _]+/', '_', $exp);
                 $exp = preg_replace_callback(self::$IF_REPLACE_RE, array("Cloudinary", "translate_if"), $exp);
             }
+
             return $exp;
         }
     }
@@ -584,6 +598,7 @@ class Cloudinary
             $border_color = preg_replace("/^#/", 'rgb:', Cloudinary::option_get($border, "color", "black"));
             $border = $border_width . "px_solid_" . $border_color;
         }
+
         return $border;
     }
 
@@ -616,6 +631,7 @@ class Cloudinary
         if (!empty($matches['modifier'])) {
             $modifier = 'p';
         }
+
         return $matches['value'] . $modifier;
     }
 
@@ -631,6 +647,7 @@ class Cloudinary
                 }
             }
         }
+
         return $out_param;
     }
 
@@ -736,20 +753,30 @@ class Cloudinary
             $secure_distribution
         );
 
-        $source = preg_replace("/([^:])\/+/", "$1/", implode("/", array_filter(array(
-            $prefix,
-            $resource_type_and_type,
-            $signature,
-            $transformation,
-            $version,
-            $source,
-        ))));
+        $source = preg_replace(
+            "/([^:])\/+/",
+            "$1/",
+            implode(
+                "/",
+                array_filter(
+                    array(
+                        $prefix,
+                        $resource_type_and_type,
+                        $signature,
+                        $transformation,
+                        $version,
+                        $source,
+                    )
+                )
+            )
+        );
 
         if ($sign_url && $auth_token) {
             $path = parse_url($source, PHP_URL_PATH);
             $token = \Cloudinary\AuthToken::generate(array_merge($auth_token, array("url" => $path)));
             $source = $source . "?" . $token;
         }
+
         return $source;
     }
 
@@ -773,6 +800,7 @@ class Cloudinary
                 $source_to_sign = $source_to_sign . '.' . $format;
             }
         }
+
         return array("source" => $source, "source_to_sign" => $source_to_sign);
     }
 
@@ -795,7 +823,9 @@ class Cloudinary
                         $resource_type = "files";
                         $type = null;
                     } else {
-                        throw new InvalidArgumentException("URL Suffix only supported for image/upload, image/private and raw/upload");
+                        throw new InvalidArgumentException(
+                            "URL Suffix only supported for image/upload, image/private and raw/upload"
+                        );
                     }
                 }
             }
@@ -818,8 +848,9 @@ class Cloudinary
             $out = $resource_type;
         }
         if (!empty($type)) {
-            $out = $out . '/' . $type;
+            $out = $out.'/'.$type;
         }
+
         return $out;
     }
 
@@ -864,24 +895,27 @@ class Cloudinary
                 );
             }
 
-            $prefix = "https://" . $secure_distribution;
+            $prefix = "https://".$secure_distribution;
         } else {
             if ($cname) {
                 $subdomain = $cdn_subdomain ? "a" . Cloudinary::domain_shard($source) . '.' : "";
                 $prefix = "http://" . $subdomain . $cname;
             } else {
-                $host = implode(array(
-                    $private_cdn ? $cloud_name . "-" : "",
-                    "res",
-                    $cdn_subdomain ? "-" . Cloudinary::domain_shard($source) : "",
-                    ".cloudinary.com",
-                ));
-                $prefix = "http://" . $host;
+                $host = implode(
+                    array(
+                        $private_cdn ? $cloud_name."-" : "",
+                        "res",
+                        $cdn_subdomain ? "-".Cloudinary::domain_shard($source) : "",
+                        ".cloudinary.com",
+                    )
+                );
+                $prefix = "http://".$host;
             }
         }
         if ($shared_domain) {
             $prefix = $prefix . '/' . $cloud_name;
         }
+
         return $prefix;
     }
 
@@ -912,6 +946,7 @@ class Cloudinary
                 $options[$optionName] = $matches[$index + 1];
             }
         }
+
         return Cloudinary::option_consume($options, 'public_id');
     }
 
@@ -919,6 +954,7 @@ class Cloudinary
     private static function smart_escape($str)
     {
         $revert = array('%21' => '!', '%2A' => '*', '%27' => "'", '%3A' => ':', '%2F' => '/');
+
         return strtr(rawurlencode($str), $revert);
     }
 
@@ -934,6 +970,7 @@ class Cloudinary
             throw new InvalidArgumentException("Must supply cloud_name in options or in configuration");
         }
         $resource_type = Cloudinary::option_get($options, "resource_type", "image");
+
         return implode("/", array($cloudinary, "v1_1", $cloud_name, $resource_type, $action));
     }
 
@@ -993,8 +1030,9 @@ class Cloudinary
         $options["mode"] = "download";
         $params = Cloudinary::build_archive_params($options);
         $params = Cloudinary::sign_request($params, $options);
-        return Cloudinary::cloudinary_api_url("generate_archive", $options) . "?" . preg_replace("/%5B\d+%5D/",
-                "%5B%5D", http_build_query($params));
+
+        return Cloudinary::cloudinary_api_url("generate_archive", $options) . "?" .
+            preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params));
     }
 
     # Returns a URL that when invokes creates an zip archive and returns it.
@@ -1002,6 +1040,7 @@ class Cloudinary
     public static function download_zip_url($options = array())
     {
         $options["target_format"] = "zip";
+
         return Cloudinary::download_archive_url($options);
     }
 
@@ -1018,10 +1057,12 @@ class Cloudinary
      *
      * @param array $options token configuration, merge with the global configuration "auth_token".
      * @return string the authorization token
+     * @throws \Cloudinary\Error
      */
     public static function generate_auth_token($options)
     {
         $token_options = array_merge(self::config_get("auth_token", array()), $options);
+
         return \Cloudinary\AuthToken::generate($token_options);
     }
 
@@ -1052,12 +1093,19 @@ class Cloudinary
             "type" => \Cloudinary::option_get($options, "type"),
             "use_original_filename" => \Cloudinary::option_get($options, "use_original_filename"),
         );
-        array_walk($params, function (&$value, $key) {
-            $value = (is_bool($value) ? ($value ? "1" : "0") : $value);
-        });
-        return array_filter($params, function ($v) {
-            return !is_null($v) && ($v !== "");
-        });
+        array_walk(
+            $params,
+            function (&$value, $key) {
+                $value = (is_bool($value) ? ($value ? "1" : "0") : $value);
+            }
+        );
+
+        return array_filter(
+            $params,
+            function ($v) {
+                return !is_null($v) && ($v !== "");
+            }
+        );
     }
 
     public static function build_eager($transformations)
@@ -1066,23 +1114,29 @@ class Cloudinary
         foreach (\Cloudinary::build_array($transformations) as $trans) {
             $transformation = $trans;
             $format = \Cloudinary::option_consume($transformation, "format");
-            $single_eager = implode("/",
-                array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format)));
+            $single_eager = implode(
+                "/",
+                array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format))
+            );
             array_push($eager, $single_eager);
         }
+
         return implode("|", $eager);
     }
 
     public static function private_download_url($public_id, $format, $options = array())
     {
-        $cloudinary_params = Cloudinary::sign_request(array(
-            "timestamp" => time(),
-            "public_id" => $public_id,
-            "format" => $format,
-            "type" => Cloudinary::option_get($options, "type"),
-            "attachment" => Cloudinary::option_get($options, "attachment"),
-            "expires_at" => Cloudinary::option_get($options, "expires_at"),
-        ), $options);
+        $cloudinary_params = Cloudinary::sign_request(
+            array(
+                "timestamp" => time(),
+                "public_id" => $public_id,
+                "format" => $format,
+                "type" => Cloudinary::option_get($options, "type"),
+                "attachment" => Cloudinary::option_get($options, "attachment"),
+                "expires_at" => Cloudinary::option_get($options, "expires_at"),
+            ),
+            $options
+        );
 
         return Cloudinary::cloudinary_api_url("download", $options) . "?" . http_build_query($cloudinary_params);
     }
@@ -1099,9 +1153,12 @@ class Cloudinary
         }
 
         # Remove blank parameters
-        $params = array_filter($params, function ($v) {
-            return isset($v) && $v !== "";
-        });
+        $params = array_filter(
+            $params,
+            function ($v) {
+                return isset($v) && $v !== "";
+            }
+        );
 
         $params["signature"] = Cloudinary::api_sign_request($params, $api_secret);
         $params["api_key"] = $api_key;
@@ -1152,8 +1209,10 @@ class Cloudinary
             if (!empty($value)) {
                 $out .= '=\'' . $value . '\'';
             }
+
             return $out;
         };
+
         return implode(" ", array_map($join_pair, array_keys($attrs), array_values($attrs)));
     }
 }

@@ -32,10 +32,14 @@ namespace Cloudinary {
         public function is_valid()
         {
             $public_id = $this->resource_type == "raw" ? $this->filename : $this->public_id;
-            $expected_signature = \Cloudinary::api_sign_request(array(
-                "public_id" => $public_id,
-                "version" => $this->version,
-            ), \Cloudinary::config_get("api_secret"));
+            $expected_signature = \Cloudinary::api_sign_request(
+                array(
+                    "public_id" => $public_id,
+                    "version" => $this->version,
+                ),
+                \Cloudinary::config_get("api_secret")
+            );
+
             return $this->signature == $expected_signature;
         }
 
@@ -48,6 +52,7 @@ namespace Cloudinary {
             }
             $public_id = substr($identifier, 0, $last_dot);
             $format = substr($identifier, $last_dot + 1);
+
             return array($public_id, $format);
         }
 

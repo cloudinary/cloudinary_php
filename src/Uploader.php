@@ -55,12 +55,19 @@ namespace Cloudinary {
                     \Cloudinary::option_get($options, "responsive_breakpoints")
                 ),
             );
-            array_walk($params, function (&$value, $key) {
-                $value = (is_bool($value) ? ($value ? "1" : "0") : $value);
-            });
-            return array_filter($params, function ($v) {
-                return !is_null($v) && ($v !== "");
-            });
+            array_walk(
+                $params,
+                function (&$value, $key) {
+                    $value = (is_bool($value) ? ($value ? "1" : "0") : $value);
+                }
+            );
+
+            return array_filter(
+                $params,
+                function ($v) {
+                    return !is_null($v) && ($v !== "");
+                }
+            );
         }
 
         public static function unsigned_upload($file, $upload_preset, $options = array())
@@ -74,6 +81,7 @@ namespace Cloudinary {
         public static function upload($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);
+
             return Uploader::call_api("upload", $params, $options, $file);
         }
 
@@ -119,6 +127,7 @@ namespace Cloudinary {
             }
             unlink($temp_file_name);
             fclose($src);
+
             return $upload;
         }
 
@@ -128,6 +137,7 @@ namespace Cloudinary {
         {
             $params = Uploader::build_upload_params($options);
             $full_options = array_merge(array("resource_type" => "raw"), $options);
+
             return Uploader::call_api("upload_chunked", $params, $full_options, $file);
         }
 
@@ -139,6 +149,7 @@ namespace Cloudinary {
                 "invalidate" => \Cloudinary::option_get($options, "invalidate"),
                 "public_id" => $public_id,
             );
+
             return Uploader::call_api("destroy", $params, $options);
         }
 
@@ -153,6 +164,7 @@ namespace Cloudinary {
                 "overwrite" => \Cloudinary::option_get($options, "overwrite"),
                 "to_type" => \Cloudinary::option_get($options, "to_type"),
             );
+
             return Uploader::call_api("rename", $params, $options);
         }
 
@@ -160,6 +172,7 @@ namespace Cloudinary {
         {
             $options["public_id"] = $public_id;
             $params = Uploader::build_upload_params($options);
+
             return Uploader::call_api("explicit", $params, $options);
         }
 
@@ -175,6 +188,7 @@ namespace Cloudinary {
                 "notification_url" => \Cloudinary::option_get($options, "notification_url"),
                 "transformation" => $transformation,
             );
+
             return Uploader::call_api("sprite", $params, $options);
         }
 
@@ -189,6 +203,7 @@ namespace Cloudinary {
                 "notification_url" => \Cloudinary::option_get($options, "notification_url"),
                 "transformation" => $transformation,
             );
+
             return Uploader::call_api("multi", $params, $options);
         }
 
@@ -203,6 +218,7 @@ namespace Cloudinary {
                 "notification_url" => \Cloudinary::option_get($options, "notification_url"),
                 "transformation" => $transformation,
             );
+
             return Uploader::call_api("explode", $params, $options);
         }
 
@@ -230,6 +246,7 @@ namespace Cloudinary {
                 "type" => \Cloudinary::option_get($options, "type"),
                 "command" => $command,
             );
+
             return Uploader::call_api("tags", $params, $options);
         }
 
@@ -252,6 +269,7 @@ namespace Cloudinary {
                 "type" => \Cloudinary::option_get($options, "type"),
                 "command" => $command,
             );
+
             return Uploader::call_api("context", $params, $options);
         }
 
@@ -274,6 +292,7 @@ namespace Cloudinary {
             foreach (Uploader::$TEXT_PARAMS as $key) {
                 $params[$key] = \Cloudinary::option_get($options, $key);
             }
+
             return Uploader::call_api("text", $params, $options);
         }
 
@@ -284,6 +303,7 @@ namespace Cloudinary {
             if ($target_format != null) {
                 $params["target_format"] = $target_format;
             }
+
             return Uploader::call_api("generate_archive", $params, $options);
         }
 
@@ -385,6 +405,7 @@ namespace Cloudinary {
                     throw new \Cloudinary\Error($result["error"]["message"], $code);
                 }
             }
+
             return $result;
         }
 
@@ -403,11 +424,14 @@ namespace Cloudinary {
                 if ($breakpoint_settings) {
                     $transformation = \Cloudinary::option_consume($breakpoint_settings, "transformation");
                     if ($transformation) {
-                        $breakpoint_settings["transformation"] = \Cloudinary::generate_transformation_string($transformation);
+                        $breakpoint_settings["transformation"] = \Cloudinary::generate_transformation_string(
+                            $transformation
+                        );
                     }
                     array_push($breakpoints_params, $breakpoint_settings);
                 }
             }
+
             return json_encode($breakpoints_params);
         }
 
@@ -420,10 +444,10 @@ namespace Cloudinary {
             } elseif ($headers == array_values($headers)) {
                 return implode("\n", $headers);
             } else {
-                $join_pair = function ($key, $value)
-                {
+                $join_pair = function ($key, $value) {
                     return $key . ": " . $value;
                 };
+
                 return implode("\n", array_map($join_pair, array_keys($headers), array_values($headers)));
             }
         }

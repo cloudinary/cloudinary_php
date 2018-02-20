@@ -64,6 +64,7 @@ class AuthToken
         }
         $auth = self::digest(join("~", $to_sign), $key);
         array_push($token, "hmac=$auth");
+
         return "$name=" . join("~", $token);
     }
 
@@ -73,15 +74,21 @@ class AuthToken
             $key = \Cloudinary::config_get("akamai_key");
         }
         $bin_key = pack("H*", $key);
+
         return hash_hmac("sha256", $message, $bin_key);
     }
 
     private static function escape_to_lower($url)
     {
         $escaped_url = rawurlencode($url);
-        $escaped_url = preg_replace_callback("/(%..)/", function ($match) {
-            return strtolower($match[1]);
-        }, $escaped_url);
+        $escaped_url = preg_replace_callback(
+            "/(%..)/",
+            function ($match) {
+                return strtolower($match[1]);
+            },
+            $escaped_url
+        );
+
         return $escaped_url;
     }
 }
