@@ -129,7 +129,7 @@ namespace {
         }
         $html = "<img ";
         if ($source) {
-            $html .= "src='$source' ";
+            $html .= "src='" . htmlspecialchars($source, ENT_QUOTES) . "' ";
         }
         $html .= Cloudinary::html_attrs($options) . "/>";
 
@@ -214,7 +214,9 @@ namespace {
 
     function cl_sprite_tag($tag, $options = array())
     {
-        return "<link rel='stylesheet' type='text/css' href='" . cl_sprite_url($tag, $options) . "'>";
+        return "<link rel='stylesheet' type='text/css' href='" .
+            htmlspecialchars(cl_sprite_url($tag, $options), ENT_QUOTES) .
+            "'>";
     }
 
     function default_poster_options()

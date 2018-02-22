@@ -959,7 +959,7 @@ class Cloudinary
     // Based on http://stackoverflow.com/a/1734255/526985
     private static function smart_escape($str)
     {
-        $revert = array('%21' => '!', '%2A' => '*', '%27' => "'", '%3A' => ':', '%2F' => '/');
+        $revert = array('%3A' => ':', '%2F' => '/');
 
         return strtr(rawurlencode($str), $revert);
     }
@@ -1213,7 +1213,7 @@ class Cloudinary
         $join_pair = function ($key, $value) {
             $out = $key;
             if (!empty($value)) {
-                $out .= '=\'' . $value . '\'';
+                $out .= '=\'' . htmlspecialchars($value, ENT_QUOTES) . '\'';
             }
 
             return $out;
