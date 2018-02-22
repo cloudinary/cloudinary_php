@@ -517,6 +517,22 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    /**
+     * Check that cl_image_tag encodes special characters.
+     */
+    public function test_cl_image_tag_special_characters_encoding()
+    {
+        $tag = cl_image_tag(
+            "test's special < \"characters\" >",
+            array("width" => 10, "height" => 10, "crop" => "fill", "format" => "png", "alt" => "< test's > special \"")
+        );
+        $expected = "<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/" .
+            "test%27s%20special%20%3C%20%22characters%22%20%3E.png'" .
+            " alt='&lt; test&#039;s &gt; special &quot;' height='10' width='10'/>";
+
+        $this->assertEquals($expected, $tag);
+    }
+
     public function test_responsive_width()
     {
         // should add responsive width transformation
@@ -1388,11 +1404,26 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    /**
+     * Check that cl_video_tag encodes special characters.
+     */
+    public function test_cl_video_tag_special_characters_encoding()
+    {
+        $expected_url = CloudinaryTest::VIDEO_UPLOAD_PATH . "movie%27s%20id%21%40%23%24%25%5E%26%2A%28";
+
+        $this->assertEquals(
+            "<video poster='$expected_url.jpg' src='$expected_url.mp4'></video>",
+            cl_video_tag("movie's id!@#$%^&*(", array('source_types' => "mp4"))
+        );
+    }
+
+
     public function test_upload_tag()
     {
         $pattern = "/<input class='cloudinary-fileupload' " .
             "data-cloudinary-field='image' " .
-            "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' " .
+            "data-form-data='{\&quot;timestamp\&quot;:\d+,\&quot;signature\&quot;:\&quot;\w+\&quot;," .
+            "\&quot;api_key\&quot;:\&quot;a\&quot;}' " .
             "data-url='http[^']+\/v1_1\/test123\/auto\/upload' " .
             "name='file' type='file'\/>/";
         $this->assertRegExp($pattern, cl_upload_tag('image'));
@@ -1400,7 +1431,8 @@ class CloudinaryTest extends TestCase
 
         $pattern = "/<input class='cloudinary-fileupload' " .
             "data-cloudinary-field='image' " .
-            "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' " .
+            "data-form-data='{\&quot;timestamp\&quot;:\d+,\&quot;signature\&quot;:\&quot;\w+\&quot;," .
+            "\&quot;api_key\&quot;:\&quot;a\&quot;}' " .
             "data-max-chunk-size='5000000' " .
             "data-url='http[^']+\/v1_1\/test123\/auto\/upload_chunked' " .
             "name='file' type='file'\/>/";
@@ -1411,7 +1443,8 @@ class CloudinaryTest extends TestCase
 
         $pattern = "/<input class='classy cloudinary-fileupload' " .
             "data-cloudinary-field='image' " .
-            "data-form-data='{\"timestamp\":\d+,\"signature\":\"\w+\",\"api_key\":\"a\"}' " .
+            "data-form-data='{\&quot;timestamp\&quot;:\d+,\&quot;signature\&quot;:\&quot;\w+\&quot;," .
+            "\&quot;api_key\&quot;:\&quot;a\&quot;}' " .
             "data-url='http[^']+\/v1_1\/test123\/auto\/upload' " .
             "name='file' type='file'\/>/";
         $this->assertRegExp(

@@ -340,10 +340,14 @@ TAG
             );
 
             $tag = cl_image_upload_tag("image", array("public_id" => "hello", "html" => array("class" => "uploader")));
-            $this->assertRegExp(
-                "#<input class='uploader cloudinary-fileupload' data-cloudinary-field='image' data-form-data='{\"timestamp\":\d+,\"public_id\":\"hello\",\"signature\":\"[0-9a-f]+\",\"api_key\":\"1234\"}' data-url='{$this->url_prefix}\/v1_1\/test123\/auto\/upload' name='file' type='file'\/>#",
-                $tag
-            );
+
+            $pattern = "#<input class='uploader cloudinary-fileupload'" .
+                " data-cloudinary-field='image'" .
+                " data-form-data='{\&quot;timestamp\&quot;:\d+,\&quot;public_id\&quot;:\&quot;hello\&quot;," .
+                "\&quot;signature\&quot;:\&quot;[0-9a-f]+\&quot;,\&quot;api_key\&quot;:\&quot;1234\&quot;}'" .
+                " data-url='{$this->url_prefix}\/v1_1\/test123\/auto\/upload' name='file' type='file'\/>#";
+
+            $this->assertRegExp($pattern, $tag);
         }
 
         public function test_manual_moderation()
