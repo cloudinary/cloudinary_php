@@ -816,20 +816,23 @@ class Cloudinary
             if ($resource_type == "image" && $type == "upload") {
                 $resource_type = "images";
                 $type = null;
-            } else {
-                if ($resource_type == "image" && $type == "private") {
-                    $resource_type = "private_images";
+            } elseif ($resource_type == "image" && $type == "private") {
+                $resource_type = "private_images";
+                $type = null;
+            } elseif ($resource_type == "image" && $type == "authenticated") {
+                $resource_type = "authenticated_images";
+                $type = null;
+            } elseif ($resource_type == "video" && $type == "upload") {
+                $resource_type = "videos";
+                $type = null;
+            } elseif ($resource_type == "raw" && $type == "upload") {
+                    $resource_type = "files";
                     $type = null;
-                } else {
-                    if ($resource_type == "raw" && $type == "upload") {
-                        $resource_type = "files";
-                        $type = null;
-                    } else {
-                        throw new InvalidArgumentException(
-                            "URL Suffix only supported for image/upload, image/private and raw/upload"
-                        );
-                    }
-                }
+            } else {
+                throw new InvalidArgumentException(
+                    "URL Suffix only supported for image/upload, image/private, image/authenticated, " .
+                    "video/upload and raw/upload"
+                );
             }
         }
 
