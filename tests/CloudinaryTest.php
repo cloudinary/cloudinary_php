@@ -796,13 +796,13 @@ class CloudinaryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * Should support url_suffix in shared distribution
      */
-    public function test_disallow_url_suffix_in_shared()
+    public function test_allow_url_suffix_in_shared()
     {
-        // should disallow url_suffix in shared distribution
         $options = array("url_suffix" => "hello");
-        Cloudinary::cloudinary_url("test", $options);
+        $url = Cloudinary::cloudinary_url("test", $options);
+        $this->assertEquals(CloudinaryTest::DEFAULT_ROOT_PATH . "images/test/hello", $url);
     }
 
     /**
