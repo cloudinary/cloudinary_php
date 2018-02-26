@@ -706,10 +706,6 @@ class Cloudinary
             $auth_token = self::config_get("auth_token");
         }
 
-        if (!$private_cdn and !empty($url_suffix)) {
-            throw new InvalidArgumentException("URL Suffix only supported in private CDN");
-        }
-
         if (!$source) {
             return $source;
         }
