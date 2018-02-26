@@ -897,9 +897,23 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    /**
+     * Should support url_suffix for video uploads
+     */
+    public function test_url_suffix_for_videos()
+    {
+        $this->cloudinary_url_assertion(
+            "test",
+            array("url_suffix" => "hello", "private_cdn" => true, "resource_type" => "video"),
+            "http://test123-res.cloudinary.com/videos/test/hello"
+        );
+    }
+
+    /**
+     * Should support url_suffix for private images
+     */
     public function test_url_suffix_for_private()
     {
-        //should support url_suffix for private uploads
         $this->cloudinary_url_assertion(
             "test",
             array("url_suffix" => "hello", "private_cdn" => true, "resource_type" => "image", "type" => "private"),
@@ -916,6 +930,23 @@ class CloudinaryTest extends TestCase
                 "type" => "private",
             ),
             "http://test123-res.cloudinary.com/private_images/test/hello.jpg"
+        );
+    }
+
+    /**
+     * Should support url_suffix for authenticated images
+     */
+    public function test_url_suffix_for_authenticated()
+    {
+        $this->cloudinary_url_assertion(
+            "test",
+            array(
+                "url_suffix" => "hello",
+                "private_cdn" => true,
+                "resource_type" => "image",
+                "type" => "authenticated"
+            ),
+            "http://test123-res.cloudinary.com/authenticated_images/test/hello"
         );
     }
 
