@@ -366,7 +366,7 @@ TAG
 
         /**
          * @expectedException \Cloudinary\Error
-         * @expectedExceptionMessage invalid
+         * @expectedExceptionMessage is not valid
          */
         public function test_categorization()
         {
