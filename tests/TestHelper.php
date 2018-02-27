@@ -9,6 +9,7 @@ namespace Cloudinary {
     define("SUFFIX", getenv("TRAVIS_JOB_ID") ?: rand(11111, 99999));
     define('TEST_TAG', 'cloudinary_php');
     define('UNIQUE_TEST_TAG', TEST_TAG . "_" . SUFFIX);
+	define('UNIQUE_TEST_ID', UNIQUE_TEST_TAG);
 
     // For compatibility with the new versions of phpunit
     if (!class_exists('\PHPUnit\Framework\TestCase') &&
