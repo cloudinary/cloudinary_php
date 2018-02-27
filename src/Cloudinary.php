@@ -617,8 +617,14 @@ class Cloudinary
 
     private static function norm_range_value($value)
     {
-        if (empty($value)) {
-            return null;
+        if (is_null($value)) {
+          return null;
+        }
+
+        // Ensure that trailing decimal(.0) part is not cropped when float is provided
+        // e.g. float 1.0 should be returned as "1.0" and not "1" as it happens by default
+        if (is_float($value) && $value - (int)$value == 0) {
+            $value = sprintf("%.1f", $value);
         }
 
         preg_match(Cloudinary::RANGE_VALUE_RE, $value, $matches);
