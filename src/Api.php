@@ -2,8 +2,17 @@
 
 namespace Cloudinary {
 
+    /**
+     * Class Api for accessing Cloudinary API functionality
+     * @see https://cloudinary.com/documentation/admin_api
+     *
+     * @package Cloudinary
+     */
     class Api
     {
+        /**
+         * @var array Cloudinary API Error Classes mapping between http error codes and Cloudinary exceptions
+         */
         public static $CLOUDINARY_API_ERROR_CLASSES = array(
             400 => "\Cloudinary\Api\BadRequest",
             401 => "\Cloudinary\Api\AuthorizationRequired",
@@ -14,21 +23,91 @@ namespace Cloudinary {
             500 => "\Cloudinary\Api\GeneralError",
         );
 
+        /**
+         * Tests the reachability of the Cloudinary API
+         *
+         * @see https://cloudinary.com/documentation/admin_api#ping_cloudinary
+         *
+         * @param array $options Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function ping($options = array())
         {
             return $this->call_api("get", array("ping"), array(), $options);
         }
 
+        /**
+         * Gets account usage details
+         *
+         * Get a report on the status of your Cloudinary account usage details, including
+         * storage, bandwidth, requests, number of resources, and add-on usage.
+         * Note that numbers are updated periodically.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#usage_report
+         *
+         * @param array $options Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function usage($options = array())
         {
             return $this->call_api("get", array("usage"), array(), $options);
         }
 
+        /**
+         * Lists available resource types
+         *
+         * @param array $options Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resource_types($options = array())
         {
             return $this->call_api("get", array("resources"), array(), $options);
         }
 
+        /**
+         * Lists all uploaded resources optionally filtered by the specified options
+         *
+         * @see https://cloudinary.com/documentation/admin_api#browse_resources
+         *
+         * @param array $options {
+         *
+         *      @var string         resource_type   The type of file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string         type            The storage type. Default: all.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *              youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @var string         prefix          Find resources with a public ID that starts with the given prefix
+         *      @var string|array   public_ids      List resources with the given public IDs (up to 100)
+         *      @var int            max_results     Max number of resources to return. Default: 10. Maximum: 500
+         *      @var string         next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as
+         *          the next_cursor parameter of the following listing request.
+         *      @var string         start_at        List resources that were created since the given timestamp(ISO).
+         *          Supported if no prefix or public IDs were specified.
+         *      @var string|int     direction       Control the order of returned resources.
+         *          Valid values: "asc" (or 1), "desc" (or -1). Default: "desc".
+         *          Note that if a prefix is specified, this parameter is ignored
+         *          and the results are sorted by public ID.
+         *      @var boolean        tags            Include the list of tag names assigned each resource. Default: false
+         *      @var boolean        context         Include key-value pairs of context associated with each resource.
+         *          Default: false
+         *      @var boolean        moderations     Include image moderation status of each listed resource.
+         *          Default: false
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resources($options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -54,6 +133,38 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Lists resources by tag
+         *
+         * Retrieve a list of resources with a specified tag.
+         * This method does not return deleted resources even if they have been backed up.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_resources_by_tag
+         *
+         * @param string    $tag    The tag name of the resources
+         * @param array     $options {
+         *
+         *      @var string         resource_type   The type of file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var int            max_results     Max number of resources to return. Default: 10. Maximum: 500
+         *      @var string         next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as
+         *          the next_cursor parameter of the following listing request.
+         *      @var string|int     direction       Control the order of returned resources.
+         *          Valid values: "asc" (or 1), "desc" (or -1). Default: "desc".
+         *          Note that if a prefix is specified, this parameter is ignored
+         *          and the results are sorted by public ID.
+         *      @var boolean        tags            Include the list of tag names assigned each resource. Default: false
+         *      @var boolean        context         Include key-value pairs of context associated with each resource.
+         *          Default: false
+         *      @var boolean        moderations     Include image moderation status of each listed resource.
+         *          Default: false
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resources_by_tag($tag, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -66,6 +177,41 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Lists resources by context
+         *
+         * Retrieve a list of resources with a specified context key.
+         * This method does not return deleted resources even if they have been backed up.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_resources_by_context
+         *
+         * @param string    $key    Only resources with this context key are returned
+         * @param string    $value  Only resources with this value for the context key are returned.
+         *      If this parameter is not provided, all resources with the given context key are returned,
+         *      regardless of the actual value of the key.
+         * @param array     $options {
+         *
+         *      @var string         resource_type   The type of file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var int            max_results     Max number of resources to return. Default: 10. Maximum: 500
+         *      @var string         next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as
+         *          the next_cursor parameter of the following listing request.
+         *      @var string|int     direction       Control the order of returned resources.
+         *          Valid values: "asc" (or 1), "desc" (or -1). Default: "desc".
+         *          Note that if a prefix is specified, this parameter is ignored
+         *          and the results are sorted by public ID.
+         *      @var boolean        tags            Include the list of tag names assigned each resource. Default: false
+         *      @var boolean        context         Include key-value pairs of context associated with each resource.
+         *          Default: false
+         *      @var boolean        moderations     Include image moderation status of each listed resource.
+         *          Default: false
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resources_by_context($key, $value = null, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -80,6 +226,38 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Lists resources in moderation queues
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_resources_in_moderation_queues
+         *
+         * @param string    $kind   Type of image moderation queue to list.
+         *      Valid values:  "manual", "webpurify", "aws_rek", or "metascan"
+         * @param string    $status Moderation status of resources.
+         *      Valid values: "pending", "approved", "rejected"
+         * @param array     $options {
+         *
+         *      @var string         resource_type   The type of file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var int            max_results     Max number of resources to return. Default: 10. Maximum: 500
+         *      @var string         next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as
+         *          the next_cursor parameter of the following listing request.
+         *      @var string|int     direction       Control the order of returned resources.
+         *          Valid values: "asc" (or 1), "desc" (or -1). Default: "desc".
+         *          Note that if a prefix is specified, this parameter is ignored
+         *          and the results are sorted by public ID.
+         *      @var boolean        tags            Include the list of tag names assigned each resource. Default: false
+         *      @var boolean        context         Include key-value pairs of context associated with each resource.
+         *          Default: false
+         *      @var boolean        moderations     Include image moderation status of each listed resource.
+         *          Default: false
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resources_by_moderation($kind, $status, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -92,6 +270,30 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Lists resources by public IDs
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_all_uploaded_images_with_the_given_ids
+         *
+         * @param string|array   public_ids      List resources with the given public IDs (up to 100)
+         * @param array     $options {
+         *
+         *      @var string         resource_type   The type of file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string         type            The storage type. Default: all.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *              youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @var boolean        tags            Include the list of tag names assigned each resource. Default: false
+         *      @var boolean        context         Include key-value pairs of context associated with each resource.
+         *          Default: false
+         *      @var boolean        moderations     Include image moderation status of each listed resource.
+         *          Default: false
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resources_by_ids($public_ids, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -103,6 +305,40 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Details of a single resource
+         *
+         * Return details of the requested resource as well as all its derived resources.
+         * Note that if you only need details about the original resource,
+         * you can also use the Uploader::upload or Uploader::explicit methods, which are not rate limited.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#details_of_a_single_resource
+         *
+         * @param string    $public_id   The public ID of the resource.
+         * @param array $options {
+ *
+         *      @var string     resource_type   The type of file. Default: image. Valid values: image, raw, video.
+         *      @var string     type            The storage type. Default: all.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *          youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @var boolean    colors          Include color information: predominant colors and histogram of 32
+         *          leading colors. Default: false
+         *      @var boolean    image_metadata  Include IPTC, XMP, and detailed Exif metadata.
+         *          Supported for images, video, and audio. Default: false
+         *      @var boolean    exif     Deprecated. Use image_metadata instead
+         *      @var boolean    faces    Include a list of coordinates of detected faces. Default: false
+         *      @var boolean    pages    Report the number of pages in multi-page documents (e.g., PDF). Default: false
+         *      @var boolean    phash    Include the perceptual hash (pHash) of the uploaded photo for image similarity
+         *          detection. Default: false
+         *      @var boolean    coordinates    Include previously specified custom cropping coordinates and faces
+         *          coordinates. Default: false
+         *      @var int            max_results    The number of derived images to return. Default: 10. Maximum: 100
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function resource($public_id, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -116,6 +352,24 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Restores a deleted resource
+         *
+         * Reverts to the latest backed up version of the resource.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#restore_a_deleted_resource
+         *
+         * @param string|array  $public_ids The public IDs of (deleted or existing) backed up resources to restore.
+         * @param array     $options {
+         *
+         *      @var string resource_type   The type of file. Default: image. Valid values: image, raw, video.
+         *      @var string type            The storage type: upload, private, or authenticated. Default: upload.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function restore($public_ids, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -126,6 +380,56 @@ namespace Cloudinary {
             return $this->call_api("post", $uri, $params, $options);
         }
 
+        /**
+         * Updates details of an existing resource
+         *
+         *
+         * Update one or more of the attributes associated with a specified resource. Note that you can also update
+         * many attributes of an existing resource using the Uploader::explicit method, which is not rate limited.
+         *
+         *  @see https://cloudinary.com/documentation/admin_api#update_details_of_an_existing_resource
+         *
+         * @param string|array  $public_id  The public ID of the resource to update.
+         * @param array         $options {
+         *
+         *      @var string         resource_type       The type of file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string         type                The storage type. Default: upload.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *              youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @var string|array   tags                Tag names to assign to the uploaded image.
+         *      @var string|array   context             Array of key-value pairs of general textual context metadata
+         *          to attach to an uploaded resource.
+         *      @var string|array   face_coordinates    Array of coordinates of faces contained in an uploaded image.
+         *          Each face is specified by the X & Y coordinates of the top left corner
+         *          and the width & height of the face.
+         *          For example: array(array(10,20,150,130), array(213, 345, 82, 61))
+         *      @var string|array   custom_coordinates  Coordinates of an interesting region contained in an image.
+         *          The given coordinates are used for cropping uploaded images using the custom gravity mode.
+         *          The region is specified by the X & Y coordinates of the top left corner
+         *          and the width & height of the region. For example: array(85, 120, 220, 310).
+         *      @var string         moderation_status   Manually set image moderation status or override previously
+         *          automatically moderated images by approving or rejecting. Valid values: approved, rejected
+         *      @var float          auto_tagging        Whether to assign tags to an image according to detected scene
+         *          categories with confidence score higher than the given value. Valid values: 0.0 to 1.0
+         *      @var string          detection          Set to 'adv_face' to automatically extract advanced face
+         *          attributes of photos using the Advanced Facial Attributes Detection add-on
+         *      @var string          ocr                Set to 'adv_ocr' to extract all text elements in an image
+         *          as well as the bounding box coordinates of each detected elementusing the
+         *          OCR Text Detection and Extraction add-on.
+         *      @var string         raw_convert         Set to 'aspose' to automatically convert Office documents to
+         *          PDF files and other image formats using the Aspose Document Conversion add-on.
+         *      @var string         categorization      Set to 'imagga_tagging' to automatically detect scene categories
+         *          of photos using the Imagga Auto Tagging add-on.
+         *      @var string         background_removal  Set to 'remove_the_background'
+         *          (or 'pixelz' - the new name of the company) to automatically clear the background of an uploaded
+         *          photo using the Remove-The-Background Editing add-on.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function update($public_id, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -170,6 +474,35 @@ namespace Cloudinary {
             return $this->call_api("post", $uri, $update_options, $options);
         }
 
+        /**
+         * Deletes resources by public IDs
+         *
+         * Delete all resources with the given public IDs (up to 100).
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_uploaded_images_by_public_ids
+         *
+         * @param string|array  $public_ids     The public IDs of the resources
+         * @param array         $options {
+         *
+         *      @var string         resource_type       The type of the file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string         type                The storage type. Default: upload.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *              youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @var boolean        keep_original       Delete only the derived resources. Default: false
+         *      @var boolean        invalidate          Whether to also invalidate the copies of the resource on the CDN
+         *          Default: false
+         *      @var string         next_cursor         When a deletion request has more than 1000 resources to delete,
+         *          the response includes the partial boolean parameter set to true, as well as a next_cursor value.
+         *          Use this returned next_cursor value as the next_cursor parameter of the following deletion request
+         *      @var string|array   transformations     Only the derived resources matching this array of
+         *          transformation parameters will be deleted.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_resources($public_ids, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -180,6 +513,36 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        /**
+         * Deletes resources by prefix.
+         *
+         * Delete all resources, including derived resources, where the public ID starts with the given prefix
+         * (up to a maximum of 1000 original resources).
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_uploaded_images_by_prefix
+         *
+         * @param string    $prefix     The prefix of the public IDs
+         * @param array     $options {
+         *
+         *      @option string         resource_type    The type of the file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @option string         type             The storage type. Default: upload.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *              youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @option boolean        keep_original    Delete only the derived resources. Default: false
+         *      @option boolean        invalidate       Whether to also invalidate the copies of the resource on the CDN
+         *          Default: false
+         *      @option string         next_cursor      When a deletion request has more than 1000 resources to delete,
+         *          the response includes the partial boolean parameter set to true, as well as a next_cursor value.
+         *          Use this returned next_cursor value as the next_cursor parameter of the following deletion request
+         *      @option string|array   transformations  Only the derived resources matching this array of
+         *          transformation parameters will be deleted.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_resources_by_prefix($prefix, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -190,6 +553,35 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        /**
+         * Deletes all resources
+         *
+         * Delete all resources (of the relevant resource type and type), including derived resources
+         * (up to a maximum of 1000 original resources)
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_all_or_selected_resources
+         *
+         * @param array     $options {
+         *
+         *      @var string         resource_type       The type of the file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string         type                The storage type. Default: upload.
+         *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
+         *              youtube, hulu, vimeo, animoto, worldstarhiphop or dailymotion
+         *      @var boolean        keep_original       Delete only the derived resources. Default: false
+         *      @var boolean        invalidate          Whether to also invalidate the copies of the resource on the CDN
+         *          Default: false
+         *      @var string         next_cursor         When a deletion request has more than 1000 resources to delete,
+         *          the response includes the partial boolean parameter set to true, as well as a next_cursor value.
+         *          Use this returned next_cursor value as the next_cursor parameter of the following deletion request
+         *      @var string|array   transformations     Only the derived resources matching this array of
+         *          transformation parameters will be deleted.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_all_resources($options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -199,7 +591,32 @@ namespace Cloudinary {
 
             return $this->call_api("delete", $uri, $params, $options);
         }
-
+        /**
+         * Deletes resources by tag
+         *
+         * Delete all resources (and their derivatives) with the given tag name
+         * (up to a maximum of 1000 original resources).
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_resources_by_tags
+         *
+         * @param string    $tag    The tag name of the resources to delete
+         * @param array $options {
+         *
+         *      @var string         resource_type       The type of the file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var boolean        keep_original       Delete only the derived resources. Default: false
+         *      @var boolean        invalidate          Whether to also invalidate the copies of the resource on the CDN
+         *          Default: false
+         *      @var string         next_cursor         When a deletion request has more than 1000 resources to delete,
+         *          the response includes the partial boolean parameter set to true, as well as a next_cursor value.
+         *          Use this returned next_cursor value as the next_cursor parameter of the following deletion request
+         *      @var string|array   transformations     Only the derived resources matching this array of
+         *          transformation parameters will be deleted.
+         * }
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_resources_by_tag($tag, $options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -209,6 +626,21 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        /**
+         * Deletes derived resources
+         *
+         * Delete all derived resources with the given IDs (an array of up to 100 derived_resource_ids).
+         * The derived resource IDs are returned when calling the Details of a single resource method.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_derived_resources
+         *
+         * @param string|array      $derived_resource_ids   The derived resource IDs
+         * @param array             $options                Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_derived_resources($derived_resource_ids, $options = array())
         {
             $uri = array("derived_resources");
@@ -218,11 +650,19 @@ namespace Cloudinary {
         }
 
         /**
-         * Delete derived resources identified by transformation for the provided public_ids
-         * @param string|array $public_ids The resources the derived resources belong to
-         * @param string|array $transformations The transformation(s) associated with the derived resources
-         * @param array $options Hash of options
+         * Deletes derived resources identified by transformation for the provided public_ids
+         *
+         * @param string|array  $public_ids         The resources the derived resources belong to
+         * @param string|array  $transformations    The transformation(s) associated with the derived resources
+         * @param array     $options {
+         *
+         *      @var string         resource_type       The type of the file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string         type                The storage type. Default: upload.
+         * }
+         *
          * @return Api\Response
+         *
          * @throws Api\GeneralError
          */
         public function delete_derived_by_transformation(
@@ -243,6 +683,26 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        /**
+         * Lists tags
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_tags
+         *
+         * @param array     $options {
+         *
+         *      @var string     resource_type   The type of the file. Default: image.
+         *          Valid values: image, raw, video.
+         *      @var string     prefix          Find all tags that start with the given prefix.
+         *      @var int        max_results     Max number of tags to return. Default: 10. Maximum: 500
+         *      @var string     next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as
+         *          the next_cursor parameter of the following listing request.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function tags($options = array())
         {
             $resource_type = \Cloudinary::option_get($options, "resource_type", "image");
@@ -252,6 +712,23 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Lists transformations
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_transformations
+         *
+         * @param array $options {
+         *
+         *      @var int        max_results     Max number of transformations to return. Default: 10. Maximum: 500
+         *      @var string     next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as
+         *          the next_cursor parameter of the following listing request.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function transformations($options = array())
         {
             $uri = array("transformations");
@@ -260,6 +737,25 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Details of a single transformation
+         *
+         * @see https://cloudinary.com/documentation/admin_api#details_of_a_single_transformation
+         *
+         * @param string|array  $transformation The transformation. Can be either a string or an array of parameters.
+         *      For example: "w_150,h_100,c_fill" or array("width" => 150, "height" => 100,"crop" => "fill")
+         * @param array         $options {
+         *
+         *      @var int        max_results     Max number of transformations to return. Default: 10. Maximum: 500
+         *      @var string     next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as the
+         *          next_cursor parameter of the following listing request.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function transformation($transformation, $options = array())
         {
             $uri = array("transformations", $this->transformation_string($transformation));
@@ -268,6 +764,22 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Deletes transformation
+         *
+         * Note: Deleting a transformation also deletes all the derived images based on this transformation (up to 1000)
+         * The method returns an error if there are more than 1000 derived images based on this transformation.
+         *
+         * @see  https://cloudinary.com/documentation/admin_api#delete_transformation
+         *
+         * @param string|array  $transformation The transformation. Can be either a string or an array of parameters
+         *      For example: "w_150,h_100,c_fill" or array("width" => 150, "height" => 100,"crop" => "fill")
+         * @param array         $options        Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_transformation($transformation, $options = array())
         {
             $uri = array("transformations", $this->transformation_string($transformation));
@@ -279,7 +791,27 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
-        # updates - currently only supported update is the "allowed_for_strict" boolean flag
+        /**
+         * Updates transformation
+         *
+         * @see https://cloudinary.com/documentation/admin_api#update_transformation
+         *
+         * @param string|array  $transformation The transformation. Can be either a string or an array of parameters.
+         *      For example: "w_150,h_100,c_fill" or array("width" => 150, "height" => 100,"crop" => "fill")
+         * @param array         $updates {
+         *
+         *      @var boolean    allowed_for_strict  Whether this transformation is allowed when
+         *          Strict Transformations are enabled.
+         *      @var boolean    unsafe_update       Allows updating an existing named transformation without updating
+         *          all associated derived images (the new settings of the named transformation only take effect from
+         *          now on).
+         * }
+         * @param array         $options        Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function update_transformation($transformation, $updates = array(), $options = array())
         {
             $uri = array("transformations", $this->transformation_string($transformation));
@@ -291,6 +823,20 @@ namespace Cloudinary {
             return $this->call_api("put", $uri, $params, $options);
         }
 
+        /**
+         * Creates named transformation
+         *
+         * @see https://cloudinary.com/documentation/admin_api#create_named_transformation
+         *
+         * @param string        $name       The name of the transformation
+         * @param string|array  $definition The transformation. Can be either a string or an array of parameters.
+         *      For example: "w_150,h_100,c_fill" or array("width" => 150, "height" => 100,"crop" => "fill")
+         * @param array         $options    Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function create_transformation($name, $definition, $options = array())
         {
             $uri = array("transformations", $name);
@@ -299,6 +845,23 @@ namespace Cloudinary {
             return $this->call_api("post", $uri, $params, $options);
         }
 
+        /**
+         * Lists upload presets
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_upload_presets
+         *
+         * @param array         $options {
+         *
+         *      @var int        max_results     Max number of upload presets to return. Default: 10. Maximum: 500
+         *      @var string     next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as the
+         *          next_cursor parameter of the following listing request.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function upload_presets($options = array())
         {
             $uri = array("upload_presets");
@@ -307,6 +870,18 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Details of a single upload preset
+         *
+         * @see https://cloudinary.com/documentation/admin_api#details_of_a_single_upload_preset
+         *
+         * @param string    $name       The name of the upload preset
+         * @param array     $options    Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function upload_preset($name, $options = array())
         {
             $uri = array("upload_presets", $name);
@@ -314,6 +889,18 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $this->only($options, array("max_results")), $options);
         }
 
+        /**
+         * Deletes an upload preset
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_an_upload_preset
+         *
+         * @param string    $name       The name of the upload preset
+         * @param array     $options    Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_upload_preset($name, $options = array())
         {
             $uri = array("upload_presets", $name);
@@ -321,6 +908,28 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, array(), $options);
         }
 
+        /**
+         * Updates an upload preset
+         *
+         * @see https://cloudinary.com/documentation/admin_api#update_an_upload_preset
+         *
+         * @param string    $name       The name of the upload preset
+         *
+         * @see \Cloudinary\Uploader::upload()
+         *
+         * @param array $options {
+         *      In addition to the options below, any Uploader::upload() actions to apply to assets uploaded with this
+         *      preset.
+         *
+         *      @var boolean unsigned           Whether this upload preset allows unsigned uploading to Cloudinary.
+         *      @var boolean disallow_public_id Whether this upload preset disables assigning a public_id in the
+         *          image upload call
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function update_upload_preset($name, $options = array())
         {
             $uri = array("upload_presets", $name);
@@ -330,6 +939,27 @@ namespace Cloudinary {
             return $this->call_api("put", $uri, $params, $options);
         }
 
+        /**
+         * Creates an upload preset
+         *
+         * @see https://cloudinary.com/documentation/admin_api#create_an_upload_preset
+         *
+         * @see \Cloudinary\Uploader::upload()
+         *
+         * @param array $options {
+         *      In addition to the options below, any Uploader::upload() parameters to apply to assets uploaded with
+         *      this preset.
+         *
+         *      @var string     name               The name to assign to the new upload preset. If not provided, random
+         *          name is generated
+         *      @var boolean    unsigned           Whether this upload preset allows unsigned uploading to Cloudinary.
+         *      @var boolean    disallow_public_id Whether this upload preset disables assigning a public_id in the
+         *          image upload call
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function create_upload_preset($options = array())
         {
             $params = \Cloudinary\Uploader::build_upload_params($options);
@@ -338,11 +968,36 @@ namespace Cloudinary {
             return $this->call_api("post", array("upload_presets"), $params, $options);
         }
 
+        /**
+         * Lists all root folders
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_all_root_folders
+         *
+         * @param array $options    Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function root_folders($options = array())
         {
             return $this->call_api("get", array("folders"), array(), $options);
         }
 
+        /**
+         * Lists subfolders
+         *
+         * Lists the name and path of all the subfolders of a given root folder
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_subfolders
+         *
+         * @param string    $of_folder_path The root folder
+         * @param array     $options        Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function subfolders($of_folder_path, $options = array())
         {
             $uri = array("folders", $of_folder_path);
@@ -350,6 +1005,25 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, array(), $options);
         }
 
+        /**
+         * Lists upload mappings
+         *
+         * List all upload mappings by folder and its mapped template (URL).
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_upload_mappings
+         *
+         * @param array $options {
+         *
+         *      @var int     max_results     Max number of upload presets to return. Default: 10. Maximum: 500
+         *      @var string  next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as the
+         *          next_cursor parameter of the following listing request.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function upload_mappings($options = array())
         {
             $uri = array("upload_mappings");
@@ -358,6 +1032,20 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Details of a single upload mapping
+         *
+         * Retrieve the mapped template (URL) of a given upload mapping folder.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#details_of_a_single_upload_mapping
+         *
+         * @param string    $name       The name of the folder
+         * @param array     $options    Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function upload_mapping($name, $options = array())
         {
             $uri = array("upload_mappings");
@@ -366,6 +1054,20 @@ namespace Cloudinary {
             return $this->call_api("get", $uri, $params, $options);
         }
 
+        /**
+         * Deletes an upload mapping
+         *
+         * Delete an upload mapping by folder name.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_an_upload_mapping
+         *
+         * @param string    $name       The name of the folder
+         * @param array     $options    Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function delete_upload_mapping($name, $options = array())
         {
             $uri = array("upload_mappings");
@@ -374,6 +1076,23 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        /**
+         * Updates an upload mapping
+         *
+         * Update an existing upload mapping folder with a new template (URL).
+         *
+         * @see https://cloudinary.com/documentation/admin_api#update_an_upload_mapping
+         *
+         * @param string    $name   The name of the folder
+         * @param array     $options {
+         *
+         *      @var string     template    The new URL to be mapped to the folder.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function update_upload_mapping($name, $options = array())
         {
             $uri = array("upload_mappings");
@@ -382,6 +1101,23 @@ namespace Cloudinary {
             return $this->call_api("put", $uri, $params, $options);
         }
 
+        /**
+         * Creates an upload mapping
+         *
+         * Create a new upload mapping folder and its template (URL).
+         *
+         * @see https://cloudinary.com/documentation/admin_api#create_an_upload_mapping
+         *
+         * @param string    $name   The name of the folder to map.
+         * @param array     $options {
+         *
+         *      @var string     template    The URL to be mapped to the folder.
+         * }
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function create_upload_mapping($name, $options = array())
         {
             $uri = array("upload_mappings");
@@ -391,9 +1127,16 @@ namespace Cloudinary {
         }
 
         /**
-         * List all streaming profiles associated with the current customer
-         * @param array $options options
+         * Lists streaming profiles
+         *
+         * List streaming profiles associated with the current customer, including built-in and custom profiles.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#list_streaming_profiles
+         *
+         * @param array $options Additional options
+         *
          * @return Api\Response An array with a "data" key for results
+         *
          * @throws Api\GeneralError
          */
         public function list_streaming_profiles($options = array())
@@ -402,10 +1145,17 @@ namespace Cloudinary {
         }
 
         /**
-         * Get the information of a single streaming profile
-         * @param string $name the name of the profile
-         * @param array $options other options
+         * Gets details of a single streaming profile
+         *
+         * Retrieve the details of a single streaming profile by name.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#get_details_of_a_single_streaming_profile
+         *
+         * @param string    $name       The identification name of the streaming profile
+         * @param array     $options    Additional options
+         *
          * @return Api\Response An array with a "data" key for results
+         *
          * @throws Api\GeneralError
          */
         public function get_streaming_profile($name, $options = array())
@@ -415,10 +1165,20 @@ namespace Cloudinary {
         }
 
         /**
-         * Delete a streaming profile information. Predefined profiles are restored to the default setting.
-         * @param string $name the name of the streaming profile to delete
-         * @param array $options additional options
+         * Deletes or reverts the specified streaming profile
+         *
+         * For custom streaming profiles, delete the specified profile.
+         * For built-in streaming profiles, if the built-in profile was modified, revert the profile to the original
+         * settings.
+         * For built-in streaming profiles that have not been modified, the Delete method returns an error.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#delete_or_revert_the_specified_streaming_profile
+         *
+         * @param string    $name       The identification name of the streaming profile
+         * @param array     $options    Additional options
+         *
          * @return Api\Response
+         *
          * @throws Api\GeneralError
          */
         public function delete_streaming_profile($name, $options = array())
@@ -428,10 +1188,25 @@ namespace Cloudinary {
         }
 
         /**
-         * Update an existing streaming profile
-         * @param string $name the name of the prodile
-         * @param array $options additional options
+         * Updates an existing streaming profile
+         *
+         * Update the specified existing streaming profile. You can update both custom and built-in profiles.
+         * The specified list of representations replaces the previous list.
+         *
+         * @param string    $name       The identification name of the streaming profile
+         * @param array $options {
+         *
+         *      @var string         display_name    A descriptive name for the profile.
+         *      @var array          representations An array of structures that defines a custom streaming profile.
+         *      @var string|array   transformation  Specifies the transformation parameters for the representation.
+         *          All video transformation parameters except video_sampling are supported. Common transformation
+         *          parameters for representations include: width, height (or aspect_ratio), bit_rate, video_codec,
+         *          audio_codec, sample_rate (or fps), etc.
+         *      @see self::create_transformation()
+         * }
+         *
          * @return Api\Response
+         *
          * @throws Api\GeneralError
          */
         public function update_streaming_profile($name, $options = array())
@@ -442,11 +1217,26 @@ namespace Cloudinary {
         }
 
         /**
-         * Create a new streaming profile
-         * @param string $name the name of the new profile. if the name is of a predefined profile,
-         * the profile will be modified.
-         * @param array $options additional options
+         * Creates a new, custom streaming profile.
+         *
+         * @see https://cloudinary.com/documentation/admin_api#create_a_streaming_profile
+         *
+         * @param string $name      The identification name to assign to the new streaming profile.
+         *      The name is case-insensitive and can contain alphanumeric characters, underscores (_) and hyphens (-).
+         *      If the name is of a predefined profile, the profile will be modified.
+         * @param array $options {
+         *
+         *      @var string         display_name    A descriptive name for the profile.
+         *      @var array          representations An array of structures that defines a custom streaming profile.
+         *      @var string|array   transformation  Specifies the transformation parameters for the representation.
+         *          All video transformation parameters except video_sampling are supported. Common transformation
+         *          parameters for representations include: width, height (or aspect_ratio), bit_rate, video_codec,
+         *          audio_codec, sample_rate (or fps), etc.
+         *      @see self::create_transformation()
+         * }
+         *
          * @return Api\Response
+         *
          * @throws Api\GeneralError
          */
         public function create_streaming_profile($name, $options = array())
@@ -458,6 +1248,20 @@ namespace Cloudinary {
             return $this->call_api("post", $uri, $params, $options);
         }
 
+        /**
+         * The core function that performs the API call
+         *
+         * Function validates configuration, builds query string/request body, performs request and returns result
+         *
+         * @param string    $method    The HTTP method. Valid methods: get, post, put, delete
+         * @param array     $uri       REST endpoint of the API
+         * @param array     $params    Query/body parameters passed to the method
+         * @param array     $options   Additional options. Can be an override of the configuration, headers, etc.
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
         public function call_api($method, $uri, $params, &$options)
         {
             $prefix = \Cloudinary::option_get(
@@ -553,7 +1357,16 @@ namespace Cloudinary {
             }
         }
 
-        # Based on http://snipplr.com/view/17242/
+
+        /**
+         * Executes HTTP request, parses response headers, leaves body as a string
+         *
+         * Based on http://snipplr.com/view/17242/
+         *
+         * @param resource $ch cURL handle
+         *
+         * @return \stdClass Containing headers, body, responseCode properties
+         */
         protected function execute($ch)
         {
             $string = curl_exec($ch);
@@ -589,6 +1402,16 @@ namespace Cloudinary {
             return $result;
         }
 
+        /**
+         * Parses JSON string from response body.
+         *
+         * @param \stdClass $response Class representing response
+         * @see \Cloudinary\Api::execute()
+         *
+         * @return mixed Decoded JSON object
+         *
+         * @throws Api\GeneralError
+         */
         public static function parse_json_response($response)
         {
             $result = json_decode($response->body, true);
@@ -602,6 +1425,16 @@ namespace Cloudinary {
             return $result;
         }
 
+        /**
+         * Filters associative array using provided keys
+         *
+         * @param array $hash   Array to filter
+         * @param array $keys   Keys to keep
+         *
+         * @return array Filtered associative array
+         *
+         * @todo Replace with array_intersect_key($hash, array_flip($hash))
+         */
         protected function only(&$hash, $keys)
         {
             $result = array();
@@ -614,6 +1447,15 @@ namespace Cloudinary {
             return $result;
         }
 
+        /**
+         * Alias for \Cloudinary::generate_transformation_string()
+         *
+         * @see \Cloudinary::generate_transformation_string()
+         *
+         * @param string|array $transformation
+         *
+         * @return string Resulting transformation string
+         */
         protected function transformation_string($transformation)
         {
             if (is_string($transformation)) {
@@ -624,8 +1466,10 @@ namespace Cloudinary {
         }
 
         /**
-         * Prepare streaming profile parameters for API calls
-         * @param array $options the options passed to the API
+         * Prepares streaming profile parameters for API calls
+         *
+         * @param array $options The options passed to the API
+         *
          * @return array A single profile parameters
          */
         protected function prepare_streaming_profile_params($options)
@@ -644,6 +1488,14 @@ namespace Cloudinary {
             return $params;
         }
 
+        /**
+         * Prepares delete resource parameters for API calls
+         *
+         * @param array $options    Additional options
+         * @param array $params     The parameters passed to the API
+         *
+         * @return array    Updated parameters
+         */
         protected function prepare_delete_resource_params($options, $params = [])
         {
             $filtered = $this->only($options, ["keep_original", "next_cursor", "invalidate"]);
