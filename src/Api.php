@@ -214,6 +214,14 @@ namespace Cloudinary {
             return $this->call_api("delete", $uri, $params, $options);
         }
 
+        /**
+         * Delete derived resources identified by transformation for the provided public_ids
+         * @param string|array $public_ids The resources the derived resources belong to
+         * @param string|array $transformations The transformation(s) associated with the derived resources
+         * @param array $options Hash of options
+         * @return Api\Response
+         * @throws Api\GeneralError
+         */
         public function delete_derived_by_transformation(
             $public_ids,
             $transformations = array(),
