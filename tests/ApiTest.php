@@ -322,7 +322,7 @@ namespace Cloudinary {
             $public_id = "public_id";
             $transformations = "c_crop,w_100";
             Curl::mockApi($this);
-            $this->api->delete_derived_by_transformation(array($public_id), $transformations);
+            $this->api->delete_derived_by_transformation($public_id, $transformations);
             assertUrl($this, "/resources/image/upload");
             assertDelete($this);
             assertParam($this, "keep_original", true);

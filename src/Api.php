@@ -223,7 +223,7 @@ namespace Cloudinary {
             $type          = \Cloudinary::option_get($options, "type", "upload");
             $uri           = ["resources", $resource_type, $type];
             $params = [
-                "public_ids" => $public_ids,
+                "public_ids" => \Cloudinary::build_array($public_ids),
                 "keep_original" => true,
             ];
             if (is_array($transformations)) {
