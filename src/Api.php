@@ -234,12 +234,9 @@ namespace Cloudinary {
                 "public_ids" => \Cloudinary::build_array($public_ids),
                 "keep_original" => true,
             ];
-            if (is_array($transformations)) {
-                $params["transformations"] = \Cloudinary::build_eager($transformations);
-            } else {
-                $params["transformations"] = $transformations;
-            }
+            $params["transformations"] = \Cloudinary::build_eager($transformations);
             $params = array_merge($params, $this->only($options, ["invalidate"]));
+
             return $this->call_api("delete", $uri, $params, $options);
         }
 
