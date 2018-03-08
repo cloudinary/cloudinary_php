@@ -1231,7 +1231,6 @@ class CloudinaryTest extends TestCase
             cl_video_thumbnail_tag('movie_id', array('width' => 100)),
             "<img src='$expected_url' width='100'/>"
         );
-
     }
 
     public function test_cl_video_tag()
@@ -1730,6 +1729,87 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    /**
+     * Test build_array_of_assoc_arrays function
+     */
+    public function test_build_array_of_assoc_arrays()
+    {
+        $assoc_array_data = array("one" => 1, "two" => 2, "three" => 3);
+        $array_of_assoc_array = array($assoc_array_data);
+
+        # should convert an assoc array to an array of assoc arrays
+        $this->assertEquals(array($assoc_array_data), Cloudinary::build_array_of_assoc_arrays($assoc_array_data));
+
+        # should leave as is
+        $this->assertEquals($array_of_assoc_array, Cloudinary::build_array_of_assoc_arrays($array_of_assoc_array));
+
+        # should convert a JSON string representing an assoc array to an array of assoc arrays
+        $string_data = '{"one": 1, "two": 2, "three": 3}';
+        $this->assertEquals($array_of_assoc_array, Cloudinary::build_array_of_assoc_arrays($string_data));
+
+        # should convert a JSON string representing an array of assoc arrays to an array of assoc arrays
+        $string_array_data = '[{"one": 1, "two": 2, "three": 3}]';
+        $this->assertEquals($array_of_assoc_array, Cloudinary::build_array_of_assoc_arrays($string_array_data));
+
+        # should return an empty array on null
+        $this->assertEquals(array(), Cloudinary::build_array_of_assoc_arrays(null));
+
+        # should return an empty array on array()
+        $this->assertEquals(array(), Cloudinary::build_array_of_assoc_arrays(array()));
+
+        # should throw InvalidArgumentException on invalid value
+        $invalid_values = array("", array(array()), array("not_an_array"), array(7357));
+        foreach ($invalid_values as $value) {
+            try {
+                Cloudinary::build_array_of_assoc_arrays($value);
+                $this->fail('InvalidArgumentException was not thrown');
+            } catch (\InvalidArgumentException $e) {
+            }
+        }
+    }
+
+    /**
+     * Test json_encode_array_of_assoc_arrays function
+     */
+    public function test_json_encode_array_of_assoc_arrays()
+    {
+        # should encode simple values
+        $this->assertEquals('[]', Cloudinary::json_encode_array_of_assoc_arrays(array()));
+        $this->assertEquals('[{"k":"v"}]', Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>"v"))));
+
+        # should encode DateTime to ISO format
+        $this->assertEquals(
+            '[{"k":"2019-02-22T00:00:00+0000"}]',
+            Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>new \DateTime("2019-02-22"))))
+        );
+        $this->assertEquals(
+            '[{"k":"2019-02-22T16:20:57+0000"}]',
+            Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>new \DateTime("2019-02-22 16:20:57Z"))))
+        );
+
+        # should throw InvalidArgumentException on invalid value
+        try {
+            Cloudinary::json_encode_array_of_assoc_arrays("not_valid");
+            $this->fail('InvalidArgumentException was not thrown');
+        } catch (\InvalidArgumentException $e) {
+        }
+    }
+
+    /**
+     * Test encode_array_to_json function
+     *
+     * @see test_json_encode_array_of_assoc_arrays
+     * @see test_build_array_of_assoc_arrays
+     */
+    public function test_encode_array_to_json()
+    {
+        # should handle null value
+        $this->assertEquals(null, Cloudinary::encode_array_to_json(null));
+
+        # should handle regular case
+        $this->assertEquals('[{"k":"v"}]', Cloudinary::encode_array_to_json('[{"k":"v"}]'));
+        $this->assertEquals('[{"k":"v"}]', Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>"v"))));
+    }
 
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
     {
