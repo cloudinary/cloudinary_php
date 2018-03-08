@@ -145,6 +145,114 @@ class Cloudinary
         }
     }
 
+
+    /**
+     * Converts a value that can be presented as an array of associative arrays.
+     *
+     * In case top level item is not an array, it is wrapped with an array
+     *
+     * @param array|string  $value  The value to be converted
+     *
+     *  Valid values examples:
+     *      - Valid assoc array: array("k" => "v", "k2"=> "v2")
+     *      - Array of assoc arrays: array(array("k" => "v"), array("k2" =>"v2"))
+     *      - JSON decodable string: '{"k": "v"}', or '[{"k": "v"}]'
+     *      - Array of JSON decodable strings: array('{"k": "v"}', '{"k2","v2"}')
+     *
+     *  Invalid values examples:
+     *      - array("not", "an", "assoc", "array")
+     *      - array(123, None),
+     *      - array(array("another", "array"))
+     *
+     * @return array|mixed Converted(or original) array of associative arrays
+     *
+     * @throws InvalidArgumentException in case value cannot be converted to an array of associative arrays
+     */
+    public static function build_array_of_assoc_arrays($value)
+    {
+        if (is_null($value)) {
+            return array();
+        }
+
+        if (is_string($value)) {
+            $value = json_decode($value, true);
+            if (is_null($value)) {
+                throw new InvalidArgumentException("Failed parsing JSON string value");
+            }
+        }
+
+        if (Cloudinary::is_assoc($value)) {
+            $value = array($value);
+        }
+
+        foreach ($value as &$item) {
+            if (is_string($item)) {
+                $item = json_decode($item, true);
+                if (is_null($value)) {
+                    throw new InvalidArgumentException("Failed parsing JSON string item");
+                }
+            }
+
+            if (!Cloudinary::is_assoc($item)) {
+                throw new InvalidArgumentException("Expected an array of associative arrays");
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Encodes an array of associative arrays to JSON.
+     *
+     * This is a wrapper around json_encode with additional preprocessing (DateTime formatting, etc)
+     *
+     * @param array $array  An array of associative arrays
+     *
+     * @return string Resulting JSON string
+     *
+     * @throws InvalidArgumentException in case the value is not an array of associative arrays
+     */
+    public static function json_encode_array_of_assoc_arrays($array)
+    {
+        if (!is_array($array)) {
+            throw new InvalidArgumentException("Expected an array of associative arrays");
+        }
+
+        foreach ($array as &$item) {
+            if (!Cloudinary::is_assoc($item)) {
+                throw new InvalidArgumentException("Expected an array of associative arrays");
+            }
+            foreach ($item as $key => $value) {
+                if ($value instanceof DateTime) {
+                    $item[$key] = $value->format(DateTime::ISO8601);
+                }
+            }
+        }
+
+        return json_encode($array);
+    }
+
+    /**
+     * Wrapper for calling build_array_of_assoc_arrays and json_encode_array_of_assoc_arrays with null value handling.
+     *
+     * @see Cloudinary::json_encode_array_of_assoc_arrays
+     * @see Cloudinary::build_array_of_assoc_arrays
+     *
+     * @param array|string  $value  The value to be converted
+     *
+     * @return string Resulting JSON string
+     *
+     * @throws InvalidArgumentException in case value cannot be converted and encoded
+     */
+    public static function encode_array_to_json($value)
+    {
+        if (is_null($value)) {
+            return $value;
+        }
+
+        return  Cloudinary::json_encode_array_of_assoc_arrays(Cloudinary::build_array_of_assoc_arrays($value));
+    }
+
     public static function encode_array($array)
     {
         return implode(",", Cloudinary::build_array($array));
@@ -618,7 +726,7 @@ class Cloudinary
     private static function norm_range_value($value)
     {
         if (is_null($value)) {
-          return null;
+            return null;
         }
 
         // Ensure that trailing decimal(.0) part is not cropped when float is provided
