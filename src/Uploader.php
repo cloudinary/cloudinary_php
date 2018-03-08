@@ -10,6 +10,9 @@ namespace Cloudinary {
         {
             $params = array(
                 "timestamp" => time(),
+                "access_control" => \Cloudinary::encode_array_to_json(
+                    \Cloudinary::option_get($options, "access_control")
+                ),
                 "allowed_formats" => \Cloudinary::encode_array(\Cloudinary::option_get($options, "allowed_formats")),
                 "async" => \Cloudinary::option_get($options, "async"),
                 "auto_tagging" => \Cloudinary::option_get($options, "auto_tagging"),

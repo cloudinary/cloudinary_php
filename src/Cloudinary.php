@@ -193,7 +193,6 @@ class Cloudinary
         }
         return $item;
     }
-
     /**
      * Encodes an array of associative arrays to JSON.
      *
