@@ -510,5 +510,78 @@ TAG
             );
             $this->assertEquals(2, count($response["responsive_breakpoints"][0]["breakpoints"]));
         }
+
+        /**
+         * Should allow the user to define ACL in the upload parameters
+         */
+        public function test_access_control()
+        {
+            Curl::mockUpload($this);
+
+            # Should accept an array of strings
+            $acl = array("access_type" => "anonymous",
+                         "start" => "2018-02-22 16:20:57 +0200",
+                         "end"=> "2018-03-22 00:00 +0200"
+            );
+            $exp_acl = '[{"access_type":"anonymous",' .
+                       '"start":"2018-02-22 16:20:57 +0200",' .
+                       '"end":"2018-03-22 00:00 +0200"}]';
+
+            Uploader::upload(TEST_IMG, array("access_control" => $acl));
+
+            assertParam($this, "access_control", $exp_acl);
+
+            # Should accept an array of datetime objects
+            $acl_2 = array("access_type" => "anonymous",
+                         "start" => new \DateTime("2019-02-22 16:20:57Z"),
+                         "end"=> new \DateTime("2019-03-22T00:00:00+02:00")
+            );
+            $exp_acl_2 = '[{"access_type":"anonymous",' .
+                         '"start":"2019-02-22T16:20:57+0000",' .
+                         '"end":"2019-03-22T00:00:00+0200"}]';
+
+            Uploader::upload(TEST_IMG, array("access_control" => $acl_2));
+
+            assertParam($this, "access_control", $exp_acl_2);
+
+            # Should accept a JSON string
+            $acl_str = '{"access_type":"anonymous",' .
+                       '"start":"2019-02-22 16:20:57 +0200",' .
+                       '"end":"2019-03-22 00:00 +0200"}';
+
+            $exp_acl_str = '[{"access_type":"anonymous",' .
+                           '"start":"2019-02-22 16:20:57 +0200",' .
+                           '"end":"2019-03-22 00:00 +0200"}]';
+
+            Uploader::upload(TEST_IMG, array("access_control" => $acl_str));
+
+            assertParam($this, "access_control", $exp_acl_str);
+
+            # Should accept an array of all the above values
+            $array_of_acl = array($acl, $acl_2, $acl_str);
+            $exp_array_of_acl = '[' . implode(
+                ",",
+                array_map(
+                    function ($v) {
+                        return substr($v, 1, -1);
+                    },
+                    array($exp_acl, $exp_acl_2, $exp_acl_str)
+                )
+            ) . ']';
+
+            Uploader::upload(TEST_IMG, array("access_control" => $array_of_acl));
+
+            assertParam($this, "access_control", $exp_array_of_acl);
+
+            # Should throw InvalidArgumentException on invalid values
+            $invalid_values = array(array(array()), array("not_an_array"), array(7357));
+            foreach ($invalid_values as $value) {
+                try {
+                    Uploader::upload(TEST_IMG, array("access_control" => $value));
+                    $this->fail('InvalidArgumentException was not thrown');
+                } catch (\InvalidArgumentException $e) {
+                }
+            }
+        }
     }
 }

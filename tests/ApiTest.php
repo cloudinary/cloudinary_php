@@ -933,7 +933,27 @@ namespace Cloudinary {
             $this->assertArrayNotHasKey("context", $fields, "update() should not send empty parameters");
             $this->assertArrayNotHasKey("face_coordinates", $fields, "update() should not send empty parameters");
             $this->assertArrayNotHasKey("custom_coordinates", $fields, "update() should not send empty parameters");
+            $this->assertArrayNotHasKey("access_control", $fields, "update() should not send empty parameters");
         }
 
+        /**
+         * Should allow the user to define ACL in the update parameters
+         */
+        public function test_update_access_control()
+        {
+            Curl::mockApi($this);
+
+            $acl = array("access_type" => "anonymous",
+                         "start" => "2018-02-22 16:20:57 +0200",
+                         "end"=> "2018-03-22 00:00 +0200"
+            );
+            $exp_acl = '[{"access_type":"anonymous",' .
+                       '"start":"2018-02-22 16:20:57 +0200",' .
+                       '"end":"2018-03-22 00:00 +0200"}]';
+
+            $this->api->update(self::$api_test, array("access_control" => $acl));
+
+            assertParam($this, "access_control", $exp_acl);
+        }
     }
 }

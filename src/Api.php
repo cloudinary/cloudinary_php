@@ -136,6 +136,7 @@ namespace Cloudinary {
             $context = \Cloudinary::option_get($options, "context");
             $face_coordinates = \Cloudinary::option_get($options, "face_coordinates");
             $custom_coordinates = \Cloudinary::option_get($options, "custom_coordinates");
+            $access_control = \Cloudinary::option_get($options, "access_control");
 
             $primitive_options = $this->only(
                 $options,
@@ -161,6 +162,7 @@ namespace Cloudinary {
                 "custom_coordinates" => $custom_coordinates ? \Cloudinary::encode_double_array(
                     $custom_coordinates
                 ) : $custom_coordinates,
+                "access_control" => \Cloudinary::encode_array_to_json($access_control),
             );
 
             $update_options = array_merge($primitive_options, $array_options);
