@@ -170,35 +170,28 @@ class Cloudinary
      */
     public static function build_array_of_assoc_arrays($value)
     {
-        if (is_null($value)) {
-            return array();
-        }
-
         if (is_string($value)) {
-            $value = json_decode($value, true);
+            $value = Cloudinary::json_decode_cb($value, 'Cloudinary::ensure_assoc');
             if (is_null($value)) {
                 throw new InvalidArgumentException("Failed parsing JSON string value");
             }
         }
+        return Cloudinary::build_array($value);
+    }
 
-        if (Cloudinary::is_assoc($value)) {
-            $value = array($value);
-        }
-
-        foreach ($value as &$item) {
-            if (is_string($item)) {
-                $item = json_decode($item, true);
-                if (is_null($value)) {
-                    throw new InvalidArgumentException("Failed parsing JSON string item");
-                }
-            }
-
-            if (!Cloudinary::is_assoc($item)) {
-                throw new InvalidArgumentException("Expected an array of associative arrays");
+    static function ensure_assoc($item)
+    {
+        if (is_string($item)) {
+            $item = json_decode($item, true);
+            if (is_null($item)) {
+                throw new InvalidArgumentException("Failed parsing JSON string item");
             }
         }
 
-        return $value;
+        if (!Cloudinary::is_assoc($item)) {
+            throw new InvalidArgumentException("Expected an array of associative arrays");
+        }
+        return $item;
     }
 
     /**
@@ -214,24 +207,103 @@ class Cloudinary
      */
     public static function json_encode_array_of_assoc_arrays($array)
     {
+        return self::json_encode_cb($array, 'Cloudinary::encode_dates');
+    }
+
+    static function encode_dates($value)
+    {
+        if ($value instanceof DateTime) {
+            $value = $value->format(DateTime::ISO8601);
+        }
+        return $value;
+    }
+
+    static function is_array_of_assoc($array)
+    {
+        if (!is_array($array)) {
+            return false;
+        }
+
+        foreach ($array as &$item) {
+            if (!Cloudinary::is_assoc($item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns the JSON representation of a value
+     * @param mixed $array <p>
+     * The <i>value</i> being encoded. Can be any type except
+     * a resource.
+     * </p>
+     * @param callable $encoder [optional] <p>
+     * An encoder that will be invoked for each value.
+     * </p>
+     * @param int $options [optional] <p>
+     * Bitmask consisting of <b>JSON_HEX_QUOT</b>,
+     * <b>JSON_HEX_TAG</b>,
+     * <b>JSON_HEX_AMP</b>,
+     * <b>JSON_HEX_APOS</b>,
+     * <b>JSON_NUMERIC_CHECK</b>,
+     * <b>JSON_PRETTY_PRINT</b>,
+     * <b>JSON_UNESCAPED_SLASHES</b>,
+     * <b>JSON_FORCE_OBJECT</b>,
+     * <b>JSON_UNESCAPED_UNICODE</b>. The behaviour of these
+     * constants is described on
+     * the JSON constants page.
+     * </p>
+     * @param int $depth [optional] <p>
+     * Set the maximum depth. Must be greater than zero.
+     * </p>
+     * @return string a JSON encoded string on success or <b>FALSE</b> on failure.
+     */
+
+    public static function json_encode_cb($array, $encoder = null, $options = 0, $depth = 512)
+    {
         if (!is_array($array)) {
             throw new InvalidArgumentException("Expected an array of associative arrays");
         }
 
         foreach ($array as &$item) {
-            if (!Cloudinary::is_assoc($item)) {
+            $is_assoc = Cloudinary::is_assoc($item);
+            if (!$is_assoc) {
                 throw new InvalidArgumentException("Expected an array of associative arrays");
             }
-            foreach ($item as $key => $value) {
-                if ($value instanceof DateTime) {
-                    $item[$key] = $value->format(DateTime::ISO8601);
+            if(!is_null($encoder))
+            {
+                foreach ($item as $key => $value) {
+                    $item[$key] = call_user_func($encoder, $value);
                 }
             }
         }
 
-        return json_encode($array);
+        return \json_encode($array);
+
     }
 
+    public static function json_decode_cb($json, $decoder)
+    {
+        if (!is_string($json)) {
+            throw new InvalidArgumentException("Expected an string");
+        }
+        $array = json_decode($json, true);
+        if(!is_null($decoder))
+        {
+            foreach ($array as $key => $value) {
+
+                try {
+                    $array[$key] = call_user_func($decoder, $value);
+                } catch (Exception $e) {
+                }
+
+            }
+        }
+
+        return $array;
+
+    }
     /**
      * Wrapper for calling build_array_of_assoc_arrays and json_encode_array_of_assoc_arrays with null value handling.
      *
@@ -247,10 +319,10 @@ class Cloudinary
     public static function encode_array_to_json($value)
     {
         if (is_null($value)) {
-            return $value;
+            return null;
         }
-
-        return  Cloudinary::json_encode_array_of_assoc_arrays(Cloudinary::build_array_of_assoc_arrays($value));
+        $array = Cloudinary::build_array_of_assoc_arrays($value);
+        return  Cloudinary::json_encode_cb($array, 'Cloudinary::encode_dates');
     }
 
     public static function encode_array($array)
