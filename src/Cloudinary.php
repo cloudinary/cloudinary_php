@@ -157,7 +157,6 @@ class Cloudinary
      *      - Valid assoc array: array("k" => "v", "k2"=> "v2")
      *      - Array of assoc arrays: array(array("k" => "v"), array("k2" =>"v2"))
      *      - JSON decodable string: '{"k": "v"}', or '[{"k": "v"}]'
-     *      - Array of JSON decodable strings: array('{"k": "v"}', '{"k2","v2"}')
      *
      *  Invalid values examples:
      *      - array("not", "an", "assoc", "array")
@@ -168,7 +167,7 @@ class Cloudinary
      *
      * @throws InvalidArgumentException in case value cannot be converted to an array of associative arrays
      */
-    public static function build_array_of_assoc_arrays($value)
+    private static function build_array_of_assoc_arrays($value)
     {
         if (is_string($value)) {
             $value = Cloudinary::json_decode_cb($value, 'Cloudinary::ensure_assoc');
@@ -176,7 +175,11 @@ class Cloudinary
                 throw new InvalidArgumentException("Failed parsing JSON string value");
             }
         }
-        return Cloudinary::build_array($value);
+        $value = Cloudinary::build_array($value);
+        if (!self::is_array_of_assoc($value)) {
+            throw new InvalidArgumentException("Expected an array of associative arrays");
+        }
+        return $value;
     }
 
     static function ensure_assoc($item)
@@ -204,7 +207,7 @@ class Cloudinary
      *
      * @throws InvalidArgumentException in case the value is not an array of associative arrays
      */
-    public static function json_encode_array_of_assoc_arrays($array)
+    private static function json_encode_array_of_assoc_arrays($array)
     {
         return self::json_encode_cb($array, 'Cloudinary::encode_dates');
     }
@@ -288,7 +291,7 @@ class Cloudinary
             throw new InvalidArgumentException("Expected an string");
         }
         $array = json_decode($json, true);
-        if(!is_null($decoder))
+        if(!is_null($decoder) && !is_null($array))
         {
             foreach ($array as $key => $value) {
 

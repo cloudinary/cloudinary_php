@@ -1736,32 +1736,33 @@ class CloudinaryTest extends TestCase
     {
         $assoc_array_data = array("one" => 1, "two" => 2, "three" => 3);
         $array_of_assoc_array = array($assoc_array_data);
-
+        $method = new ReflectionMethod('Cloudinary', 'build_array_of_assoc_arrays');
+        $method->setAccessible(true);
         # should convert an assoc array to an array of assoc arrays
-        $this->assertEquals(array($assoc_array_data), Cloudinary::build_array_of_assoc_arrays($assoc_array_data));
+        $this->assertEquals(array($assoc_array_data), $method->invoke(null, $assoc_array_data));
 
         # should leave as is
-        $this->assertEquals($array_of_assoc_array, Cloudinary::build_array_of_assoc_arrays($array_of_assoc_array));
+        $this->assertEquals($array_of_assoc_array, $method->invoke(null, $array_of_assoc_array));
 
         # should convert a JSON string representing an assoc array to an array of assoc arrays
         $string_data = '{"one": 1, "two": 2, "three": 3}';
-        $this->assertEquals($array_of_assoc_array, Cloudinary::build_array_of_assoc_arrays($string_data));
+        $this->assertEquals($array_of_assoc_array, $method->invoke(null, $string_data));
 
         # should convert a JSON string representing an array of assoc arrays to an array of assoc arrays
         $string_array_data = '[{"one": 1, "two": 2, "three": 3}]';
-        $this->assertEquals($array_of_assoc_array, Cloudinary::build_array_of_assoc_arrays($string_array_data));
+        $this->assertEquals($array_of_assoc_array, $method->invoke(null, $string_array_data));
 
         # should return an empty array on null
-        $this->assertEquals(array(), Cloudinary::build_array_of_assoc_arrays(null));
+        $this->assertEquals(array(), $method->invoke(null, null));
 
         # should return an empty array on array()
-        $this->assertEquals(array(), Cloudinary::build_array_of_assoc_arrays(array()));
+        $this->assertEquals(array(), $method->invoke(null, array()));
 
         # should throw InvalidArgumentException on invalid value
         $invalid_values = array("", array(array()), array("not_an_array"), array(7357));
         foreach ($invalid_values as $value) {
             try {
-                Cloudinary::build_array_of_assoc_arrays($value);
+                $method->invoke(null, $value);
                 $this->fail('InvalidArgumentException was not thrown');
             } catch (\InvalidArgumentException $e) {
             }
@@ -1773,23 +1774,25 @@ class CloudinaryTest extends TestCase
      */
     public function test_json_encode_array_of_assoc_arrays()
     {
+        $method = new ReflectionMethod('Cloudinary', 'json_encode_array_of_assoc_arrays');
+        $method->setAccessible(true);
         # should encode simple values
-        $this->assertEquals('[]', Cloudinary::json_encode_array_of_assoc_arrays(array()));
-        $this->assertEquals('[{"k":"v"}]', Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>"v"))));
+        $this->assertEquals('[]', $method->invoke(null, (array())));
+        $this->assertEquals('[{"k":"v"}]', $method->invoke(null, array(array("k" =>"v"))));
 
         # should encode DateTime to ISO format
         $this->assertEquals(
             '[{"k":"2019-02-22T00:00:00+0000"}]',
-            Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>new \DateTime("2019-02-22"))))
+            $method->invoke(null, array(array("k" =>new \DateTime("2019-02-22"))))
         );
         $this->assertEquals(
             '[{"k":"2019-02-22T16:20:57+0000"}]',
-            Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>new \DateTime("2019-02-22 16:20:57Z"))))
+            $method->invoke(null, array(array("k" =>new \DateTime("2019-02-22 16:20:57Z"))))
         );
 
         # should throw InvalidArgumentException on invalid value
         try {
-            Cloudinary::json_encode_array_of_assoc_arrays("not_valid");
+            $method->invoke(null, "not_valid");
             $this->fail('InvalidArgumentException was not thrown');
         } catch (\InvalidArgumentException $e) {
         }
@@ -1803,12 +1806,14 @@ class CloudinaryTest extends TestCase
      */
     public function test_encode_array_to_json()
     {
+        $method = new ReflectionMethod('Cloudinary', 'json_encode_array_of_assoc_arrays');
+        $method->setAccessible(true);
         # should handle null value
         $this->assertEquals(null, Cloudinary::encode_array_to_json(null));
 
         # should handle regular case
         $this->assertEquals('[{"k":"v"}]', Cloudinary::encode_array_to_json('[{"k":"v"}]'));
-        $this->assertEquals('[{"k":"v"}]', Cloudinary::json_encode_array_of_assoc_arrays(array(array("k" =>"v"))));
+        $this->assertEquals('[{"k":"v"}]', $method->invoke(null, array(array("k" =>"v"))));
     }
 
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())

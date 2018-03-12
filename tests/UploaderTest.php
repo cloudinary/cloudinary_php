@@ -558,14 +558,14 @@ TAG
             assertParam($this, "access_control", $exp_acl_str);
 
             # Should accept an array of all the above values
-            $array_of_acl = array($acl, $acl_2, $acl_str);
+            $array_of_acl = array($acl, $acl_2);
             $exp_array_of_acl = '[' . implode(
                 ",",
                 array_map(
                     function ($v) {
                         return substr($v, 1, -1);
                     },
-                    array($exp_acl, $exp_acl_2, $exp_acl_str)
+                    array($exp_acl, $exp_acl_2)
                 )
             ) . ']';
 
