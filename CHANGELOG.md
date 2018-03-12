@@ -1,4 +1,38 @@
 
+1.9.0 / 2018-03-12
+==================
+
+New functionality and features
+------------------------------
+
+  * Add `delete_derived_by_transformation` API
+  * Add `remove_all_tags` to `Uploader`
+  * Add `resources_by_context` to `Api`
+  * Add `access_control` parameter to uploader `upload` and api `update`
+  * Support remote URLs in upload_large API
+  * Add `transformations` parameter to delete_resources APIs
+  * Support `quality_override` param for `update` and `explicit` api
+  * Adding Streaming Profile to transformation.
+  * Add URL suffix support for image/authenticated, video/upload
+  * Remove restriction of URL suffix in shared CDN
+  * Support string $public_ids parameter in `delete_derived_by_transformation`
+  * Support `0` and `0.0` in `norm_range_value` function. Fixes #64 (#97)
+
+Other Changes
+-------------
+
+  * Improve PSR-2 compliance (#101)
+  * Add `next_cursor` test of `transformation()` API
+  * Add `encode_array_to_json`
+  * Fix encoding of attributes and url in html tags. Fixes #87
+  * Add PHP versions to TravisCI setup
+  * Add a test of streaming_profile parameter
+  * Fix Categorization test
+  * Add `UNIQUE_TEST_ID` to test helper
+  * Remove `test_auto_tagging` unit test (#95)
+  * Update Readme.md for setup with composer
+  * Remove unreachable code. Fixes #66
+
 1.8.0 / 2017-05-03
 ==================
 
