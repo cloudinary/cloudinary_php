@@ -12,8 +12,17 @@ class Cloudinary
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';
 
     const VERSION = "1.9.0";
-    /** @internal Do not change this value */
-    const USER_AGENT = "CloudinaryPHP/1.9.0";
+
+    /**
+     * Contains information about SDK user agent. Passed to the Cloudinary servers.
+     *
+     * Initialized on the first call to {@see self::userAgent()}
+     *
+     * Sample value: CloudinaryPHP/1.2.3 (PHP 5.6.7)
+     *
+     * @internal Do not change this value
+     */
+    private static $USER_AGENT = "";
 
     /**
      * Additional information to be passed with the USER_AGENT, e.g. "CloudinaryMagento/1.0.1".
@@ -23,7 +32,7 @@ class Cloudinary
      * The format of the value should be <ProductName>/Version[ (comment)].
      * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
      *
-     * <b>Do not set this value in application code!</b>
+     * @internal <b>Do not set this value in application code!</b>
      *
      * @var string
      */
@@ -32,6 +41,7 @@ class Cloudinary
     public static $DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = array("width" => "auto", "crop" => "limit");
 
     private static $config = null;
+
     public static $JS_CONFIG_PARAMS = array(
         "api_key",
         "cloud_name",
@@ -41,19 +51,23 @@ class Cloudinary
     );
 
     /**
-     * Provides the USER_AGENT string that is passed to the Cloudinary servers.
+     * Provides the {@see self::$USER_AGENT} string that is passed to the Cloudinary servers.
      *
-     * Prepends {@link $USER_PLATFORM} if it is defined.
+     * Prepends {@see self::$USER_PLATFORM} if it is defined.
      *
      * @return string
      */
     public static function userAgent()
     {
-        if (self::$USER_PLATFORM == "") {
-            return self::USER_AGENT;
-        } else {
-            return self::$USER_PLATFORM . " " . self::USER_AGENT;
+        if (empty(self::$USER_AGENT)) {
+            self::$USER_AGENT = 'CloudinaryPHP/' . self::VERSION . ' (PHP ' . PHP_VERSION. ')';
         }
+
+        if (empty(self::$USER_PLATFORM)) {
+            return self::$USER_AGENT;
+        }
+
+        return self::$USER_PLATFORM . ' '  . self::$USER_AGENT;
     }
 
     public static function is_not_null($var)

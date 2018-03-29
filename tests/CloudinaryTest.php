@@ -43,15 +43,19 @@ class CloudinaryTest extends TestCase
 
     public function test_user_agent()
     {
-        $tmp = \Cloudinary::$USER_PLATFORM;
+        $user_agent = \Cloudinary::userAgent();
+
+        $this->assertRegExp("/^CloudinaryPHP\/\d+\.\d+\.\d+ \(PHP \d+\.\d+\.\d+\)$/", $user_agent);
+
+        $orig_user_platform = \Cloudinary::$USER_PLATFORM;
         $platform_information = 'TestPlatformInformation (From \"CloudinaryTest.php\")';
         \Cloudinary::$USER_PLATFORM = $platform_information;
-        $userAgent = \Cloudinary::userAgent();
-        \Cloudinary::$USER_PLATFORM = $tmp; // reset value
-        $this->assertRegExp("/CloudinaryPHP\/\d+\.\d+\.\d+/", $userAgent);
-        $this->assertContains(
-            $platform_information,
-            $userAgent,
+        $full_user_agent = \Cloudinary::userAgent();
+        \Cloudinary::$USER_PLATFORM = $orig_user_platform; // reset value
+
+        $this->assertEquals(
+            $platform_information . ' ' . $user_agent,
+            $full_user_agent,
             "USER_AGENT should include platform information if set"
         );
     }
