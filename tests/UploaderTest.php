@@ -375,7 +375,7 @@ TAG
 
         /**
          * @expectedException \Cloudinary\Error
-         * @expectedExceptionMessage illegal is not a valid
+         * @expectedExceptionMessage Raw convert is invalid
          */
         public function test_raw_conversion()
         {
