@@ -120,16 +120,10 @@ class Cloudinary
 
     public static function option_consume(&$options, $option, $default = null)
     {
-        if (isset($options[$option])) {
-            $value = $options[$option];
-            unset($options[$option]);
+        $value = self::option_get($options, $option, $default);
+        unset($options[$option]);
 
-            return $value;
-        } else {
-            unset($options[$option]);
-
-            return $default;
-        }
+        return $value;
     }
 
     public static function build_array($value)
