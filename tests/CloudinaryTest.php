@@ -1816,6 +1816,40 @@ class CloudinaryTest extends TestCase
         $this->assertEquals('[{"k":"v"}]', $method->invoke(null, array(array("k" =>"v"))));
     }
 
+    /**
+     * Test array_copy function
+     */
+    public function test_array_copy()
+    {
+        // Should return non array values as is
+        $this->assertEquals(null, Cloudinary::array_copy(null));
+        $this->assertEquals('null', Cloudinary::array_copy('null'));
+
+        // Should copy simple array
+        $orig_array = array('a', array('b' =>'c'), 'd');
+        $same_orig_array = array('a', array('b' =>'c'), 'd');
+        $copied_array = Cloudinary::array_copy($orig_array);
+        $orig_array[1]['b'] =  'e';
+
+        $this->assertNotEquals($same_orig_array, $orig_array);
+        $this->assertEquals($same_orig_array, $copied_array);
+
+        // Should copy objects in an array
+        $o = new stdClass();
+        $o->key = 'original_value';
+
+        $orig_array = array('o' =>$o);
+
+        $shallow_copied_array = $orig_array;
+        $copied_array = Cloudinary::array_copy($orig_array);
+
+        $o->key = 'new_value';
+
+        $this->assertEquals('new_value', $orig_array['o']->key);
+        $this->assertEquals('new_value', $shallow_copied_array['o']->key);
+        $this->assertEquals('original_value', $copied_array['o']->key);
+    }
+
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
     {
         $url = Cloudinary::cloudinary_url($source, $options);

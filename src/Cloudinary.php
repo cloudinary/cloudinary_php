@@ -355,6 +355,32 @@ class Cloudinary
         }
     }
 
+    /**
+     * Helper function for making a recursive array copy while cloning objects on the way.
+     *
+     * @param array $array Source array
+     *
+     * @return array Recursive copy of the source array
+     */
+    public static function array_copy($array)
+    {
+        if (!is_array($array)) {
+            return $array;
+        }
+
+        $result = array();
+        foreach ($array as $key => $val) {
+            if (is_array($val)) {
+                $result[$key] = self::array_copy($val);
+            } elseif (is_object($val)) {
+                $result[$key] = clone $val;
+            } else {
+                $result[$key] = $val;
+            }
+        }
+        return $result;
+    }
+
     private static function is_assoc($array)
     {
         if (!is_array($array)) {
