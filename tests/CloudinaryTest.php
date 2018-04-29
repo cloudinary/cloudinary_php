@@ -682,6 +682,176 @@ class CloudinaryTest extends TestCase
     }
 
 
+    /**
+     * Helper method for test_cl_image_tag_srcset for generating expected image tag
+     *
+     * @param string $public_id         Public ID of the image
+     * @param string $common_trans_str  Default transformation string to be used in all resources
+     * @param string $custom_trans_str  Optional custom tranformation string that can be used inside srcset resources
+     *                                  If not provided, $common_trans_str is used
+     * @param string $sizes_str         Optionally provide expected sizes string
+     *
+     * @return string Resulting image tag
+     */
+
+    private function get_expected_cl_image_tag(
+        $public_id,
+        $common_trans_str,
+        $custom_trans_str = '',
+        $sizes_str = ''
+    ) {
+        if (empty($custom_trans_str)) {
+            $custom_trans_str = $common_trans_str;
+        }
+
+        return "<img src='" .
+               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$common_trans_str}/{$public_id }' " .
+               $sizes_str .
+               "srcset='" .
+               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_100/{$public_id} 100w, " .
+               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_200/{$public_id} 200w, " .
+               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_300/{$public_id} 300w'" .
+               "/>";
+    }
+
+    public function test_cl_image_tag_srcset()
+    {
+        $public_id = 'sample.jpg';
+
+        $common_image_options =  array(
+            'effect' => 'sepia',
+            'cloud_name' => 'test123',
+            'client_hints' => false,
+        );
+
+        $common_transformation_str = 'e_sepia';
+        $common_srcset =  array('breakpoints' => array(100, 200, 300));
+
+        // Should create srcset attribute with provided breakpoints
+        $tag_with_breakpoints = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('srcset' => $common_srcset)
+            )
+        );
+
+        $expected_tag = self::get_expected_cl_image_tag($public_id, $common_transformation_str);
+        $this->assertEquals($expected_tag, $tag_with_breakpoints);
+
+        // Should support srcset attribute defined by min_width, max_width, and max_images
+        $tag_min_max_count = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('srcset' => array('min_width' => 100, 'max_width' => 300, 'max_images' => 3))
+            )
+        );
+
+        $this->assertEquals($expected_tag, $tag_min_max_count);
+
+        // Should support custom transformation for srcset items
+        $custom_transformation = array("transformation" => array("crop" => "crop", "width" => 10, "height" => 20));
+
+        $tag_custom_transformation = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('srcset' => array_merge(
+                    $common_srcset,
+                    $custom_transformation
+                ))
+            )
+        );
+
+        $custom_transformation_str = 'c_crop,h_20,w_10';
+        $custom_expected_tag = self::get_expected_cl_image_tag(
+            $public_id,
+            $common_transformation_str,
+            $custom_transformation_str
+        );
+
+        $this->assertEquals($custom_expected_tag, $tag_custom_transformation);
+
+        // Should populate sizes attribute
+        $tag_with_sizes = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('srcset' => array_merge(
+                    $common_srcset,
+                    array('sizes' => true)
+                ))
+            )
+        );
+
+        $expected_sizes_attr = "sizes='(max-width: 100px) 100px, (max-width: 200px) 200px, (max-width: 300px) 300px' ";
+        $expected_tag_with_sizes = self::get_expected_cl_image_tag(
+            $public_id,
+            $common_transformation_str,
+            '',
+            $expected_sizes_attr
+        );
+        $this->assertEquals($expected_tag_with_sizes, $tag_with_sizes);
+
+        // Should support srcset string value
+        $raw_srcset_value = "some srcset data as is";
+        $tag_with_raw_srcset = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('srcset' => $raw_srcset_value)
+            )
+        );
+
+        $expected_raw_srcset = "<img src='" .
+               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$common_transformation_str}/{$public_id }' " .
+               "srcset='{$raw_srcset_value}'" .
+               "/>";
+
+        $this->assertEquals($expected_raw_srcset, $tag_with_raw_srcset);
+
+        $this->assertEquals($expected_raw_srcset, $tag_with_raw_srcset);
+
+        // Should remove width and height attributes in case srcset is specified, but passed to transformation
+        $tag_with_sizes = cl_image_tag(
+            $public_id,
+            array_merge(
+                array_merge(
+                    $common_image_options,
+                    array('width'=> 500, 'height'=> 500)
+                ),
+                array('srcset' => $common_srcset)
+            )
+        );
+
+        $expected_tag_without_width_and_height = self::get_expected_cl_image_tag(
+            $public_id,
+            "e_sepia,h_500,w_500"
+        );
+        $this->assertEquals($expected_tag_without_width_and_height, $tag_with_sizes);
+
+        # Should throw InvalidArgumentException on invalid values
+        $invalid_breakpoints = array(
+            array('sizes'=>true),                                               // srcset data not provided
+            array('max_width' => 300, 'max_images' => 3),                       // no min_width
+            array('min_width' => 100, 'max_images' => 3),                       // no max_width
+            array('min_width' => 100, 'max_width' => 300),                      // no max_images
+            array('min_width' => 200, 'max_width' => 100, 'max_images' => 3),   // min_width > max_width
+            array('min_width' => 100, 'max_width' => 300, 'max_images' => 0),   // invalid max_images
+            array('min_width' => 100, 'max_width' => 300, 'max_images' => -17), // invalid max_images
+        );
+
+        foreach ($invalid_breakpoints as $value) {
+            try {
+                cl_image_tag($public_id, array_merge($common_image_options, array('srcset' => $value)));
+
+                $this->fail('InvalidArgumentException was not thrown');
+            } catch (\InvalidArgumentException $e) {
+            }
+        }
+    }
+
     public function test_aspect_ratio()
     {
         // should support background
