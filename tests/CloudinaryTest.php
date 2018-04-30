@@ -685,11 +685,12 @@ class CloudinaryTest extends TestCase
     /**
      * Helper method for test_cl_image_tag_srcset for generating expected image tag
      *
-     * @param string $public_id         Public ID of the image
-     * @param string $common_trans_str  Default transformation string to be used in all resources
-     * @param string $custom_trans_str  Optional custom tranformation string that can be used inside srcset resources
-     *                                  If not provided, $common_trans_str is used
-     * @param string $sizes_str         Optionally provide expected sizes string
+     * @param string $public_id             Public ID of the image
+     * @param string $common_trans_str      Default transformation string to be used in all resources
+     * @param string $custom_trans_str      Optional custom tranformation string to be be used inside srcset resources
+     *                                      If not provided, $common_trans_str is used
+     * @param array  $srcset_breakpoints    Optional list of breakpoints for srcset. If not provided srcset is omitted
+     * @param array  $attributes            Associative array of custom attributes to be added to the tag
      *
      * @return string Resulting image tag
      */
@@ -698,20 +699,39 @@ class CloudinaryTest extends TestCase
         $public_id,
         $common_trans_str,
         $custom_trans_str = '',
-        $sizes_str = ''
+        $srcset_breakpoints = array(),
+        $attributes = array()
     ) {
         if (empty($custom_trans_str)) {
             $custom_trans_str = $common_trans_str;
         }
 
-        return "<img src='" .
-               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$common_trans_str}/{$public_id }' " .
-               $sizes_str .
-               "srcset='" .
-               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_100/{$public_id} 100w, " .
-               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_200/{$public_id} 200w, " .
-               CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_300/{$public_id} 300w'" .
-               "/>";
+        if (!empty($srcset_breakpoints)) {
+            $single_srcset_image = function ($w) use ($custom_trans_str, $public_id) {
+                return CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$custom_trans_str}/c_scale,w_{$w}/{$public_id} {$w}w";
+            };
+            $attributes['srcset'] = implode(', ', array_map($single_srcset_image, $srcset_breakpoints));
+        }
+
+        $tag = "<img src='" . CloudinaryTest::DEFAULT_UPLOAD_PATH . "{$common_trans_str}/{$public_id }'";
+
+        $attributes_str = implode(
+            ' ',
+            array_map(
+                function ($k, $v) {
+                    return "$k='$v'";
+                },
+                array_keys($attributes),
+                array_values($attributes)
+            )
+        );
+
+        if (!empty($attributes_str)) {
+            $tag .= " {$attributes_str}";
+        }
+
+        $tag .= "/>";
+        return $tag;
     }
 
     public function test_cl_image_tag_srcset()
@@ -725,7 +745,8 @@ class CloudinaryTest extends TestCase
         );
 
         $common_transformation_str = 'e_sepia';
-        $common_srcset =  array('breakpoints' => array(100, 200, 300));
+        $breakpoints_arr = array(100, 200, 300);
+        $common_srcset =  array('breakpoints' => $breakpoints_arr);
 
         // Should create srcset attribute with provided breakpoints
         $tag_with_breakpoints = cl_image_tag(
@@ -736,7 +757,7 @@ class CloudinaryTest extends TestCase
             )
         );
 
-        $expected_tag = self::get_expected_cl_image_tag($public_id, $common_transformation_str);
+        $expected_tag = self::get_expected_cl_image_tag($public_id, $common_transformation_str, '', $breakpoints_arr);
         $this->assertEquals($expected_tag, $tag_with_breakpoints);
 
         // Should support srcset attribute defined by min_width, max_width, and max_images
@@ -768,7 +789,8 @@ class CloudinaryTest extends TestCase
         $custom_expected_tag = self::get_expected_cl_image_tag(
             $public_id,
             $common_transformation_str,
-            $custom_transformation_str
+            $custom_transformation_str,
+            $breakpoints_arr
         );
 
         $this->assertEquals($custom_expected_tag, $tag_custom_transformation);
@@ -785,12 +807,13 @@ class CloudinaryTest extends TestCase
             )
         );
 
-        $expected_sizes_attr = "sizes='(max-width: 100px) 100px, (max-width: 200px) 200px, (max-width: 300px) 300px' ";
+        $expected_sizes_attr = "(max-width: 100px) 100px, (max-width: 200px) 200px, (max-width: 300px) 300px";
         $expected_tag_with_sizes = self::get_expected_cl_image_tag(
             $public_id,
             $common_transformation_str,
             '',
-            $expected_sizes_attr
+            $breakpoints_arr,
+            array('sizes' => $expected_sizes_attr)
         );
         $this->assertEquals($expected_tag_with_sizes, $tag_with_sizes);
 
@@ -827,7 +850,9 @@ class CloudinaryTest extends TestCase
 
         $expected_tag_without_width_and_height = self::get_expected_cl_image_tag(
             $public_id,
-            "e_sepia,h_500,w_500"
+            'e_sepia,h_500,w_500',
+            '',
+            $breakpoints_arr
         );
         $this->assertEquals($expected_tag_without_width_and_height, $tag_with_sizes);
 
@@ -850,6 +875,68 @@ class CloudinaryTest extends TestCase
             } catch (\InvalidArgumentException $e) {
             }
         }
+    }
+
+    public function test_cl_image_tag_attributes()
+    {
+        $public_id = 'sample.jpg';
+
+        $common_image_options = array(
+            'effect'       => 'sepia',
+            'cloud_name'   => 'test123',
+            'client_hints' => false,
+        );
+
+        $common_transformation_str = 'e_sepia';
+        $custom_attributes = array('custom_attr1' => 'custom_value1', 'custom_attr2' => 'custom_value2');
+
+        // Should create a tag with custom attributes (legacy approach)
+        $tag_with_custom_legacy_attribute = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                $custom_attributes
+            )
+        );
+
+        $expected_custom_attributes_tag = self::get_expected_cl_image_tag(
+            $public_id,
+            $common_transformation_str,
+            '',
+            array(),
+            $custom_attributes
+        );
+
+        $this->assertEquals($expected_custom_attributes_tag, $tag_with_custom_legacy_attribute);
+
+        // Should consume custom attributes from 'attributes' key
+        $tag_with_custom_attribute = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('attributes' =>$custom_attributes)
+            )
+        );
+        $this->assertEquals($expected_custom_attributes_tag, $tag_with_custom_attribute);
+
+        // Should override existing attributes with specified by custom ones
+        $updated_attributes = array('alt' =>'updated alt');
+        $tag_with_custom_overriden_attribute = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('alt' =>'original alt', 'attributes' =>$updated_attributes)
+            )
+        );
+
+        $expected_overriden_attributes_tag = self::get_expected_cl_image_tag(
+            $public_id,
+            $common_transformation_str,
+            '',
+            array(),
+            $updated_attributes
+        );
+        $this->assertEquals($expected_overriden_attributes_tag, $tag_with_custom_overriden_attribute);
     }
 
     public function test_aspect_ratio()
