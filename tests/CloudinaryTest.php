@@ -771,6 +771,19 @@ class CloudinaryTest extends TestCase
 
         $this->assertEquals($expected_tag, $tag_min_max_count);
 
+        // Should support 1 image in srcset
+        $tag_one_image = cl_image_tag(
+            $public_id,
+            array_merge(
+                $common_image_options,
+                array('srcset' => array('min_width' => 100, 'max_width' => 100, 'max_images' => 1))
+            )
+        );
+
+        $expected_1_image_tag = self::get_expected_cl_image_tag($public_id, $common_transformation_str, '', array(100));
+
+        $this->assertEquals($expected_1_image_tag, $tag_one_image);
+
         // Should support custom transformation for srcset items
         $custom_transformation = array("transformation" => array("crop" => "crop", "width" => 10, "height" => 20));
 

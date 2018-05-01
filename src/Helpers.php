@@ -140,7 +140,7 @@ namespace {
             throw new InvalidArgumentException('max_images must be a positive integer');
         }
 
-        $step_size = ceil(($max_width - $min_width) / ($max_images -1));
+        $step_size = ceil(($max_width - $min_width) / ($max_images > 1 ? $max_images - 1 : 1));
 
         $curr_breakpoint = $min_width;
 
