@@ -344,13 +344,9 @@ namespace {
             }
         }
 
-        $attributes = $options;
-
-        if (!empty($options["attributes"])) {
-            $attr_data = Cloudinary::option_consume($options, 'attributes', array());
-            // Explicitly provided attributes override options
-            $attributes = array_merge($options, $attr_data);
-        }
+        $attr_data = Cloudinary::option_consume($options, 'attributes', array());
+        // Explicitly provided attributes override options
+        $attributes = array_merge($options, $attr_data);
 
         $html .= Cloudinary::html_attrs($attributes) . "/>";
 
