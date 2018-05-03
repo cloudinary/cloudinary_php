@@ -124,7 +124,7 @@ namespace {
             || empty($srcset_data['max_width'])
             || empty($srcset_data['max_images'])
         ) {
-            throw new InvalidArgumentException('Either min_width, max_width, max_images ' .
+            throw new InvalidArgumentException('Either (min_width, max_width, max_images) ' .
                                         'or breakpoints must be provided to the image srcset attribute');
         }
 
