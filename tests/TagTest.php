@@ -13,6 +13,7 @@ class TagTest extends TestCase
     private static $common_image_options;
     private static $common_transformation_str;
     private static $breakpoints_arr;
+    private static $last_breakpoint;
     private static $common_srcset;
     private static $custom_attributes;
 
@@ -37,7 +38,8 @@ class TagTest extends TestCase
         );
 
         self::$common_transformation_str = 'e_sepia';
-        self::$breakpoints_arr = array(100, 200, 300);
+        self::$breakpoints_arr = array(100, 200, 300, 399);
+        self::$last_breakpoint = self::$breakpoints_arr[count(self::$breakpoints_arr)-1];
         self::$common_srcset = array('breakpoints' => self::$breakpoints_arr);
         self::$custom_attributes = array('custom_attr1' => 'custom_value1', 'custom_attr2' => 'custom_value2');
     }
@@ -46,7 +48,7 @@ class TagTest extends TestCase
     {
         $tag = cl_image_tag("test", array("width" => 10, "height" => 10, "crop" => "fill", "format" => "png"));
         $this->assertEquals(
-            "<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/test.png' height='10' width='10'/>",
+            "<img src='" . self::DEFAULT_UPLOAD_PATH . "c_fill,h_10,w_10/test.png' height='10' width='10'/>",
             $tag
         );
     }
@@ -60,7 +62,7 @@ class TagTest extends TestCase
             "test's special < \"characters\" >",
             array("width" => 10, "height" => 10, "crop" => "fill", "format" => "png", "alt" => "< test's > special \"")
         );
-        $expected = "<img src='http://res.cloudinary.com/test123/image/upload/c_fill,h_10,w_10/" .
+        $expected = "<img src='" . self::DEFAULT_UPLOAD_PATH . "c_fill,h_10,w_10/" .
             "test%27s%20special%20%3C%20%22characters%22%20%3E.png'" .
             " alt='&lt; test&#039;s &gt; special &quot;' height='10' width='10'/>";
 
@@ -72,7 +74,7 @@ class TagTest extends TestCase
         // should add responsive width transformation
         $tag = cl_image_tag("hello", array("responsive_width" => true, "format" => "png"));
         $this->assertEquals(
-            "<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>",
+            "<img class='cld-responsive' data-src='" . self::DEFAULT_UPLOAD_PATH . "c_limit,w_auto/hello.png'/>",
             $tag
         );
 
@@ -102,12 +104,12 @@ class TagTest extends TestCase
         // should support width=auto
         $tag = cl_image_tag("hello", array("width" => "auto", "crop" => "limit", "format" => "png"));
         $this->assertEquals(
-            "<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto/hello.png'/>",
+            "<img class='cld-responsive' data-src='" . self::DEFAULT_UPLOAD_PATH . "c_limit,w_auto/hello.png'/>",
             $tag
         );
         $tag = cl_image_tag("hello", array("width" => "auto:breakpoints", "crop" => "limit", "format" => "png"));
         $this->assertEquals(
-            "<img class='cld-responsive' data-src='http://res.cloudinary.com/test123/image/upload/c_limit,w_auto:breakpoints/hello.png'/>",
+            "<img class='cld-responsive' data-src='" . self::DEFAULT_UPLOAD_PATH . "c_limit,w_auto:breakpoints/hello.png'/>",
             $tag
         );
         $this->cloudinary_url_assertion(
@@ -267,14 +269,13 @@ class TagTest extends TestCase
 
         $tag .= "/>";
         if (getenv('DEBUG')) {
-            echo preg_replace( '/([,\']) /', "$1\n    ", $tag) . "\n\n";
+            echo preg_replace('/([,\']) /', "$1\n    ", $tag) . "\n\n";
         }
         return $tag;
     }
 
     public function test_cl_image_tag_srcset()
     {
-
         // Should create srcset attribute with provided breakpoints
         $tag_with_breakpoints = cl_image_tag(
             self::$public_id,
@@ -296,13 +297,46 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                array('srcset' => array('min_width' => 100, 'max_width' => 300, 'max_images' => 3))
+                array('srcset' => array(
+                    'min_width' => self::$breakpoints_arr[0],
+                    'max_width' => $x = self::$last_breakpoint,
+                    'max_images' => count(self::$breakpoints_arr)))
             )
         );
+
         $expected_tag = self::get_expected_cl_image_tag(self::$public_id, self::$common_transformation_str, '', self::$breakpoints_arr);
 
         $this->assertEquals($expected_tag, $tag_min_max_count,
             'Should support srcset attribute defined by min_width, max_width, and max_images');
+
+        // Should support 1 image in srcset
+        $tag_one_image_by_params = cl_image_tag(
+            self::$public_id,
+            array_merge(
+                self::$common_image_options,
+                array('srcset' => array('min_width' => self::$breakpoints_arr[0],
+                                        'max_width' => self::$last_breakpoint,
+                                        'max_images' => 1))
+            )
+        );
+
+        $expected_1_image_tag = self::get_expected_cl_image_tag(
+            self::$public_id,
+            self::$common_transformation_str,
+            '',
+            array(self::$last_breakpoint)
+        );
+
+        $this->assertEquals($expected_1_image_tag, $tag_one_image_by_params);
+
+        $tag_one_image_by_breakpoints = cl_image_tag(
+            self::$public_id,
+            array_merge(
+                self::$common_image_options,
+                array('srcset' => array('breakpoints' => array(self::$last_breakpoint)))
+            )
+        );
+        $this->assertEquals($expected_1_image_tag, $tag_one_image_by_breakpoints);
 
         // Should support custom transformation for srcset items
         $custom_transformation = array("transformation" => array("crop" => "crop", "width" => 10, "height" => 20));
@@ -340,7 +374,8 @@ class TagTest extends TestCase
             )
         );
 
-        $expected_sizes_attr = "(max-width: 100px) 100px, (max-width: 200px) 200px, (max-width: 300px) 300px";
+        $expected_sizes_attr = '(max-width: 100px) 100px, (max-width: 200px) 200px, ' .
+                               '(max-width: 300px) 300px, (max-width: 399px) 399px';
         $expected_tag_with_sizes = self::get_expected_cl_image_tag(
             self::$public_id,
             self::$common_transformation_str,
@@ -360,12 +395,13 @@ class TagTest extends TestCase
             )
         );
 
-        $expected_raw_srcset = "<img src='" .
-            TagTest::DEFAULT_UPLOAD_PATH . self::$common_transformation_str . '/' . self::$public_id . "' " .
-            "srcset='{$raw_srcset_value}'" .
-            "/>";
-
-        $this->assertEquals($expected_raw_srcset, $tag_with_raw_srcset);
+        $expected_raw_srcset = self::get_expected_cl_image_tag(
+            self::$public_id,
+            self::$common_transformation_str,
+            '',
+            array(),
+            array('srcset' => $raw_srcset_value)
+        );
 
         $this->assertEquals($expected_raw_srcset, $tag_with_raw_srcset);
 
@@ -433,7 +469,6 @@ class TagTest extends TestCase
         );
 
         $this->assertEquals($expected_custom_attributes_tag, $tag_with_custom_legacy_attribute);
-
     }
 
     public function test_consume_custom_attributes_from_attributes_key()
@@ -453,7 +488,6 @@ class TagTest extends TestCase
             self::$custom_attributes
         );
         $this->assertEquals($expected_custom_attributes_tag, $tag_with_custom_attribute);
-
     }
 
     public function test_override_existing_attributes_with_specified_by_custom_ones()
@@ -482,7 +516,7 @@ class TagTest extends TestCase
         // should support width=auto
         $tag = cl_image_tag("hello", array("dpr" => "auto", "format" => "png"));
         $this->assertEquals(
-            "<img class='cld-hidpi' data-src='http://res.cloudinary.com/test123/image/upload/dpr_auto/hello.png'/>",
+            "<img class='cld-hidpi' data-src='" . self::DEFAULT_UPLOAD_PATH . "dpr_auto/hello.png'/>",
             $tag
         );
     }
@@ -620,7 +654,6 @@ class TagTest extends TestCase
             cl_video_tag('movie', array('fallback_content' => $fallback, 'source_types' => "mp4")),
             "<video poster='$expected_url.jpg' src='$expected_url.mp4'>" . $fallback . "</video>"
         );
-
     }
 
     public function test_cl_video_tag_with_source_types()

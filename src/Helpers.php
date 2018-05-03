@@ -137,6 +137,9 @@ namespace {
 
         if ($max_images <= 0) {
             throw new InvalidArgumentException('max_images must be a positive integer');
+        } elseif ($max_images == 1) {
+            // if user requested only 1 image in srcset, we return max_width one
+            $min_width = $max_width;
         }
 
         $step_size = ceil(($max_width - $min_width) / ($max_images > 1 ? $max_images - 1 : 1));
@@ -218,14 +221,16 @@ namespace {
 
         $breakpoints = get_srcset_breakpoints($srcset_data);
 
-        // The code below is a part of cloudinary_url code that affects $options
-        // TODO: refactor this code
+        // The code below is a part of `cloudinary_url` code that affects $options.
+        // We call it here, to make sure we get exactly the same behavior.
+        // TODO: Refactor this code, unify it with `cloudinary_url` or fix `cloudinary_url` and remove it
         Cloudinary::check_cloudinary_field($public_id, $options);
         $type = Cloudinary::option_get($options, "type", "upload");
 
         if ($type == "fetch" && !isset($options["fetch_format"])) {
             $options["fetch_format"] = Cloudinary::option_consume($options, "format");
         }
+        //END OF TODO
 
         $items = array();
         foreach ($breakpoints as $breakpoint) {
