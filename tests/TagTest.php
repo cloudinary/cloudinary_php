@@ -221,7 +221,7 @@ class TagTest extends TestCase
      *
      * @param string $public_id Public ID of the image
      * @param string $common_trans_str Default transformation string to be used in all resources
-     * @param string $custom_trans_str Optional custom tranformation string to be be used inside srcset resources
+     * @param string $custom_trans_str Optional custom transformation string to be be used inside srcset resources
      *                                      If not provided, $common_trans_str is used
      * @param array $srcset_breakpoints Optional list of breakpoints for srcset. If not provided srcset is omitted
      * @param array $attributes Associative array of custom attributes to be added to the tag
@@ -267,7 +267,7 @@ class TagTest extends TestCase
 
         $tag .= "/>";
         if (getenv('DEBUG')) {
-            echo $tag . "\n";
+            echo preg_replace( '/([,\']) /', "$1\n    ", $tag) . "\n\n";
         }
         return $tag;
     }
