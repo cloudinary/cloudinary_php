@@ -120,16 +120,10 @@ class Cloudinary
 
     public static function option_consume(&$options, $option, $default = null)
     {
-        if (isset($options[$option])) {
-            $value = $options[$option];
-            unset($options[$option]);
+        $value = self::option_get($options, $option, $default);
+        unset($options[$option]);
 
-            return $value;
-        } else {
-            unset($options[$option]);
-
-            return $default;
-        }
+        return $value;
     }
 
     public static function build_array($value)
@@ -361,6 +355,32 @@ class Cloudinary
         }
     }
 
+    /**
+     * Helper function for making a recursive array copy while cloning objects on the way.
+     *
+     * @param array $array Source array
+     *
+     * @return array Recursive copy of the source array
+     */
+    public static function array_copy($array)
+    {
+        if (!is_array($array)) {
+            return $array;
+        }
+
+        $result = array();
+        foreach ($array as $key => $val) {
+            if (is_array($val)) {
+                $result[$key] = self::array_copy($val);
+            } elseif (is_object($val)) {
+                $result[$key] = clone $val;
+            } else {
+                $result[$key] = $val;
+            }
+        }
+        return $result;
+    }
+
     private static function is_assoc($array)
     {
         if (!is_array($array)) {
@@ -403,7 +423,6 @@ class Cloudinary
 
         $width = Cloudinary::option_get($options, "width");
         $height = Cloudinary::option_get($options, "height");
-        $streaming_profile = Cloudinary::option_get($options, "streaming_profile");
 
         $has_layer = Cloudinary::option_get($options, "underlay") || Cloudinary::option_get($options, "overlay");
         $angle = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "angle")), ".");
@@ -488,7 +507,6 @@ class Cloudinary
             "q" => self::normalize_expression($quality),
             "r" => self::normalize_expression($radius),
             "so" => $start_offset,
-            "sp" => $streaming_profile,
             "t" => $named_transformation,
             "u" => $underlay,
             "vc" => $video_codec,
@@ -510,6 +528,7 @@ class Cloudinary
             "g" => "gravity",
             "p" => "prefix",
             "pg" => "page",
+            "sp" => "streaming_profile",
             "vs" => "video_sampling",
         );
 
