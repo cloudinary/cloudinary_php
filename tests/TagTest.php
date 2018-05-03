@@ -391,13 +391,17 @@ class TagTest extends TestCase
 
         # Should throw InvalidArgumentException on invalid values
         $invalid_breakpoints = array(
-            array('sizes' => true),                                               // srcset data not provided
+            array('sizes' => true),                                             // srcset data not provided
             array('max_width' => 300, 'max_images' => 3),                       // no min_width
+            array('min_width' => '1', 'max_width' => 300, 'max_images' => 3),   // invalid min_width
             array('min_width' => 100, 'max_images' => 3),                       // no max_width
-            array('min_width' => 100, 'max_width' => 300),                      // no max_images
+            array('min_width' => '1', 'max_width' => '3', 'max_images' => 3),   // invalid max_width
             array('min_width' => 200, 'max_width' => 100, 'max_images' => 3),   // min_width > max_width
+            array('min_width' => 100, 'max_width' => 300),                      // no max_images
             array('min_width' => 100, 'max_width' => 300, 'max_images' => 0),   // invalid max_images
             array('min_width' => 100, 'max_width' => 300, 'max_images' => -17), // invalid max_images
+            array('min_width' => 100, 'max_width' => 300, 'max_images' => '3'), // invalid max_images
+            array('min_width' => 100, 'max_width' => 300, 'max_images' => null), // invalid max_images
         );
 
         foreach ($invalid_breakpoints as $value) {

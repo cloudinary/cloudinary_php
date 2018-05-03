@@ -120,12 +120,11 @@ namespace {
             return $breakpoints;
         }
 
-        if (empty($srcset_data['min_width'])
-            || empty($srcset_data['max_width'])
-            || empty($srcset_data['max_images'])
-        ) {
-            throw new InvalidArgumentException('Either (min_width, max_width, max_images) ' .
-                                        'or breakpoints must be provided to the image srcset attribute');
+        foreach (array('min_width', 'max_width', 'max_images') as $arg) {
+            if (empty($srcset_data[$arg]) || !is_numeric($srcset_data[$arg]) || is_string($srcset_data[$arg])) {
+                throw new InvalidArgumentException('Either valid (min_width, max_width, max_images) ' .
+                                                   'or breakpoints must be provided to the image srcset attribute');
+            }
         }
 
         $min_width = $srcset_data['min_width'];
