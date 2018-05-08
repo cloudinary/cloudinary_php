@@ -12,6 +12,8 @@ class CloudinaryTest extends TestCase
     const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
     const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
 
+    private $original_user_platform;
+
     public function setUp()
     {
         Cloudinary::reset_config();
@@ -25,6 +27,14 @@ class CloudinaryTest extends TestCase
                 "cname" => null
             )
         );
+
+        $this->original_user_platform = \Cloudinary::$USER_PLATFORM;
+    }
+
+    public function tearDown()
+    {
+        parent::TearDown();
+        \Cloudinary::$USER_PLATFORM = $this->original_user_platform;
     }
 
     public function test_cloud_name()
@@ -47,11 +57,9 @@ class CloudinaryTest extends TestCase
 
         $this->assertRegExp("/^CloudinaryPHP\/\d+\.\d+\.\d+ \(PHP \d+\.\d+\.\d+\)$/", $user_agent);
 
-        $orig_user_platform = \Cloudinary::$USER_PLATFORM;
         $platform_information = 'TestPlatformInformation (From \"CloudinaryTest.php\")';
         \Cloudinary::$USER_PLATFORM = $platform_information;
         $full_user_agent = \Cloudinary::userAgent();
-        \Cloudinary::$USER_PLATFORM = $orig_user_platform; // reset value
 
         $this->assertEquals(
             $platform_information . ' ' . $user_agent,
