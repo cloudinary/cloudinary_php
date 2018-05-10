@@ -45,6 +45,11 @@ namespace Cloudinary {
         protected static $transformations_str;
         protected static $encoded_transformations_str;
 
+        protected static $streaming_profile_1;
+        protected static $streaming_profile_2;
+
+
+
         const URL_QUERY_REGEX = "\??(\w+=\w*&?)*";
 
         /** @var  \Cloudinary\Api $api */
@@ -52,28 +57,30 @@ namespace Cloudinary {
 
         public static function setUpBeforeClass()
         {
-            Curl::$instance = new Curl();
-            if (Cloudinary::config_get("api_secret")) {
-                self::$api_test_tag = self::$api_test_tag . "_" . SUFFIX;
-                self::$api_test_upload_preset = "api_test_upload_preset" . SUFFIX;
-                self::$api_test_upload_preset_2 = "api_test_upload_preset2" . SUFFIX;
-                self::$api_test_upload_preset_3 = "api_test_upload_preset3" . SUFFIX;
-
-                self::$api_test = "api_test" . SUFFIX;
-                self::$api_test_2 = "api_test2" . SUFFIX;
-                self::$api_test_3 = "api_test,3" . SUFFIX;
-                self::$api_test_4 = "api_test4" . SUFFIX;
-                self::$api_test_5 = "api_test5" . SUFFIX;
-
-                self::$api_test_transformation = "api_test_transformation" . SUFFIX;
-                self::$api_test_transformation_2 = "api_test_transformation2" . SUFFIX;
-                self::$api_test_transformation_3 = "api_test_transformation3" . SUFFIX;
-
-                self::$timestamp_tag = self::$api_test_tag . "_" . time();
-                self::upload_sample_resources();
-            } else {
+            if (!Cloudinary::config_get("api_secret")) {
                 self::markTestSkipped('Please setup environment for Api test to run');
             }
+
+            Curl::$instance = new Curl();
+
+            self::$api_test_tag = self::$api_test_tag . "_" . SUFFIX;
+            self::$api_test_upload_preset = "api_test_upload_preset" . SUFFIX;
+            self::$api_test_upload_preset_2 = "api_test_upload_preset2" . SUFFIX;
+            self::$api_test_upload_preset_3 = "api_test_upload_preset3" . SUFFIX;
+
+            self::$api_test = "api_test" . SUFFIX;
+            self::$api_test_2 = "api_test2" . SUFFIX;
+            self::$api_test_3 = "api_test,3" . SUFFIX;
+            self::$api_test_4 = "api_test4" . SUFFIX;
+            self::$api_test_5 = "api_test5" . SUFFIX;
+
+            self::$api_test_transformation = "api_test_transformation" . SUFFIX;
+            self::$api_test_transformation_2 = "api_test_transformation2" . SUFFIX;
+            self::$api_test_transformation_3 = "api_test_transformation3" . SUFFIX;
+
+            self::$timestamp_tag = self::$api_test_tag . "_" . time();
+            self::upload_sample_resources();
+
 
             self::$transformations = array(self::$crop_transformation, self::$scale_transformation);
             self::$arr_of_transformation_str = array(self::$crop_transformation_str, self::$scale_transformation_str);
@@ -83,6 +90,9 @@ namespace Cloudinary {
                 self::$encoded_scale_transformation_str
             );
             self::$encoded_transformations_str = implode("|", $arr_of_encoded_transformation_str);
+
+            self::$streaming_profile_1 = self::$api_test . "_streaming_profile_1";
+            self::$streaming_profile_2 = self::$api_test . "_streaming_profile_2";
         }
 
         public function tearDown()
@@ -92,17 +102,16 @@ namespace Cloudinary {
 
         public static function tearDownAfterClass()
         {
-            if (Cloudinary::config_get("api_secret")) {
-                $api = new Cloudinary\Api();
-
-
-                self::delete_resources($api);
-                self::delete_transformations($api);
-                self::delete_presets($api);
-
-            } else {
+            if (!Cloudinary::config_get("api_secret")) {
                 self::fail("You need to configure the cloudinary api for the tests to work.");
             }
+
+            $api = new Cloudinary\Api();
+
+            self::delete_resources($api);
+            self::delete_transformations($api);
+            self::delete_presets($api);
+            self::delete_streaming_profiles($api);
         }
 
 
@@ -152,8 +161,7 @@ namespace Cloudinary {
             $presets = array(
                 self::$api_test_upload_preset,
                 self::$api_test_upload_preset_2,
-                self::$api_test_upload_preset_3,
-                "api_test_upload_preset4",
+                self::$api_test_upload_preset_3
             );
             foreach ($presets as $p) {
                 try {
@@ -163,6 +171,24 @@ namespace Cloudinary {
             }
         }
 
+        /**
+         * Delete all test related streaming profiles
+         *
+         * @param \Cloudinary\Api $api
+         */
+        protected static function delete_streaming_profiles($api)
+        {
+            $profiles = array(
+                self::$streaming_profile_1,
+                self::$streaming_profile_2
+            );
+            foreach ($profiles as $p) {
+                try {
+                    $api->delete_streaming_profile($p);
+                } catch (Exception $e) {
+                }
+            }
+        }
         /**
          * Upload sample resources. These resources need to be present for some of the tests to work.
          */
@@ -1066,8 +1092,6 @@ namespace Cloudinary {
          */
         public function test_create_streaming_profile()
         {
-            $name = self::$api_test . "_streaming_profile";
-
             $options = array(
                 "representations" => array(
                     array(
@@ -1080,7 +1104,7 @@ namespace Cloudinary {
                     ),
                 ),
             );
-            $result = $this->api->create_streaming_profile($name, $options);
+            $result = $this->api->create_streaming_profile(self::$streaming_profile_1, $options);
             $this->assertArrayHasKey("representations", $result["data"]);
             $reps = $result["data"]["representations"];
             $this->assertTrue(is_array($reps));
@@ -1099,8 +1123,6 @@ namespace Cloudinary {
          */
         public function test_update_delete_streaming_profile()
         {
-
-            $name = self::$api_test . "_streaming_profile_delete";
             $options = array(
                 "representations" => array(
                     array(
@@ -1114,7 +1136,7 @@ namespace Cloudinary {
                 ),
             );
             try {
-                $this->api->create_streaming_profile($name, $options);
+                $this->api->create_streaming_profile(self::$streaming_profile_2, $options);
             } catch (Cloudinary\Api\AlreadyExists $e) {
             }
 
@@ -1130,7 +1152,7 @@ namespace Cloudinary {
                     ),
                 ),
             );
-            $result = $this->api->update_streaming_profile($name, $options);
+            $result = $this->api->update_streaming_profile(self::$streaming_profile_2, $options);
 
             $this->assertArrayHasKey("representations", $result["data"]);
             $reps = $result["data"]["representations"];
@@ -1142,9 +1164,9 @@ namespace Cloudinary {
             $expected = array("bit_rate" => "5m", "height" => 1000, "width" => 1000, "crop" => "scale");
             $this->assertEquals($expected, $tr);
 
-            $this->api->delete_streaming_profile($name);
+            $this->api->delete_streaming_profile(self::$streaming_profile_2);
             $result = $this->api->list_streaming_profiles();
-            $this->assertArrayNotHasKey($name, array_map(function ($profile) {
+            $this->assertArrayNotHasKey(self::$streaming_profile_2, array_map(function ($profile) {
                 return $profile["name"];
             }, $result["data"]));
         }
