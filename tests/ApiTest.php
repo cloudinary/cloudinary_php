@@ -564,6 +564,14 @@ namespace Cloudinary {
          */
         public function test_transformation_cursor_results()
         {
+            Uploader::upload(
+                TEST_IMG,
+                array(
+                    "public_id" => self::$api_test_4,
+                    "eager" => array("transformation" => self::$scale_transformation)
+                )
+            );
+
             $result = $this->api->transformation(self::$scale_transformation_str, array("max_results" => 1));
             $this->assertEquals(count($result["derived"]), 1);
             $this->assertNotEmpty($result["next_cursor"]);
