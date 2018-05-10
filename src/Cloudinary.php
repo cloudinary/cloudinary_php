@@ -11,7 +11,7 @@ class Cloudinary
     const RANGE_VALUE_RE = '/^(?P<value>(\d+\.)?\d+)(?P<modifier>[%pP])?$/';
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';
 
-    const VERSION = "1.9.0";
+    const VERSION = "1.10.0";
 
     /**
      * Contains information about SDK user agent. Passed to the Cloudinary servers.

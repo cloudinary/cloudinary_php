@@ -1,4 +1,24 @@
 
+1.10.0 / 2018-05-10
+===================
+
+New functionality and features
+------------------------------
+
+  * Add `srcset` and `sizes` attributes to the `img` tag (#117)
+  * Support special characters in public IDs, tags, etc in Admin API calls
+  * Add php version to user agent (#114)
+  
+Other Changes
+-------------
+  * Fix URL-encode parts of api-uri
+  * Add `test_url_encoding` unit test
+  * Fix `test_transformation_cursor_results` unit test
+  * Fix `test_raw_conversion` unit test
+  * Fix streaming profiles cleanup after unit tests
+  * Add PHPDoc to Cloudinary\Api and Exceptions
+  * Update PHP version requirement
+
 1.9.0 / 2018-03-12
 ==================
 
