@@ -583,5 +583,25 @@ TAG
                 }
             }
         }
+
+        /**
+         * Should support `format` parameter in responsive breakpoints settings
+         */
+        public function test_responsive_breakpoints_format()
+        {
+            $result = Uploader::upload(TEST_IMG, array(
+                "tags" => UNIQUE_TEST_TAG,
+                "responsive_breakpoints" => array(
+                    "create_derived" => true,
+                    "transformation" => array(
+                        "angle" => 90
+                    ),
+                    "format" => 'gif'
+                )
+            ));
+            $this->assertNotNull($result["responsive_breakpoints"]);
+            $this->assertEquals($result["responsive_breakpoints"][0]["transformation"], "a_90");
+            $this->assertRegExp('/\.gif$/', $result["responsive_breakpoints"][0]["breakpoints"][0]["url"]);
+        }
     }
 }
