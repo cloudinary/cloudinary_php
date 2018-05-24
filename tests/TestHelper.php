@@ -264,4 +264,17 @@ END;
         $cloud_name = \Cloudinary::config_get("cloud_name");
         $test->assertEquals("/v1_1/" . $cloud_name . $path, Curl::$instance->url_path(), $message);
     }
+
+    function assertHasHeader($test, $header, $message = '')
+    {
+        $headers = Curl::$instance->getopt(CURLOPT_HTTPHEADER);
+        $test->assertTrue(is_array($headers), $message);
+        $names = array();
+        foreach ($headers as $h) {
+            $chunks = explode(":", $h);
+            // header names are case-insensitive according to rfc7230
+            $names[] = strtolower(trim($chunks[0]));
+        }
+        $test->assertContains(strtolower($header), $names, $message);
+    }
 }

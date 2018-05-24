@@ -99,7 +99,8 @@ namespace Cloudinary {
             }
             $src = fopen($file, 'r');
             $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' . pathinfo($file, PATHINFO_EXTENSION));
-            $upload = $upload_id = null;
+            $upload = null;
+            $upload_id = \Cloudinary::random_public_id();
             $chunk_size = \Cloudinary::option_get($options, "chunk_size", 20000000);
             $public_id = \Cloudinary::option_get($options, "public_id");
             $index = 0;
@@ -117,20 +118,22 @@ namespace Cloudinary {
                 } else {
                     clearstatcache();
                 }
-
                 $temp_file_size = filesize($temp_file_name);
                 $range = "bytes " . $current_loc . "-" . ($current_loc + $temp_file_size - 1) . "/" . $file_size;
                 try {
                     $upload = Uploader::upload_large_part(
                         $temp_file_name,
-                        array_merge($options, array("public_id" => $public_id, "content_range" => $range))
+                        array_merge($options, array(
+                            "public_id" => $public_id,
+                            "content_range" => $range,
+                            "x_unique_upload_id" => $upload_id
+                        ))
                     );
                 } catch (\Exception $e) {
                     unlink($temp_file_name);
                     fclose($src);
                     throw $e;
                 }
-                $upload_id = \Cloudinary::option_get($upload, "upload_id");
                 $public_id = \Cloudinary::option_get($upload, "public_id");
                 $index += 1;
             }
@@ -391,9 +394,17 @@ namespace Cloudinary {
                 \Cloudinary::option_get($options, "api_proxy", \Cloudinary::config_get("api_proxy"))
             );
 
+            $headers = array();
             $range = \Cloudinary::option_get($options, "content_range");
             if ($range != null) {
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Range: ' . $range));
+                $headers[] = 'Content-Range: ' . $range;
+            }
+            $x_unique_upload_id = \Cloudinary::option_get($options, "x_unique_upload_id");
+            if ($x_unique_upload_id != null) {
+                $headers[] = 'X-Unique-Upload-Id: ' . $x_unique_upload_id;
+            }
+            if (!empty($headers)) {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             }
 
             $response = curl_exec($ch);
