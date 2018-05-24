@@ -854,6 +854,29 @@ class CloudinaryTest extends TestCase
         $this->assertNull($method->invoke(null, "p"));
         $this->assertNull($method->invoke(null, ""));
         $this->assertNull($method->invoke(null, null));
+        // shouldn't support "auto" value
+        $this->assertNull($method->invoke(null, "auto"), "auto");
+    }
+
+    public function test_norm_auto_range_value()
+    {
+        $method = new ReflectionMethod('Cloudinary', 'norm_auto_range_value');
+        $method->setAccessible(true);
+        $pairs = [
+            // integer values
+            ["200", "200"], [200, "200"], [0, "0"],
+            // float values
+            ["200.0", "200.0"], [200.0, "200.0"], [200.123, "200.123"], [200.123000, "200.123"], [0.0, "0.0"],
+            //percent values
+            ["20p", "20p"], ["20P", "20p"], ["20%", "20p"], ["20.5%", "20.5p"],
+            //auto
+            ["auto", "auto"],
+            // invalid values
+            ["p", null], ["", null], [null, null], ["non_auto", null]
+        ];
+        foreach ($pairs as $pair) {
+            $this->assertEquals($method->invoke(null, $pair[0]), $pair[1]);
+        }
     }
 
     public function test_video_codec()
@@ -953,6 +976,12 @@ class CloudinaryTest extends TestCase
             "video_id",
             array('resource_type' => 'video', 'start_offset' => '35%'),
             CloudinaryTest::VIDEO_UPLOAD_PATH . "so_35p/video_id"
+        );
+        // should support auto select of a suitable frame from the first few seconds of a video
+        $this->cloudinary_url_assertion(
+            "video_id",
+            array('resource_type' => 'video', 'start_offset' => 'auto'),
+            CloudinaryTest::VIDEO_UPLOAD_PATH . "so_auto/video_id"
         );
     }
 
