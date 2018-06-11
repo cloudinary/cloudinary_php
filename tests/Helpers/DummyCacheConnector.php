@@ -1,6 +1,6 @@
 <?php
 
-namespace CloudinaryTest;
+namespace Cloudinary\Test\Helpers;
 
 /**
  * Class DummyCacheConnector

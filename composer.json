@@ -27,5 +27,8 @@
     "autoload": {
         "classmap": ["src"],
         "files": ["src/Helpers.php"]
+    },
+    "autoload-dev": {
+        "psr-4": { "Cloudinary\\Test\\": "tests/" }
     }
 }

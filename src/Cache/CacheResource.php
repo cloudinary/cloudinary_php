@@ -22,6 +22,7 @@ class CacheResource implements JsonSerializable
         if (!is_array($resourceData)) {
             return;
         }
+
         $this->format = $resourceData["format"];
         $this->transformations = $resourceData["transformations"];
     }

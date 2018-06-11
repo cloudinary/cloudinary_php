@@ -1,10 +1,11 @@
 <?php
 
-namespace CloudinaryTest;
+namespace Cloudinary\Test;
 
 use Cloudinary\Cache\ResponsiveBreakpointsCache;
 use Cloudinary\Curl;
 use Cloudinary\Uploader;
+use Cloudinary\Test\Helpers\DummyCacheConnector;
 use PHPUnit\Framework\TestCase;
 
 require_once('TestHelper.php');
