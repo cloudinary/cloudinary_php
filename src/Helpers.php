@@ -2,6 +2,8 @@
 
 namespace {
 
+    use Cloudinary\Cache\ResponsiveBreakpointsCache;
+
     function cl_upload_url($options = array())
     {
         if (!@$options["resource_type"]) {
@@ -219,7 +221,20 @@ namespace {
             return $srcset_data;
         }
 
-        $breakpoints = get_srcset_breakpoints($srcset_data);
+        $breakpoints = null;
+
+        if (Cloudinary::option_get(
+            $srcset_data,
+            "use_rb_cache",
+            Cloudinary::config_get("rb_cache_enabled", false)
+        )) {
+            $breakpoints = ResponsiveBreakpointsCache::instance()->get($public_id, $options);
+        }
+
+        # Fallback to static calculation, in case not found in cache
+        if (is_null($breakpoints)) {
+            $breakpoints = get_srcset_breakpoints($srcset_data);
+        }
 
         // The code below is a part of `cloudinary_url` code that affects $options.
         // We call it here, to make sure we get exactly the same behavior.
