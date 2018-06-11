@@ -2,6 +2,12 @@
 
 namespace Cloudinary {
 
+    use Cloudinary\Cache\ResourceCache;
+
+    /**
+     * Class Uploader
+     * @package Cloudinary
+     */
     class Uploader
     {
         const REMOTE_URL_REGEX = '/^@|^ftp:|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/';
@@ -83,12 +89,12 @@ namespace Cloudinary {
                 array_merge($options, array("unsigned" => true, "upload_preset" => $upload_preset))
             );
         }
-
+        
         public static function upload($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);
 
-            return Uploader::call_api("upload", $params, $options, $file);
+            return Uploader::call_cacheable_api("upload", $params, $options, $file);
         }
 
         // Upload large raw files. Note that public_id should include an extension for best results.
@@ -150,7 +156,7 @@ namespace Cloudinary {
             $params = Uploader::build_upload_params($options);
             $full_options = array_merge(array("resource_type" => "raw"), $options);
 
-            return Uploader::call_api("upload_chunked", $params, $full_options, $file);
+            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file);
         }
 
         public static function destroy($public_id, $options = array())
@@ -185,7 +191,7 @@ namespace Cloudinary {
             $options["public_id"] = $public_id;
             $params = Uploader::build_upload_params($options);
 
-            return Uploader::call_api("explicit", $params, $options);
+            return Uploader::call_cacheable_api("explicit", $params, $options);
         }
 
         public static function generate_sprite($tag, $options = array())
@@ -337,6 +343,27 @@ namespace Cloudinary {
             return Uploader::create_archive($options, "zip");
         }
 
+        /**
+         * @param       $action
+         * @param       $params
+         * @param array $options
+         * @param null  $file
+         *
+         * @return mixed
+         * @throws Error
+         */
+        public static function call_cacheable_api($action, $params, $options = array(), $file = null)
+        {
+            $result = self::call_api($action, $params, $options, $file);
+
+            ResourceCache::instance()->update(
+                $result["public_id"],
+                $result,
+                self::get_responsive_breakpoints_data($result)
+            );
+            return $result;
+        }
+
         public static function call_api($action, $params, $options = array(), $file = null)
         {
             $return_error = \Cloudinary::option_get($options, "return_error");
@@ -465,6 +492,31 @@ namespace Cloudinary {
             }
 
             return json_encode($breakpoints_params);
+        }
+
+        /**
+         * @param $result
+         *
+         * @return null
+         */
+        protected static function get_responsive_breakpoints_data($result)
+        {
+            if (!array_key_exists("responsive_breakpoints", $result)) {
+                return null;
+            }
+
+            $default_format = $result["format"];
+
+            $data = ["format" => $default_format, "transformations" => []];
+
+            foreach ($result["responsive_breakpoints"] as $transformation) {
+                $transformation_str = \Cloudinary::option_get($transformation, "transformation", "");
+                $format = pathinfo($transformation["breakpoints"][0]["url"], PATHINFO_EXTENSION) or $default_format;
+                $breakpoints = array_column($transformation["breakpoints"], 'width');
+                $data["transformations"][$transformation_str][$format] = $breakpoints;
+            }
+
+            return $data;
         }
 
         protected static function build_custom_headers($headers)
