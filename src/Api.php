@@ -454,6 +454,7 @@ namespace Cloudinary {
                     "auto_tagging",
                     "background_removal",
                     "quality_override",
+                    "notification_url",
                 )
             );
 

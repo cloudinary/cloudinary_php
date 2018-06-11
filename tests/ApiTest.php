@@ -787,6 +787,13 @@ namespace Cloudinary {
             $this->assertEquals($api_result["moderation"][0]["kind"], "manual");
         }
 
+        public function test21_notification_url()
+        {
+            Curl::mockApi($this);
+            $this->api->update("foobar", array("notification_url" => "http://example.com"));
+            assertParam($this, "notification_url", "http://example.com");
+        }
+
         /**
          * Should support requesting raw_convert
          *
