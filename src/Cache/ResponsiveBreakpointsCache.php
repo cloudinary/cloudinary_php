@@ -2,34 +2,71 @@
 
 namespace Cloudinary\Cache;
 
+use Cloudinary\Cache\Adapter\CacheAdapter;
 use Cloudinary\Utils\Singleton;
+use InvalidArgumentException;
 
 /**
  * Class ResponsiveBreakpointsCache
- * @package Cloudinary
+ * @package Cloudinary\Cache
  */
 class ResponsiveBreakpointsCache extends Singleton
 {
+
     /**
-     * @var object $resourceCache  Cache instance
+     * @var object $cacheAdapter Cache Adapter
      */
-    protected $resourceCache;
+    protected $cacheAdapter;
 
     /**
      * ResponsiveBreakpointsCache constructor.
-     *
      */
-    protected function __construct()
+    public function __construct()
     {
-        $this->resourceCache = ResourceCache::instance();
+        $this->init();
     }
 
     /**
      * @param array $cacheOptions
      */
-    public function init($cacheOptions = [])
+    public function init($cacheOptions = array())
     {
-        $this->resourceCache->init($cacheOptions);
+        $cacheAdapter = \Cloudinary::option_get($cacheOptions, "cache_adapter");
+        if (is_null($cacheAdapter)) {
+            $cacheAdapter = $this->getCacheAdapterFromConfig($cacheOptions);
+        }
+
+        $this->setCacheAdapter($cacheAdapter);
+    }
+
+    /**
+     * Set one of the default cache adapters defined in config
+     *
+     * @param array $cacheOptions
+     *
+     * @return null
+     */
+    protected function getCacheAdapterFromConfig($cacheOptions = array())
+    {
+        return null;
+    }
+
+    /**
+     * Assigns cache adapter
+     *
+     * @param CacheAdapter $cacheAdapter
+     *
+     * @return bool indicating whether adapter is set
+     */
+    public function setCacheAdapter($cacheAdapter)
+    {
+        if (is_null($cacheAdapter) || ! $cacheAdapter instanceof CacheAdapter) {
+            return false;
+        }
+
+        $this->cacheAdapter = $cacheAdapter;
+
+        return true;
     }
 
     /**
@@ -39,92 +76,63 @@ class ResponsiveBreakpointsCache extends Singleton
      */
     public function enabled()
     {
-        return $this->resourceCache->enabled();
+        return !is_null($this->cacheAdapter);
     }
 
     /**
-     * @param $cache
+     * Helper method. Returns a list of parameters extracted from options
      *
-     * @return bool
-     */
-    public function setCacheConnector($cache)
-    {
-        return $this->resourceCache->setCacheConnector($cache);
-    }
-
-    /**
-     * @param string $publicId
-     * @param array  $options
-     *
-     * @return string
-     */
-    public function generateCacheKey($publicId, $options)
-    {
-        return $this->resourceCache->generateCacheKey($publicId, $options);
-    }
-
-    /**
-     * @param       $publicId
-     * @param array $options
-     * @param       $value
-     *
-     * @return null
-     */
-    public function set($publicId, $options, $value)
-    {
-        if (!$this->enabled()) {
-            return false;
-        }
-
-        $cacheResource = new CacheResource();
-        $cacheResource->setBreakpoints($options, $value);
-
-        return $this->resourceCache->set($publicId, $options, $cacheResource);
-    }
-
-    /**
-     * @param       $publicId
-     * @param array $options
-     * @param       $value
-     *
-     * @return null
-     */
-    public function update($publicId, $options, $value)
-    {
-        if (!$this->enabled()) {
-            return false;
-        }
-
-        // Update with null value is no op
-        if (is_null($value)) {
-            return false;
-        }
-
-        $cacheResource = new CacheResource();
-        $cacheResource->setBreakpoints($options, $value);
-
-        return $this->resourceCache->update($publicId, $options, $cacheResource);
-    }
-
-    /**
-     * @param $publicId
      * @param $options
      *
      * @return array
      */
-    public function get($publicId, $options)
+    private static function optionsToParameters($options)
+    {
+        $optionsCopy = \Cloudinary::array_copy($options);
+        $transformation = \Cloudinary::generate_transformation_string($optionsCopy);
+        $format = \Cloudinary::option_get($options, "format", "");
+        $type = \Cloudinary::option_get($options, "type", "upload");
+        $resourceType = \Cloudinary::option_get($options, "resource_type", "image");
+
+        return [$type, $resourceType, $transformation, $format];
+    }
+
+    /**
+     * @param $publicId
+     * @param $options
+     *
+     * @return mixed
+     */
+    public function get($publicId, $options = [])
     {
         if (!$this->enabled()) {
             return null;
         }
 
-        $cacheResource = $this->resourceCache->get($publicId, $options);
+        list($type, $resourceType, $transformation, $format) = self::optionsToParameters($options);
 
-        if (is_null($cacheResource)) {
-            return null;
+        return $this->cacheAdapter->get($publicId, $type, $resourceType, $transformation, $format);
+    }
+    /**
+     * @param         $publicId
+     * @param array   $options
+     * @param array   $value
+     *
+     * @return null
+     */
+    public function set($publicId, $options = [], $value = [])
+    {
+        if (!$this->enabled()) {
+            return false;
         }
 
-        return $cacheResource->getBreakpoints($options);
+        if (! is_array($value)) {
+            throw new InvalidArgumentException("An array of breakpoints is expected");
+        }
+
+        list($type, $resourceType, $transformation, $format) = self::optionsToParameters($options);
+
+        return $this->cacheAdapter->set($publicId, $type, $resourceType, $transformation, $format, $value);
     }
 
     /**
@@ -133,16 +141,26 @@ class ResponsiveBreakpointsCache extends Singleton
      *
      * @return null
      */
-    public function delete($publicId, $options)
+    public function delete($publicId, $options = [])
     {
-        return $this->resourceCache->delete($publicId, $options);
+        if (!$this->enabled()) {
+            return null;
+        }
+
+        list($type, $resourceType, $transformation, $format) = self::optionsToParameters($options);
+
+        return $this->cacheAdapter->delete($publicId, $type, $resourceType, $transformation, $format);
     }
 
     /**
      *
      */
-    public function clear()
+    public function flushAll()
     {
-        return $this->resourceCache->clear();
+        if (!$this->enabled()) {
+            return null;
+        }
+
+        return $this->cacheAdapter->flushAll();
     }
 }
