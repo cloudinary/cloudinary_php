@@ -1,19 +1,19 @@
 <?php
 
-namespace Cloudinary\Test\Helpers;
+namespace Cloudinary\Test\Cache\Storage;
+
+use Cloudinary\Cache\Storage\KeyValueStorage;
 
 /**
  * Class DummyCacheConnector
- * @package CloudinaryTest
+ * @package Cloudinary\Test\Cache\Storage
  */
-class DummyCacheConnector
+class DummyCacheStorage implements KeyValueStorage
 {
     private static $dummyCache = [];
 
     /**
-     * @param $key
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function get($key)
     {
@@ -41,7 +41,7 @@ class DummyCacheConnector
     public function delete($key)
     {
         if (!array_key_exists($key, self::$dummyCache)) {
-            return false;
+            return true;
         }
 
         unset(self::$dummyCache[$key]);

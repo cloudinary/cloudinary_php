@@ -107,6 +107,30 @@ namespace {
     }
 
     /**
+     * @param $srcset_data
+     */
+    function validate_srcset_data($srcset_data)
+    {
+        foreach (array('min_width', 'max_width', 'max_images') as $arg) {
+            if (empty($srcset_data[$arg]) || !is_numeric($srcset_data[$arg]) || is_string($srcset_data[$arg])) {
+                throw new InvalidArgumentException('Either valid (min_width, max_width, max_images) ' .
+                                                   'or breakpoints must be provided to the image srcset attribute');
+            }
+        }
+
+        $min_width = $srcset_data['min_width'];
+        $max_width = $srcset_data['max_width'];
+        $max_images = $srcset_data['max_images'];
+
+        if ($min_width > $max_width) {
+            throw new InvalidArgumentException('min_width must be less than max_width');
+        }
+
+        if ($max_images <= 0) {
+            throw new InvalidArgumentException('max_images must be a positive integer');
+        }
+    }
+    /**
      * @internal Helper function. Gets or populates srcset breakpoints using provided parameters
      *
      * Either the breakpoints or min_width, max_width, max_images must be provided.
@@ -131,24 +155,13 @@ namespace {
             return $breakpoints;
         }
 
-        foreach (array('min_width', 'max_width', 'max_images') as $arg) {
-            if (empty($srcset_data[$arg]) || !is_numeric($srcset_data[$arg]) || is_string($srcset_data[$arg])) {
-                throw new InvalidArgumentException('Either valid (min_width, max_width, max_images) ' .
-                                                   'or breakpoints must be provided to the image srcset attribute');
-            }
-        }
+        validate_srcset_data($srcset_data);
 
         $min_width = $srcset_data['min_width'];
         $max_width = $srcset_data['max_width'];
         $max_images = $srcset_data['max_images'];
 
-        if ($min_width > $max_width) {
-            throw new InvalidArgumentException('min_width must be less than max_width');
-        }
-
-        if ($max_images <= 0) {
-            throw new InvalidArgumentException('max_images must be a positive integer');
-        } elseif ($max_images == 1) {
+        if ($max_images == 1) {
             // if user requested only 1 image in srcset, we return max_width one
             $min_width = $max_width;
         }
@@ -220,29 +233,38 @@ namespace {
      * @return string Resulting srcset attribute value
      *
      * @throws InvalidArgumentException In case of invalid or missing parameters
+     * @throws \Cloudinary\Error
      */
     function generate_image_srcset_attribute($public_id, $srcset_data, $options = array())
     {
         if (empty($srcset_data)) {
             return null;
         }
+
         if (is_string($srcset_data)) {
             return $srcset_data;
         }
 
-        $breakpoints = null;
+        # User might provide explicit breakpoints, in this case we omit calculation and cache
+        $breakpoints = Cloudinary::option_get($srcset_data, "breakpoints", null);
 
-        if (Cloudinary::option_get(
-            $srcset_data,
-            "use_rb_cache",
-            Cloudinary::config_get("rb_cache_enabled", false)
-        )) {
-            $breakpoints = ResponsiveBreakpointsCache::instance()->get($public_id, $options);
-        }
-
-        # Fallback to static calculation, in case not found in cache
         if (is_null($breakpoints)) {
-            $breakpoints = get_srcset_breakpoints($srcset_data);
+            if (Cloudinary::option_get(
+                $srcset_data,
+                "rb_cache_enabled",
+                Cloudinary::config_get("rb_cache_enabled", false)
+            )) {
+                $breakpoints = ResponsiveBreakpointsCache::instance()->get($public_id, $options);
+
+                // Cache miss, let's get breakpoints from Cloudinary
+                if (is_null($breakpoints)) {
+                    $breakpoints = \Cloudinary::get_responsive_breakpoints($public_id, $srcset_data, $options);
+                    ResponsiveBreakpointsCache::instance()->set($public_id, $options, $breakpoints);
+                }
+            } else {
+                // Static calculation without cache
+                $breakpoints = get_srcset_breakpoints($srcset_data);
+            }
         }
 
         // The code below is a part of `cloudinary_url` code that affects $options.
@@ -298,9 +320,9 @@ namespace {
     /**
      * Generates HTML img tag
      *
-     * @param string    $public_id  Public ID of the resource
+     * @param string $public_id Public ID of the resource
      *
-     * @param array     $options    Additional options
+     * @param array  $options   Additional options
      *
      * Examples:
      *
@@ -312,6 +334,7 @@ namespace {
      *
      * @return string Resulting img tag
      *
+     * @throws \Cloudinary\Error
      */
     function cl_image_tag($public_id, $options = array())
     {
@@ -351,11 +374,6 @@ namespace {
                 $source = Cloudinary::BLANK;
             }
         }
-        $html = "<img ";
-
-        if ($source) {
-            $html .= "src='" . htmlspecialchars($source, ENT_QUOTES) . "' ";
-        }
 
         if (!empty($options["srcset"])) {
             $srcset_data = $options["srcset"];
@@ -376,6 +394,10 @@ namespace {
         // Explicitly provided attributes override options
         $attributes = array_merge($options, $attr_data);
 
+        $html = "<img ";
+        if ($source) {
+            $html .= "src='" . htmlspecialchars($source, ENT_QUOTES) . "' ";
+        }
         $html .= Cloudinary::html_attrs($attributes) . "/>";
 
         return $html;

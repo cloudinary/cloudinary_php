@@ -2,7 +2,7 @@
 
 namespace Cloudinary {
 
-    use Cloudinary\Cache\ResourceCache;
+    use Cloudinary\Cache\ResponsiveBreakpointsCache;
 
     /**
      * Class Uploader
@@ -145,7 +145,6 @@ namespace Cloudinary {
             }
             unlink($temp_file_name);
             fclose($src);
-
             return $upload;
         }
 
@@ -355,12 +354,7 @@ namespace Cloudinary {
         public static function call_cacheable_api($action, $params, $options = array(), $file = null)
         {
             $result = self::call_api($action, $params, $options, $file);
-
-            ResourceCache::instance()->update(
-                $result["public_id"],
-                $result,
-                self::get_responsive_breakpoints_data($result)
-            );
+            self::save_responsive_breakpoints_to_cache($result);
             return $result;
         }
 
@@ -495,28 +489,40 @@ namespace Cloudinary {
         }
 
         /**
-         * @param $result
-         *
-         * @return null
+         * @param array $result Upload result
          */
-        protected static function get_responsive_breakpoints_data($result)
+        protected static function save_responsive_breakpoints_to_cache($result)
         {
             if (!array_key_exists("responsive_breakpoints", $result)) {
-                return null;
+                return;
             }
 
-            $default_format = $result["format"];
+            $public_id = \Cloudinary::option_get($result, "public_id");
 
-            $data = ["format" => $default_format, "transformations" => []];
+            if (empty($public_id)) {
+                // We have some faulty result, nothing to cache
+                return;
+            }
+
+            $options = \Cloudinary::array_subset($result, ['type', 'resource_type']);
 
             foreach ($result["responsive_breakpoints"] as $transformation) {
-                $transformation_str = \Cloudinary::option_get($transformation, "transformation", "");
-                $format = pathinfo($transformation["breakpoints"][0]["url"], PATHINFO_EXTENSION) or $default_format;
-                $breakpoints = array_column($transformation["breakpoints"], 'width');
-                $data["transformations"][$transformation_str][$format] = $breakpoints;
-            }
+                $options["raw_transformation"] = \Cloudinary::option_get($transformation, "transformation", "");
+                $options["format"] = pathinfo($transformation["breakpoints"][0]["url"], PATHINFO_EXTENSION);
 
-            return $data;
+
+                // $breakpoints = array_column($transformation["breakpoints"], 'width');
+
+                // TODO: When updating minimum PHP version to at least 5.5, replace line below with the one above
+                $breakpoints = array_map(
+                    function ($e) {
+                        return $e['width'];
+                    },
+                    $transformation["breakpoints"]
+                );
+
+                ResponsiveBreakpointsCache::instance()->set($public_id, $options, $breakpoints);
+            }
         }
 
         protected static function build_custom_headers($headers)
