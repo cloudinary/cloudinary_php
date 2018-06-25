@@ -12,6 +12,17 @@ class CloudinaryTest extends TestCase
     const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
     const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
 
+    private $range_test_pairs = [
+        // integer values
+        ["200", "200"], [200, "200"], [0, "0"],
+        // float values
+        ["200.0", "200.0"], [200.0, "200.0"], [200.123, "200.123"], [200.123000, "200.123"], [0.0, "0.0"],
+        //percent values
+        ["20p", "20p"], ["20P", "20p"], ["20%", "20p"], ["20.5%", "20.5p"],
+        // invalid values
+        ["p", null], ["", null], [null, null], ["non_auto", null],
+    ];
+
     private $original_user_platform;
 
     public function setUp()
@@ -834,49 +845,20 @@ class CloudinaryTest extends TestCase
     {
         $method = new ReflectionMethod('Cloudinary', 'norm_range_value');
         $method->setAccessible(true);
-        // should parse integer range values
-        $this->assertEquals($method->invoke(null, "200"), "200");
-        $this->assertEquals($method->invoke(null, 200), "200");
-        $this->assertEquals($method->invoke(null, 0), "0");
-        // should parse float range values
-        $this->assertEquals($method->invoke(null, "200.0"), "200.0");
-        $this->assertEquals($method->invoke(null, 200.0), "200.0");
-        $this->assertEquals($method->invoke(null, 200.00), "200.0");
-        $this->assertEquals($method->invoke(null, 200.123), "200.123");
-        $this->assertEquals($method->invoke(null, 200.123000), "200.123");
-        $this->assertEquals($method->invoke(null, 0.0), "0.0");
-        // should parse a percent range value
-        $this->assertEquals($method->invoke(null, "20p"), "20p");
-        $this->assertEquals($method->invoke(null, "20P"), "20p");
-        $this->assertEquals($method->invoke(null, "20%"), "20p");
-        $this->assertEquals($method->invoke(null, "20.5%"), "20.5p");
-        // should handle invalid input
-        $this->assertNull($method->invoke(null, "p"));
-        $this->assertNull($method->invoke(null, ""));
-        $this->assertNull($method->invoke(null, null));
-        // shouldn't support "auto" value
-        $this->assertNull($method->invoke(null, "auto"), "auto");
+        foreach ($this->range_test_pairs as $pair) {
+            $this->assertEquals($method->invoke(null, $pair[0]), $pair[1]);
+        }
+        $this->assertNull($method->invoke(null, "auto"), "Shouldn't support 'auto' value");
     }
 
     public function test_norm_auto_range_value()
     {
         $method = new ReflectionMethod('Cloudinary', 'norm_auto_range_value');
         $method->setAccessible(true);
-        $pairs = [
-            // integer values
-            ["200", "200"], [200, "200"], [0, "0"],
-            // float values
-            ["200.0", "200.0"], [200.0, "200.0"], [200.123, "200.123"], [200.123000, "200.123"], [0.0, "0.0"],
-            //percent values
-            ["20p", "20p"], ["20P", "20p"], ["20%", "20p"], ["20.5%", "20.5p"],
-            //auto
-            ["auto", "auto"],
-            // invalid values
-            ["p", null], ["", null], [null, null], ["non_auto", null]
-        ];
-        foreach ($pairs as $pair) {
+        foreach ($this->range_test_pairs as $pair) {
             $this->assertEquals($method->invoke(null, $pair[0]), $pair[1]);
         }
+        $this->assertEquals($method->invoke(null, "auto"), "auto", "Should support 'auto' value");
     }
 
     public function test_video_codec()
