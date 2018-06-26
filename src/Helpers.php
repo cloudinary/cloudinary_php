@@ -94,6 +94,15 @@ namespace {
         return $form;
     }
 
+    /**
+     * Generates an HTML meta tag that enables Client-Hints
+     *
+     * @return string Resulting meta tag
+     */
+    function cl_client_hints_meta_tag()
+    {
+        return "<meta http-equiv='Accept-CH' content='DPR, Viewport-Width, Width' />";
+    }
 
     /**
      * @internal Helper function. Gets or populates srcset breakpoints using provided parameters

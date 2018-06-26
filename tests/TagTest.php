@@ -52,6 +52,19 @@ class TagTest extends TestCase
             $tag
         );
     }
+    
+    /**
+     * Should create a meta tag with client hints
+     */
+    public function test_cl_client_hints_meta_tag()
+    {
+        $doc = new DOMDocument();
+        $doc->loadHTML(cl_client_hints_meta_tag());
+        $tags = $doc->getElementsByTagName('meta');
+        $this->assertEquals($tags->length, 1);
+        $this->assertEquals($tags->item(0)->getAttribute('content'), 'DPR, Viewport-Width, Width');
+        $this->assertEquals($tags->item(0)->getAttribute('http-equiv'), 'Accept-CH');
+    }
 
     /**
      * Check that cl_image_tag encodes special characters.
