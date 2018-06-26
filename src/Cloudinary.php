@@ -481,11 +481,11 @@ class Cloudinary
         $dpr = Cloudinary::option_consume($options, "dpr", Cloudinary::config_get("dpr"));
 
         $duration = Cloudinary::norm_range_value(Cloudinary::option_consume($options, "duration"));
-        $start_offset = Cloudinary::norm_range_value(Cloudinary::option_consume($options, "start_offset"));
+        $start_offset = Cloudinary::norm_auto_range_value(Cloudinary::option_consume($options, "start_offset"));
         $end_offset = Cloudinary::norm_range_value(Cloudinary::option_consume($options, "end_offset"));
         $offset = Cloudinary::split_range(Cloudinary::option_consume($options, "offset"));
         if (!empty($offset)) {
-            $start_offset = Cloudinary::norm_range_value($offset[0]);
+            $start_offset = Cloudinary::norm_auto_range_value($offset[0]);
             $end_offset = Cloudinary::norm_range_value($offset[1]);
         }
 
@@ -854,6 +854,14 @@ class Cloudinary
         }
 
         return $matches['value'] . $modifier;
+    }
+
+    private static function norm_auto_range_value($value)
+    {
+        if ($value == 'auto') {
+            return $value;
+        }
+        return self::norm_range_value($value);
     }
 
     private static function process_video_codec_param($param)
