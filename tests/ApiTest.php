@@ -564,6 +564,23 @@ namespace Cloudinary {
             $this->assertNotNull($transformation);
             $this->assertArrayHasKey('used', $transformation);
         }
+        
+        /**
+         * Should allow listing of named transformations
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_transformations_named()
+        {
+            Curl::mockApi($this);
+            $this->api->transformations(array("named" => true));
+            assertParam(
+                $this,
+                "named",
+                true,
+                "api->transformations should pass the named paramter"
+            );
+        }
 
         /**
          * Should allow listing transformations with cursor
