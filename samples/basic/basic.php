@@ -1,6 +1,6 @@
 <?php
-include '../../src/Cloudinary.php';
-include '../../src/Uploader.php';
+require_once '../../vendor/autoload.php';
+
 if (file_exists('settings.php')) {
   include 'settings.php';
 }

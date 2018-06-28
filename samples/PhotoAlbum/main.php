@@ -1,9 +1,8 @@
 <?php
 namespace PhotoAlbum {
-  require 'lib/rb.php';
-  require '../../src/Cloudinary.php';
-  require '../../src/Uploader.php';
-  require '../../src/Api.php'; // Only required for creating upload presets on the fly
+  require_once 'lib/rb.php';
+  require_once '../../vendor/autoload.php';
+
   error_reporting(E_ALL | E_STRICT);
 
   // Sets up Cloudinary's parameters and RB's DB
