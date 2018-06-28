@@ -1,6 +1,4 @@
-<?php
-
-namespace Cloudinary\Cache;
+<?php namespace Cloudinary\Cache;
 
 use Cloudinary\Cache\Adapter\CacheAdapter;
 use Cloudinary\Utils\Singleton;
@@ -14,7 +12,7 @@ class ResponsiveBreakpointsCache extends Singleton
 {
 
     /**
-     * @var object $cacheAdapter Cache Adapter
+     * @var CacheAdapter
      */
     protected $cacheAdapter;
 
@@ -40,7 +38,7 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * Set one of the default cache adapters defined in config
+     * Sets one of the default cache adapters defined in config
      *
      * @param array $cacheOptions
      *
@@ -144,7 +142,7 @@ class ResponsiveBreakpointsCache extends Singleton
     public function delete($publicId, $options = [])
     {
         if (!$this->enabled()) {
-            return null;
+            return false;
         }
 
         list($type, $resourceType, $transformation, $format) = self::optionsToParameters($options);
@@ -158,7 +156,7 @@ class ResponsiveBreakpointsCache extends Singleton
     public function flushAll()
     {
         if (!$this->enabled()) {
-            return null;
+            return false;
         }
 
         return $this->cacheAdapter->flushAll();

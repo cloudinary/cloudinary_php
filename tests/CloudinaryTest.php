@@ -1407,6 +1407,11 @@ class CloudinaryTest extends TestCase
         $this->assertEquals('original_value', $copied_array['o']->key);
     }
 
+    public function test_get_responsive_breakpoints()
+    {
+        
+    }
+
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
     {
         $url = Cloudinary::cloudinary_url($source, $options);

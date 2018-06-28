@@ -1,10 +1,16 @@
-<?php
-$base = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
+<?php namespace Cloudinary\Test;
 
+use Cloudinary;
+use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
+use Cloudinary\Cache\ResponsiveBreakpointsCache;
+use Cloudinary\Curl;
+use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
+use Cloudinary\Uploader;
 use PHPUnit\Framework\TestCase;
 
-require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
-
+/**
+ * Class TagTest
+ */
 class TagTest extends TestCase
 {
     const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
@@ -16,6 +22,11 @@ class TagTest extends TestCase
     private static $last_breakpoint;
     private static $common_srcset;
     private static $custom_attributes;
+
+    public static function setUpBeforeClass()
+    {
+        Curl::$instance = new Curl();
+    }
 
     public function setUp()
     {
@@ -154,6 +165,10 @@ class TagTest extends TestCase
         );
     }
 
+    /**
+     * @param        $options
+     * @param string $message
+     */
     public function shared_client_hints($options, $message = '')
     {
         $tag = cl_image_tag('sample.jpg', $options);
@@ -237,8 +252,7 @@ class TagTest extends TestCase
         $custom_trans_str = '',
         $srcset_breakpoints = array(),
         $attributes = array()
-    )
-    {
+    ) {
         if (empty($custom_trans_str)) {
             $custom_trans_str = $common_trans_str;
         }
@@ -391,7 +405,7 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                array('srcset' => $raw_srcset_value)
+                array('attributes' => array('srcset' => $raw_srcset_value))
             )
         );
 
@@ -425,7 +439,7 @@ class TagTest extends TestCase
         );
         $this->assertEquals($expected_tag_without_width_and_height, $tag_with_sizes);
 
-        # Should throw InvalidArgumentException on invalid values
+        # Should omit srcset attribute on invalid values
         $invalid_breakpoints = array(
             array('sizes' => true),                                             // srcset data not provided
             array('max_width' => 300, 'max_images' => 3),                       // no min_width
@@ -441,13 +455,34 @@ class TagTest extends TestCase
         );
 
         foreach ($invalid_breakpoints as $value) {
-            try {
-                cl_image_tag(self::$public_id, array_merge(self::$common_image_options, array('srcset' => $value)));
-
-                $this->fail('InvalidArgumentException was not thrown');
-            } catch (\InvalidArgumentException $e) {
-            }
+            $tag = cl_image_tag(self::$public_id, array_merge(self::$common_image_options, array('srcset' => $value)));
+            self::assertNotContains("srcset", $tag);
         }
+    }
+
+    public function test_cl_image_tag_responsive_breakpoints_cache()
+    {
+        $cache = ResponsiveBreakpointsCache::instance();
+        $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
+
+        $cache->set(self::$public_id, self::$common_image_options, self::$breakpoints_arr);
+
+        $expected_tag = self::get_expected_cl_image_tag(
+            self::$public_id,
+            self::$common_transformation_str,
+            '',
+            self::$breakpoints_arr
+        );
+
+        $image_tag = cl_image_tag(
+            self::$public_id,
+            array_merge(
+                self::$common_image_options,
+                ["srcset"=> ["rb_cache_enabled" => true]]
+            )
+        );
+
+        $this->assertEquals($expected_tag, $image_tag);
     }
 
     public function test_create_a_tag_with_custom_attributes_legacy_approach()

@@ -1,6 +1,4 @@
-<?php
-
-namespace Cloudinary\Test\Cache\Storage;
+<?php namespace Cloudinary\Test\Cache\Storage;
 
 use Cloudinary\Cache\Storage\KeyValueStorage;
 

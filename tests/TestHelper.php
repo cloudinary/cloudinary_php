@@ -52,32 +52,25 @@ Connection: keep-alive
 {"public_id":"oej8n7ezhwmk1fp1xqfd"}
 END;
             $this->apiResponse = str_replace("\n", "\r\n", $this->apiResponse);
-            $this->uploadResponse = <<<END
-{
-"public_id":"oej8n7ezhwmk1fp1xqfd"
 
-}
-END;
-            $this->uploadResponse = str_replace("\n", "\r\n", $this->uploadResponse);
+            $this->uploadResponse = '{"public_id":"oej8n7ezhwmk1fp1xqfd"}';
         }
 
         public static function mockApi($test)
         {
-            Curl::$instance = $test
-                ->getMockBuilder("\\Cloudinary\\Curl")
-                ->setMethods(array("exec", "getinfo"))
-                ->getMock();
-
-            Curl::$instance
-                ->method("exec")
-                ->will($test->returnValue(Curl::$instance->apiResponse));
-
-            Curl::$instance
-                ->method("getinfo")
-                ->will($test->returnValue(200));
+            self::mockRequest($test, Curl::$instance->apiResponse);
         }
 
         public static function mockUpload($test)
+        {
+            self::mockRequest($test, Curl::$instance->uploadResponse);
+        }
+
+        /**
+         * @param \PHPUnit\Framework\TestCase $test Test case to mock
+         * @param $mocked_response
+         */
+        public static function mockRequest($test, $mocked_response)
         {
             Curl::$instance = $test
                 ->getMockBuilder("\\Cloudinary\\Curl")
@@ -86,7 +79,7 @@ END;
 
             Curl::$instance
                 ->method("exec")
-                ->will($test->returnValue(Curl::$instance->uploadResponse));
+                ->will($test->returnValue($mocked_response));
 
             Curl::$instance
                 ->method("getinfo")
