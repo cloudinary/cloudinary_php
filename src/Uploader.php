@@ -252,13 +252,13 @@ namespace Cloudinary {
         /**
          * Remove all tags from the specified public IDs.
          *
-         * @param array $public_ids     the public IDs of the resources to update
-         * @param array $options        additional options passed to the request
-         * @return mixed                list of public IDs that were updated
+         * @param array|string  $public_ids     the public IDs of the resources to update
+         * @param array         $options        additional options passed to the request
+         * @return mixed                        list of public IDs that were updated
          */
         public static function remove_all_tags($public_ids, $options = array())
         {
-            return Uploader::call_tags_api(NULL, "remove_all", $public_ids, $options);
+            return Uploader::call_tags_api(null, "remove_all", $public_ids, $options);
         }
 
         public static function replace_tag($tag, $public_ids = array(), $options = array())

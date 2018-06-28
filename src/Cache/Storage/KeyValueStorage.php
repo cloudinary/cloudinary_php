@@ -1,6 +1,4 @@
-<?php
-
-namespace Cloudinary\Cache\Storage;
+<?php namespace Cloudinary\Cache\Storage;
 
 /**
  * Interface KeyValueStorageInterface

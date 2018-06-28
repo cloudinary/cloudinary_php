@@ -1,11 +1,8 @@
-<?php
-
-namespace Cloudinary\Cache\Adapter;
-
+<?php namespace Cloudinary\Cache\Adapter;
 
 /**
  * Interface CacheAdapter
- * @package Cloudinary\Cache
+ * @package Cloudinary\Cache\Adapter
  */
 interface CacheAdapter
 {

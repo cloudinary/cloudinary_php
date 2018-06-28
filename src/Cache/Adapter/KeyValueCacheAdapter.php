@@ -1,9 +1,7 @@
-<?php
-
-
-namespace Cloudinary\Cache\Adapter;
+<?php namespace Cloudinary\Cache\Adapter;
 
 use Cloudinary\Cache\Storage\KeyValueStorage;
+use InvalidArgumentException;
 
 /**
  * Class KeyValueCacheAdapter
@@ -12,7 +10,7 @@ use Cloudinary\Cache\Storage\KeyValueStorage;
 class KeyValueCacheAdapter implements CacheAdapter
 {
     /**
-     * @implements KeyValueStorageInterface
+     * @var KeyValueStorage
      */
     private $keyValueStorage = null;
 
@@ -27,14 +25,29 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
-     * @param object $storage PSR-16 compliant cache
+     * @param object $storage KeyValueStorage or PSR-16 compliant cache
      *
      * @return bool
      */
     private function setKeyValueStorage($storage)
     {
-        if (is_null($storage) || ! $storage instanceof KeyValueStorage) {
-            return false;
+        if (!is_object($storage)) {
+            throw new InvalidArgumentException("An instance of valid storage must be provided");
+        }
+
+        $storageClasses = class_implements($storage);
+        $validStorages = ['Cloudinary\Cache\Storage\KeyValueStorage', 'Psr\SimpleCache\CacheInterface'];
+
+        $found = false;
+        foreach ($validStorages as $validStorage) {
+            if (in_array($validStorage, $storageClasses)) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            throw new InvalidArgumentException("An instance of valid storage must be provided");
         }
 
         $this->keyValueStorage = $storage;
@@ -47,10 +60,6 @@ class KeyValueCacheAdapter implements CacheAdapter
      */
     public function get($publicId, $type, $resourceType, $transformation, $format)
     {
-        if (is_null($this->keyValueStorage)) {
-            return null;
-        }
-
         return json_decode(
             $this->keyValueStorage->get(
                 self::generateCacheKey($publicId, $type, $resourceType, $transformation, $format)
@@ -63,10 +72,6 @@ class KeyValueCacheAdapter implements CacheAdapter
      */
     public function set($publicId, $type, $resourceType, $transformation, $format, $value)
     {
-        if (is_null($this->keyValueStorage)) {
-            return null;
-        }
-
         return $this->keyValueStorage->set(
             self::generateCacheKey($publicId, $type, $resourceType, $transformation, $format),
             json_encode($value)
@@ -78,10 +83,6 @@ class KeyValueCacheAdapter implements CacheAdapter
      */
     public function delete($publicId, $type, $resourceType, $transformation, $format)
     {
-        if (is_null($this->keyValueStorage)) {
-            return null;
-        }
-
         return $this->keyValueStorage->delete(
             self::generateCacheKey($publicId, $type, $resourceType, $transformation, $format)
         );
@@ -92,10 +93,6 @@ class KeyValueCacheAdapter implements CacheAdapter
      */
     public function flushAll()
     {
-        if (is_null($this->keyValueStorage)) {
-            return null;
-        }
-
         return $this->keyValueStorage->clear();
     }
 

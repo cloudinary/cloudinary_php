@@ -1505,11 +1505,11 @@ class Cloudinary
 
         $breakpoints_width_param = "auto:breakpoints_${min_width}_${max_width}_${kbytes_step}_${max_images}:json";
         // We reuse generate_single_srcset_url function, passing special `width` parameter
-        $breakpoints_json_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $options);
+        $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $srcset_data, $options);
 
         $client = new \Cloudinary\HttpClient();
 
-        return $client->get_json($breakpoints_json_url)["breakpoints"];
+        return $client->get_json($breakpoints_url)["breakpoints"];
     }
 
 }

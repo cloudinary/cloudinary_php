@@ -29,6 +29,7 @@
         "files": ["src/Helpers.php"]
     },
     "autoload-dev": {
-        "psr-4": { "Cloudinary\\Test\\": "tests/" }
+        "psr-4": { "Cloudinary\\Test\\": "tests/" },
+        "files": ["tests/TestHelper.php"]
     }
 }

@@ -9,17 +9,50 @@ namespace Cloudinary {
     require_once('TestHelper.php');
 
     use Cloudinary;
+    use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
+    use Cloudinary\Cache\ResponsiveBreakpointsCache;
+    use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
     use Exception;
     use PHPUnit\Framework\TestCase;
 
+    /**
+     * Class UploaderTest
+     * @package Cloudinary
+     */
     class UploaderTest extends TestCase
     {
 
         public $url_prefix;
 
+        protected static $rbp_trans = ["angle" => 45, "crop" => "scale"];
+        protected static $rbp_format = "png";
+        protected static $rbp_values = [206, 50];
+        protected static $rbp_params;
+
         public static function setUpBeforeClass()
         {
             Curl::$instance = new Curl();
+
+            self::$rbp_params = [
+                "responsive_breakpoints" => [
+                    [
+                        "create_derived" => false,
+                        "transformation" => [
+                            "angle" => 90
+                        ],
+                        "format" => 'gif'
+                    ],
+                    [
+                        "create_derived" => false,
+                        "transformation" => self::$rbp_trans,
+                        "format" => self::$rbp_format
+                    ],
+                    [
+                        "create_derived" => false
+                    ]
+                ],
+                "type" => "upload"
+            ];
         }
 
         public function setUp()
@@ -56,6 +89,21 @@ namespace Cloudinary {
             $this->assertArraySubset(array("ocr" => "adv_ocr"), $fields);
         }
 
+        public function test_upload_responsive_breakpoints_cache()
+        {
+            $cache = ResponsiveBreakpointsCache::instance();
+            $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
+
+            $result = Uploader::upload(\Cloudinary\TEST_IMG, self::$rbp_params);
+
+            $res = $cache->get(
+                $result["public_id"],
+                ["transformation" => self::$rbp_trans, "format" => self::$rbp_format]
+            );
+
+            $this::assertEquals(self::$rbp_values, $res);
+        }
+
         public function test_rename()
         {
             Curl::mockUpload($this);
@@ -89,6 +137,23 @@ namespace Cloudinary {
             Uploader::explicit("cloudinary", array("ocr" => "adv_ocr"));
             $fields = Curl::$instance->fields();
             $this->assertArraySubset(array("ocr" => "adv_ocr"), $fields);
+        }
+
+        public function test_explicit_responsive_breakpoints_cache()
+        {
+            $cache = ResponsiveBreakpointsCache::instance();
+            $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
+
+            $upload_result = Uploader::upload(\Cloudinary\TEST_IMG);
+
+            $result = Uploader::explicit($upload_result["public_id"], self::$rbp_params);
+
+            $res = $cache->get(
+                $result["public_id"],
+                ["transformation" => self::$rbp_trans, "format" => self::$rbp_format]
+            );
+
+            $this::assertEquals(self::$rbp_values, $res);
         }
 
         public function test_build_eager()
@@ -201,7 +266,6 @@ namespace Cloudinary {
          */
         public function test_huge_public_id_list()
         {
-            $api = new \Cloudinary\Api();
             $ids = array();
             for ($i = 1; $i < 200; $i++) {
                 $ids[] = "foobarfoobarfoobarfoobarfoobar";
@@ -212,7 +276,6 @@ namespace Cloudinary {
 
         public function test_use_filename()
         {
-            $api = new \Cloudinary\Api();
             $result = Uploader::upload(TEST_IMG, array("use_filename" => true));
             $this->assertRegExp('/logo_[a-zA-Z0-9]{6}/', $result["public_id"]);
             $result = Uploader::upload(TEST_IMG, array("use_filename" => true, "unique_filename" => false));
