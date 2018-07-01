@@ -5,7 +5,6 @@ use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
 use Cloudinary\Cache\ResponsiveBreakpointsCache;
 use Cloudinary\Curl;
 use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
-use Cloudinary\Uploader;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -324,14 +323,18 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                array('srcset' => array(
-                    'min_width' => self::$breakpoints_arr[0],
-                    'max_width' => $x = self::$last_breakpoint,
-                    'max_images' => count(self::$breakpoints_arr)))
+                array(
+                    'srcset' => array(
+                        'min_width'  => self::$breakpoints_arr[0],
+                        'max_width'  => $x = self::$last_breakpoint,
+                        'max_images' => count(self::$breakpoints_arr)
+                    )
+                )
             )
         );
 
-        $expected_tag = self::get_expected_cl_image_tag(self::$public_id, self::$common_transformation_str, '', self::$breakpoints_arr);
+        $expected_tag = self::get_expected_cl_image_tag(self::$public_id, self::$common_transformation_str, '',
+            self::$breakpoints_arr);
 
         $this->assertEquals($expected_tag, $tag_min_max_count,
             'Should support srcset attribute defined by min_width, max_width, and max_images');
@@ -341,9 +344,13 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                array('srcset' => array('min_width' => self::$breakpoints_arr[0],
-                                        'max_width' => self::$last_breakpoint,
-                                        'max_images' => 1))
+                array(
+                    'srcset' => array(
+                        'min_width'  => self::$breakpoints_arr[0],
+                        'max_width'  => self::$last_breakpoint,
+                        'max_images' => 1
+                    )
+                )
             )
         );
 
@@ -372,10 +379,12 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                array('srcset' => array_merge(
-                    self::$common_srcset,
-                    $custom_transformation
-                ))
+                array(
+                    'srcset' => array_merge(
+                        self::$common_srcset,
+                        $custom_transformation
+                    )
+                )
             )
         );
 
@@ -394,10 +403,12 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                array('srcset' => array_merge(
-                    self::$common_srcset,
-                    array('sizes' => true)
-                ))
+                array(
+                    'srcset' => array_merge(
+                        self::$common_srcset,
+                        array('sizes' => true)
+                    )
+                )
             )
         );
 
@@ -451,8 +462,15 @@ class TagTest extends TestCase
             self::$breakpoints_arr
         );
         $this->assertEquals($expected_tag_without_width_and_height, $tag_with_sizes);
+    }
 
-        # Should omit srcset attribute on invalid values
+    /**
+     * Should omit srcset attribute on invalid values
+     *
+     * @throws \Exception
+     */
+    public function test_srcset_invalid_values()
+    {
         $invalid_breakpoints = array(
             array('sizes' => true),                                             // srcset data not provided
             array('max_width' => 300, 'max_images' => 3),                       // no min_width
@@ -467,10 +485,26 @@ class TagTest extends TestCase
             array('min_width' => 100, 'max_width' => 300, 'max_images' => null), // invalid max_images
         );
 
-        foreach ($invalid_breakpoints as $value) {
-            $tag = cl_image_tag(self::$public_id, array_merge(self::$common_image_options, array('srcset' => $value)));
-            self::assertNotContains("srcset", $tag);
+
+        $err_log_original_destination = ini_get('error_log');
+        // Suppress error messages in error log
+        ini_set('error_log', '/dev/null');
+
+        try {
+            foreach ($invalid_breakpoints as $value) {
+                $tag = cl_image_tag(
+                    self::$public_id,
+                    array_merge(self::$common_image_options, array('srcset' => $value))
+                );
+
+                self::assertNotContains("srcset", $tag);
+            }
+        } catch (\Exception $e) {
+            ini_set('error_log', $err_log_original_destination);
+            throw $e;
         }
+
+        ini_set('error_log', $err_log_original_destination);
     }
 
     public function test_cl_image_tag_responsive_breakpoints_cache()

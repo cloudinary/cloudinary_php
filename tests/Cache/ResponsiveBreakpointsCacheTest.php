@@ -38,6 +38,7 @@ class ResponsiveBreakpointsCacheTest extends TestCase
     {
         $instance = ResponsiveBreakpointsCache::instance();
         $instance2 = ResponsiveBreakpointsCache::instance();
+
         $this::assertEquals($instance, $instance2);
     }
 
@@ -94,6 +95,7 @@ class ResponsiveBreakpointsCacheTest extends TestCase
     public function testRBCacheFileSystemStorage()
     {
         $this->cache->init(["cache_adapter" => new KeyValueCacheAdapter(new FileSystemKeyValueStorage(null))]);
+
         try {
             $this->cache->set(self::$publicId, [], self::$breakpoints);
             $res = $this->cache->get(self::$publicId);
