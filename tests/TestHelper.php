@@ -168,6 +168,8 @@ END;
         }
     }
 
+    Curl::$instance = new Curl();
+
     // Override global curl functions
 
     function curl_init($url = null)
