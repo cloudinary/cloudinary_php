@@ -1,5 +1,6 @@
 <?php
-require_once 'AuthToken.php';
+
+use Cloudinary\HttpClient;
 
 class Cloudinary
 {
@@ -1495,7 +1496,7 @@ class Cloudinary
         // We reuse generate_single_srcset_url function, passing special `width` parameter
         $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $srcset_data, $options);
 
-        $client = new \Cloudinary\HttpClient();
+        $client = new HttpClient();
 
         return $client->get_json($breakpoints_url)["breakpoints"];
     }

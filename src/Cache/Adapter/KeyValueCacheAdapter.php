@@ -38,13 +38,7 @@ class KeyValueCacheAdapter implements CacheAdapter
         $storageClasses = class_implements($storage);
         $validStorages = ['Cloudinary\Cache\Storage\KeyValueStorage', 'Psr\SimpleCache\CacheInterface'];
 
-        $found = false;
-        foreach ($validStorages as $validStorage) {
-            if (in_array($validStorage, $storageClasses)) {
-                $found = true;
-                break;
-            }
-        }
+        $found = count(\Cloudinary::array_subset($storageClasses, $validStorages)) > 0;
 
         if (!$found) {
             throw new InvalidArgumentException("An instance of valid storage must be provided");

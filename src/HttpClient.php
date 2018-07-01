@@ -34,7 +34,6 @@ class HttpClient
 
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::userAgent());
 
@@ -82,33 +81,8 @@ class HttpClient
      */
     protected static function execute($ch)
     {
-        $string = curl_exec($ch);
-        $headers = array();
-        $content = '';
-        $str = strtok($string, "\n");
-        $h = null;
-        while ($str !== false) {
-            if ($h and trim($str) === '') {
-                $h = false;
-                continue;
-            }
-            if ($h !== false and false !== strpos($str, ':')) {
-                $h = true;
-                list($headername, $headervalue) = explode(':', trim($str), 2);
-                $headervalue = ltrim($headervalue);
-                if (isset($headers[$headername])) {
-                    $headers[$headername] .= ',' . $headervalue;
-                } else {
-                    $headers[$headername] = $headervalue;
-                }
-            }
-            if ($h === false) {
-                $content .= $str . "\n";
-            }
-            $str = strtok("\n");
-        }
+        $content = curl_exec($ch);
         $result = new \stdClass;
-        $result->headers = $headers;
         $result->body = trim($content);
         $result->responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
