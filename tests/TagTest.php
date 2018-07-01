@@ -478,7 +478,7 @@ class TagTest extends TestCase
             self::$public_id,
             array_merge(
                 self::$common_image_options,
-                ["srcset"=> ["rb_cache_enabled" => true]]
+                ["srcset"=> ["use_cache" => true]]
             )
         );
 
