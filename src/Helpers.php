@@ -299,6 +299,9 @@ namespace {
             return null;
         }
 
+        // TODO: Find a better way to pass breakpoints to `sizes` attribute
+        $srcset_data["breakpoints"] = $breakpoints;
+
         // The code below is a part of `cloudinary_url` code that affects $options.
         // We call it here, to make sure we get exactly the same behavior.
         // TODO: Refactor this code, unify it with `cloudinary_url` or fix `cloudinary_url` and remove it

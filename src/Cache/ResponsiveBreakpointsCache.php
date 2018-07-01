@@ -30,23 +30,8 @@ class ResponsiveBreakpointsCache extends Singleton
     public function init($cacheOptions = array())
     {
         $cacheAdapter = \Cloudinary::option_get($cacheOptions, "cache_adapter");
-        if (is_null($cacheAdapter)) {
-            $cacheAdapter = $this->getCacheAdapterFromConfig($cacheOptions);
-        }
 
         $this->setCacheAdapter($cacheAdapter);
-    }
-
-    /**
-     * Sets one of the default cache adapters defined in config
-     *
-     * @param array $cacheOptions
-     *
-     * @return null
-     */
-    protected function getCacheAdapterFromConfig($cacheOptions = array())
-    {
-        return null;
     }
 
     /**
