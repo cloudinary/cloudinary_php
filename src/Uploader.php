@@ -343,20 +343,25 @@ namespace Cloudinary {
         }
 
         /**
+         * Calls Upload API and saves results to cache (if enabled)
+         *
          * @param       $action
          * @param       $params
          * @param array $options
          * @param null  $file
          *
          * @return mixed
-         * @throws Error
+         *
+         * @throws \Cloudinary\Error
          */
         public static function call_cacheable_api($action, $params, $options = array(), $file = null)
         {
             $result = self::call_api($action, $params, $options, $file);
+
             if (\Cloudinary::option_get($options, "use_cache", \Cloudinary::config_get("use_cache", false))) {
                 self::save_responsive_breakpoints_to_cache($result);
             }
+
             return $result;
         }
 
@@ -491,6 +496,8 @@ namespace Cloudinary {
         }
 
         /**
+         * Saves responsive breakpoints parsed from upload result to cache
+         *
          * @param array $result Upload result
          */
         protected static function save_responsive_breakpoints_to_cache($result)
