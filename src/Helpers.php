@@ -206,17 +206,19 @@ namespace {
             return $breakpoints;
         }
 
-        if (Cloudinary::option_get($srcset_data, "rb_cache_enabled", false)) {
+        if (Cloudinary::option_get($srcset_data, "use_cache", false)) {
             $breakpoints = ResponsiveBreakpointsCache::instance()->get($public_id, $options);
 
             if (is_null($breakpoints)) {
                 // Cache miss, let's bring breakpoints from Cloudinary
                 try {
                     $breakpoints = \Cloudinary::get_responsive_breakpoints($public_id, $srcset_data, $options);
-
-                    ResponsiveBreakpointsCache::instance()->set($public_id, $options, $breakpoints);
                 } catch (\Cloudinary\Error $e) {
                     error_log("Failed getting responsive breakpoints: $e");
+                }
+
+                if (!is_null($breakpoints)) {
+                    ResponsiveBreakpointsCache::instance()->set($public_id, $options, $breakpoints);
                 }
             }
         }

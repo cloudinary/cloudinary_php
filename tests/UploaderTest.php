@@ -34,6 +34,7 @@ namespace Cloudinary {
             Curl::$instance = new Curl();
 
             self::$rbp_params = [
+                "use_cache" => true,
                 "responsive_breakpoints" => [
                     [
                         "create_derived" => false,

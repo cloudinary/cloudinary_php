@@ -354,7 +354,9 @@ namespace Cloudinary {
         public static function call_cacheable_api($action, $params, $options = array(), $file = null)
         {
             $result = self::call_api($action, $params, $options, $file);
-            self::save_responsive_breakpoints_to_cache($result);
+            if (\Cloudinary::option_get($options, "use_cache", \Cloudinary::config_get("use_cache", false))) {
+                self::save_responsive_breakpoints_to_cache($result);
+            }
             return $result;
         }
 
@@ -510,10 +512,8 @@ namespace Cloudinary {
                 $options["raw_transformation"] = \Cloudinary::option_get($transformation, "transformation", "");
                 $options["format"] = pathinfo($transformation["breakpoints"][0]["url"], PATHINFO_EXTENSION);
 
-
+                // TODO: When updating minimum PHP version to at least 5.5, replace line below with the one below
                 // $breakpoints = array_column($transformation["breakpoints"], 'width');
-
-                // TODO: When updating minimum PHP version to at least 5.5, replace line below with the one above
                 $breakpoints = array_map(
                     function ($e) {
                         return $e['width'];
