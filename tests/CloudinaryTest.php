@@ -336,6 +336,25 @@ class CloudinaryTest extends TestCase
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,x_100,y_100/test"
         );
     }
+    
+    public function test_chain_transformations()
+    {
+        $options = array("effect" => "art:incognito", "format" => "png");
+
+        $chained_transformations = array(
+            array("x" => 100, "y" => 100, "width" => 200, "crop" => "fill"),
+            array("radius" => 10),
+            array("raw_transformation" =>"e_sepia")
+        );
+
+        Cloudinary::chain_transformations($options, $chained_transformations);
+
+        $actual_transformation_str = Cloudinary::generate_transformation_string($options);
+        $this->assertEquals(
+            "e_art:incognito/c_fill,w_200,x_100,y_100/r_10/e_sepia",
+            $actual_transformation_str
+        );
+    }
 
     public function test_size()
     {

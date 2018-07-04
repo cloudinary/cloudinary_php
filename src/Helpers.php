@@ -106,7 +106,6 @@ namespace {
     {
         return "<meta http-equiv='Accept-CH' content='DPR, Viewport-Width, Width' />";
     }
-
     /**
      * @internal
      * Helper function. Validates src_data parameters
@@ -183,7 +182,7 @@ namespace {
             $min_width = $max_width;
         }
 
-        $step_size = ceil(($max_width - $min_width) / ($max_images > 1 ? $max_images - 1 : 1));
+        $step_size = (int)ceil(($max_width - $min_width) / ($max_images > 1 ? $max_images - 1 : 1));
 
         $curr_breakpoint = $min_width;
 
@@ -290,6 +289,13 @@ namespace {
     /**
      * @internal
      * Helper function. Generates an srcset attribute for HTML tags
+
+        if (!empty($transformation)) {
+            // We need to "wipe out" the main transformation, and use the one provided by user
+        array_push($transformations, ["crop" => "scale", "width" => $width]);
+
+        Cloudinary::chain_transformations($curr_options, $transformations);
+
      *
      * @param array $srcset_data {
      *
@@ -680,5 +686,95 @@ namespace {
         $html .= '</video>';
 
         return $html;
+    }
+
+    /**
+     * @internal Generates `media` attribute of the `source` tag and appends it to attributes
+     *
+     * @param array $attributes    Attributes
+     * @param array $media_options Currently only supported `min_width` and `max_width`
+     */
+    function generate_media_attr(&$attributes, $media_options)
+    {
+        if (!empty($attributes['media'])) {
+            return;
+        }
+
+        $media_query_conditions = [];
+
+        if (!empty($media_options['min_width'])) {
+            array_push($media_query_conditions, "(min-width: ${media_options['min_width']}px)");
+        }
+
+        if (!empty($media_options['max_width'])) {
+            array_push($media_query_conditions, "(max-width: ${media_options['max_width']}px)");
+        }
+
+        if (empty($media_query_conditions)) {
+            return;
+        }
+
+        $attributes["media"] = implode(' and ', $media_query_conditions);
+    }
+
+    /**
+     * @api Generates HTML `source` tag that can be used by `picture` tag
+     *
+     * @param $public_id
+     * @param $options
+     *
+     * @return string
+     */
+    function cl_source_tag($public_id, $options = [])
+    {
+        $srcset_data = array_merge(
+            Cloudinary::config_get("srcset", []),
+            Cloudinary::option_consume($options, 'srcset', [])
+        );
+
+        $attributes = Cloudinary::option_get($options, 'attributes', []);
+
+        generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $options);
+
+        // `source` tag under `picture` tag uses `srcset` attribute for both `srcset` and `src` urls
+        if (!array_key_exists("srcset", $attributes)) {
+            $attributes["srcset"] = cloudinary_url_internal($public_id, $options);
+        }
+
+        generate_media_attr($attributes, Cloudinary::option_get($options, "media"));
+
+        return '<source ' . Cloudinary::html_attrs($attributes) . '>';
+    }
+
+    /**
+     * @api Generates HTML `picture` tag
+     *
+     * @param string $public_id Public ID of the source image
+     * @param array  $options   Common options for all sources and `img` tag
+     * @param array  $sources   Definitions of each source which contains min_width, max_width and transformation
+     *
+     * @return string
+     */
+    function cl_picture_tag($public_id, $options = [], $sources = [])
+    {
+        $tag = '<picture>';
+
+        foreach ($sources as $source) {
+            $curr_options =  Cloudinary::array_copy($options);
+
+            $curr_options["media"] = \Cloudinary::array_subset($source, ['min_width', 'max_width']);
+
+            if (!empty($source["transformation"])) {
+                Cloudinary::chain_transformations($curr_options, $source["transformation"]);
+            }
+
+            $tag .= cl_source_tag($public_id, $curr_options);
+        }
+
+        $tag .= cl_image_tag($public_id, $options);
+
+        $tag .= '</picture>';
+
+        return $tag;
     }
 }

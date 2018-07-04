@@ -170,15 +170,15 @@ class Cloudinary
 
     public static function build_array($value)
     {
+        if (is_null($value)) {
+            return array();
+        }
+
         if (is_array($value) && !Cloudinary::is_assoc($value)) {
             return $value;
-        } else {
-            if ($value === null) {
-                return array();
-            } else {
-                return array($value);
-            }
         }
+
+        return array($value);
     }
 
 
@@ -441,6 +441,22 @@ class Cloudinary
         return $array != array_values($array);
     }
 
+    /** @internal Prepends associative element to the beginning of an array
+     *
+     * @param array $arr The input array.
+     * @param mixed $key The prepended key
+     * @param mixed $val The prepended value
+     *
+     * @return array The resulting array
+     */
+    public static function array_unshift_assoc(&$arr, $key, $val)
+    {
+        $arr = array_reverse($arr, true);
+        $arr[$key] = $val;
+        $arr = array_reverse($arr, true);
+        return $arr;
+    }
+
     private static function generate_base_transformation($base_transformation)
     {
         $options = is_array(
@@ -640,6 +656,29 @@ class Cloudinary
         }
 
         return implode("/", array_filter($base_transformations));
+    }
+
+    /**
+     * @internal Helper function, allows chaining transformations to the end of transformations list
+     *
+     * The result of this function is an updated $options parameter
+     *
+     * @param array $options Original options
+     * @param array $transformations Transformations to chain at the end
+     */
+    public static function chain_transformations(&$options, $transformations)
+    {
+        $raw_transformation = Cloudinary::generate_transformation_string($options);
+        $tr = ["transformation" => $transformations];
+        $chained_transformations = Cloudinary::generate_transformation_string($tr);
+        $options["raw_transformation"] = $raw_transformation . "/" . $chained_transformations;
+
+        // We might still have width and height params left if they were provided.
+        // We don't want to use them for the second time
+        $unwanted_params = array('width', 'height');
+        foreach ($unwanted_params as $key) {
+            unset($options[$key]);
+        }
     }
 
     private static $LAYER_KEYWORD_PARAMS = array(

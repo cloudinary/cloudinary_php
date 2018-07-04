@@ -519,7 +519,7 @@ namespace Cloudinary {
                 $options["raw_transformation"] = \Cloudinary::option_get($transformation, "transformation", "");
                 $options["format"] = pathinfo($transformation["breakpoints"][0]["url"], PATHINFO_EXTENSION);
 
-                // TODO: When updating minimum PHP version to at least 5.5, replace line below with the one below
+                // TODO: When updating minimum PHP version to at least 5.5, replace `array_map` with the line below
                 // $breakpoints = array_column($transformation["breakpoints"], 'width');
                 $breakpoints = array_map(
                     function ($e) {
