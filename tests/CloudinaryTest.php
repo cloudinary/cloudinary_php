@@ -1050,8 +1050,7 @@ class CloudinaryTest extends TestCase
 
     public function test_offset()
     {
-        foreach (
-            array(
+        foreach (array(
                 'eo_3.21,so_2.66' => '2.66..3.21',
                 'eo_3.22,so_2.67' => array(2.67, 3.22),
                 'eo_70p,so_35p' => array('35%', '70%'),
@@ -1105,6 +1104,16 @@ class CloudinaryTest extends TestCase
                     "letter_spacing" => 4,
                 ),
                 "text:Arial_18_bold_italic_letter_spacing_4:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
+            ),
+            "text with antialiasing and hinting" => array(
+                array(
+                    "text" => "Hello World, Nice to meet you?",
+                    "font_family" => "Arial",
+                    "font_size" => "18",
+                    "font_antialiasing" => "best",
+                    "font_hinting" => "medium"
+                ),
+                "text:Arial_18_antialias_best_hinting_medium:Hello%20World%252C%20Nice%20to%20meet%20you%3F",
             ),
             "subtitles" => array(
                 array("resource_type" => "subtitles", "public_id" => "sample_sub_en.srt"),
