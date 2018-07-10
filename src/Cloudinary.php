@@ -618,20 +618,34 @@ class Cloudinary
         $font_family = Cloudinary::option_get($layer, "font_family");
         $font_size = Cloudinary::option_get($layer, "font_size");
         $keywords = array();
+
         foreach (Cloudinary::$LAYER_KEYWORD_PARAMS as $attr => $default_value) {
             $attr_value = Cloudinary::option_get($layer, $attr, $default_value);
             if ($attr_value != $default_value) {
                 array_push($keywords, $attr_value);
             }
         }
+
         $letter_spacing = Cloudinary::option_get($layer, "letter_spacing");
         if ($letter_spacing != null) {
             array_push($keywords, "letter_spacing_$letter_spacing");
         }
+
         $line_spacing = Cloudinary::option_get($layer, "line_spacing");
         if ($line_spacing != null) {
             array_push($keywords, "line_spacing_$line_spacing");
         }
+
+        $font_antialiasing = Cloudinary::option_get($layer, "font_antialiasing");
+        if ($font_antialiasing != null) {
+            array_push($keywords, "antialias_$font_antialiasing");
+        }
+
+        $font_hinting = Cloudinary::option_get($layer, "font_hinting");
+        if ($font_hinting != null) {
+            array_push($keywords, "hinting_$font_hinting");
+        }
+
         $has_text_options = $font_size != null || $font_family != null || !empty($keywords);
         if (!$has_text_options) {
             return null;
@@ -647,6 +661,7 @@ class Cloudinary
 
         return implode("_", array_filter($keywords, 'Cloudinary::is_not_null'));
     }
+
 
     /**
      * Handle overlays.
