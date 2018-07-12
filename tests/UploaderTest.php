@@ -457,6 +457,35 @@ TAG
             assertHasHeader($this,'X-Unique-Upload-Id');
         }
 
+
+        public function test_large_upload_filename()
+        {
+            $temp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . SUFFIX . '.pdf';
+            $temp_file = fopen($temp_file_name, 'w');
+            fwrite(
+                $temp_file,
+                "BMJ\xB9Y\x00\x00\x00\x00\x00\x8A\x00\x00\x00|\x00\x00\x00x\x05\x00\x00x\x05\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\xC0\xB8Y\x00a\x0F\x00\x00a\x0F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\x00\x00\xFF\x00\x00\xFF\x00\x00\x00\x00\x00\x00\xFFBGRs\x00\x00\x00\x00\x00\x00\x00\x00T\xB8\x1E\xFC\x00\x00\x00\x00\x00\x00\x00\x00fff\xFC\x00\x00\x00\x00\x00\x00\x00\x00\xC4\xF5(\xFF\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+            );
+            for ($i = 1; $i <= 588000; $i++) {
+                fwrite($temp_file, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF");
+            }
+            fclose($temp_file);
+            $this->assertEquals(5880138, filesize($temp_file_name));
+
+            $resource = Uploader::upload_large(
+                $temp_file_name,
+                array("chunk_size" => 5243000, "tags" => array("upload_large_tag"))
+            );
+            $this->assertEquals($resource["original_filename"], basename($temp_file_name, '.pdf'));
+
+            $resource = Uploader::upload_large(
+                $temp_file_name,
+                array("chunk_size" => 5243000, "tags" => array("upload_large_tag"), "resource_type" => "image", "filename" => "explicit_filename.jpg")
+            );
+            $this->assertEquals($resource["original_filename"], "explicit_filename");
+            $this->assertEquals($resource["original_extension"], "jpg");
+        }
+
         public function test_upload_large_url()
         {
             $file = "http://cloudinary.com/images/old_logo.png";
