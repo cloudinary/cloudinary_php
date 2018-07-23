@@ -9,40 +9,40 @@ interface CacheAdapter
     /**
      * Gets value specified by parameters
      *
-     * @param $publicId
-     * @param $type
-     * @param $resourceType
-     * @param $transformation
-     * @param $format
+     * @param string $publicId          The public ID of the resource
+     * @param string $type              The storage type
+     * @param string $resourceType      The type of the resource
+     * @param string $transformation    The transformation string
+     * @param string $format            The format of the resource
      *
-     * @return null|mixed
+     * @return mixed|null value, null if not found
      */
     public function get($publicId, $type, $resourceType, $transformation, $format);
 
     /**
      * Sets value specified by parameters
      *
-     * @param $publicId
-     * @param $type
-     * @param $resourceType
-     * @param $transformation
-     * @param $format
-     * @param $value
+     * @param string $publicId          The public ID of the resource
+     * @param string $type              The storage type
+     * @param string $resourceType      The type of the resource
+     * @param string $transformation    The transformation string
+     * @param string $format            The format of the resource
+     * @param mixed  $value             The value to set
      *
-     * @return mixed
+     * @return bool true on success or false on failure
      */
     public function set($publicId, $type, $resourceType, $transformation, $format, $value);
 
     /**
      * Deletes entry specified by parameters
      *
-     * @param $publicId
-     * @param $type
-     * @param $resourceType
-     * @param $transformation
-     * @param $format
+     * @param string $publicId          The public ID of the resource
+     * @param string $type              The storage type
+     * @param string $resourceType      The type of the resource
+     * @param string $transformation    The transformation string
+     * @param string $format            The format of the resource
      *
-     * @return mixed
+     * @return bool true on success or false on failure
      */
 
     public function delete($publicId, $type, $resourceType, $transformation, $format);
@@ -50,7 +50,7 @@ interface CacheAdapter
     /**
      * Flushes all entries from cache
      *
-     * @return bool
+     * @return bool true on success or false on failure
      */
     public function flushAll();
 }

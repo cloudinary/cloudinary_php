@@ -18,7 +18,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     /**
      * FileKeyValueStorage constructor.
      *
-     * @param $rootPath
+     * @param string $rootPath The root path of the cache
      */
     public function __construct($rootPath)
     {
@@ -37,11 +37,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     }
 
     /**
-     * Gets value by key
-     *
-     * @param string $key
-     *
-     * @return string|null value
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -53,12 +49,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     }
 
     /**
-     * Sets value by key
-     *
-     * @param string $key
-     * @param string $value
-     *
-     * @return bool which indicates whether operation succeeded
+     * {@inheritdoc}
      */
     public function set($key, $value)
     {
@@ -72,11 +63,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     }
 
     /**
-     * Deletes item by key
-     *
-     * @param string $key
-     *
-     * @return bool which indicates whether operation succeeded
+     * {@inheritdoc}
      */
     public function delete($key)
     {
@@ -88,9 +75,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     }
 
     /**
-     * Clears all entries
-     *
-     * @return bool which indicates whether operation succeeded
+     * {@inheritdoc}
      */
     public function clear()
     {
@@ -116,7 +101,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
      *
      * @param string $key
      *
-     * @return string
+     * @return string Absolute file path
      */
     private function getKeyFullPath($key)
     {

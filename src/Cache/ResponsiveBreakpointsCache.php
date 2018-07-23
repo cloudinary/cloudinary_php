@@ -65,9 +65,9 @@ class ResponsiveBreakpointsCache extends Singleton
     /**
      * Helper method. Returns a list of parameters extracted from options
      *
-     * @param $options
+     * @param array $options Input options
      *
-     * @return array
+     * @return array Extracted parameters
      */
     private static function optionsToParameters($options)
     {
@@ -81,10 +81,12 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * @param $publicId
-     * @param $options
+     * Gets responsive breakpoints identified by public ID and options
      *
-     * @return mixed
+     * @param string $publicId  The public ID of the resource
+     * @param array  $options   Additional options
+     *
+     * @return array|null Array of responsive breakpoints, null if not found
      */
     public function get($publicId, $options = [])
     {
@@ -96,12 +98,15 @@ class ResponsiveBreakpointsCache extends Singleton
 
         return $this->cacheAdapter->get($publicId, $type, $resourceType, $transformation, $format);
     }
+
     /**
-     * @param         $publicId
-     * @param array   $options
-     * @param array   $value
+     * Sets responsive breakpoints identified by public ID and options
      *
-     * @return null
+     * @param string  $publicId The public ID of the resource
+     * @param array   $options  Additional options
+     * @param array   $value    Array of responsive breakpoints to set
+     *
+     * @return bool true on success or false on failure
      */
     public function set($publicId, $options = [], $value = [])
     {
@@ -119,10 +124,12 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * @param $publicId
-     * @param $options
+     * Deletes responsive breakpoints identified by public ID and options
      *
-     * @return null
+     * @param string  $publicId The public ID of the resource
+     * @param array   $options  Additional options
+     *
+     * @return bool true on success or false on failure
      */
     public function delete($publicId, $options = [])
     {
@@ -136,7 +143,9 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
+     * Flushes all entries from cache
      *
+     * @return bool true on success or false on failure
      */
     public function flushAll()
     {

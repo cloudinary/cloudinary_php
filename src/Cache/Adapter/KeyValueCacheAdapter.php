@@ -93,13 +93,13 @@ class KeyValueCacheAdapter implements CacheAdapter
     /**
      * Generates key-value storage key from parameters
      *
-     * @param $publicId
-     * @param $type
-     * @param $resourceType
-     * @param $transformation
-     * @param $format
+     * @param string $publicId          The public ID of the resource
+     * @param string $type              The storage type
+     * @param string $resourceType      The type of the resource
+     * @param string $transformation    The transformation string
+     * @param string $format            The format of the resource
      *
-     * @return string
+     * @return string Resulting cache key
      */
     public static function generateCacheKey($publicId, $type, $resourceType, $transformation, $format)
     {

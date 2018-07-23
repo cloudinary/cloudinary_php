@@ -297,12 +297,6 @@ class Cloudinary
         return \json_encode($array);
     }
 
-    /**
-     * @param $json
-     * @param $decoder
-     *
-     * @return mixed
-     */
     public static function json_decode_cb($json, $decoder)
     {
         if (!is_string($json)) {
@@ -1473,10 +1467,16 @@ class Cloudinary
      * Retrieves responsive breakpoints json
      *
      * When passing special string to transformation `width` parameter of form `auto:breakpoints{parameters}:json`,
-     * the response contains JSON with data of the responsive breakpoints and not the image itself, as one might expect.
+     * the response contains JSON with data of the responsive breakpoints
      *
      * @param string    $public_id      The public ID of the image
-     * @param array     $srcset_data    data needed for generating responsive breakpints
+     * @param array     $srcset_data {
+     *
+     *      @var int    min_width   Minimal width of the srcset images
+     *      @var int    max_width   Maximal width of the srcset images
+     *      @var int    bytes_step  Minimal bytes step between images
+     *      @var int    max_images  Number of srcset images to generate
+     * }
      * @param array     $options        Cloudinary url options
      *
      * @return array    Resulting breakpoints

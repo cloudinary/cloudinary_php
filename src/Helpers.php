@@ -100,9 +100,15 @@ namespace {
     /**
      * @internal Helper function. Validates src_data parameters
      *
-     * @param $srcset_data
+     * @param array $srcset_data {
      *
-     * @return bool
+     *      @var array  breakpoints An array of breakpoints.
+     *      @var int    min_width   Minimal width of the srcset images.
+     *      @var int    max_width   Maximal width of the srcset images.
+     *      @var int    max_images  Number of srcset images to generate.
+     * }
+     *
+     * @return bool true on success or false on failure
      */
     function validate_srcset_data($srcset_data)
     {
@@ -182,11 +188,17 @@ namespace {
     /**
      * @internal Helper function. Gets from cache or calculates srcset breakpoints using provided parameters
      *
-     * @param       $public_id
-     * @param       $srcset_data
-     * @param array $options
+     * @param string    $public_id  Public ID of the resource
+     * @param array     $srcset_data {
      *
-     * @return array|mixed|null
+     *      @var array  breakpoints An array of breakpoints.
+     *      @var int    min_width   Minimal width of the srcset images.
+     *      @var int    max_width   Maximal width of the srcset images.
+     *      @var int    max_images  Number of srcset images to generate.
+     * }
+     * @param array     $options Additional options
+     *
+     * @return array|null Array of breakpoints, null if failed
      */
     function get_responsive_breakpoints($public_id, $srcset_data, $options = array())
     {
