@@ -11,7 +11,7 @@ interface KeyValueStorage
      *
      * @param string $key
      *
-     * @return string|null value
+     * @return string|null value, null if not found
      */
     public function get($key);
 
@@ -21,7 +21,7 @@ interface KeyValueStorage
      * @param string $key
      * @param string $value
      *
-     * @return bool which indicates whether operation succeeded
+     * @return bool true on success or false on failure
      */
     public function set($key, $value);
 
@@ -30,14 +30,14 @@ interface KeyValueStorage
      *
      * @param string $key
      *
-     * @return bool which indicates whether operation succeeded
+     * @return bool true on success or false on failure
      */
     public function delete($key);
 
     /**
      * Clears all entries
      *
-     * @return bool which indicates whether operation succeeded
+     * @return bool true on success or false on failure
      */
     public function clear();
 }

@@ -345,10 +345,10 @@ namespace Cloudinary {
         /**
          * Calls Upload API and saves results to cache (if enabled)
          *
-         * @param       $action
-         * @param       $params
-         * @param array $options
-         * @param null  $file
+         * @param string        $action     Action to call
+         * @param array         $params     Array of parameters
+         * @param array|null    $options    Optional. Additional options
+         * @param string|null   $file       Optional. File to upload
          *
          * @return mixed
          *
