@@ -247,12 +247,9 @@ namespace {
     function generate_single_srcset_url($public_id, $width, $srcset_data, $options)
     {
         $curr_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
-
-        if (empty($srcset_data["transformation"])) {
-            $curr_options["transformation"] = $srcset_data["transformation"];
-        } else {
-            $raw_transformation = Cloudinary::generate_transformation_string($curr_options);
-        }
+        $transformation = empty($srcset_data["transformation"]) ? $options : $srcset_data["transformation"];
+        $transformation = \Cloudinary::array_copy($transformation);
+        $raw_transformation = Cloudinary::generate_transformation_string($transformation);
         $curr_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
 
         // We might still have width and height params left if they were provided.
