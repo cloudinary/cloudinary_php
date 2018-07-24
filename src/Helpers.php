@@ -246,20 +246,13 @@ namespace {
      */
     function generate_single_srcset_url($public_id, $width, $srcset_data, $options)
     {
-        $curr_options = Cloudinary::array_copy($options);
-        /*
-        The following line is used for the next purposes:
-          1. Generate raw transformation string
-          2. Cleanup transformation parameters from $curr_options.
-        We call it intentionally even when the user provided custom transformation in srcset
-        */
-        $raw_transformation = Cloudinary::generate_transformation_string($curr_options);
+        $curr_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
 
-        if (!empty($srcset_data["transformation"])) {
+        if (empty($srcset_data["transformation"])) {
             $curr_options["transformation"] = $srcset_data["transformation"];
+        } else {
             $raw_transformation = Cloudinary::generate_transformation_string($curr_options);
         }
-
         $curr_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
 
         // We might still have width and height params left if they were provided.
