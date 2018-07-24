@@ -5,27 +5,25 @@ use Cloudinary\Utils\Singleton;
 use InvalidArgumentException;
 
 /**
- * Class ResponsiveBreakpointsCache
+ * Caches breakpoint values for image resources.
  * @package Cloudinary\Cache
  */
 class ResponsiveBreakpointsCache extends Singleton
 {
 
     /**
-     * @var CacheAdapter
+     * @var CacheAdapter The cache adapter used to store and retrieve values.
      */
     protected $cacheAdapter;
 
-    /**
-     * ResponsiveBreakpointsCache constructor.
-     */
     public function __construct()
     {
         $this->init();
     }
 
     /**
-     * @param array $cacheOptions
+     * Initialize the cache
+     * @param array $cacheOptions Cache configuration options.
      */
     public function init($cacheOptions = array())
     {
@@ -37,9 +35,9 @@ class ResponsiveBreakpointsCache extends Singleton
     /**
      * Assigns cache adapter
      *
-     * @param CacheAdapter $cacheAdapter
+     * @param CacheAdapter $cacheAdapter The cache adapter used to store and retrieve values.
      *
-     * @return bool indicating whether adapter is set
+     * @return bool Returns true if the $cacheAdapter is valid
      */
     public function setCacheAdapter($cacheAdapter)
     {
@@ -55,7 +53,7 @@ class ResponsiveBreakpointsCache extends Singleton
     /**
      * Indicates whether cache is enabled or not
      *
-     * @return bool
+     * @return bool true if a $cach adapter has been set.
      */
     public function enabled()
     {
@@ -63,11 +61,11 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * Helper method. Returns a list of parameters extracted from options
+     * Extract the parameters required in order to calculate the key of the cache.
      *
      * @param array $options Input options
      *
-     * @return array Extracted parameters
+     * @return array A list of values used to calculate the cache key.
      */
     private static function optionsToParameters($options)
     {
@@ -81,7 +79,7 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * Gets responsive breakpoints identified by public ID and options
+     * Retrieve the breakpoints of a particular derived resource identified by the $publicId and $options
      *
      * @param string $publicId  The public ID of the resource
      * @param array  $options   Additional options
@@ -124,7 +122,7 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * Deletes responsive breakpoints identified by public ID and options
+     * Delete responsive breakpoints identified by public ID and options
      *
      * @param string  $publicId The public ID of the resource
      * @param array   $options  Additional options
@@ -143,7 +141,7 @@ class ResponsiveBreakpointsCache extends Singleton
     }
 
     /**
-     * Flushes all entries from cache
+     * Flushe all entries from cache
      *
      * @return bool true on success or false on failure
      */

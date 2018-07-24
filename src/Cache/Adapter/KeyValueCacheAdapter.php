@@ -4,20 +4,21 @@ use Cloudinary\Cache\Storage\KeyValueStorage;
 use InvalidArgumentException;
 
 /**
- * Class KeyValueCacheAdapter
+ * A cache adapter for a key-value storage type
  * @package Cloudinary\Cache\Adapter
  */
 class KeyValueCacheAdapter implements CacheAdapter
 {
     /**
+     * The storage interface
      * @var KeyValueStorage
      */
     private $keyValueStorage = null;
 
     /**
-     * KeyValueCacheAdapter constructor.
+     * Create a new adapter for the provided storage interface
      *
-     * @param $storage
+     * @param $storage a key-value storage interface
      */
     public function __construct($storage)
     {
@@ -25,9 +26,10 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
+     * Set the storage interface
      * @param object $storage KeyValueStorage or PSR-16 compliant cache
      *
-     * @return bool
+     * @return bool true if successful
      */
     private function setKeyValueStorage($storage)
     {
