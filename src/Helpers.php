@@ -248,6 +248,7 @@ namespace {
      *
      * @param string    $public_id  Public ID of the resource
      * @param int       $width      Width in pixels of the srcset item
+     * @param array     $srcset_data    Additional options
      * @param array     $options    Additional options
      *
      * @return mixed|null|string|string[] Resulting URL of the item

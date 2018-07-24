@@ -3,7 +3,7 @@
 use GlobIterator;
 
 /**
- * Class FileKeyValueStorage
+ * File-based key-value storage
  * @package Cloudinary\Cache\Storage
  */
 class FileSystemKeyValueStorage implements KeyValueStorage
@@ -11,14 +11,15 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     private $rootPath;
 
     /**
-     * @var string Cache item extension
+     * @var string Cache files extension
      */
     private static $itemExt = ".cldci";
 
     /**
-     * FileKeyValueStorage constructor.
+     * Create a new Storage object.
+     * All files will be stored under the $rootPath location
      *
-     * @param string $rootPath The root path of the cache
+     * @param string $rootPath The base folder for all storage files.
      */
     public function __construct($rootPath)
     {
@@ -97,11 +98,11 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     }
 
     /**
-     * Gets the file path for a key.
+     * Generate the file path for the $key.
      *
      * @param string $key
      *
-     * @return string Absolute file path
+     * @return string The absolute path of the value file associated with the $key.
      */
     private function getKeyFullPath($key)
     {
@@ -109,11 +110,11 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     }
 
     /**
-     * Indicates whether key exists
+     * Indicate whether key exists
      *
-     * @param $key
+     * @param string $key
      *
-     * @return bool
+     * @return bool True if the file for the given $key exists.
      */
     private function exists($key)
     {
