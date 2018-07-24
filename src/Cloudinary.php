@@ -20,6 +20,31 @@ class Cloudinary
     const VERSION = "1.10.0";
 
     /**
+     * @internal
+     * @var array a list of keys used by the cloudinary_url function
+     */
+    public static $URL_KEYS = array(
+        'api_secret',
+        'auth_token',
+        'cdn_subdomain',
+        'cloud_name',
+        'cname',
+        'format',
+        'private_cdn',
+        'resource_type',
+        'secure',
+        'secure_cdn_subdomain',
+        'secure_distribution',
+        'shorten',
+        'sign_url',
+        'ssl_detected',
+        'type',
+        'url_suffix',
+        'use_root_path',
+        'version'
+    );
+
+    /**
      * Contains information about SDK user agent. Passed to the Cloudinary servers.
      *
      * Initialized on the first call to {@see self::userAgent()}
@@ -1179,18 +1204,27 @@ class Cloudinary
         return (((crc32($source) % 5) + 5) % 5 + 1);
     }
 
-    // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
     // Warning: $options are being destructively updated!
     public static function check_cloudinary_field($source, &$options = array())
     {
+        // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
         $IDENTIFIER_RE = "~" .
-            "^(?:([^/]+)/)??(?:([^/]+)/)??(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" .
-            "([^#/]+?)(?:\\.([^.#/]+))?(?:#([^/]+))?$" .
+            "^" .
+            "(?:([^/]+)/)??" . // resource type
+            "(?:([^/]+)/)??" . // type
+            "(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" . // version
+            "([^#/]+?)" . // public ID
+            "(?:\\.([^.#/]+))?" . //format
+            "(?:#([^/]+))?" . // signature
+            "$" .
             "~";
-        $matches = array();
-        if (!(is_object($source) && method_exists($source, 'identifier'))) {
+        if (!is_object($source) || !method_exists($source, 'identifier')) {
+            // $source doesn't look like a CloudinaryField, so just return it
             return $source;
         }
+
+        // $source is a CloudinaryField, parse its identifier
+        $matches = array();
         $identifier = $source->identifier();
         if (!$identifier || strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
             return $source;
