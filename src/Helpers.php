@@ -356,14 +356,13 @@ namespace {
      * }
      * @param array     $options    Additional options.
      *
-     * @return bool true if at least one of the attributes is created, false otherwise
+     * @return array The responsive attributes
      */
-    function generate_image_responsive_attributes($public_id, &$attributes, $srcset_data, $options)
+    function generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $options)
     {
-        $is_responsive = false;
-
+        $responsive_attributes = array();
         if (empty($srcset_data)) {
-            return $is_responsive;
+            return $responsive_attributes;
         }
 
         $breakpoints = null;
@@ -373,8 +372,7 @@ namespace {
             $transformation = empty($srcset_data["transformation"]) ? null : $srcset_data["transformation"];
             $srcset_attr = generate_image_srcset_attribute($public_id, $breakpoints, $transformation, $options);
             if (!is_null($srcset_attr)) {
-                $attributes["srcset"] = $srcset_attr;
-                $is_responsive = true;
+                $responsive_attributes["srcset"] = $srcset_attr;
             }
         }
 
@@ -387,12 +385,11 @@ namespace {
 
             $sizes_attr = generate_image_sizes_attribute($breakpoints);
             if (!is_null($sizes_attr)) {
-                $attributes["sizes"] = $sizes_attr;
-                $is_responsive = true;
+                $responsive_attributes["sizes"] = $sizes_attr;
             }
         }
 
-        return $is_responsive;
+        return $responsive_attributes;
     }
     /**
      * Generates HTML img tag
@@ -429,7 +426,7 @@ namespace {
         }
 
         $source = cloudinary_url_internal($public_id, $options);
-
+        $attributes = Cloudinary::option_consume($options, 'attributes', array());
         if (isset($options["html_width"])) {
             $options["width"] = Cloudinary::option_consume($options, "html_width");
         }
@@ -458,19 +455,16 @@ namespace {
             }
         }
 
-        $attributes = Cloudinary::option_consume($options, 'attributes', array());
-
-        $is_responsive = generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $original_options);
-        if ($is_responsive) {
-            // width and height attributes override srcset behavior, they should be removed from html attributes.
-            $unwanted_attributes = array('width', 'height');
-            foreach ($unwanted_attributes as $key) {
+        $responsive_attrs = generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $original_options);
+        if (!empty($responsive_attrs)) {
+            $size_attributes = array("width", "height");
+            foreach ($size_attributes as $key) {
                 unset($options[$key]);
             }
         }
 
         // Explicitly provided attributes override options
-        $attributes = array_merge($options, $attributes);
+        $attributes = array_merge($options, $responsive_attrs, $attributes);
 
         $html = "<img ";
         if ($source) {
