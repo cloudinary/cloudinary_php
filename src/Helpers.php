@@ -246,17 +246,19 @@ namespace {
     /**
      * @internal Helper function. Generates a single srcset item url
      *
-     * @param string    $public_id  Public ID of the resource
-     * @param int       $width      Width in pixels of the srcset item
-     * @param array     $srcset_data    Additional options
-     * @param array     $options    Additional options
+     * @param string        $public_id      Public ID of the resource
+     * @param int           $width          Width in pixels of the srcset item
+     * @param array|string  $transformation Custom transformation for srcset url
+     * @param array         $options        Additional options
      *
      * @return mixed|null|string|string[] Resulting URL of the item
      */
-    function generate_single_srcset_url($public_id, $width, $srcset_data, $options)
+    function generate_single_srcset_url($public_id, $width, $transformation, $options)
     {
+        if (empty($transformation)) {
+            $transformation = $options;
+        }
         $curr_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
-        $transformation = empty($srcset_data["transformation"]) ? $options : $srcset_data["transformation"];
         $transformation = \Cloudinary::array_copy($transformation);
         $raw_transformation = Cloudinary::generate_transformation_string($transformation);
         $curr_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
@@ -288,24 +290,11 @@ namespace {
      *
      * @throws InvalidArgumentException In case of invalid or missing parameters
      */
-    function generate_image_srcset_attribute($public_id, $srcset_data, $options = array())
+    function generate_image_srcset_attribute($public_id, $breakpoints, $transformation = null, $options = array())
     {
-        if (empty($srcset_data)) {
-            return null;
-        }
-
-        if (is_string($srcset_data)) {
-            return $srcset_data;
-        }
-        
-        $breakpoints = get_responsive_breakpoints($public_id, $srcset_data, $options);
-
         if (empty($breakpoints)) {
             return null;
         }
-
-        // TODO: Find a better way to pass breakpoints to `sizes` attribute
-        $srcset_data["breakpoints"] = $breakpoints;
 
         // The code below is a part of `cloudinary_url` code that affects $options.
         // We call it here, to make sure we get exactly the same behavior.
@@ -322,7 +311,7 @@ namespace {
         foreach ($breakpoints as $breakpoint) {
             array_push(
                 $items,
-                generate_single_srcset_url($public_id, $breakpoint, $srcset_data, $options) . " {$breakpoint}w"
+                generate_single_srcset_url($public_id, $breakpoint, $transformation, $options) . " {$breakpoint}w"
             );
         }
 
@@ -332,26 +321,13 @@ namespace {
     /**
      * @internal Helper function. Generates sizes attribute value of the HTML img tag
      *
-     * @param array $srcset_data {
-     *
-     *      @var array  breakpoints An array of breakpoints.
-     *      @var int    min_width   Minimal width of the srcset images.
-     *      @var int    max_width   Maximal width of the srcset images.
-     *      @var int    max_images  Number of srcset images to generate.
-     * }
+     * @var array  breakpoints An array of breakpoints.
      *
      * @return string Resulting sizes attribute value
      *
-     * @throws InvalidArgumentException In case of invalid or missing parameters
      */
-    function generate_image_sizes_attribute($srcset_data)
+    function generate_image_sizes_attribute($breakpoints)
     {
-        if (empty($srcset_data) or is_string($srcset_data)) {
-            return null;
-        }
-
-        $breakpoints = calculate_static_responsive_breakpoints($srcset_data);
-
         if (empty($breakpoints)) {
             return null;
         }
@@ -364,6 +340,60 @@ namespace {
         return implode(", ", $sizes_items);
     }
 
+    /**
+     * @internal Helper function. Generates srcset and sizes attributes of the image tag
+     *
+     * Generated attributes are added to $attributes argument
+     *
+     * @param string    $public_id  The public ID of the resource
+     * @param array     $attributes Existing attributes
+     * @param array     $srcset_data {
+     *
+     *      @var array  breakpoints An array of breakpoints.
+     *      @var int    min_width   Minimal width of the srcset images.
+     *      @var int    max_width   Maximal width of the srcset images.
+     *      @var int    max_images  Number of srcset images to generate.
+     * }
+     * @param array     $options    Additional options.
+     *
+     * @return bool true if at least one of the attributes is created, false otherwise
+     */
+    function generate_image_responsive_attributes($public_id, &$attributes, $srcset_data, $options)
+    {
+        $is_responsive = false;
+
+        if (empty($srcset_data)) {
+            return $is_responsive;
+        }
+
+        $breakpoints = null;
+
+        if (!array_key_exists("srcset", $attributes)) {
+            $breakpoints = get_responsive_breakpoints($public_id, $srcset_data, $options);
+            $transformation = empty($srcset_data["transformation"]) ? null : $srcset_data["transformation"];
+            $srcset_attr = generate_image_srcset_attribute($public_id, $breakpoints, $transformation, $options);
+            if (!is_null($srcset_attr)) {
+                $attributes["srcset"] = $srcset_attr;
+                $is_responsive = true;
+            }
+        }
+
+        if (!empty($srcset_data["sizes"])
+            && $srcset_data["sizes"] === true
+            && !array_key_exists("sizes", $attributes)) {
+            if (is_null($breakpoints)) {
+                $breakpoints = get_responsive_breakpoints($public_id, $srcset_data, $options);
+            }
+
+            $sizes_attr = generate_image_sizes_attribute($breakpoints);
+            if (!is_null($sizes_attr)) {
+                $attributes["sizes"] = $sizes_attr;
+                $is_responsive = true;
+            }
+        }
+
+        return $is_responsive;
+    }
     /**
      * Generates HTML img tag
      *
@@ -428,25 +458,10 @@ namespace {
             }
         }
 
-        $attr_data = Cloudinary::option_consume($options, 'attributes', array());
+        $attributes = Cloudinary::option_consume($options, 'attributes', array());
 
-        if (!empty($srcset_data)) {
-            if (!array_key_exists("srcset", $attr_data)) {
-                $srcset_attr = generate_image_srcset_attribute($public_id, $srcset_data, $original_options);
-                if (!is_null($srcset_attr)) {
-                    $attr_data["srcset"] = $srcset_attr;
-                }
-            }
-
-            if (!empty($srcset_data["sizes"])
-                && $srcset_data["sizes"] === true
-                && !array_key_exists("sizes", $attr_data)) {
-                $sizes_attr = generate_image_sizes_attribute($srcset_data);
-                if (!is_null($sizes_attr)) {
-                    $attr_data["sizes"] = $sizes_attr;
-                }
-            }
-
+        $is_responsive = generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $original_options);
+        if ($is_responsive) {
             // width and height attributes override srcset behavior, they should be removed from html attributes.
             $unwanted_attributes = array('width', 'height');
             foreach ($unwanted_attributes as $key) {
@@ -455,7 +470,7 @@ namespace {
         }
 
         // Explicitly provided attributes override options
-        $attributes = array_merge($options, $attr_data);
+        $attributes = array_merge($options, $attributes);
 
         $html = "<img ";
         if ($source) {
