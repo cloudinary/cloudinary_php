@@ -9,6 +9,9 @@ class HttpClient
 {
     const DEFAULT_HTTP_TIMEOUT = 60;
 
+    /**
+     * @var int HTTP timeout in seconds
+     */
     private $timeout;
 
     /**
@@ -22,19 +25,22 @@ class HttpClient
     }
 
     /**
-     * @param $url
+     * Get JSON as associative array from specified URL
      *
-     * @return \ArrayObject
+     * @param string $url URL of the JSON
+     *
+     * @return array Associative array that represents JSON object
      *
      * @throws Error
      */
-    public function get_json($url)
+    public function getJSON($url)
     {
         $ch = curl_init($url);
 
-        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, \Cloudinary::userAgent());
 
         $response = $this->execute($ch);
@@ -51,23 +57,10 @@ class HttpClient
         }
 
         if ($response->responseCode != 200) {
-            $exception_class = \Cloudinary::option_get(
-                Api::$CLOUDINARY_API_ERROR_CLASSES,
-                $response->responseCode
-            );
-
-            if (!$exception_class) {
-                throw new \Cloudinary\Error(
-                    "Server returned unexpected status code - {$response->responseCode} - {$response->body}"
-                );
-            }
-
-            $json = self::parse_json_response($response);
-
-            throw new $exception_class($json["error"]["message"]);
+            throw new Error("Server returned unexpected status code - {$response->responseCode} - {$response->body}");
         }
 
-        return self::parse_json_response($response);
+        return self::parseJSONResponse($response);
     }
 
     /**
@@ -98,7 +91,7 @@ class HttpClient
      *
      * @throws Error
      */
-    public static function parse_json_response($response)
+    protected static function parseJSONResponse($response)
     {
         $result = json_decode($response->body, true);
         if ($result == null) {

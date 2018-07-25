@@ -82,7 +82,13 @@ class ResponsiveBreakpointsCacheTest extends TestCase
 
     public function testRBCacheDisabled()
     {
-        $disabledCache = new ResponsiveBreakpointsCache();
+        $disabledCache = ResponsiveBreakpointsCache::instance();
+
+        $disabledCacheReflection = new \ReflectionClass($disabledCache);
+
+        $cacheAdapterProperty = $disabledCacheReflection->getProperty('cacheAdapter');
+        $cacheAdapterProperty->setAccessible(true);
+        $cacheAdapterProperty->setValue($disabledCache, null);
 
         Assert::assertFalse($disabledCache->enabled());
 

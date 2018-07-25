@@ -1405,18 +1405,6 @@ class CloudinaryTest extends TestCase
         $this->assertEquals('original_value', $copied_array['o']->key);
     }
 
-    /**
-     * @throws \Cloudinary\Error
-     */
-    public function test_get_responsive_breakpoints()
-    {
-        Curl::mockRequest($this, '{"breakpoints":[50,500,1000]}');
-        $actual_breakpoints = \Cloudinary::get_responsive_breakpoints("test");
-        $this->assertEquals([50, 500, 1000], $actual_breakpoints);
-
-        $this->assertContains("w_auto:breakpoints_50_1000_20_20:json", Curl::$instance->url_path());
-    }
-
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
     {
         $url = Cloudinary::cloudinary_url($source, $options);

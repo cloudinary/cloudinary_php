@@ -79,8 +79,8 @@ namespace Cloudinary {
             self::$api_test_transformation_3 = "api_test_transformation3" . SUFFIX;
 
             self::$timestamp_tag = self::$api_test_tag . "_" . time();
-            self::upload_sample_resources();
 
+            self::upload_sample_resources();
 
             self::$transformations = array(self::$crop_transformation, self::$scale_transformation);
             self::$arr_of_transformation_str = array(self::$crop_transformation_str, self::$scale_transformation_str);

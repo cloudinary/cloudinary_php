@@ -16,7 +16,7 @@ class ResponsiveBreakpointsCache extends Singleton
      */
     protected $cacheAdapter;
 
-    public function __construct()
+    protected function __construct()
     {
         $this->init();
     }

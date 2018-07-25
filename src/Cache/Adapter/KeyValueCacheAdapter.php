@@ -18,7 +18,7 @@ class KeyValueCacheAdapter implements CacheAdapter
     /**
      * Create a new adapter for the provided storage interface
      *
-     * @param $storage a key-value storage interface
+     * @param KeyValueStorage $storage a key-value storage interface
      */
     public function __construct($storage)
     {

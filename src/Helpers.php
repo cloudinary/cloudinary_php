@@ -3,6 +3,7 @@
 namespace {
 
     use Cloudinary\Cache\ResponsiveBreakpointsCache;
+    use Cloudinary\HttpClient;
 
     function cl_upload_url($options = array())
     {
@@ -186,7 +187,46 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Gets from cache or calculates srcset breakpoints using provided parameters
+     * @internal
+     * Helper function. Retrieves responsive breakpoints list from cloudinary server
+     *
+     * When passing special string to transformation `width` parameter of form `auto:breakpoints{parameters}:json`,
+     * the response contains JSON with data of the responsive breakpoints
+     *
+     * @param string    $public_id      The public ID of the image
+     * @param array     $srcset_data {
+     *
+     *      @var int    min_width   Minimal width of the srcset images
+     *      @var int    max_width   Maximal width of the srcset images
+     *      @var int    bytes_step  Minimal bytes step between images
+     *      @var int    max_images  Number of srcset images to generate
+     * }
+     * @param array     $options        Cloudinary url options
+     *
+     * @return array    Resulting breakpoints
+     *
+     * @throws \Cloudinary\Error
+     */
+    function get_responsive_breakpoints_from_cloudinary($public_id, $srcset_data = array(), $options = array())
+    {
+        $min_width = \Cloudinary::option_get($srcset_data, 'min_width', 50);
+        $max_width = \Cloudinary::option_get($srcset_data, 'max_width', 1000);
+        $bytes_step = \Cloudinary::option_get($srcset_data, 'bytes_step', 20000);
+        $max_images = \Cloudinary::option_get($srcset_data, 'max_images', 20);
+
+        $kbytes_step = (int)ceil($bytes_step / 1024);
+
+        $breakpoints_width_param = "auto:breakpoints_${min_width}_${max_width}_${kbytes_step}_${max_images}:json";
+        // We use generate_single_srcset_url function, passing special `width` parameter
+        $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $srcset_data, $options);
+
+        $client = new HttpClient();
+
+        return $client->getJSON($breakpoints_url)["breakpoints"];
+    }
+    /**
+     * @internal
+     * Helper function. Gets from cache or calculates srcset breakpoints using provided parameters
      *
      * @param string    $public_id  Public ID of the resource
      * @param array     $srcset_data {
@@ -215,7 +255,7 @@ namespace {
             if (is_null($breakpoints)) {
                 // Cache miss, let's bring breakpoints from Cloudinary
                 try {
-                    $breakpoints = \Cloudinary::get_responsive_breakpoints($public_id, $srcset_data, $options);
+                    $breakpoints = get_responsive_breakpoints_from_cloudinary($public_id, $srcset_data, $options);
                 } catch (\Cloudinary\Error $e) {
                     error_log("Failed getting responsive breakpoints: $e");
                 }
