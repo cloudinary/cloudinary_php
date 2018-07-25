@@ -12,11 +12,6 @@ class Cloudinary
     const RANGE_VALUE_RE = '/^(?P<value>(\d+\.)?\d+)(?P<modifier>[%pP])?$/';
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';
 
-    const RESPONSIVE_BP_MIN_WIDTH = 50;
-    const RESPONSIVE_BP_MAX_WIDTH = 1000;
-    const RESPONSIVE_BP_BYTES_STEP = 20000;
-    const RESPONSIVE_BP_MAX_IMAGES = 20;
-
     const VERSION = "1.10.0";
 
     /**
@@ -1508,43 +1503,4 @@ class Cloudinary
 
         return implode(" ", array_map($join_pair, array_keys($attrs), array_values($attrs)));
     }
-
-    /**
-     * Retrieves responsive breakpoints json
-     *
-     * When passing special string to transformation `width` parameter of form `auto:breakpoints{parameters}:json`,
-     * the response contains JSON with data of the responsive breakpoints
-     *
-     * @param string    $public_id      The public ID of the image
-     * @param array     $srcset_data {
-     *
-     *      @var int    min_width   Minimal width of the srcset images
-     *      @var int    max_width   Maximal width of the srcset images
-     *      @var int    bytes_step  Minimal bytes step between images
-     *      @var int    max_images  Number of srcset images to generate
-     * }
-     * @param array     $options        Cloudinary url options
-     *
-     * @return array    Resulting breakpoints
-     *
-     * @throws \Cloudinary\Error
-     */
-    public static function get_responsive_breakpoints($public_id, $srcset_data = array(), $options = array())
-    {
-        $min_width = \Cloudinary::option_get($srcset_data, 'min_width', self::RESPONSIVE_BP_MIN_WIDTH);
-        $max_width = \Cloudinary::option_get($srcset_data, 'max_width', self::RESPONSIVE_BP_MAX_WIDTH);
-        $bytes_step = \Cloudinary::option_get($srcset_data, 'bytes_step', self::RESPONSIVE_BP_BYTES_STEP);
-        $max_images = \Cloudinary::option_get($srcset_data, 'max_images', self::RESPONSIVE_BP_MAX_IMAGES);
-
-        $kbytes_step = ceil($bytes_step / 1024);
-
-        $breakpoints_width_param = "auto:breakpoints_${min_width}_${max_width}_${kbytes_step}_${max_images}:json";
-        // We reuse generate_single_srcset_url function, passing special `width` parameter
-        $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $srcset_data, $options);
-
-        $client = new HttpClient();
-
-        return $client->get_json($breakpoints_url)["breakpoints"];
-    }
-
 }
