@@ -1004,7 +1004,7 @@ class TagTest extends TestCase
             self::$common_transformation_str,
             '',
             self::$breakpoints_arr,
-            array('sizes' => self::$sizes_attr)
+            array('sizes' => self::$sizes_attr, "media" => generate_media_attr(["max_width" =>self::$max_width]))
         );
 
         $source_tag_with_srcset = cl_source_tag(
@@ -1016,6 +1016,9 @@ class TagTest extends TestCase
                         self::$common_srcset,
                         array('sizes' => true)
                     )
+                ),
+                array(
+                    'media' => array("max_width" =>self::$max_width)
                 )
             )
         );
@@ -1049,35 +1052,29 @@ class TagTest extends TestCase
             ]
         );
 
-        $attrs = [];
-        generate_media_attr($attrs, ["max_width" =>self::$min_width]);
 
         $expected_source1 = self::get_expected_cl_source_tag(
             self::$public_id,
             self::$fill_trans_str . "/" . "a_17,e_sepia,w_" . self::$min_width,
             '',
             [],
-            $attrs
+            ["media" => generate_media_attr(["max_width" =>self::$min_width])]
         );
 
-        $attrs2 = [];
-        generate_media_attr($attrs2, [ "min_width" => 200]);
         $expected_source2 = self::get_expected_cl_source_tag(
             self::$public_id,
             self::$fill_trans_str . "/" . "a_18,e_colorize,w_300",
             '',
             [],
-            $attrs2
+            ["media" => generate_media_attr([ "min_width" => 200])]
         );
 
-        $attrs3 = [];
-        generate_media_attr($attrs3, ["min_width" => 300, "max_width" =>self::$max_width]);
         $expected_source3 = self::get_expected_cl_source_tag(
             self::$public_id,
             self::$fill_trans_str . "/" . "a_19,e_blur,w_" . self::$max_width,
             '',
             [],
-            $attrs3
+            ["media" => generate_media_attr(["min_width" => 300, "max_width" =>self::$max_width])]
         );
 
         $expected_img =  self::get_expected_cl_image_tag(

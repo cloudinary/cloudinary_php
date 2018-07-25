@@ -470,7 +470,12 @@ namespace {
             }
         }
 
-        $responsive_attrs = generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $original_options);
+        $responsive_attrs = generate_image_responsive_attributes(
+            $public_id,
+            $attributes,
+            $srcset_data,
+            $original_options
+        );
         if (!empty($responsive_attrs)) {
             $size_attributes = array("width", "height");
             foreach ($size_attributes as $key) {
@@ -692,17 +697,15 @@ namespace {
 
     /**
      * @internal
-     * Generates `media` attribute of the `source` tag and appends it to attributes
+     * Generates `media` attribute of the `source` tag
      *
      * @param array $attributes    Attributes
      * @param array $media_options Currently only supported `min_width` and `max_width`
+     *
+     * @return null|string Media attribute
      */
-    function generate_media_attr(&$attributes, $media_options)
+    function generate_media_attr($media_options)
     {
-        if (!empty($attributes['media'])) {
-            return;
-        }
-
         $media_query_conditions = [];
 
         if (!empty($media_options['min_width'])) {
@@ -714,10 +717,10 @@ namespace {
         }
 
         if (empty($media_query_conditions)) {
-            return;
+            return null;
         }
 
-        $attributes["media"] = implode(' and ', $media_query_conditions);
+        return implode(' and ', $media_query_conditions);
     }
 
     /**
@@ -737,14 +740,24 @@ namespace {
 
         $attributes = Cloudinary::option_get($options, 'attributes', []);
 
-        generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $options);
+        $responsive_attrs = generate_image_responsive_attributes(
+            $public_id,
+            $attributes,
+            $srcset_data,
+            $options
+        );
+
+        $attributes = array_merge($responsive_attrs, $attributes);
 
         // `source` tag under `picture` tag uses `srcset` attribute for both `srcset` and `src` urls
         if (!array_key_exists("srcset", $attributes)) {
             $attributes["srcset"] = cloudinary_url_internal($public_id, $options);
         }
 
-        generate_media_attr($attributes, Cloudinary::option_get($options, "media"));
+        $media_attr = generate_media_attr(Cloudinary::option_get($options, "media"));
+        if (!empty($media_attr)) {
+            $attributes["media"] = $media_attr;
+        }
 
         return '<source ' . Cloudinary::html_attrs($attributes) . '>';
     }
