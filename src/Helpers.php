@@ -354,17 +354,6 @@ namespace {
             return null;
         }
 
-        // The code below is a part of `cloudinary_url` code that affects $options.
-        // We call it here, to make sure we get exactly the same behavior.
-        // TODO: Refactor this code, unify it with `cloudinary_url` or fix `cloudinary_url` and remove it
-        Cloudinary::check_cloudinary_field($public_id, $options);
-        $type = Cloudinary::option_get($options, "type", "upload");
-
-        if ($type == "fetch" && !isset($options["fetch_format"])) {
-            $options["fetch_format"] = Cloudinary::option_consume($options, "format");
-        }
-        //END OF TODO
-
         $items = array();
         foreach ($breakpoints as $breakpoint) {
             array_push(
