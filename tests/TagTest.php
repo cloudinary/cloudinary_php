@@ -262,7 +262,8 @@ class TagTest extends TestCase
     }
 
     /**
-     * @internal Helper method for generating expected `img` and `source` tags
+     * @internal
+     * Helper method for generating expected `img` and `source` tags
      *
      * @param string $tag_name              Expected tag name(img or source)
      * @param string $public_id             Public ID of the image
@@ -323,7 +324,8 @@ class TagTest extends TestCase
     }
 
     /**
-     * @internal Helper method for test_cl_image_tag_srcset for generating expected image tag
+     * @internal
+     * Helper method for test_cl_image_tag_srcset for generating expected image tag
      *
      * @param string $public_id             Public ID of the image
      * @param string $common_trans_str      Default transformation string to be used in all resources
@@ -359,7 +361,8 @@ class TagTest extends TestCase
     }
 
     /**
-     * @internal Helper method for for generating expected `source` tag
+     * @internal
+     * Helper method for for generating expected `source` tag
      *
      * @param string $public_id             Public ID of the image
      * @param string $common_trans_str      Default transformation string to be used in all resources

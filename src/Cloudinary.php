@@ -441,7 +441,8 @@ class Cloudinary
         return $array != array_values($array);
     }
 
-    /** @internal Prepends associative element to the beginning of an array
+    /** @internal
+     * Prepends associative element to the beginning of an array
      *
      * @param array $arr The input array.
      * @param mixed $key The prepended key
@@ -659,7 +660,8 @@ class Cloudinary
     }
 
     /**
-     * @internal Helper function, allows chaining transformations to the end of transformations list
+     * @internal
+     * Helper function, allows chaining transformations to the end of transformations list
      *
      * The result of this function is an updated $options parameter
      *

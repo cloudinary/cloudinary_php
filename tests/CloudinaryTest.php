@@ -336,7 +336,7 @@ class CloudinaryTest extends TestCase
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "c_fill,x_100,y_100/test"
         );
     }
-    
+
     public function test_chain_transformations()
     {
         $options = array("effect" => "art:incognito", "format" => "png");

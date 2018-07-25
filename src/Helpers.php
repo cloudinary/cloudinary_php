@@ -248,6 +248,7 @@ namespace {
      *      @var int    max_width   Maximal width of the srcset images.
      *      @var int    max_images  Number of srcset images to generate.
      * }
+     *
      * @param array     $options Additional options
      *
      * @return array|null Array of breakpoints, null if failed
@@ -296,6 +297,8 @@ namespace {
 
         Cloudinary::chain_transformations($curr_options, $transformations);
 
+     * @internal
+     * Helper function. Generates srcset attribute value of the HTML img tag
      *
      * @param array $srcset_data {
      *
@@ -331,7 +334,6 @@ namespace {
     /**
      * @internal
      * Helper function. Generates a sizes attribute for HTML tags
-     *
      * @var array  breakpoints An array of breakpoints.
      *
      * @return string Resulting sizes attribute value
@@ -689,7 +691,8 @@ namespace {
     }
 
     /**
-     * @internal Generates `media` attribute of the `source` tag and appends it to attributes
+     * @internal
+     * Generates `media` attribute of the `source` tag and appends it to attributes
      *
      * @param array $attributes    Attributes
      * @param array $media_options Currently only supported `min_width` and `max_width`
