@@ -665,15 +665,17 @@ class Cloudinary
      *
      * The result of this function is an updated $options parameter
      *
-     * @param array $options Original options
+     * @param array $options         Original options
      * @param array $transformations Transformations to chain at the end
+     *
+     * @return array Resulting options
      */
-    public static function chain_transformations(&$options, $transformations)
+    public static function chain_transformations($options, $transformations)
     {
         $raw_transformation = Cloudinary::generate_transformation_string($options);
         $tr = ["transformation" => $transformations];
         $chained_transformations = Cloudinary::generate_transformation_string($tr);
-        $options["raw_transformation"] = $raw_transformation . "/" . $chained_transformations;
+        $options["raw_transformation"] = implode("/", array_filter([$raw_transformation, $chained_transformations]));
 
         // We might still have width and height params left if they were provided.
         // We don't want to use them for the second time
@@ -681,6 +683,8 @@ class Cloudinary
         foreach ($unwanted_params as $key) {
             unset($options[$key]);
         }
+
+        return $options;
     }
 
     private static $LAYER_KEYWORD_PARAMS = array(

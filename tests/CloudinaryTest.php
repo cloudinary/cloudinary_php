@@ -337,6 +337,9 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    /**
+     * Should support chaining transformations at the end
+     */
     public function test_chain_transformations()
     {
         $options = array("effect" => "art:incognito", "format" => "png");
@@ -347,13 +350,38 @@ class CloudinaryTest extends TestCase
             array("raw_transformation" =>"e_sepia")
         );
 
-        Cloudinary::chain_transformations($options, $chained_transformations);
+        $actual_options = Cloudinary::chain_transformations($options, $chained_transformations);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
 
-        $actual_transformation_str = Cloudinary::generate_transformation_string($options);
         $this->assertEquals(
             "e_art:incognito/c_fill,w_200,x_100,y_100/r_10/e_sepia",
             $actual_transformation_str
         );
+
+        // Should support chaining transformations, when default options have no transformations
+        $actual_options = Cloudinary::chain_transformations(array(), $chained_transformations);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals(
+            "c_fill,w_200,x_100,y_100/r_10/e_sepia",
+            $actual_transformation_str
+        );
+
+        // Should handle empty options and empty list of chained transformations
+        $actual_options = Cloudinary::chain_transformations(array(), array());
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals("", $actual_transformation_str);
+
+        //Should remove width and height from resulting options
+        $actual_options = Cloudinary::chain_transformations(array("width" => 200, "height" => 100), array());
+
+        $this->assertNotContains("width", $actual_options);
+        $this->assertNotContains("height", $actual_options);
+
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals("h_100,w_200", $actual_transformation_str);
     }
 
     public function test_size()

@@ -295,7 +295,7 @@ namespace {
             // We need to "wipe out" the main transformation, and use the one provided by user
         array_push($transformations, ["crop" => "scale", "width" => $width]);
 
-        Cloudinary::chain_transformations($curr_options, $transformations);
+        $curr_options = Cloudinary::chain_transformations($curr_options, $transformations);
 
      * @internal
      * Helper function. Generates srcset attribute value of the HTML img tag
@@ -781,7 +781,7 @@ namespace {
             $curr_options["media"] = \Cloudinary::array_subset($source, ['min_width', 'max_width']);
 
             if (!empty($source["transformation"])) {
-                Cloudinary::chain_transformations($curr_options, $source["transformation"]);
+                $curr_options = Cloudinary::chain_transformations($curr_options, $source["transformation"]);
             }
 
             $tag .= cl_source_tag($public_id, $curr_options);
