@@ -498,7 +498,7 @@ class Cloudinary
         $aspect_ratio = Cloudinary::option_consume($options, "aspect_ratio");
         $opacity = Cloudinary::option_consume($options, "opacity");
         $quality = Cloudinary::option_consume($options, "quality");
-        $radius = Cloudinary::option_consume($options, "radius");
+        $radius = Cloudinary::process_radius(Cloudinary::option_consume($options, "radius"));
         $x = Cloudinary::option_consume($options, "x");
         $y = Cloudinary::option_consume($options, "y");
         $zoom = Cloudinary::option_consume($options, "zoom");
@@ -519,7 +519,7 @@ class Cloudinary
             "l" => $overlay,
             "o" => self::normalize_expression($opacity),
             "q" => self::normalize_expression($quality),
-            "r" => self::normalize_expression($radius),
+            "r" => $radius,
             "so" => $start_offset,
             "t" => $named_transformation,
             "u" => $underlay,
@@ -815,6 +815,18 @@ class Cloudinary
         }
 
         return $border;
+    }
+
+    private static function process_radius($radius)
+    {
+        if(!is_array($radius)){
+            return $radius;
+        }
+
+       return implode(
+            ":",
+            array_map("self::normalize_expression", $radius)
+       );
     }
 
     private static function split_range($range)
