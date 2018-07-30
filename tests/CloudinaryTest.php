@@ -11,6 +11,7 @@ class CloudinaryTest extends TestCase
     const DEFAULT_ROOT_PATH = 'http://res.cloudinary.com/test123/';
     const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
     const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
+    const TEST_ID = 'test';
 
     private $range_test_pairs = [
         // integer values
@@ -231,6 +232,32 @@ class CloudinaryTest extends TestCase
             array("x" => 1, "y" => 2, "radius" => 3, "gravity" => "center", "quality" => "auto:good", "prefix" => "a"),
             CloudinaryTest::DEFAULT_UPLOAD_PATH . "g_center,p_a,q_auto:good,r_3,x_1,y_2/test"
         );
+    }
+
+    /**
+     * should support a string, integer and array of mixed types
+     */
+    
+    public function test_radius()
+    {
+        $radius_test_values = [
+          [10, "r_10"],
+          ['10', 'r_10'],
+          ['$v', 'r_$v'],
+          [[10, 20, 30], 'r_10:20:30'],
+          [[10, 20, '$v'], 'r_10:20:$v'],
+          [[10, 20, '$v', 40], 'r_10:20:$v:40'],
+          [['10:20'], 'r_10:20'],
+          [['10:20:$v:40'], 'r_10:20:$v:40']
+        ];
+
+        foreach ($radius_test_values as $value){
+            $this->cloudinary_url_assertion(
+                CloudinaryTest::TEST_ID,
+                array("radius" => $value[0]),
+                CloudinaryTest::DEFAULT_UPLOAD_PATH . $value[1] . '/' . CloudinaryTest::TEST_ID
+            );
+        }
     }
 
 
