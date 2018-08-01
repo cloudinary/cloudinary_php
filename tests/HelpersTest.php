@@ -23,7 +23,7 @@ class HelpersTest extends TestCase
 
         self::$helpers_test_id = "helpers_test_" . UNIQUE_TEST_ID;
 
-        Uploader::upload(TEST_IMG, ["public_id" => self::$helpers_test_id]);
+        Uploader::upload(TEST_IMG, ["public_id" => self::$helpers_test_id, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG)]);
     }
 
     public static function tearDownAfterClass()

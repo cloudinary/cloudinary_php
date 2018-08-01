@@ -26,7 +26,7 @@ class HttpClientTest extends TestCase
             self::markTestSkipped('Please setup environment for Helpers test to run');
         }
 
-        self::$http_client_test_id = "helpers_test_" . UNIQUE_TEST_ID;
+        self::$http_client_test_id = "httpclient_test_" . UNIQUE_TEST_ID;
 
         Uploader::upload(TEST_IMG, ["public_id" => self::$http_client_test_id]);
     }

@@ -17,9 +17,8 @@ namespace Cloudinary {
      */
     class ApiTest extends \PHPUnit\Framework\TestCase
     {
-        protected static $api_test_tag = "cloudinary_php_test";
+        protected static $api_test_tag = TEST_TAG;
         protected static $initialized = false;
-        protected static $timestamp_tag;
         protected static $api_test;
         protected static $api_test_2;
         protected static $api_test_3;
@@ -63,7 +62,7 @@ namespace Cloudinary {
 
             Curl::$instance = new Curl();
 
-            self::$api_test_tag = self::$api_test_tag . "_" . SUFFIX;
+            self::$api_test_tag = UNIQUE_TEST_TAG;
             self::$api_test_upload_preset = "api_test_upload_preset" . SUFFIX;
             self::$api_test_upload_preset_2 = "api_test_upload_preset2" . SUFFIX;
             self::$api_test_upload_preset_3 = "api_test_upload_preset3" . SUFFIX;
@@ -77,8 +76,6 @@ namespace Cloudinary {
             self::$api_test_transformation = "api_test_transformation" . SUFFIX;
             self::$api_test_transformation_2 = "api_test_transformation2" . SUFFIX;
             self::$api_test_transformation_3 = "api_test_transformation3" . SUFFIX;
-
-            self::$timestamp_tag = self::$api_test_tag . "_" . time();
 
             self::upload_sample_resources();
 
@@ -124,7 +121,7 @@ namespace Cloudinary {
         {
             try {
                 $api->delete_resources(array(self::$api_test, self::$api_test_2, self::$api_test_3, self::$api_test_5));
-                $api->delete_resources_by_tag(self::$api_test_tag);
+                $api->delete_resources_by_tag(UNIQUE_TEST_TAG);
             } catch (Exception $e) {
             }
         }
@@ -198,7 +195,7 @@ namespace Cloudinary {
                 TEST_IMG,
                 array(
                     "public_id" => self::$api_test,
-                    "tags" => array(self::$api_test_tag, self::$timestamp_tag),
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
                     "context" => "key=value",
                     "eager" => array("transformation" => self::$crop_transformation),
                 )
@@ -207,7 +204,7 @@ namespace Cloudinary {
                 TEST_IMG,
                 array(
                     "public_id" => self::$api_test_2,
-                    "tags" => array(self::$api_test_tag, self::$timestamp_tag),
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
                     "context" => "key=value",
                     "eager" => array("transformation" => self::$scale_transformation),
                 )
