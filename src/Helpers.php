@@ -213,7 +213,7 @@ namespace {
         $max_width = \Cloudinary::option_get($srcset_data, 'max_width', 1000);
         $bytes_step = \Cloudinary::option_get($srcset_data, 'bytes_step', 20000);
         $max_images = \Cloudinary::option_get($srcset_data, 'max_images', 20);
-        $transformation = \Cloudinary::option_get($srcset_data, "transformation");
+        $transformation = \Cloudinary::option_get($srcset_data, 'transformation');
 
         $kbytes_step = (int)ceil($bytes_step / 1024);
 
@@ -290,19 +290,36 @@ namespace {
         if (empty($transformation)) {
             $transformation = $options;
         }
-        $curr_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
+
+        $url_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
+
+        // The code below is a part of `cloudinary_url` code that affects $options.
+        // We call it here, to make sure we get exactly the same behavior.
+        // FIXME: Refactor this code, unify it with `cloudinary_url` or fix `cloudinary_url` and remove it
+        Cloudinary::check_cloudinary_field($public_id, $url_options);
+        $type = Cloudinary::option_get($url_options, "type", "upload");
+
+        if ($type == "fetch" && !isset($transformation["fetch_format"])) {
+            $transformation["fetch_format"] = Cloudinary::option_consume($url_options, "format");
+        }
+        //END OF FIXME
+
         $transformation = \Cloudinary::array_copy($transformation);
+
         $raw_transformation = Cloudinary::generate_transformation_string($transformation);
-        $curr_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
+
+        $url_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
 
         // We might still have width and height params left if they were provided.
         // We don't want to use them for the second time
         $unwanted_params = array('width', 'height');
         foreach ($unwanted_params as $key) {
-            unset($curr_options[$key]);
+            unset($url_options[$key]);
         }
 
-        return cloudinary_url_internal($public_id, $curr_options);
+        $url_options["is_srcset_url"] = true; // FIXME: fix `cloudinary_url` and remove it
+
+        return cloudinary_url_internal($public_id, $url_options);
     }
 
     /**
@@ -403,16 +420,14 @@ namespace {
 
         if (!array_key_exists("srcset", $attributes)) {
             $breakpoints = get_or_generate_breakpoints($public_id, $srcset_data, $options);
-            $transformation = empty($srcset_data["transformation"]) ? null : $srcset_data["transformation"];
+            $transformation = Cloudinary::option_get($srcset_data, "transformation");
             $srcset_attr = generate_srcset_attribute($public_id, $breakpoints, $transformation, $options);
             if (!is_null($srcset_attr)) {
                 $responsive_attributes["srcset"] = $srcset_attr;
             }
         }
 
-        if (!empty($srcset_data["sizes"])
-            && $srcset_data["sizes"] === true
-            && !array_key_exists("sizes", $attributes)) {
+        if (!array_key_exists("sizes", $attributes) && Cloudinary::option_get($srcset_data, "sizes") === true) {
             if (is_null($breakpoints)) {
                 $breakpoints = get_or_generate_breakpoints($public_id, $srcset_data, $options);
             }

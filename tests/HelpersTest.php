@@ -12,6 +12,15 @@ use PHPUnit\Framework\TestCase;
 class HelpersTest extends TestCase
 {
     protected static $helpers_test_id;
+    protected static $fetch_path;
+
+    protected static $mocked_response = '{"breakpoints":[50,500,1000]}';
+    protected static $mocked_breakpoints = [50, 500, 1000];
+    protected static $expected_transformation = "c_scale,w_auto:breakpoints_50_1000_20_20:json";
+
+    protected static $crop_transformation = ['crop' => 'crop', 'width' => 100];
+    protected static $crop_transformation_str = 'c_crop,w_100';
+
 
     public static function setUpBeforeClass()
     {
@@ -20,6 +29,9 @@ class HelpersTest extends TestCase
         if (!Cloudinary::config_get("api_secret")) {
             self::markTestSkipped('Please setup environment for Helpers test to run');
         }
+
+        $cloud_name = Cloudinary::config_get("cloud_name");
+        self::$fetch_path = "http://res.cloudinary.com/$cloud_name/image/fetch";
 
         self::$helpers_test_id = "helpers_test_" . UNIQUE_TEST_ID;
 
@@ -50,15 +62,35 @@ class HelpersTest extends TestCase
      *
      * @throws \Cloudinary\Error
      */
-    public function test_get_responsive_breakpoints_from_cloudinary()
+    public function test_fetch_breakpoints()
     {
-        Curl::mockRequest($this, '{"breakpoints":[50,500,1000]}');
+        Curl::mockRequest($this, self::$mocked_response);
 
         $actual_breakpoints = fetch_breakpoints(self::$helpers_test_id);
 
-        $this->assertEquals([50, 500, 1000], $actual_breakpoints);
+        $this->assertEquals(self::$mocked_breakpoints, $actual_breakpoints);
 
-        $this->assertContains("w_auto:breakpoints_50_1000_20_20:json", Curl::$instance->url_path());
+        $this->assertContains(self::$expected_transformation, Curl::$instance->url_path());
+    }
+
+    /**
+     * Should retrieve responsive breakpoints from cloudinary resource with custom stransformation (mocked)
+     *
+     * @throws \Cloudinary\Error
+     */
+    public function test_fetch_breakpoints_with_transformation()
+    {
+        Curl::mockRequest($this, self::$mocked_response);
+
+        $srcset = ["transformation" => self::$crop_transformation];
+        $actual_breakpoints = fetch_breakpoints(self::$helpers_test_id, $srcset);
+
+        $this->assertEquals(self::$mocked_breakpoints, $actual_breakpoints);
+
+        $this->assertContains(
+            self::$crop_transformation_str . '/' .self::$expected_transformation,
+            Curl::$instance->url_path()
+        );
     }
 
     /**
@@ -66,14 +98,41 @@ class HelpersTest extends TestCase
      *
      * @throws \Cloudinary\Error
      */
-    public function test_get_responsive_breakpoints_from_cloudinary_real()
+    public function test_fetch_breakpoints_real()
     {
         $actual_breakpoints = fetch_breakpoints(self::$helpers_test_id);
 
-        $this->assertContains("w_auto:breakpoints_50_1000_20_20:json", Curl::$instance->url_path());
+        $this->assertContains(self::$expected_transformation, Curl::$instance->url_path());
 
         $this->assertTrue(is_array($actual_breakpoints));
         $this->assertGreaterThan(0, count($actual_breakpoints));
+    }
+
+    /**
+     * Should correctly handle format and fetch_format in srcset url with and without custom transformation
+     */
+    public function test_generate_single_srcset_url_fetch_format()
+    {
+        $fetch_resource_url = "http://cloudinary.com/images/logo.png";
+        $image_format = "jpg";
+        $fetch_format = "gif";
+        $resp_w = 99;
+
+        $options = array("format" => $image_format, "type" => "fetch", "fetch_format" => $fetch_format);
+
+        $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, [], $options);
+
+        $this->assertEquals(
+            self::$fetch_path . "/f_$fetch_format/c_scale,w_$resp_w/$fetch_resource_url",
+            $actual_url
+        );
+
+        $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, self::$crop_transformation, $options);
+
+        $this->assertEquals(
+            self::$fetch_path . "/c_crop,f_$image_format,w_100/c_scale,w_$resp_w/$fetch_resource_url",
+            $actual_url
+        );
     }
 
 }
