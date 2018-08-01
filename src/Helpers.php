@@ -108,7 +108,8 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Validates src_data parameters
+     * @internal
+     * Helper function. Validates src_data parameters
      *
      * @param array $srcset_data {
      *
@@ -144,7 +145,8 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Calculates static srcset breakpoints using provided parameters
+     * @internal
+     * Helper function. Calculates static srcset breakpoints using provided parameters
      *
      * Either the breakpoints or min_width, max_width, max_images must be provided.
      *
@@ -234,6 +236,7 @@ namespace {
 
         return $client->getJSON($breakpoints_url)["breakpoints"];
     }
+    
     /**
      * @internal
      * Helper function. Gets from cache or calculates srcset breakpoints using provided parameters
@@ -285,7 +288,8 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Generates a single srcset item url
+     * @internal
+     * Helper function. Generates a single srcset item url
      *
      * @param string        $public_id      Public ID of the resource
      * @param int           $width          Width in pixels of the srcset item
@@ -332,7 +336,8 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Generates an srcset attribute for HTML tags
+     * @internal
+     * Helper function. Generates an srcset attribute for HTML tags
      *
      * @param array $srcset_data {
      *
@@ -366,7 +371,8 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Generates a sizes attribute for HTML tags
+     * @internal
+     * Helper function. Generates a sizes attribute for HTML tags
      *
      * @var array  breakpoints An array of breakpoints.
      *
@@ -388,7 +394,8 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Generates srcset and sizes attributes of the image tag
+     * @internal
+     * Helper function. Generates srcset and sizes attributes of the image tag
      *
      * Generated attributes are added to $attributes argument
      *
@@ -401,6 +408,7 @@ namespace {
      *      @var int    max_width   Maximal width of the srcset images.
      *      @var int    max_images  Number of srcset images to generate.
      * }
+     *
      * @param array     $options    Additional options.
      *
      * @return array The responsive attributes

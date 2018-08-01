@@ -46,7 +46,8 @@ class Cloudinary
      *
      * Sample value: CloudinaryPHP/1.2.3 (PHP 5.6.7)
      *
-     * @internal Do not change this value
+     * @internal
+     * Do not change this value
      */
     private static $USER_AGENT = "";
 
@@ -58,7 +59,8 @@ class Cloudinary
      * The format of the value should be <ProductName>/Version[ (comment)].
      * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
      *
-     * @internal <b>Do not set this value in application code!</b>
+     * @internal
+     * <b>Do not set this value in application code!</b>
      *
      * @var string
      */
