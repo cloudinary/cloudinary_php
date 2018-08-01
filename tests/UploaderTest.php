@@ -510,7 +510,7 @@ TAG
                 $temp_file_name,
                 array("chunk_size" => 5243000, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
             );
-            $this->assertEquals($resource["tags"], array("upload_large_tag"));
+            $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
@@ -521,7 +521,7 @@ TAG
                 $temp_file_name,
                 array("chunk_size" => 5880138, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
             );
-            $this->assertEquals($resource["tags"], array("upload_large_tag"));
+            $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
