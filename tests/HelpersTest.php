@@ -54,7 +54,7 @@ class HelpersTest extends TestCase
     {
         Curl::mockRequest($this, '{"breakpoints":[50,500,1000]}');
 
-        $actual_breakpoints = get_responsive_breakpoints_from_cloudinary(self::$helpers_test_id);
+        $actual_breakpoints = fetch_breakpoints(self::$helpers_test_id);
 
         $this->assertEquals([50, 500, 1000], $actual_breakpoints);
 
@@ -68,7 +68,7 @@ class HelpersTest extends TestCase
      */
     public function test_get_responsive_breakpoints_from_cloudinary_real()
     {
-        $actual_breakpoints = get_responsive_breakpoints_from_cloudinary(self::$helpers_test_id);
+        $actual_breakpoints = fetch_breakpoints(self::$helpers_test_id);
 
         $this->assertContains("w_auto:breakpoints_50_1000_20_20:json", Curl::$instance->url_path());
 
