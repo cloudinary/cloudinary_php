@@ -8,7 +8,8 @@ namespace Cloudinary {
 
     class ArchiveTest extends TestCase
     {
-        private $tag = UNIQUE_TEST_TAG;
+        private $tag;
+        private $tags;
 
         public static function setUpBeforeClass()
         {
@@ -17,13 +18,15 @@ namespace Cloudinary {
 
         public function setUp()
         {
+            $this->tag = "archive_test_" . SUFFIX;
+            $this->tags = array($this->tag, TEST_TAG, UNIQUE_TEST_TAG);
             \Cloudinary::reset_config();
             if (!\Cloudinary::config_get("api_secret")) {
                 $this->markTestSkipped('Please setup environment for Upload test to run');
             }
             
-            Uploader::upload("tests/logo.png", array("tags" => array($this->tag)));
-            Uploader::upload("tests/logo.png", array("tags" => array($this->tag), "width" => 10, "crop" => "scale"));
+            Uploader::upload("tests/logo.png", array("tags" => $this->tags));
+            Uploader::upload("tests/logo.png", array("tags" => $this->tags, "width" => 10, "crop" => "scale"));
         }
 
         public function tearDown()
