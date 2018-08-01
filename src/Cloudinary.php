@@ -933,7 +933,7 @@ class Cloudinary
         $source = self::check_cloudinary_field($source, $options);
         $type = Cloudinary::option_consume($options, "type", "upload");
 
-        if ($type == "fetch" && !isset($options["fetch_format"])) {
+        if ($type == "fetch" && !isset($options["fetch_format"]) && !isset($options["is_srcset_url"])) {
             $options["fetch_format"] = Cloudinary::option_consume($options, "format");
         }
         $transformation = Cloudinary::generate_transformation_string($options);

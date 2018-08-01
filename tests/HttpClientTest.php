@@ -67,7 +67,7 @@ class HttpClientTest extends TestCase
     /**
      * Should throw Cloudinary\Error on invalid or non JSON reponse
      */
-    public function testHttpClientGetJSONNonJson()
+    public function testHttpClientGetJSONNonJSON()
     {
         $url = Cloudinary::cloudinary_url(self::$http_client_test_id);
 
