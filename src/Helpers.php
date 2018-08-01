@@ -151,7 +151,7 @@ namespace {
      *
      * @throws InvalidArgumentException In case of invalid or missing parameters
      */
-    function calculate_static_responsive_breakpoints($srcset_data)
+    function generate_breakpoints($srcset_data)
     {
         $breakpoints = Cloudinary::option_get($srcset_data, "breakpoints", array());
 
@@ -207,7 +207,7 @@ namespace {
      *
      * @throws \Cloudinary\Error
      */
-    function get_responsive_breakpoints_from_cloudinary($public_id, $srcset_data = array(), $options = array())
+    function fetch_breakpoints($public_id, $srcset_data = array(), $options = array())
     {
         $min_width = \Cloudinary::option_get($srcset_data, 'min_width', 50);
         $max_width = \Cloudinary::option_get($srcset_data, 'max_width', 1000);
@@ -241,7 +241,7 @@ namespace {
      *
      * @return array|null Array of breakpoints, null if failed
      */
-    function get_responsive_breakpoints($public_id, $srcset_data, $options = array())
+    function get_or_generate_breakpoints($public_id, $srcset_data, $options = array())
     {
         $breakpoints = Cloudinary::option_get($srcset_data, "breakpoints", null);
 
@@ -256,7 +256,7 @@ namespace {
             if (is_null($breakpoints)) {
                 // Cache miss, let's bring breakpoints from Cloudinary
                 try {
-                    $breakpoints = get_responsive_breakpoints_from_cloudinary($public_id, $srcset_data, $options);
+                    $breakpoints = fetch_breakpoints($public_id, $srcset_data, $options);
                 } catch (\Cloudinary\Error $e) {
                     error_log("Failed getting responsive breakpoints: $e");
                 }
@@ -269,7 +269,7 @@ namespace {
 
         if (empty($breakpoints)) {
             // Static calculation if cache is not enabled or we failed to fetch breakpoints
-            $breakpoints = calculate_static_responsive_breakpoints($srcset_data);
+            $breakpoints = generate_breakpoints($srcset_data);
         }
 
         return $breakpoints;
@@ -306,7 +306,7 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Generates srcset attribute value of the HTML img tag
+     * @internal Helper function. Generates an srcset attribute for HTML tags
      *
      * @param array $srcset_data {
      *
@@ -322,7 +322,7 @@ namespace {
      *
      * @throws InvalidArgumentException In case of invalid or missing parameters
      */
-    function generate_image_srcset_attribute($public_id, $breakpoints, $transformation = null, $options = array())
+    function generate_srcset_attribute($public_id, $breakpoints, $transformation = null, $options = array())
     {
         if (empty($breakpoints)) {
             return null;
@@ -351,14 +351,14 @@ namespace {
     }
 
     /**
-     * @internal Helper function. Generates sizes attribute value of the HTML img tag
+     * @internal Helper function. Generates a sizes attribute for HTML tags
      *
      * @var array  breakpoints An array of breakpoints.
      *
      * @return string Resulting sizes attribute value
      *
      */
-    function generate_image_sizes_attribute($breakpoints)
+    function generate_sizes_attribute($breakpoints)
     {
         if (empty($breakpoints)) {
             return null;
@@ -392,6 +392,8 @@ namespace {
      */
     function generate_image_responsive_attributes($public_id, $attributes, $srcset_data, $options)
     {
+        // Create both srcset and sizes here to avoid fetching breakpoints twice
+
         $responsive_attributes = array();
         if (empty($srcset_data)) {
             return $responsive_attributes;
@@ -400,9 +402,9 @@ namespace {
         $breakpoints = null;
 
         if (!array_key_exists("srcset", $attributes)) {
-            $breakpoints = get_responsive_breakpoints($public_id, $srcset_data, $options);
+            $breakpoints = get_or_generate_breakpoints($public_id, $srcset_data, $options);
             $transformation = empty($srcset_data["transformation"]) ? null : $srcset_data["transformation"];
-            $srcset_attr = generate_image_srcset_attribute($public_id, $breakpoints, $transformation, $options);
+            $srcset_attr = generate_srcset_attribute($public_id, $breakpoints, $transformation, $options);
             if (!is_null($srcset_attr)) {
                 $responsive_attributes["srcset"] = $srcset_attr;
             }
@@ -412,10 +414,10 @@ namespace {
             && $srcset_data["sizes"] === true
             && !array_key_exists("sizes", $attributes)) {
             if (is_null($breakpoints)) {
-                $breakpoints = get_responsive_breakpoints($public_id, $srcset_data, $options);
+                $breakpoints = get_or_generate_breakpoints($public_id, $srcset_data, $options);
             }
 
-            $sizes_attr = generate_image_sizes_attribute($breakpoints);
+            $sizes_attr = generate_sizes_attribute($breakpoints);
             if (!is_null($sizes_attr)) {
                 $responsive_attributes["sizes"] = $sizes_attr;
             }
