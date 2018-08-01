@@ -222,12 +222,13 @@ namespace {
         $max_width = \Cloudinary::option_get($srcset_data, 'max_width', 1000);
         $bytes_step = \Cloudinary::option_get($srcset_data, 'bytes_step', 20000);
         $max_images = \Cloudinary::option_get($srcset_data, 'max_images', 20);
+        $transformation = \Cloudinary::option_get($srcset_data, "transformation");
 
         $kbytes_step = (int)ceil($bytes_step / 1024);
 
         $breakpoints_width_param = "auto:breakpoints_${min_width}_${max_width}_${kbytes_step}_${max_images}:json";
         // We use generate_single_srcset_url function, passing special `width` parameter
-        $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $srcset_data, $options);
+        $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $transformation, $options);
 
         $client = new HttpClient();
 
