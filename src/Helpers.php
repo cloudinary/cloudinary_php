@@ -227,7 +227,7 @@ namespace {
 
         return $client->getJSON($breakpoints_url)["breakpoints"];
     }
-    
+
     /**
      * @internal
      * Helper function. Gets from cache or calculates srcset breakpoints using provided parameters
@@ -297,31 +297,24 @@ namespace {
 
         $url_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
 
-        // The code below is a part of `cloudinary_url` code that affects $options.
-        // We call it here, to make sure we get exactly the same behavior.
-        // FIXME: Refactor this code, unify it with `cloudinary_url` or fix `cloudinary_url` and remove it
+        //  START cloudinary_url header
         Cloudinary::check_cloudinary_field($public_id, $url_options);
         $type = Cloudinary::option_get($url_options, "type", "upload");
 
-        if ($type == "fetch" && !isset($transformation["fetch_format"])) {
-            $transformation["fetch_format"] = Cloudinary::option_consume($url_options, "format");
+        if ($type == "fetch") {
+            // format is not in use when we fetch resource from url
+            $format = Cloudinary::option_consume($url_options, "format");
+            if (!isset($transformation["fetch_format"])) {
+                $transformation["fetch_format"] = $format;
+            }
         }
-        //END OF FIXME
+        // END cloudinary_url header
 
         $transformation = \Cloudinary::array_copy($transformation);
 
         $raw_transformation = Cloudinary::generate_transformation_string($transformation);
 
         $url_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
-
-        // We might still have width and height params left if they were provided.
-        // We don't want to use them for the second time
-        $unwanted_params = array('width', 'height');
-        foreach ($unwanted_params as $key) {
-            unset($url_options[$key]);
-        }
-
-        $url_options["is_srcset_url"] = true; // FIXME: fix `cloudinary_url` and remove it
 
         return cloudinary_url_internal($public_id, $url_options);
     }

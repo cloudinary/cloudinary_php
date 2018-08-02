@@ -117,20 +117,52 @@ class HelpersTest extends TestCase
         $image_format = "jpg";
         $fetch_format = "gif";
         $resp_w = 99;
+        $resp_trans = "c_scale,w_$resp_w";
+        $effect = "sepia";
+        $raw_transformation = "c_fill,e_grayscale,q_auto";
 
         $options = array("format" => $image_format, "type" => "fetch", "fetch_format" => $fetch_format);
 
+        // Without custom transformation
         $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, [], $options);
 
         $this->assertEquals(
-            self::$fetch_path . "/f_$fetch_format/c_scale,w_$resp_w/$fetch_resource_url",
+            self::$fetch_path . "/f_$fetch_format/$resp_trans/$fetch_resource_url",
             $actual_url
         );
 
+        // With custom transformation
         $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, self::$crop_transformation, $options);
 
         $this->assertEquals(
-            self::$fetch_path . "/c_crop,f_$image_format,w_100/c_scale,w_$resp_w/$fetch_resource_url",
+            self::$fetch_path . "/c_crop,f_$image_format,w_100/$resp_trans/$fetch_resource_url",
+            $actual_url
+        );
+
+        // Add base transformation
+        $options["effect"] = $effect;
+        $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, [], $options);
+
+        $this->assertEquals(
+            self::$fetch_path . "/e_$effect,f_$fetch_format/$resp_trans/$fetch_resource_url",
+            $actual_url
+        );
+
+        // Should ignore base transformation
+        $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, self::$crop_transformation, $options);
+
+        $this->assertEquals(
+            self::$fetch_path . "/c_crop,f_$image_format,w_100/$resp_trans/$fetch_resource_url",
+            $actual_url
+        );
+
+        $options["raw_transformation"] = $raw_transformation;
+
+        // Should include raw transformation from base options
+        $actual_url = generate_single_srcset_url($fetch_resource_url, $resp_w, [], $options);
+
+        $this->assertEquals(
+            self::$fetch_path . "/e_$effect,f_$fetch_format,$raw_transformation/$resp_trans/$fetch_resource_url",
             $actual_url
         );
     }
