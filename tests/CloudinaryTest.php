@@ -1,9 +1,7 @@
 <?php
-$base = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
 
+use Cloudinary\Curl;
 use PHPUnit\Framework\TestCase;
-
-require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
 
 class CloudinaryTest extends TestCase
 {

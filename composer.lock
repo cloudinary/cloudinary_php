@@ -22,7 +22,7 @@
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3,<8.0-DEV"
+                "php": ">=5.4,<8.0-DEV"
             },
             "require-dev": {
                 "athletic/athletic": "~0.1.8",

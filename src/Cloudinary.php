@@ -1,5 +1,6 @@
 <?php
-require_once 'AuthToken.php';
+
+use Cloudinary\HttpClient;
 
 class Cloudinary
 {
@@ -14,13 +15,39 @@ class Cloudinary
     const VERSION = "1.10.0";
 
     /**
+     * @internal
+     * @var array a list of keys used by the cloudinary_url function
+     */
+    public static $URL_KEYS = array(
+        'api_secret',
+        'auth_token',
+        'cdn_subdomain',
+        'cloud_name',
+        'cname',
+        'format',
+        'private_cdn',
+        'resource_type',
+        'secure',
+        'secure_cdn_subdomain',
+        'secure_distribution',
+        'shorten',
+        'sign_url',
+        'ssl_detected',
+        'type',
+        'url_suffix',
+        'use_root_path',
+        'version'
+    );
+
+    /**
      * Contains information about SDK user agent. Passed to the Cloudinary servers.
      *
      * Initialized on the first call to {@see self::userAgent()}
      *
      * Sample value: CloudinaryPHP/1.2.3 (PHP 5.6.7)
      *
-     * @internal Do not change this value
+     * @internal
+     * Do not change this value
      */
     private static $USER_AGENT = "";
 
@@ -32,7 +59,8 @@ class Cloudinary
      * The format of the value should be <ProductName>/Version[ (comment)].
      * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
      *
-     * @internal <b>Do not set this value in application code!</b>
+     * @internal
+     * <b>Do not set this value in application code!</b>
      *
      * @var string
      */
@@ -281,8 +309,7 @@ class Cloudinary
             if (!$is_assoc) {
                 throw new InvalidArgumentException("Expected an array of associative arrays");
             }
-            if(!is_null($encoder))
-            {
+            if (!is_null($encoder)) {
                 foreach ($item as $key => $value) {
                     $item[$key] = call_user_func($encoder, $value);
                 }
@@ -290,7 +317,6 @@ class Cloudinary
         }
 
         return \json_encode($array);
-
     }
 
     public static function json_decode_cb($json, $decoder)
@@ -299,10 +325,8 @@ class Cloudinary
             throw new InvalidArgumentException("Expected an string");
         }
         $array = json_decode($json, true);
-        if(!is_null($decoder) && !is_null($array))
-        {
+        if (!is_null($decoder) && !is_null($array)) {
             foreach ($array as $key => $value) {
-
                 try {
                     $array[$key] = call_user_func($decoder, $value);
                 } catch (Exception $e) {
@@ -312,8 +336,8 @@ class Cloudinary
         }
 
         return $array;
-
     }
+
     /**
      * Wrapper for calling build_array_of_assoc_arrays and json_encode_array_of_assoc_arrays with null value handling.
      *
@@ -393,6 +417,19 @@ class Cloudinary
             }
         }
         return $result;
+    }
+
+    /**
+     * Returns subset of associative array specified by array of keys
+     *
+     * @param array $array Source associative array
+     * @param array $keys Simple array of keys
+     *
+     * @return array Resulting array
+     */
+    public static function array_subset($array, $keys)
+    {
+        return array_intersect_key($array, array_flip($keys));
     }
 
     private static function is_assoc($array)
@@ -1164,18 +1201,27 @@ class Cloudinary
         return (((crc32($source) % 5) + 5) % 5 + 1);
     }
 
-    // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
     // Warning: $options are being destructively updated!
     public static function check_cloudinary_field($source, &$options = array())
     {
+        // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
         $IDENTIFIER_RE = "~" .
-            "^(?:([^/]+)/)??(?:([^/]+)/)??(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" .
-            "([^#/]+?)(?:\\.([^.#/]+))?(?:#([^/]+))?$" .
+            "^" .
+            "(?:([^/]+)/)??" . // resource type
+            "(?:([^/]+)/)??" . // type
+            "(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" . // version
+            "([^#/]+?)" . // public ID
+            "(?:\\.([^.#/]+))?" . //format
+            "(?:#([^/]+))?" . // signature
+            "$" .
             "~";
-        $matches = array();
-        if (!(is_object($source) && method_exists($source, 'identifier'))) {
+        if (!is_object($source) || !method_exists($source, 'identifier')) {
+            // $source doesn't look like a CloudinaryField, so just return it
             return $source;
         }
+
+        // $source is a CloudinaryField, parse its identifier
+        $matches = array();
         $identifier = $source->identifier();
         if (!$identifier || strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
             return $source;
@@ -1460,5 +1506,3 @@ class Cloudinary
         return implode(" ", array_map($join_pair, array_keys($attrs), array_values($attrs)));
     }
 }
-
-require_once(join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), 'Helpers.php')));
