@@ -1271,6 +1271,48 @@ class Cloudinary
             (isset($result["format"]) ? "." . $result["format"] : "") . "#" . $result["signature"];
     }
 
+    /**
+     * Generates a cloudinary url scaled to specified width.
+     *
+     * In case transformation parameter is provided, it is used instead of transformations specified in $options
+     *
+     * @param string       $source         Public ID of the resource
+     * @param int          $width          Width in pixels of the srcset item
+     * @param array|string $transformation Custom transformation that overrides transformations provided in $options
+     * @param array        $options        Additional options
+     *
+     * @return null|string
+     */
+    public static function cloudinary_scaled_url($source, $width, $transformation, $options)
+    {
+        if (empty($transformation)) {
+            $transformation = $options;
+        }
+
+        $url_options = self::array_subset($options, self::$URL_KEYS);
+
+        //  START cloudinary_url header
+        self::check_cloudinary_field($source, $url_options);
+        $type = self::option_get($url_options, "type", "upload");
+
+        if ($type == "fetch") {
+            // format is not in use when we fetch resource from url
+            $format = self::option_consume($url_options, "format");
+            if (!isset($transformation["fetch_format"])) {
+                $transformation["fetch_format"] = $format;
+            }
+        }
+        // END cloudinary_url header
+
+        $transformation = self::array_copy($transformation);
+
+        $raw_transformation = self::generate_transformation_string($transformation);
+
+        $url_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
+
+        return cloudinary_url_internal($source, $url_options);
+    }
+
     # Utility method that uses the deprecated ZIP download API.
     # @deprecated Replaced by {download_zip_url} that uses the more advanced and robust archive generation and download API
     public static function zip_download_url($tag, $options = array())
