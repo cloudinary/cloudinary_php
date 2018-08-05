@@ -660,31 +660,49 @@ class Cloudinary
     }
 
     /**
-     * @internal
      * Helper function, allows chaining transformations to the end of transformations list
      *
      * The result of this function is an updated $options parameter
      *
-     * @param array $options         Original options
-     * @param array $transformations Transformations to chain at the end
+     * @param string    $source          The Public ID of the resource
+     * @param array     $options         Original options
+     * @param array     $transformations Transformations to chain at the end
      *
      * @return array Resulting options
      */
-    public static function chain_transformations($options, $transformations)
+    public static function chain_transformations($source, $options, $transformations)
     {
-        $raw_transformation = Cloudinary::generate_transformation_string($options);
-        $tr = ["transformation" => $transformations];
-        $chained_transformations = Cloudinary::generate_transformation_string($tr);
-        $options["raw_transformation"] = implode("/", array_filter([$raw_transformation, $chained_transformations]));
-
-        // We might still have width and height params left if they were provided.
-        // We don't want to use them for the second time
-        $unwanted_params = array('width', 'height');
-        foreach ($unwanted_params as $key) {
-            unset($options[$key]);
+        if (empty($transformations)) {
+            return $options;
         }
 
-        return $options;
+        // preserve options from being destructed
+        $options = self::array_copy($options);
+
+        //  START cloudinary_url header
+        self::check_cloudinary_field($source, $options);
+
+        $type = self::option_get($options, "type", "upload");
+        if ($type == "fetch") {
+            // format is not in use when we fetch resource from url
+            $format = self::option_consume($options, "format");
+            if (!isset($options["fetch_format"])) {
+                $options["fetch_format"] = $format;
+            }
+        }
+        // END cloudinary_url header
+
+        // preserve url options
+        $url_options = self::array_subset($options, self::$URL_KEYS);
+
+        $raw_transformation = Cloudinary::generate_transformation_string($options);
+
+        $transformations_param = ["transformation" => $transformations];
+        $chained_transforms_str = self::generate_transformation_string($transformations_param);
+
+        $url_options["raw_transformation"] = implode("/", array_filter([$raw_transformation, $chained_transforms_str]));
+
+        return $url_options;
     }
 
     private static $LAYER_KEYWORD_PARAMS = array(
@@ -1330,30 +1348,16 @@ class Cloudinary
      */
     public static function cloudinary_scaled_url($source, $width, $transformation, $options)
     {
-        if (empty($transformation)) {
-            $transformation = $options;
+        if (!empty($transformation)) {
+            # Remove all transformation related options from $options
+            $options = self::array_subset($options, self::$URL_KEYS);
         }
 
-        $url_options = self::array_subset($options, self::$URL_KEYS);
+        $scale_transformation = ["crop" => "scale", "width" => $width];
 
-        //  START cloudinary_url header
-        self::check_cloudinary_field($source, $url_options);
-        $type = self::option_get($url_options, "type", "upload");
+        $transformations = [$transformation, $scale_transformation];
 
-        if ($type == "fetch") {
-            // format is not in use when we fetch resource from url
-            $format = self::option_consume($url_options, "format");
-            if (!isset($transformation["fetch_format"])) {
-                $transformation["fetch_format"] = $format;
-            }
-        }
-        // END cloudinary_url header
-
-        $transformation = self::array_copy($transformation);
-
-        $raw_transformation = self::generate_transformation_string($transformation);
-
-        $url_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
+        $url_options = self::chain_transformations($source, $options, $transformations);
 
         return cloudinary_url_internal($source, $url_options);
     }

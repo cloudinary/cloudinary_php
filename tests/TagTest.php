@@ -1041,12 +1041,13 @@ class TagTest extends TestCase
                     "transformation" => ["effect" => "sepia", "angle" => 17, "width" => self::$min_width]
                 ],
                 [
-                    "min_width" => 200,
-                    "transformation" => ["effect" => "colorize", "angle" => 18, "width" => 300]
+                    "min_width" => self::$min_width,
+                    "max_width" => self::$max_width,
+                    "transformation" => ["effect" => "colorize", "angle" => 18, "width" => self::$max_width]
+
                 ],
                 [
-                    "min_width" => 300,
-                    "max_width" =>self::$max_width,
+                    "min_width" => self::$max_width,
                     "transformation" => ["effect" => "blur", "angle" => 19, "width" => self::$max_width]
                 ]
             ]
@@ -1063,10 +1064,11 @@ class TagTest extends TestCase
 
         $expected_source2 = self::get_expected_cl_source_tag(
             self::$public_id,
-            self::$fill_trans_str . "/" . "a_18,e_colorize,w_300",
+            self::$fill_trans_str . "/" . "a_18,e_colorize,w_" . self::$max_width,
             '',
             [],
-            ["media" => generate_media_attr([ "min_width" => 200])]
+            ["media" => generate_media_attr(["min_width" => self::$min_width, "max_width" =>self::$max_width])]
+
         );
 
         $expected_source3 = self::get_expected_cl_source_tag(
@@ -1074,7 +1076,7 @@ class TagTest extends TestCase
             self::$fill_trans_str . "/" . "a_19,e_blur,w_" . self::$max_width,
             '',
             [],
-            ["media" => generate_media_attr(["min_width" => 300, "max_width" =>self::$max_width])]
+            ["media" => generate_media_attr(["min_width" => self::$max_width])]
         );
 
         $expected_img =  self::get_expected_cl_image_tag(

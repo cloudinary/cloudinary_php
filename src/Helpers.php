@@ -289,15 +289,6 @@ namespace {
 
     /**
      * @internal
-     * Helper function. Generates an srcset attribute for HTML tags
-
-        if (!empty($transformation)) {
-            // We need to "wipe out" the main transformation, and use the one provided by user
-        array_push($transformations, ["crop" => "scale", "width" => $width]);
-
-        $curr_options = Cloudinary::chain_transformations($curr_options, $transformations);
-
-     * @internal
      * Helper function. Generates srcset attribute value of the HTML img tag
      *
      * @param array $srcset_data {
@@ -334,6 +325,7 @@ namespace {
     /**
      * @internal
      * Helper function. Generates a sizes attribute for HTML tags
+     *
      * @var array  breakpoints An array of breakpoints.
      *
      * @return string Resulting sizes attribute value
@@ -778,11 +770,11 @@ namespace {
         foreach ($sources as $source) {
             $curr_options =  Cloudinary::array_copy($options);
 
-            $curr_options["media"] = \Cloudinary::array_subset($source, ['min_width', 'max_width']);
-
             if (!empty($source["transformation"])) {
-                $curr_options = Cloudinary::chain_transformations($curr_options, $source["transformation"]);
+                $curr_options = Cloudinary::chain_transformations($public_id, $curr_options, $source["transformation"]);
             }
+
+            $curr_options["media"] = \Cloudinary::array_subset($source, ['min_width', 'max_width']);
 
             $tag .= cl_source_tag($public_id, $curr_options);
         }
