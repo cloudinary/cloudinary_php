@@ -219,9 +219,9 @@ namespace {
 
         $kbytes_step = (int)ceil($bytes_step / 1024);
 
-        $breakpoints_width_param = "auto:breakpoints_${min_width}_${max_width}_${kbytes_step}_${max_images}:json";
-        // We use generate_single_srcset_url function, passing special `width` parameter
-        $breakpoints_url = generate_single_srcset_url($public_id, $breakpoints_width_param, $transformation, $options);
+        $width_param = "auto:breakpoints_${min_width}_${max_width}_${kbytes_step}_${max_images}:json";
+        // We use Cloudinary::cloudinary_scaled_url function, passing special `width` parameter
+        $breakpoints_url = Cloudinary::cloudinary_scaled_url($public_id, $width_param, $transformation, $options);
 
         $client = new HttpClient();
 
@@ -280,47 +280,6 @@ namespace {
 
     /**
      * @internal
-     * Helper function. Generates a single srcset item url
-     *
-     * @param string        $public_id      Public ID of the resource
-     * @param int           $width          Width in pixels of the srcset item
-     * @param array|string  $transformation Custom transformation for srcset url
-     * @param array         $options        Additional options
-     *
-     * @return mixed|null|string|string[] Resulting URL of the item
-     */
-    function generate_single_srcset_url($public_id, $width, $transformation, $options)
-    {
-        if (empty($transformation)) {
-            $transformation = $options;
-        }
-
-        $url_options = Cloudinary::array_subset($options, Cloudinary::$URL_KEYS);
-
-        //  START cloudinary_url header
-        Cloudinary::check_cloudinary_field($public_id, $url_options);
-        $type = Cloudinary::option_get($url_options, "type", "upload");
-
-        if ($type == "fetch") {
-            // format is not in use when we fetch resource from url
-            $format = Cloudinary::option_consume($url_options, "format");
-            if (!isset($transformation["fetch_format"])) {
-                $transformation["fetch_format"] = $format;
-            }
-        }
-        // END cloudinary_url header
-
-        $transformation = \Cloudinary::array_copy($transformation);
-
-        $raw_transformation = Cloudinary::generate_transformation_string($transformation);
-
-        $url_options["raw_transformation"] = $raw_transformation . "/c_scale,w_{$width}";
-
-        return cloudinary_url_internal($public_id, $url_options);
-    }
-
-    /**
-     * @internal
      * Helper function. Generates an srcset attribute for HTML tags
      *
      * @param array $srcset_data {
@@ -347,7 +306,7 @@ namespace {
         foreach ($breakpoints as $breakpoint) {
             array_push(
                 $items,
-                generate_single_srcset_url($public_id, $breakpoint, $transformation, $options) . " {$breakpoint}w"
+                Cloudinary::cloudinary_scaled_url($public_id, $breakpoint, $transformation, $options) . " {$breakpoint}w"
             );
         }
 
