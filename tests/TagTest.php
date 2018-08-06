@@ -5,6 +5,7 @@ use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
 use Cloudinary\Cache\ResponsiveBreakpointsCache;
 use Cloudinary\Curl;
 use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
+use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 /**
