@@ -376,14 +376,21 @@ class CloudinaryTest extends TestCase
         $this->assertEquals("", $actual_transformation_str);
 
         // Should remove transformation options from resulting options
-        $actual_options = Cloudinary::chain_transformations(self::$test_id, ["width" => 200, "height" => 100], []);
+        $actual_options = Cloudinary::chain_transformations(
+            self::$test_id,
+            ["width" => 200, "height" => 100],
+            $chained_transformations
+        );
 
-        $this->assertNotContains("width", $actual_options);
-        $this->assertNotContains("height", $actual_options);
+        $this->assertArrayNotHasKey("width", $actual_options);
+        $this->assertArrayNotHasKey("height", $actual_options);
 
         $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
 
-        $this->assertEquals("h_100,w_200", $actual_transformation_str);
+        $this->assertEquals(
+            "h_100,w_200/c_fill,w_200,x_100,y_100/r_10/c_fill,e_grayscale,q_auto",
+            $actual_transformation_str
+        );
 
         // Should handle fetch
         $options["type"] = "fetch";
@@ -391,7 +398,7 @@ class CloudinaryTest extends TestCase
         $actual_options = Cloudinary::chain_transformations(self::FETCH_URL, $options, $chained_transformations);
 
         // format should be removed when we use fetch
-        $this->assertNotContains("format", $actual_options);
+        $this->assertArrayNotHasKey("format", $actual_options);
 
         $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
 
