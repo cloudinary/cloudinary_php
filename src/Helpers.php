@@ -767,16 +767,14 @@ namespace {
     {
         $tag = '<picture>';
 
+        $public_id = Cloudinary::check_cloudinary_field($public_id, $options);
+        Cloudinary::patch_fetch_format($options);
         foreach ($sources as $source) {
-            $curr_options =  Cloudinary::array_copy($options);
+            $source_options =  Cloudinary::array_copy($options);
+            $source_options = Cloudinary::chain_transformations($source_options, Cloudinary::option_get( $source, "transformation"));
+            $source_options["media"] = Cloudinary::array_subset($source, ['min_width', 'max_width']);
 
-            if (!empty($source["transformation"])) {
-                $curr_options = Cloudinary::chain_transformations($public_id, $curr_options, $source["transformation"]);
-            }
-
-            $curr_options["media"] = \Cloudinary::array_subset($source, ['min_width', 'max_width']);
-
-            $tag .= cl_source_tag($public_id, $curr_options);
+            $tag .= cl_source_tag($public_id, $source_options);
         }
 
         $tag .= cl_image_tag($public_id, $options);

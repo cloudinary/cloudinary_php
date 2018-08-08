@@ -70,7 +70,7 @@ class HelpersTest extends TestCase
     }
 
     /**
-     * Should retrieve responsive breakpoints from cloudinary resource with custom stransformation (mocked)
+     * Should retrieve responsive breakpoints from cloudinary resource with custom transformation (mocked)
      *
      * @throws \Cloudinary\Error
      */

@@ -103,6 +103,25 @@ class Cloudinary
         return !is_null($var);
     }
 
+    /**
+     * @internal
+     * When upload type is fetch, remove the format options.
+     * In addition, set the fetch_format options to the format value unless it was already set.
+     * Mutates the $options parameter!
+     * @param array $options URL and transformation options
+     */
+    public static function patch_fetch_format(&$options)
+    {
+        $type = Cloudinary::option_get($options, "type", "upload");
+        if ($type != "fetch") return;
+
+        // format does not apply to fetch resources since they are identified by a URL
+        $format = Cloudinary::option_consume($options, "format");
+        if (!isset($options["fetch_format"])) {
+            $options["fetch_format"] = $format;
+        }
+    }
+
     public static function config($values = null)
     {
         if (self::$config == null) {
@@ -670,38 +689,16 @@ class Cloudinary
      *
      * @return array Resulting options
      */
-    public static function chain_transformations($source, $options, $transformations)
+    public static function chain_transformations($options, $transformations)
     {
         if (empty($transformations)) {
             return $options;
         }
-
-        // preserve options from being destructed
-        $options = self::array_copy($options);
-
-        //  START cloudinary_url header
-        self::check_cloudinary_field($source, $options);
-
-        $type = self::option_get($options, "type", "upload");
-        if ($type == "fetch") {
-            // format is not in use when we fetch resource from url
-            $format = self::option_consume($options, "format");
-            if (!isset($options["fetch_format"])) {
-                $options["fetch_format"] = $format;
-            }
-        }
-        // END cloudinary_url header
-
+        $transformations = \Cloudinary::build_array($transformations);
         // preserve url options
         $url_options = self::array_subset($options, self::$URL_KEYS);
-
-        $raw_transformation = Cloudinary::generate_transformation_string($options);
-
-        $transformations_param = ["transformation" => $transformations];
-        $chained_transforms_str = self::generate_transformation_string($transformations_param);
-
-        $url_options["raw_transformation"] = implode("/", array_filter([$raw_transformation, $chained_transforms_str]));
-
+        array_unshift($transformations, $options);
+        $url_options["transformation"] = $transformations;
         return $url_options;
     }
 
@@ -996,11 +993,8 @@ class Cloudinary
     public static function cloudinary_url($source, &$options = array())
     {
         $source = self::check_cloudinary_field($source, $options);
+        self::patch_fetch_format($options);
         $type = Cloudinary::option_consume($options, "type", "upload");
-
-        if ($type == "fetch" && !isset($options["fetch_format"])) {
-            $options["fetch_format"] = Cloudinary::option_consume($options, "format");
-        }
         $transformation = Cloudinary::generate_transformation_string($options);
 
         $resource_type = Cloudinary::option_consume($options, "resource_type", "image");
@@ -1349,17 +1343,22 @@ class Cloudinary
     public static function cloudinary_scaled_url($source, $width, $transformation, $options)
     {
         if (!empty($transformation)) {
-            # Remove all transformation related options from $options
+            // Replace transformation parameters in $options with those in $transformation
+
+            if(is_string($transformation)){
+                $transformation = array("raw_transformation"=> $transformation);
+            }
             $options = self::array_subset($options, self::$URL_KEYS);
+            $options = array_merge($options, $transformation);
         }
 
         $scale_transformation = ["crop" => "scale", "width" => $width];
 
-        $transformations = [$transformation, $scale_transformation];
+        self::check_cloudinary_field($source, $options);
+        self::patch_fetch_format($options);
+        $options = self::chain_transformations($options, $scale_transformation);
 
-        $url_options = self::chain_transformations($source, $options, $transformations);
-
-        return cloudinary_url_internal($source, $url_options);
+        return cloudinary_url_internal($source, $options);
     }
 
     # Utility method that uses the deprecated ZIP download API.
