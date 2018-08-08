@@ -2,6 +2,12 @@
 
 namespace Cloudinary {
 
+    use Cloudinary\Cache\ResponsiveBreakpointsCache;
+
+    /**
+     * Class Uploader
+     * @package Cloudinary
+     */
     class Uploader
     {
         const REMOTE_URL_REGEX = '/^@|^ftp:|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/';
@@ -83,12 +89,12 @@ namespace Cloudinary {
                 array_merge($options, array("unsigned" => true, "upload_preset" => $upload_preset))
             );
         }
-
+        
         public static function upload($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);
 
-            return Uploader::call_api("upload", $params, $options, $file);
+            return Uploader::call_cacheable_api("upload", $params, $options, $file);
         }
 
         // Upload large raw files. Note that public_id should include an extension for best results.
@@ -139,7 +145,6 @@ namespace Cloudinary {
             }
             unlink($temp_file_name);
             fclose($src);
-
             return $upload;
         }
 
@@ -150,7 +155,7 @@ namespace Cloudinary {
             $params = Uploader::build_upload_params($options);
             $full_options = array_merge(array("resource_type" => "raw"), $options);
 
-            return Uploader::call_api("upload_chunked", $params, $full_options, $file);
+            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file);
         }
 
         public static function destroy($public_id, $options = array())
@@ -185,7 +190,7 @@ namespace Cloudinary {
             $options["public_id"] = $public_id;
             $params = Uploader::build_upload_params($options);
 
-            return Uploader::call_api("explicit", $params, $options);
+            return Uploader::call_cacheable_api("explicit", $params, $options);
         }
 
         public static function generate_sprite($tag, $options = array())
@@ -247,13 +252,13 @@ namespace Cloudinary {
         /**
          * Remove all tags from the specified public IDs.
          *
-         * @param array $public_ids     the public IDs of the resources to update
-         * @param array $options        additional options passed to the request
-         * @return mixed                list of public IDs that were updated
+         * @param array|string  $public_ids     the public IDs of the resources to update
+         * @param array         $options        additional options passed to the request
+         * @return mixed                        list of public IDs that were updated
          */
         public static function remove_all_tags($public_ids, $options = array())
         {
-            return Uploader::call_tags_api(NULL, "remove_all", $public_ids, $options);
+            return Uploader::call_tags_api(null, "remove_all", $public_ids, $options);
         }
 
         public static function replace_tag($tag, $public_ids = array(), $options = array())
@@ -335,6 +340,29 @@ namespace Cloudinary {
         public static function create_zip($options = array())
         {
             return Uploader::create_archive($options, "zip");
+        }
+
+        /**
+         * Calls Upload API and saves results to cache (if enabled)
+         *
+         * @param string        $action     Action to call
+         * @param array         $params     Array of parameters
+         * @param array|null    $options    Optional. Additional options
+         * @param string|null   $file       Optional. File to upload
+         *
+         * @return mixed
+         *
+         * @throws \Cloudinary\Error
+         */
+        public static function call_cacheable_api($action, $params, $options = array(), $file = null)
+        {
+            $result = self::call_api($action, $params, $options, $file);
+
+            if (\Cloudinary::option_get($options, "use_cache", \Cloudinary::config_get("use_cache", false))) {
+                self::save_responsive_breakpoints_to_cache($result);
+            }
+
+            return $result;
         }
 
         public static function call_api($action, $params, $options = array(), $file = null)
@@ -465,6 +493,43 @@ namespace Cloudinary {
             }
 
             return json_encode($breakpoints_params);
+        }
+
+        /**
+         * Saves responsive breakpoints parsed from upload result to cache
+         *
+         * @param array $result Upload result
+         */
+        protected static function save_responsive_breakpoints_to_cache($result)
+        {
+            if (!array_key_exists("responsive_breakpoints", $result)) {
+                return;
+            }
+
+            $public_id = \Cloudinary::option_get($result, "public_id");
+
+            if (empty($public_id)) {
+                // We have some faulty result, nothing to cache
+                return;
+            }
+
+            $options = \Cloudinary::array_subset($result, ['type', 'resource_type']);
+
+            foreach ($result["responsive_breakpoints"] as $transformation) {
+                $options["raw_transformation"] = \Cloudinary::option_get($transformation, "transformation", "");
+                $options["format"] = pathinfo($transformation["breakpoints"][0]["url"], PATHINFO_EXTENSION);
+
+                // TODO: When updating minimum PHP version to at least 5.5, replace `array_map` with the line below
+                // $breakpoints = array_column($transformation["breakpoints"], 'width');
+                $breakpoints = array_map(
+                    function ($e) {
+                        return $e['width'];
+                    },
+                    $transformation["breakpoints"]
+                );
+
+                ResponsiveBreakpointsCache::instance()->set($public_id, $options, $breakpoints);
+            }
         }
 
         protected static function build_custom_headers($headers)

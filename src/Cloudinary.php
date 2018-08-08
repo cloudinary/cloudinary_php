@@ -1,5 +1,6 @@
 <?php
-require_once 'AuthToken.php';
+
+use Cloudinary\HttpClient;
 
 class Cloudinary
 {
@@ -14,13 +15,39 @@ class Cloudinary
     const VERSION = "1.10.0";
 
     /**
+     * @internal
+     * @var array a list of keys used by the cloudinary_url function
+     */
+    public static $URL_KEYS = array(
+        'api_secret',
+        'auth_token',
+        'cdn_subdomain',
+        'cloud_name',
+        'cname',
+        'format',
+        'private_cdn',
+        'resource_type',
+        'secure',
+        'secure_cdn_subdomain',
+        'secure_distribution',
+        'shorten',
+        'sign_url',
+        'ssl_detected',
+        'type',
+        'url_suffix',
+        'use_root_path',
+        'version'
+    );
+
+    /**
      * Contains information about SDK user agent. Passed to the Cloudinary servers.
      *
      * Initialized on the first call to {@see self::userAgent()}
      *
      * Sample value: CloudinaryPHP/1.2.3 (PHP 5.6.7)
      *
-     * @internal Do not change this value
+     * @internal
+     * Do not change this value
      */
     private static $USER_AGENT = "";
 
@@ -32,7 +59,8 @@ class Cloudinary
      * The format of the value should be <ProductName>/Version[ (comment)].
      * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
      *
-     * @internal <b>Do not set this value in application code!</b>
+     * @internal
+     * <b>Do not set this value in application code!</b>
      *
      * @var string
      */
@@ -73,6 +101,25 @@ class Cloudinary
     public static function is_not_null($var)
     {
         return !is_null($var);
+    }
+
+    /**
+     * @internal
+     * When upload type is fetch, remove the format options.
+     * In addition, set the fetch_format options to the format value unless it was already set.
+     * Mutates the $options parameter!
+     * @param array $options URL and transformation options
+     */
+    public static function patch_fetch_format(&$options)
+    {
+        $type = Cloudinary::option_get($options, "type", "upload");
+        if ($type != "fetch") return;
+
+        // format does not apply to fetch resources since they are identified by a URL
+        $format = Cloudinary::option_consume($options, "format");
+        if (!isset($options["fetch_format"])) {
+            $options["fetch_format"] = $format;
+        }
     }
 
     public static function config($values = null)
@@ -142,15 +189,15 @@ class Cloudinary
 
     public static function build_array($value)
     {
+        if (is_null($value)) {
+            return array();
+        }
+
         if (is_array($value) && !Cloudinary::is_assoc($value)) {
             return $value;
-        } else {
-            if ($value === null) {
-                return array();
-            } else {
-                return array($value);
-            }
         }
+
+        return array($value);
     }
 
 
@@ -281,8 +328,7 @@ class Cloudinary
             if (!$is_assoc) {
                 throw new InvalidArgumentException("Expected an array of associative arrays");
             }
-            if(!is_null($encoder))
-            {
+            if (!is_null($encoder)) {
                 foreach ($item as $key => $value) {
                     $item[$key] = call_user_func($encoder, $value);
                 }
@@ -290,7 +336,6 @@ class Cloudinary
         }
 
         return \json_encode($array);
-
     }
 
     public static function json_decode_cb($json, $decoder)
@@ -299,10 +344,8 @@ class Cloudinary
             throw new InvalidArgumentException("Expected an string");
         }
         $array = json_decode($json, true);
-        if(!is_null($decoder) && !is_null($array))
-        {
+        if (!is_null($decoder) && !is_null($array)) {
             foreach ($array as $key => $value) {
-
                 try {
                     $array[$key] = call_user_func($decoder, $value);
                 } catch (Exception $e) {
@@ -312,8 +355,8 @@ class Cloudinary
         }
 
         return $array;
-
     }
+
     /**
      * Wrapper for calling build_array_of_assoc_arrays and json_encode_array_of_assoc_arrays with null value handling.
      *
@@ -395,6 +438,19 @@ class Cloudinary
         return $result;
     }
 
+    /**
+     * Returns subset of associative array specified by array of keys
+     *
+     * @param array $array Source associative array
+     * @param array $keys Simple array of keys
+     *
+     * @return array Resulting array
+     */
+    public static function array_subset($array, $keys)
+    {
+        return array_intersect_key($array, array_flip($keys));
+    }
+
     private static function is_assoc($array)
     {
         if (!is_array($array)) {
@@ -402,6 +458,23 @@ class Cloudinary
         }
 
         return $array != array_values($array);
+    }
+
+    /** @internal
+     * Prepends associative element to the beginning of an array
+     *
+     * @param array $arr The input array.
+     * @param mixed $key The prepended key
+     * @param mixed $val The prepended value
+     *
+     * @return array The resulting array
+     */
+    public static function array_unshift_assoc(&$arr, $key, $val)
+    {
+        $arr = array_reverse($arr, true);
+        $arr[$key] = $val;
+        $arr = array_reverse($arr, true);
+        return $arr;
     }
 
     private static function generate_base_transformation($base_transformation)
@@ -603,6 +676,30 @@ class Cloudinary
         }
 
         return implode("/", array_filter($base_transformations));
+    }
+
+    /**
+     * Helper function, allows chaining transformations to the end of transformations list
+     *
+     * The result of this function is an updated $options parameter
+     *
+     * @param string    $source          The Public ID of the resource
+     * @param array     $options         Original options
+     * @param array     $transformations Transformations to chain at the end
+     *
+     * @return array Resulting options
+     */
+    public static function chain_transformations($options, $transformations)
+    {
+        if (empty($transformations)) {
+            return $options;
+        }
+        $transformations = \Cloudinary::build_array($transformations);
+        // preserve url options
+        $url_options = self::array_subset($options, self::$URL_KEYS);
+        array_unshift($transformations, $options);
+        $url_options["transformation"] = $transformations;
+        return $url_options;
     }
 
     private static $LAYER_KEYWORD_PARAMS = array(
@@ -896,11 +993,8 @@ class Cloudinary
     public static function cloudinary_url($source, &$options = array())
     {
         $source = self::check_cloudinary_field($source, $options);
+        self::patch_fetch_format($options);
         $type = Cloudinary::option_consume($options, "type", "upload");
-
-        if ($type == "fetch" && !isset($options["fetch_format"])) {
-            $options["fetch_format"] = Cloudinary::option_consume($options, "format");
-        }
         $transformation = Cloudinary::generate_transformation_string($options);
 
         $resource_type = Cloudinary::option_consume($options, "resource_type", "image");
@@ -1164,18 +1258,27 @@ class Cloudinary
         return (((crc32($source) % 5) + 5) % 5 + 1);
     }
 
-    // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
     // Warning: $options are being destructively updated!
     public static function check_cloudinary_field($source, &$options = array())
     {
+        // [<resource_type>/][<image_type>/][v<version>/]<public_id>[.<format>][#<signature>]
         $IDENTIFIER_RE = "~" .
-            "^(?:([^/]+)/)??(?:([^/]+)/)??(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" .
-            "([^#/]+?)(?:\\.([^.#/]+))?(?:#([^/]+))?$" .
+            "^" .
+            "(?:([^/]+)/)??" . // resource type
+            "(?:([^/]+)/)??" . // type
+            "(?:(?:v(\\d+)/)(?:([^#]+)/)?)?" . // version
+            "([^#/]+?)" . // public ID
+            "(?:\\.([^.#/]+))?" . //format
+            "(?:#([^/]+))?" . // signature
+            "$" .
             "~";
-        $matches = array();
-        if (!(is_object($source) && method_exists($source, 'identifier'))) {
+        if (!is_object($source) || !method_exists($source, 'identifier')) {
+            // $source doesn't look like a CloudinaryField, so just return it
             return $source;
         }
+
+        // $source is a CloudinaryField, parse its identifier
+        $matches = array();
         $identifier = $source->identifier();
         if (!$identifier || strstr(':', $identifier) !== false || !preg_match($IDENTIFIER_RE, $identifier, $matches)) {
             return $source;
@@ -1223,6 +1326,39 @@ class Cloudinary
     {
         return $result["resource_type"] . "/upload/v" . $result["version"] . "/" . $result["public_id"] .
             (isset($result["format"]) ? "." . $result["format"] : "") . "#" . $result["signature"];
+    }
+
+    /**
+     * Generates a cloudinary url scaled to specified width.
+     *
+     * In case transformation parameter is provided, it is used instead of transformations specified in $options
+     *
+     * @param string       $source         Public ID of the resource
+     * @param int          $width          Width in pixels of the srcset item
+     * @param array|string $transformation Custom transformation that overrides transformations provided in $options
+     * @param array        $options        Additional options
+     *
+     * @return null|string
+     */
+    public static function cloudinary_scaled_url($source, $width, $transformation, $options)
+    {
+        if (!empty($transformation)) {
+            // Replace transformation parameters in $options with those in $transformation
+
+            if(is_string($transformation)){
+                $transformation = array("raw_transformation"=> $transformation);
+            }
+            $options = self::array_subset($options, self::$URL_KEYS);
+            $options = array_merge($options, $transformation);
+        }
+
+        $scale_transformation = ["crop" => "scale", "width" => $width];
+
+        self::check_cloudinary_field($source, $options);
+        self::patch_fetch_format($options);
+        $options = self::chain_transformations($options, $scale_transformation);
+
+        return cloudinary_url_internal($source, $options);
     }
 
     # Utility method that uses the deprecated ZIP download API.
@@ -1460,5 +1596,3 @@ class Cloudinary
         return implode(" ", array_map($join_pair, array_keys($attrs), array_values($attrs)));
     }
 }
-
-require_once(join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), 'Helpers.php')));
