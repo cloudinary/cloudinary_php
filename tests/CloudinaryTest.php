@@ -1,17 +1,23 @@
 <?php
-$base = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
 
+use Cloudinary\Curl;
 use PHPUnit\Framework\TestCase;
-
-require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
 
 class CloudinaryTest extends TestCase
 {
 
     const DEFAULT_ROOT_PATH = 'http://res.cloudinary.com/test123/';
     const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
+    const DEFAULT_FETCH_PATH = 'http://res.cloudinary.com/test123/image/fetch/';
     const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
     const TEST_ID = 'test';
+    
+    const FETCH_URL = "http://cloudinary.com/images/logo.png";
+
+    protected static $test_id = "test";
+    protected static $crop_transformation = ['crop' => 'crop', 'width' => 100];
+    protected static $crop_transformation_str = 'c_crop,w_100';
+    protected static $raw_transformation = "c_fill,e_grayscale,q_auto";
 
     private $range_test_pairs = [
         // integer values
@@ -333,6 +339,93 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    /**
+     * Should support chaining transformations at the end
+     */
+    public function test_chain_transformations()
+    {
+        $options = ["effect" => "art:incognito", "format" => "png"];
+
+        $chained_transformations = [
+            ["x" => 100, "y" => 100, "width" => 200, "crop" => "fill"],
+            ["radius" => 10],
+            ["raw_transformation" => self::$raw_transformation]
+        ];
+
+        $actual_options = Cloudinary::chain_transformations($options, $chained_transformations);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals(
+            "e_art:incognito/c_fill,w_200,x_100,y_100/r_10/" . self::$raw_transformation,
+            $actual_transformation_str,
+            "it should chain an array of transformations"
+        );
+
+        $message = "Should support chaining transformations, when default options have no transformations";
+        $actual_options = Cloudinary::chain_transformations([], $chained_transformations);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals(
+            "c_fill,w_200,x_100,y_100/r_10/" . self::$raw_transformation,
+            $actual_transformation_str,
+            $message
+        );
+
+        $message = "Should handle empty options and empty list of chained transformations";
+        $actual_options = Cloudinary::chain_transformations([], []);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals("", $actual_transformation_str, $message);
+
+        $message = "Should remove transformation options from resulting options";
+        $actual_options = Cloudinary::chain_transformations(
+            ["width" => 200, "height" => 100],
+            $chained_transformations
+        );
+
+        $this->assertArrayNotHasKey("width", $actual_options, $message);
+        $this->assertArrayNotHasKey("height", $actual_options, $message);
+
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals(
+            "h_100,w_200/c_fill,w_200,x_100,y_100/r_10/c_fill,e_grayscale,q_auto",
+            $actual_transformation_str,
+            $message
+        );
+
+        $message = "Should chain transformations with a fetch option";
+        $options["type"] = "fetch";
+
+        Cloudinary::patch_fetch_format($options);
+        $actual_options = Cloudinary::chain_transformations($options, $chained_transformations);
+
+        // format should be removed when we use fetch
+        $this->assertArrayNotHasKey("format", $actual_options, $message);
+
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $message = "should use url format as a fetch_format";
+        $this->assertEquals(
+            "e_art:incognito,f_png/c_fill,w_200,x_100,y_100/r_10/" . self::$raw_transformation,
+            $actual_transformation_str,
+            $message
+        );
+
+        $message = "should use fetch_format";
+        $options["fetch_format"] = "gif";
+
+        $actual_options = Cloudinary::chain_transformations($options, $chained_transformations);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        // should use fetch_format
+        $this->assertEquals(
+            "e_art:incognito,f_gif/c_fill,w_200,x_100,y_100/r_10/" . self::$raw_transformation,
+            $actual_transformation_str,
+            $message
+        );
+    }
+
     public function test_size()
     {
         // should support size
@@ -491,7 +584,7 @@ class CloudinaryTest extends TestCase
         );
     }
 
-    public function streaming_profile()
+    public function test_streaming_profile()
     {
         // should support streaming profile
         $options = array("streaming_profile" => "some-profile");
@@ -1495,6 +1588,64 @@ class CloudinaryTest extends TestCase
         $this->assertEquals('new_value', $orig_array['o']->key);
         $this->assertEquals('new_value', $shallow_copied_array['o']->key);
         $this->assertEquals('original_value', $copied_array['o']->key);
+    }
+
+    /**
+     * Should correctly handle format and fetch_format with and without custom transformation
+     */
+    public function test_cloudinary_scaled_url()
+    {
+        $image_format = "jpg";
+        $fetch_format = "gif";
+        $resp_w = 99;
+        $resp_trans = "c_scale,w_$resp_w";
+        $effect = "sepia";
+
+        $options = array("format" => $image_format, "type" => "fetch", "fetch_format" => $fetch_format);
+
+        // Without custom transformation
+        $actual_url = Cloudinary::cloudinary_scaled_url(self::FETCH_URL, $resp_w, [], $options);
+
+        $this->assertEquals(
+            self::DEFAULT_FETCH_PATH . "f_$fetch_format/$resp_trans/" . self::FETCH_URL,
+            $actual_url
+        );
+
+        // With custom transformation
+        $actual_url = Cloudinary::cloudinary_scaled_url(self::FETCH_URL, $resp_w, self::$crop_transformation, $options);
+
+        $this->assertEquals(
+            self::DEFAULT_FETCH_PATH . "c_crop,f_$image_format,w_100/$resp_trans/" . self::FETCH_URL,
+            $actual_url
+        );
+
+        // Add base transformation
+        $options["effect"] = $effect;
+        $actual_url = Cloudinary::cloudinary_scaled_url(self::FETCH_URL, $resp_w, [], $options);
+
+        $this->assertEquals(
+            self::DEFAULT_FETCH_PATH . "e_$effect,f_$fetch_format/$resp_trans/" . self::FETCH_URL,
+            $actual_url
+        );
+
+        // Should ignore base transformation
+        $actual_url = Cloudinary::cloudinary_scaled_url(self::FETCH_URL, $resp_w, self::$crop_transformation, $options);
+
+        $this->assertEquals(
+            self::DEFAULT_FETCH_PATH . "c_crop,f_$image_format,w_100/$resp_trans/" . self::FETCH_URL,
+            $actual_url
+        );
+
+        $options["raw_transformation"] = self::$raw_transformation;
+
+        // Should include raw transformation from base options
+        $actual_url = Cloudinary::cloudinary_scaled_url(self::FETCH_URL, $resp_w, [], $options);
+
+        $this->assertEquals(
+            self::DEFAULT_FETCH_PATH . "e_$effect,f_$fetch_format," . self::$raw_transformation. "/$resp_trans/".
+            self::FETCH_URL,
+            $actual_url
+        );
     }
 
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
