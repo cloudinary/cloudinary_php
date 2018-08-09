@@ -998,11 +998,105 @@ class TagTest extends TestCase
         );
     }
 
+    public function test_cl_source_tag()
+    {
+        $expected_tag = self::get_expected_cl_source_tag(
+            self::$public_id,
+            self::$common_transformation_str,
+            '',
+            self::$breakpoints_arr,
+            array('sizes' => self::$sizes_attr, "media" => generate_media_attr(["max_width" =>self::$max_width]))
+        );
+
+        $source_tag_with_srcset = cl_source_tag(
+            self::$public_id,
+            array_merge(
+                self::$common_image_options,
+                array(
+                    'srcset' => array_merge(
+                        self::$common_srcset,
+                        array('sizes' => true)
+                    )
+                ),
+                array(
+                    'media' => array("max_width" =>self::$max_width)
+                )
+            )
+        );
+
+        $this->assertEquals(
+            $expected_tag,
+            $source_tag_with_srcset,
+            'Should create source tag with srcset and sizes attributes with provided breakpoints'
+        );
+    }
+
+    public function test_cl_picture_tag()
+    {
+        $tag = cl_picture_tag(
+            self::$public_id,
+            self::$fill_transformation,
+            [
+                [
+                    "max_width" =>self::$min_width,
+                    "transformation" => ["effect" => "sepia", "angle" => 17, "width" => self::$min_width]
+                ],
+                [
+                    "min_width" => self::$min_width,
+                    "max_width" => self::$max_width,
+                    "transformation" => ["effect" => "colorize", "angle" => 18, "width" => self::$max_width]
+
+                ],
+                [
+                    "min_width" => self::$max_width,
+                    "transformation" => ["effect" => "blur", "angle" => 19, "width" => self::$max_width]
+                ]
+            ]
+        );
+
+
+        $expected_source1 = self::get_expected_cl_source_tag(
+            self::$public_id,
+            self::$fill_trans_str . "/" . "a_17,e_sepia,w_" . self::$min_width,
+            '',
+            [],
+            ["media" => generate_media_attr(["max_width" =>self::$min_width])]
+        );
+
+        $expected_source2 = self::get_expected_cl_source_tag(
+            self::$public_id,
+            self::$fill_trans_str . "/" . "a_18,e_colorize,w_" . self::$max_width,
+            '',
+            [],
+            ["media" => generate_media_attr(["min_width" => self::$min_width, "max_width" =>self::$max_width])]
+
+        );
+
+        $expected_source3 = self::get_expected_cl_source_tag(
+            self::$public_id,
+            self::$fill_trans_str . "/" . "a_19,e_blur,w_" . self::$max_width,
+            '',
+            [],
+            ["media" => generate_media_attr(["min_width" => self::$max_width])]
+        );
+
+        $expected_img =  self::get_expected_cl_image_tag(
+            self::$public_id,
+            self::$fill_trans_str,
+            '',
+            [],
+            ['height' => self::$max_width, 'width' => self::$max_width]
+        );
+
+        $exp = "<picture>" . $expected_source1 . $expected_source2 . $expected_source3 . $expected_img . "</picture>";
+
+        $this->assertEquals($exp, $tag);
+    }
+
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
     {
         $url = Cloudinary::cloudinary_url($source, $options);
         $this->assertEquals($expected_options, $options);
         $this->assertEquals($expected, $url);
     }
-
 }

@@ -686,4 +686,101 @@ namespace {
 
         return $html;
     }
+
+    /**
+     * @internal
+     * Generates `media` attribute of the `source` tag
+     *
+     * @param array $attributes    Attributes
+     * @param array $media_options Currently only supported `min_width` and `max_width`
+     *
+     * @return null|string Media attribute
+     */
+    function generate_media_attr($media_options)
+    {
+        $media_query_conditions = [];
+
+        if (!empty($media_options['min_width'])) {
+            array_push($media_query_conditions, "(min-width: ${media_options['min_width']}px)");
+        }
+
+        if (!empty($media_options['max_width'])) {
+            array_push($media_query_conditions, "(max-width: ${media_options['max_width']}px)");
+        }
+
+        if (empty($media_query_conditions)) {
+            return null;
+        }
+
+        return implode(' and ', $media_query_conditions);
+    }
+
+    /**
+     * @api Generates HTML `source` tag that can be used by `picture` tag
+     *
+     * @param $public_id
+     * @param $options
+     *
+     * @return string
+     */
+    function cl_source_tag($public_id, $options = [])
+    {
+        $srcset_data = array_merge(
+            Cloudinary::config_get("srcset", []),
+            Cloudinary::option_consume($options, 'srcset', [])
+        );
+
+        $attributes = Cloudinary::option_get($options, 'attributes', []);
+
+        $responsive_attrs = generate_image_responsive_attributes(
+            $public_id,
+            $attributes,
+            $srcset_data,
+            $options
+        );
+
+        $attributes = array_merge($responsive_attrs, $attributes);
+
+        // `source` tag under `picture` tag uses `srcset` attribute for both `srcset` and `src` urls
+        if (!array_key_exists("srcset", $attributes)) {
+            $attributes["srcset"] = cloudinary_url_internal($public_id, $options);
+        }
+
+        $media_attr = generate_media_attr(Cloudinary::option_get($options, "media"));
+        if (!empty($media_attr)) {
+            $attributes["media"] = $media_attr;
+        }
+
+        return '<source ' . Cloudinary::html_attrs($attributes) . '>';
+    }
+
+    /**
+     * @api Generates HTML `picture` tag
+     *
+     * @param string $public_id Public ID of the source image
+     * @param array  $options   Common options for all sources and `img` tag
+     * @param array  $sources   Definitions of each source which contains min_width, max_width and transformation
+     *
+     * @return string
+     */
+    function cl_picture_tag($public_id, $options = [], $sources = [])
+    {
+        $tag = '<picture>';
+
+        $public_id = Cloudinary::check_cloudinary_field($public_id, $options);
+        Cloudinary::patch_fetch_format($options);
+        foreach ($sources as $source) {
+            $source_options =  Cloudinary::array_copy($options);
+            $source_options = Cloudinary::chain_transformations($source_options, Cloudinary::option_get( $source, "transformation"));
+            $source_options["media"] = Cloudinary::array_subset($source, ['min_width', 'max_width']);
+
+            $tag .= cl_source_tag($public_id, $source_options);
+        }
+
+        $tag .= cl_image_tag($public_id, $options);
+
+        $tag .= '</picture>';
+
+        return $tag;
+    }
 }
