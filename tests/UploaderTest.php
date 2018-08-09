@@ -9,17 +9,52 @@ namespace Cloudinary {
     require_once('TestHelper.php');
 
     use Cloudinary;
+    use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
+    use Cloudinary\Cache\ResponsiveBreakpointsCache;
+    use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
     use Exception;
     use PHPUnit\Framework\TestCase;
 
+    /**
+     * Class UploaderTest
+     * @package Cloudinary
+     */
     class UploaderTest extends TestCase
     {
 
         public $url_prefix;
 
+        protected static $rbp_trans = ["angle" => 45, "crop" => "scale"];
+        protected static $rbp_format = "png";
+        protected static $rbp_values = [206, 50];
+        protected static $rbp_params;
+
         public static function setUpBeforeClass()
         {
             Curl::$instance = new Curl();
+
+            self::$rbp_params = [
+                "use_cache" => true,
+                "responsive_breakpoints" => [
+                    [
+                        "create_derived" => false,
+                        "transformation" => [
+                            "angle" => 90
+                        ],
+                        "format" => 'gif'
+                    ],
+                    [
+                        "create_derived" => false,
+                        "transformation" => self::$rbp_trans,
+                        "format" => self::$rbp_format
+                    ],
+                    [
+                        "create_derived" => false
+                    ]
+                ],
+                "type" => "upload",
+                "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
+            ];
         }
 
         public function setUp()
@@ -38,7 +73,7 @@ namespace Cloudinary {
 
         public function test_upload()
         {
-            $result = Uploader::upload(TEST_IMG);
+            $result = Uploader::upload(TEST_IMG, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG)]);
             $this->assertEquals($result["width"], 241);
             $this->assertEquals($result["height"], 51);
             $expected_signature = Cloudinary::api_sign_request(
@@ -51,9 +86,24 @@ namespace Cloudinary {
             $this->assertEquals($result["signature"], $expected_signature);
             Curl::mockUpload($this);
 
-            Uploader::upload(TEST_IMG, array("ocr" => "adv_ocr"));
+            Uploader::upload(TEST_IMG, array("ocr" => "adv_ocr", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $fields = Curl::$instance->fields();
             $this->assertArraySubset(array("ocr" => "adv_ocr"), $fields);
+        }
+
+        public function test_upload_responsive_breakpoints_cache()
+        {
+            $cache = ResponsiveBreakpointsCache::instance();
+            $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
+
+            $result = Uploader::upload(\Cloudinary\TEST_IMG, self::$rbp_params);
+
+            $res = $cache->get(
+                $result["public_id"],
+                ["transformation" => self::$rbp_trans, "format" => self::$rbp_format]
+            );
+
+            $this::assertEquals(self::$rbp_values, $res);
         }
 
         public function test_rename()
@@ -91,6 +141,23 @@ namespace Cloudinary {
             $this->assertArraySubset(array("ocr" => "adv_ocr"), $fields);
         }
 
+        public function test_explicit_responsive_breakpoints_cache()
+        {
+            $cache = ResponsiveBreakpointsCache::instance();
+            $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
+
+            $upload_result = Uploader::upload(\Cloudinary\TEST_IMG, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG),]);
+
+            $result = Uploader::explicit($upload_result["public_id"], self::$rbp_params);
+
+            $res = $cache->get(
+                $result["public_id"],
+                ["transformation" => self::$rbp_trans, "format" => self::$rbp_format]
+            );
+
+            $this::assertEquals(self::$rbp_values, $res);
+        }
+
         public function test_build_eager()
         {
             $eager = array(
@@ -108,7 +175,7 @@ namespace Cloudinary {
         public function test_eager()
         {
             Curl::mockUpload($this);
-            Uploader::upload(TEST_IMG, array("eager" => array("crop" => "scale", "width" => "2.0")));
+            Uploader::upload(TEST_IMG, array("eager" => array("crop" => "scale", "width" => "2.0"), "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $fields = Curl::$instance->fields();
             $this->assertArraySubset(array("eager" => "c_scale,w_2.0"), $fields);
         }
@@ -118,7 +185,10 @@ namespace Cloudinary {
             Curl::mockUpload($this);
             Uploader::upload(
                 TEST_IMG,
-                array("transformation" => array("crop" => "scale", "width" => "2.0"), "async" => true)
+                array(
+                    "transformation" => array("crop" => "scale", "width" => "2.0"),
+                    "async" => true,
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),)
             );
             $fields = Curl::$instance->fields();
             $this->assertArraySubset(array("async" => true), $fields);
@@ -129,7 +199,10 @@ namespace Cloudinary {
             Curl::mockUpload($this);
             $values = ['auto:advanced', 'auto:best', '80:420', 'none'];
             foreach ($values as $value) {
-                Uploader::upload(TEST_IMG, ["quality_override" => $value]);
+                Uploader::upload(TEST_IMG, [
+                    "quality_override" => $value,
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
+                    ]);
                 assertParam($this, "quality_override", $value);
                 Uploader::explicit(
                     "api_test",
@@ -142,9 +215,9 @@ namespace Cloudinary {
         public function test_headers()
         {
             Curl::mockUpload($this);
-            Uploader::upload(TEST_IMG, array("headers" => array("Link: 1")));
+            Uploader::upload(TEST_IMG, array("headers" => array("Link: 1"), "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             assertParam($this, "headers", "Link: 1");
-            Uploader::upload(TEST_IMG, array("headers" => array("Link" => "1")));
+            Uploader::upload(TEST_IMG, array("headers" => array("Link" => "1"), "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             assertParam($this, "headers", "Link: 1");
         }
 
@@ -158,7 +231,7 @@ namespace Cloudinary {
         public function test_tags()
         {
             $api = new \Cloudinary\Api();
-            $result = Uploader::upload(TEST_IMG);
+            $result = Uploader::upload(TEST_IMG, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG),]);
             Curl::mockUpload($this);
             Uploader::add_tag("tag1", "foobar");
             assertUrl($this, "/image/tags");
@@ -201,7 +274,6 @@ namespace Cloudinary {
          */
         public function test_huge_public_id_list()
         {
-            $api = new \Cloudinary\Api();
             $ids = array();
             for ($i = 1; $i < 200; $i++) {
                 $ids[] = "foobarfoobarfoobarfoobarfoobar";
@@ -212,10 +284,9 @@ namespace Cloudinary {
 
         public function test_use_filename()
         {
-            $api = new \Cloudinary\Api();
-            $result = Uploader::upload(TEST_IMG, array("use_filename" => true));
+            $result = Uploader::upload(TEST_IMG, array("use_filename" => true, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $this->assertRegExp('/logo_[a-zA-Z0-9]{6}/', $result["public_id"]);
-            $result = Uploader::upload(TEST_IMG, array("use_filename" => true, "unique_filename" => false));
+            $result = Uploader::upload(TEST_IMG, array("use_filename" => true, "unique_filename" => false, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $this->assertEquals("logo", $result["public_id"]);
         }
 
@@ -223,7 +294,7 @@ namespace Cloudinary {
         {
             //should allow whitelisted formats if allowed_formats
             $formats = array("png");
-            $result = Uploader::upload(TEST_IMG, array("allowed_formats" => $formats));
+            $result = Uploader::upload(TEST_IMG, array("allowed_formats" => $formats, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $this->assertEquals($result["format"], "png");
         }
 
@@ -233,7 +304,7 @@ namespace Cloudinary {
             $error_found = false;
             $formats = array("jpg");
             try {
-                Uploader::upload(TEST_IMG, array("allowed_formats" => $formats));
+                Uploader::upload(TEST_IMG, array("allowed_formats" => $formats, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             } catch (Exception $e) {
                 $error_found = true;
             }
@@ -244,7 +315,7 @@ namespace Cloudinary {
         {
             //should allow non whitelisted formats if type is specified and convert to that type
             $formats = array("jpg");
-            $result = Uploader::upload(TEST_IMG, array("allowed_formats" => $formats, "format" => "jpg"));
+            $result = Uploader::upload(TEST_IMG, array("allowed_formats" => $formats, "format" => "jpg", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $this->assertEquals("jpg", $result["format"]);
         }
 
@@ -252,7 +323,7 @@ namespace Cloudinary {
         {
             //should allow sending face and custom coordinates
             $face_coordinates = array(array(120, 30, 109, 51), array(121, 31, 110, 51));
-            $result = Uploader::upload(TEST_IMG, array("face_coordinates" => $face_coordinates, "faces" => true));
+            $result = Uploader::upload(TEST_IMG, array("face_coordinates" => $face_coordinates, "faces" => true, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $this->assertEquals($face_coordinates, $result["faces"]);
 
             $different_face_coordinates = array(array(122, 32, 111, 152));
@@ -279,7 +350,7 @@ namespace Cloudinary {
         {
             //should allow sending context
             $context = array("caption" => "cap=caps", "alt" => "alternative|alt=a");
-            $result = Uploader::upload(TEST_IMG, array("context" => $context));
+            $result = Uploader::upload(TEST_IMG, array("context" => $context, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
 
             $api = new \Cloudinary\Api();
             $info = $api->resource($result["public_id"]);
@@ -292,7 +363,7 @@ namespace Cloudinary {
         public function test_context_api()
         {
             $api = new \Cloudinary\Api();
-            $result = Uploader::upload(TEST_IMG);
+            $result = Uploader::upload(TEST_IMG, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG),]);
             Uploader::add_context('alt=testAlt|custom=testCustom', $result['public_id']);
             assertUrl($this, "/image/context");
             assertPost($this);
@@ -368,7 +439,7 @@ TAG
         public function test_manual_moderation()
         {
             // should support setting manual moderation status
-            $resource = Uploader::upload(TEST_IMG, array("moderation" => "manual"));
+            $resource = Uploader::upload(TEST_IMG, array("moderation" => "manual", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
             $this->assertEquals($resource["moderation"][0]["status"], "pending");
             $this->assertEquals($resource["moderation"][0]["kind"], "manual");
         }
@@ -380,7 +451,7 @@ TAG
         public function test_raw_conversion()
         {
             // should support requesting raw_convert
-            Uploader::upload("tests/docx.docx", array("resource_type" => "raw", "raw_convert" => "illegal"));
+            Uploader::upload("tests/docx.docx", array("resource_type" => "raw", "raw_convert" => "illegal", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
         }
 
         /**
@@ -390,7 +461,7 @@ TAG
         public function test_categorization()
         {
             // should support requesting categorization
-            Uploader::upload(TEST_IMG, array("categorization" => "illegal"));
+            Uploader::upload(TEST_IMG, array("categorization" => "illegal", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
         }
 
         /**
@@ -400,7 +471,7 @@ TAG
         public function test_detection()
         {
             // should support requesting detection
-            Uploader::upload(TEST_IMG, array("detection" => "illegal"));
+            Uploader::upload(TEST_IMG, array("detection" => "illegal", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
         }
 
         /**
@@ -410,7 +481,7 @@ TAG
         public function test_background_removal()
         {
             // should support requesting background_removal
-            Uploader::upload(TEST_IMG, array("background_removal" => "illegal"));
+            Uploader::upload(TEST_IMG, array("background_removal" => "illegal", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
         }
 
         public function test_large_upload()
@@ -429,17 +500,17 @@ TAG
 
             $resource = Uploader::upload_large(
                 $temp_file_name,
-                array("chunk_size" => 5243000, "tags" => array("upload_large_tag"))
+                array("chunk_size" => 5243000, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG))
             );
-            $this->assertEquals($resource["tags"], array("upload_large_tag"));
+            $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "raw");
             assertHasHeader($this,'X-Unique-Upload-Id');
 
             $resource = Uploader::upload_large(
                 $temp_file_name,
-                array("chunk_size" => 5243000, "tags" => array("upload_large_tag"), "resource_type" => "image")
+                array("chunk_size" => 5243000, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
             );
-            $this->assertEquals($resource["tags"], array("upload_large_tag"));
+            $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
@@ -448,9 +519,9 @@ TAG
             #where chunk size equals file size
             $resource = Uploader::upload_large(
                 $temp_file_name,
-                array("chunk_size" => 5880138, "tags" => array("upload_large_tag"), "resource_type" => "image")
+                array("chunk_size" => 5880138, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
             );
-            $this->assertEquals($resource["tags"], array("upload_large_tag"));
+            $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
@@ -461,7 +532,7 @@ TAG
         {
             $file = "http://cloudinary.com/images/old_logo.png";
             Curl::mockUpload($this);
-            Uploader::upload_large($file);
+            Uploader::upload_large($file, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG),]);
             // we can't mock "upload" method due to static modifier,
             // so we check that file is passed as url
             assertParam($this, "file", $file);
@@ -491,7 +562,8 @@ TAG
                 $transformation = array("crop" => "scale", "width" => "2.0", "angle" => 33);
                 Uploader::upload(
                     TEST_IMG,
-                    array("eager" => array("transformation" => array($transformation, $transformation)))
+                    array("eager" => array("transformation" => array($transformation, $transformation)),
+                        "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),)
                 );
             } catch (Exception $e) {
                 // Finally not supported in PHP 5.3
@@ -504,7 +576,8 @@ TAG
         {
             $response = Uploader::upload(
                 TEST_IMG,
-                array("responsive_breakpoints" => array(array("create_derived" => false)))
+                array("responsive_breakpoints" => array(array("create_derived" => false)),
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),)
             );
             $this->assertArrayHasKey(
                 "responsive_breakpoints",
@@ -530,7 +603,7 @@ TAG
                        '"start":"2018-02-22 16:20:57 +0200",' .
                        '"end":"2018-03-22 00:00 +0200"}]';
 
-            Uploader::upload(TEST_IMG, array("access_control" => $acl));
+            Uploader::upload(TEST_IMG, array("access_control" => $acl, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG)));
 
             assertParam($this, "access_control", $exp_acl);
 
@@ -543,7 +616,7 @@ TAG
                          '"start":"2019-02-22T16:20:57+0000",' .
                          '"end":"2019-03-22T00:00:00+0200"}]';
 
-            Uploader::upload(TEST_IMG, array("access_control" => $acl_2));
+            Uploader::upload(TEST_IMG, array("access_control" => $acl_2, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
 
             assertParam($this, "access_control", $exp_acl_2);
 
@@ -556,7 +629,7 @@ TAG
                            '"start":"2019-02-22 16:20:57 +0200",' .
                            '"end":"2019-03-22 00:00 +0200"}]';
 
-            Uploader::upload(TEST_IMG, array("access_control" => $acl_str));
+            Uploader::upload(TEST_IMG, array("access_control" => $acl_str, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
 
             assertParam($this, "access_control", $exp_acl_str);
 
@@ -572,7 +645,7 @@ TAG
                 )
             ) . ']';
 
-            Uploader::upload(TEST_IMG, array("access_control" => $array_of_acl));
+            Uploader::upload(TEST_IMG, array("access_control" => $array_of_acl, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG)));
 
             assertParam($this, "access_control", $exp_array_of_acl);
 
@@ -580,7 +653,7 @@ TAG
             $invalid_values = array(array(array()), array("not_an_array"), array(7357));
             foreach ($invalid_values as $value) {
                 try {
-                    Uploader::upload(TEST_IMG, array("access_control" => $value));
+                    Uploader::upload(TEST_IMG, array("access_control" => $value, "tags" => array(TEST_TAG, UNIQUE_TEST_TAG)));
                     $this->fail('InvalidArgumentException was not thrown');
                 } catch (\InvalidArgumentException $e) {
                 }
@@ -593,7 +666,7 @@ TAG
         public function test_responsive_breakpoints_format()
         {
             $result = Uploader::upload(TEST_IMG, array(
-                "tags" => UNIQUE_TEST_TAG,
+                "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
                 "responsive_breakpoints" => array(
                     "create_derived" => true,
                     "transformation" => array(

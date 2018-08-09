@@ -2,16 +2,15 @@
 
 namespace Cloudinary {
 
-    $base = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
-    require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
-    require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Uploader.php')));
-    require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Api.php')));
     require_once('TestHelper.php');
 
     use PHPUnit\Framework\TestCase;
 
     class ArchiveTest extends TestCase
     {
+        private $tag;
+        private $tags;
+
         public static function setUpBeforeClass()
         {
             Curl::$instance = new Curl();
@@ -19,14 +18,15 @@ namespace Cloudinary {
 
         public function setUp()
         {
+            $this->tag = "archive_test_" . SUFFIX;
+            $this->tags = array($this->tag, TEST_TAG, UNIQUE_TEST_TAG);
             \Cloudinary::reset_config();
             if (!\Cloudinary::config_get("api_secret")) {
                 $this->markTestSkipped('Please setup environment for Upload test to run');
             }
-            $this->tag = "php_test_" . rand(11111, 99999);
-
-            Uploader::upload("tests/logo.png", array("tags" => array($this->tag)));
-            Uploader::upload("tests/logo.png", array("tags" => array($this->tag), "width" => 10, "crop" => "scale"));
+            
+            Uploader::upload("tests/logo.png", array("tags" => $this->tags));
+            Uploader::upload("tests/logo.png", array("tags" => $this->tags, "width" => 10, "crop" => "scale"));
         }
 
         public function tearDown()
@@ -57,8 +57,12 @@ namespace Cloudinary {
             Uploader::create_zip(array("tags" => $this->tag, "skip_transformation_name" => true));
             assertUrl($this, '/image/generate_archive');
             assertParam($this, "tags[0]", $this->tag);
-            assertParam($this, "skip_transformation_name", 1,
-                "should support the 'skip_transformation_name' parameter");
+            assertParam(
+                $this,
+                "skip_transformation_name",
+                1,
+                "should support the 'skip_transformation_name' parameter"
+            );
         }
 
         public function test_allow_missing()
