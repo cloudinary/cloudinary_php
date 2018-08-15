@@ -1,7 +1,6 @@
 <?php namespace Cloudinary\Test\Cache\Storage;
 
 use Cloudinary\Cache\Storage\FileSystemKeyValueStorage;
-use FilesystemIterator;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -122,7 +121,7 @@ class FileSystemKeyValueStorageTest extends TestCase
 
         Assert::assertEquals($this->value, $this->getTestValue($this->key));
 
-        //Should set empty value
+        // Should set empty value
         $this->storage->set($this->key, '');
 
         Assert::assertEquals("", $this->getTestValue($this->key));
