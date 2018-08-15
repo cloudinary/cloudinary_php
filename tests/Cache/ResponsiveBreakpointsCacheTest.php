@@ -109,7 +109,7 @@ class ResponsiveBreakpointsCacheTest extends TestCase
             unset($e);
         }
         // No `finally` in PHP 5.4
-        $this->cache->delete("dummy");
+        $this->cache->delete(self::$publicId);
 
         $this::assertEquals(self::$breakpoints, $res);
     }
