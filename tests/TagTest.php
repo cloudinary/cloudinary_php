@@ -79,7 +79,7 @@ class TagTest extends TestCase
             $tag
         );
     }
-    
+
     /**
      * Should create a meta tag with client hints
      */
@@ -664,6 +664,29 @@ class TagTest extends TestCase
 
         $this->assertEquals($expected_custom_attributes_tag, $tag_with_custom_legacy_attribute);
     }
+
+    public function test_create_a_tag_with_legacy_srcset_attribute()
+    {
+        $srcset_attribute = ['srcset' =>'http://custom.srcset.attr/sample.jpg 100w'];
+        $tag_with_custom_srcset_attribute = cl_image_tag(
+            self::$public_id,
+            array_merge(
+                self::$common_image_options,
+                $srcset_attribute
+            )
+        );
+
+        $expected_custom_attributes_tag = self::get_expected_cl_image_tag(
+            self::$public_id,
+            self::$common_transformation_str,
+            '',
+            array(),
+            $srcset_attribute
+        );
+
+        $this->assertEquals($expected_custom_attributes_tag, $tag_with_custom_srcset_attribute);
+    }
+
 
     public function test_consume_custom_attributes_from_attributes_key()
     {
