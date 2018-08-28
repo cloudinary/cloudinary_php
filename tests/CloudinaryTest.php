@@ -11,7 +11,7 @@ class CloudinaryTest extends TestCase
     const DEFAULT_FETCH_PATH = 'http://res.cloudinary.com/test123/image/fetch/';
     const VIDEO_UPLOAD_PATH = 'http://res.cloudinary.com/test123/video/upload/';
     const TEST_ID = 'test';
-    
+
     const FETCH_URL = "http://cloudinary.com/images/logo.png";
 
     protected static $test_id = "test";
@@ -370,6 +370,12 @@ class CloudinaryTest extends TestCase
             $actual_transformation_str,
             $message
         );
+
+        $message = "Should handle empty list of chained transformations";
+        $actual_options = Cloudinary::chain_transformations($options, []);
+        $actual_transformation_str = Cloudinary::generate_transformation_string($actual_options);
+
+        $this->assertEquals("e_art:incognito", $actual_transformation_str, $message);
 
         $message = "Should handle empty options and empty list of chained transformations";
         $actual_options = Cloudinary::chain_transformations([], []);

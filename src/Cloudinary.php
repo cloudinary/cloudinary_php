@@ -697,7 +697,6 @@ class Cloudinary
      *
      * The result of this function is an updated $options parameter
      *
-     * @param string    $source          The Public ID of the resource
      * @param array     $options         Original options
      * @param array     $transformations Transformations to chain at the end
      *
@@ -705,9 +704,6 @@ class Cloudinary
      */
     public static function chain_transformations($options, $transformations)
     {
-        if (empty($transformations)) {
-            return $options;
-        }
         $transformations = \Cloudinary::build_array($transformations);
         // preserve url options
         $url_options = self::array_subset($options, self::$URL_KEYS);

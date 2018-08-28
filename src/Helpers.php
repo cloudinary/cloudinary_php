@@ -420,20 +420,22 @@ namespace {
      */
     function cl_image_tag($public_id, $options = array())
     {
-        $original_options = null;
+        $original_options = $options;
 
-        $srcset_data = array_merge(
-            Cloudinary::config_get("srcset", []),
-            Cloudinary::option_consume($options, 'srcset', [])
-        );
+        $attributes = Cloudinary::option_consume($options, 'attributes', array());
 
-        if (!empty($srcset_data)) {
-            // Since cloudinary_url is destructive, we need to save a copy of original options passed to this function
-            $original_options =  Cloudinary::array_copy($options);
+        $srcset_option = Cloudinary::option_consume($options, 'srcset', []);
+
+        $srcset_data = [];
+
+        if (!is_array($srcset_option)) {
+            $attributes = array_merge(["srcset" => $srcset_option], $attributes);
+        }
+        else {
+            $srcset_data = array_merge(Cloudinary::config_get("srcset", []), $srcset_option);
         }
 
         $source = cloudinary_url_internal($public_id, $options);
-        $attributes = Cloudinary::option_consume($options, 'attributes', array());
         if (isset($options["html_width"])) {
             $options["width"] = Cloudinary::option_consume($options, "html_width");
         }
@@ -743,7 +745,7 @@ namespace {
 
         // `source` tag under `picture` tag uses `srcset` attribute for both `srcset` and `src` urls
         if (!array_key_exists("srcset", $attributes)) {
-            $attributes["srcset"] = cloudinary_url_internal($public_id, $options);
+            $attributes["srcset"] = cloudinary_url($public_id, $options);
         }
 
         $media_attr = generate_media_attr(Cloudinary::option_get($options, "media"));
@@ -770,8 +772,11 @@ namespace {
         $public_id = Cloudinary::check_cloudinary_field($public_id, $options);
         Cloudinary::patch_fetch_format($options);
         foreach ($sources as $source) {
-            $source_options =  Cloudinary::array_copy($options);
-            $source_options = Cloudinary::chain_transformations($source_options, Cloudinary::option_get( $source, "transformation"));
+            $source_options =  $options;
+            $source_options = Cloudinary::chain_transformations(
+                $source_options,
+                Cloudinary::option_get($source, "transformation")
+            );
             $source_options["media"] = Cloudinary::array_subset($source, ['min_width', 'max_width']);
 
             $tag .= cl_source_tag($public_id, $source_options);
