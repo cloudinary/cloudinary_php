@@ -103,6 +103,7 @@ namespace Cloudinary {
             $upload_id = \Cloudinary::random_public_id();
             $chunk_size = \Cloudinary::option_get($options, "chunk_size", 20000000);
             $public_id = \Cloudinary::option_get($options, "public_id");
+            $filename = \Cloudinary::option_get($options, "filename", $file);
             $index = 0;
             $file_size = filesize($file);
             while (!feof($src)) {
@@ -126,7 +127,8 @@ namespace Cloudinary {
                         array_merge($options, array(
                             "public_id" => $public_id,
                             "content_range" => $range,
-                            "x_unique_upload_id" => $upload_id
+                            "x_unique_upload_id" => $upload_id,
+                            "filename" => $filename
                         ))
                     );
                 } catch (\Exception $e) {
@@ -364,7 +366,7 @@ namespace Cloudinary {
                 if (!preg_match(self::REMOTE_URL_REGEX, $file)) {
                     if (function_exists("curl_file_create")) {
                         $post_params['file'] = curl_file_create($file);
-                        $post_params['file']->setPostFilename($file);
+                        $post_params['file']->setPostFilename( basename(\Cloudinary::option_get($options, "filename", $file)));
                     } else {
                         $post_params["file"] = "@" . $file;
                     }
