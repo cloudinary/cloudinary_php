@@ -1410,6 +1410,19 @@ class CloudinaryTest extends TestCase
     }
 
     /**
+     * Should safely encode string to base64url format (with _ instead of / and - instead of +)
+     *
+     * @throws ReflectionException
+     */
+    public function test_base64url_encode()
+    {
+        $base64url_encode = new ReflectionMethod('Cloudinary', 'base64url_encode');
+        $base64url_encode->setAccessible(true);
+
+        $this->assertEquals("YWQ_Lix4MDl-IUAh",  $base64url_encode->invoke(null, "ad?.,x09~!@!"));
+    }
+
+    /**
      * Test array_copy function
      */
     public function test_array_copy()
