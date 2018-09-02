@@ -707,7 +707,7 @@ class Cloudinary
             if (!empty($fetch) || $resource_type === "fetch") {
                 $public_id = null;
                 $resource_type = "fetch";
-                $fetch = base64_encode($fetch);
+                $fetch = self::base64url_encode($fetch);
             } // Text overlay.
             elseif (!empty($text) || $resource_type === "text") {
                 $resource_type = "text";
@@ -757,7 +757,7 @@ class Cloudinary
         } // Handle fetch overlay from string definition.
         elseif (substr($layer, 0, strlen('fetch:')) === 'fetch:') {
             $url = substr($layer, strlen('fetch:'));
-            $b64 = base64_encode($url);
+            $b64 = self::base64url_encode($url);
             $layer = 'fetch:' . $b64;
         }
 
@@ -999,11 +999,7 @@ class Cloudinary
         $signature = null;
         if ($sign_url && !$auth_token) {
             $to_sign = implode("/", array_filter(array($transformation, $source_to_sign)));
-            $signature = str_replace(
-                array('+', '/', '='),
-                array('-', '_', ''),
-                base64_encode(sha1($to_sign . $api_secret, true))
-            );
+            $signature = self::base64url_encode(sha1($to_sign . $api_secret, true));
             $signature = 's--' . substr($signature, 0, 8) . '--';
         }
 

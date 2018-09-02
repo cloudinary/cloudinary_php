@@ -237,7 +237,7 @@ class CloudinaryTest extends TestCase
     /**
      * should support a string, integer and array of mixed types
      */
-    
+
     public function test_radius()
     {
         $radius_test_values = [
@@ -465,7 +465,7 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion(
             "test",
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc/test"
         );
     }
 
@@ -476,7 +476,7 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion(
             "test",
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc/test"
         );
     }
 
