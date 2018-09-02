@@ -370,6 +370,19 @@ class Cloudinary
     }
 
     /**
+     * Encodes data with URL safe base64
+     *
+     * @see https://tools.ietf.org/html/rfc4648#section-5
+     *
+     * @param mixed $data The data to encode.
+     *
+     * @return string The encoded data, as a string.
+     */
+    private static function base64url_encode($data) {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    /**
      * Helper function for making a recursive array copy while cloning objects on the way.
      *
      * @param array $array Source array
