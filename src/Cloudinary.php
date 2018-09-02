@@ -507,7 +507,7 @@ class Cloudinary
         $overlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "overlay"), "overlay");
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
         $if = Cloudinary::process_if(Cloudinary::option_consume($options, "if"));
-
+        $custom_action = Cloudinary::process_custom_action(Cloudinary::option_consume($options, "custom_action"));
         $aspect_ratio = Cloudinary::option_consume($options, "aspect_ratio");
         $opacity = Cloudinary::option_consume($options, "opacity");
         $quality = Cloudinary::option_consume($options, "quality");
@@ -528,6 +528,7 @@ class Cloudinary
             "e" => self::normalize_expression($effect),
             "eo" => $end_offset,
             "fl" => $flags,
+            "fn" => $custom_action,
             "h" => self::normalize_expression($height),
             "l" => $overlay,
             "o" => self::normalize_expression($opacity),
@@ -847,14 +848,27 @@ class Cloudinary
 
     private static function process_radius($radius)
     {
-        if(!is_array($radius)){
+        if (!is_array($radius)) {
             return $radius;
         }
 
-       return implode(
-            ":",
-            array_map("self::normalize_expression", $radius)
-       );
+        return implode(":", array_map("self::normalize_expression", $radius));
+    }
+
+    private static function process_custom_action($custom_action)
+    {
+        if (!is_array($custom_action)) {
+            return $custom_action;
+        }
+
+        $action_type = Cloudinary::option_get($custom_action, "action_type");
+        $source = Cloudinary::option_get($custom_action, "source");
+
+        if ($action_type == 'remote') {
+            $source = self::base64url_encode($source);
+        }
+
+        return implode(':', [$action_type, $source]);
     }
 
     private static function split_range($range)
