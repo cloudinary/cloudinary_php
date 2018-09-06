@@ -1,4 +1,29 @@
 
+1.11.0 / 2018-09-07
+===================
+
+New functionality and features
+------------------------------
+  * Add responsive breakpoints cache
+  * Add `cl_picture_tag` and `cl_source_tag` helpers
+  * Add support for web assembly and lambda functions in transformations.
+  * Add `font_antialiasing` and `font_hinting` text style parameters
+  * Add `cl_client_hints_meta_tag` helper
+  * Add support of `named` parameter in list transformations API
+  * Add support of `auto` value for `start_offset` transformation parameter (#123)
+  * Add `notification_url` param to the `update` method
+  * Add `format` parameter to responsive breakpoints settings
+  * Add legacy autoloader
+
+Other Changes
+-------------
+  * Improve PSR-2 compliance + PSR-4 autoload + documentation update
+  * Update `radius` transformation parameter
+  * Add `base64url_encode` internal helper
+  * Fix base64 encoding in urls.
+  * Use `X-Unique-Upload-Id` header in `upload_large`
+  * Fix sample project includes.
+
 1.10.0 / 2018-05-10
 ===================
 
