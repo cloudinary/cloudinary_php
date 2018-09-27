@@ -10,7 +10,7 @@ namespace Cloudinary {
      */
     class Uploader
     {
-        const REMOTE_URL_REGEX = '/^@|^ftp:|^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/';
+        const REMOTE_URL_REGEX = '/^@|^ftp:|^https?:|^s3:|^gs:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/';
 
         public static function build_upload_params(&$options)
         {
@@ -89,7 +89,7 @@ namespace Cloudinary {
                 array_merge($options, array("unsigned" => true, "upload_preset" => $upload_preset))
             );
         }
-        
+
         public static function upload($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);

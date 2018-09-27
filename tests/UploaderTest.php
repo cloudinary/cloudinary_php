@@ -2,12 +2,6 @@
 
 namespace Cloudinary {
 
-    $base = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
-    require_once($base . 'Cloudinary.php');
-    require_once($base . 'Uploader.php');
-    require_once($base . 'Api.php');
-    require_once('TestHelper.php');
-
     use Cloudinary;
     use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
     use Cloudinary\Cache\ResponsiveBreakpointsCache;
@@ -536,6 +530,26 @@ TAG
             // we can't mock "upload" method due to static modifier,
             // so we check that file is passed as url
             assertParam($this, "file", $file);
+        }
+
+        public function test_upload_non_local_file()
+        {
+            $files = [
+                "ftp://ftp.cloudinary.com/images/old_logo.png",
+                "http://cloudinary.com/images/old_logo.png",
+                "https://cloudinary.com/images/old_logo.png",
+                "s3://s3-us-west-2.amazonaws.com/cloudinary/images/old_logo.png",
+                "gs://cloudinary/images/old_logo.png",
+                Cloudinary::BLANK
+            ];
+
+            Curl::mockUpload($this);
+
+            foreach ($files as $file) {
+                Uploader::upload($file);
+
+                assertParam($this, "file", $file);
+            }
         }
 
         public function test_upload_preset()
