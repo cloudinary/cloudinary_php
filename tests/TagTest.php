@@ -991,7 +991,7 @@ class TagTest extends TestCase
 
         $this->assertEquals(
             "<video poster='" . sprintf($expected_url, '', 'jpg') ."'>" .
-            "<source src='" . sprintf($expected_url, 'vc_h265/', 'mp4') . "' type='video/mp4; codecs=hevc'>" .
+            "<source src='" . sprintf($expected_url, 'vc_h265/', 'mp4') . "' type='video/mp4; codecs=hev1'>" .
             "<source src='" . sprintf($expected_url, 'vc_vp9/', 'webm') . "' type='video/webm; codecs=vp9'>" .
             "<source src='" . sprintf($expected_url, 'vc_auto/', 'mp4') . "' type='video/mp4'>" .
             "<source src='" . sprintf($expected_url, 'vc_auto/', 'webm') . "' type='video/webm'>" .
@@ -1069,7 +1069,7 @@ class TagTest extends TestCase
 
         $this->assertEquals(
             "<video height='100' poster='" . sprintf($expected_url, 'vc_h264/', 'jpg') ."' width='200'>" .
-            "<source src='" . sprintf($expected_url, 'vc_h265/', 'mp4') . "' type='video/mp4; codecs=hevc'>" .
+            "<source src='" . sprintf($expected_url, 'vc_h265/', 'mp4') . "' type='video/mp4; codecs=hev1'>" .
             "<source src='" . sprintf($expected_url, 'vc_vp9/', 'webm') . "' type='video/webm; codecs=vp9'>" .
             "<source src='" . sprintf($expected_url, 'vc_auto/', 'mp4') . "' type='video/mp4'>" .
             "<source src='" . sprintf($expected_url, 'vc_auto/', 'webm') . "' type='video/webm'>" .

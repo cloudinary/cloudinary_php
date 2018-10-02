@@ -15,7 +15,7 @@ namespace {
         return [
             [
                 "type"            => "mp4",
-                "codecs"          => "hevc",
+                "codecs"          => "hev1",
                 "transformations" => ["video_codec" => "h265"]
             ],
             [
