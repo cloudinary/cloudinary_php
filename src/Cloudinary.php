@@ -580,7 +580,7 @@ class Cloudinary
         $overlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "overlay"), "overlay");
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
         $if = Cloudinary::process_if(Cloudinary::option_consume($options, "if"));
-        $custom_action = Cloudinary::process_custom_action(Cloudinary::option_consume($options, "custom_action"));
+        $custom_function = Cloudinary::process_custom_function(Cloudinary::option_consume($options, "custom_function"));
         $aspect_ratio = Cloudinary::option_consume($options, "aspect_ratio");
         $opacity = Cloudinary::option_consume($options, "opacity");
         $quality = Cloudinary::option_consume($options, "quality");
@@ -601,7 +601,7 @@ class Cloudinary
             "e" => self::normalize_expression($effect),
             "eo" => $end_offset,
             "fl" => $flags,
-            "fn" => $custom_action,
+            "fn" => $custom_function,
             "h" => self::normalize_expression($height),
             "l" => $overlay,
             "o" => self::normalize_expression($opacity),
@@ -948,20 +948,20 @@ class Cloudinary
         return implode(":", array_map("self::normalize_expression", $radius));
     }
 
-    private static function process_custom_action($custom_action)
+    private static function process_custom_function($custom_function)
     {
-        if (!is_array($custom_action)) {
-            return $custom_action;
+        if (!is_array($custom_function)) {
+            return $custom_function;
         }
 
-        $action_type = Cloudinary::option_get($custom_action, "action_type");
-        $source = Cloudinary::option_get($custom_action, "source");
+        $function_type = Cloudinary::option_get($custom_function, "function_type");
+        $source = Cloudinary::option_get($custom_function, "source");
 
-        if ($action_type == 'remote') {
+        if ($function_type == 'remote') {
             $source = self::base64url_encode($source);
         }
 
-        return implode(':', [$action_type, $source]);
+        return implode(':', [$function_type, $source]);
     }
 
     private static function split_range($range)
