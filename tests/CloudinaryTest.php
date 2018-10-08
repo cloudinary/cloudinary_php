@@ -618,44 +618,45 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion("test", $options, CloudinaryTest::DEFAULT_UPLOAD_PATH . "dn_150/test");
     }
 
-    public function test_custom_action()
+    public function test_custom_function()
     {
         $test_id = self::TEST_ID;
 
-        $custom_action_wasm = ['action_type' => 'wasm', 'source' => 'blur.wasm'];
-        $custom_action_wasm_str = 'wasm:blur.wasm';
+        $custom_function_wasm = ['function_type' => 'wasm', 'source' => 'blur.wasm'];
+        $custom_function_wasm_str = 'wasm:blur.wasm';
 
-        $custom_action_remote = [
-            'action_type' => 'remote',
-            'source' => 'https://df34ra4a.execute-api.us-west-2.amazonaws.com/default/cloudinaryAction'
+        $custom_function_remote = [
+            'function_type' => 'remote',
+            'source' => 'https://df34ra4a.execute-api.us-west-2.amazonaws.com/default/cloudinaryFunction'
         ];
 
-        $s = 'aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlBY3Rpb24';
-        $custom_action_remote_str = "remote:$s";
+        $s = 'aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlGdW5jd' .
+             'Glvbg';
+        $custom_function_remote_str = "remote:$s";
 
 
-        // should support custom action from string
-        $options = array('custom_action' => $custom_action_wasm_str);
+        // should support custom function from string
+        $options = array('custom_function' => $custom_function_wasm_str);
         $this->cloudinary_url_assertion(
             $test_id,
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_action_wasm_str/$test_id"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_function_wasm_str/$test_id"
         );
 
-        // should support custom action from array
-        $options = array('custom_action' => $custom_action_wasm);
+        // should support custom function from array
+        $options = array('custom_function' => $custom_function_wasm);
         $this->cloudinary_url_assertion(
             $test_id,
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_action_wasm_str/$test_id"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_function_wasm_str/$test_id"
         );
 
-        // should encode custom action source for remote action
-        $options = array('custom_action' => $custom_action_remote);
+        // should encode custom function source for remote function
+        $options = array('custom_function' => $custom_function_remote);
         $this->cloudinary_url_assertion(
             $test_id,
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_action_remote_str/$test_id"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_function_remote_str/$test_id"
         );
     }
 
