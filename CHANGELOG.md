@@ -1,4 +1,17 @@
 
+1.12.0 / 2018-10-11
+===================
+
+New functionality and features
+------------------------------
+  * Add support of custom codecs in video tag
+  * Add Google Cloud Storage protocol support in upload
+
+Other Changes
+-------------
+  * Add `update_version.sh` tool
+  * Rename `custom_action` to `custom_function`
+
 1.11.1 / 2018-09-12
 ===================
 
