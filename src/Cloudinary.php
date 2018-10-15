@@ -576,6 +576,7 @@ class Cloudinary
         }
 
         $video_codec = Cloudinary::process_video_codec_param(Cloudinary::option_consume($options, "video_codec"));
+        $fps = Cloudinary::process_fps(Cloudinary::option_consume($options, "fps"));
 
         $overlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "overlay"), "overlay");
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
@@ -602,6 +603,7 @@ class Cloudinary
             "eo" => $end_offset,
             "fl" => $flags,
             "fn" => $custom_function,
+            "fps" => $fps,
             "h" => self::normalize_expression($height),
             "l" => $overlay,
             "o" => self::normalize_expression($opacity),
@@ -907,10 +909,22 @@ class Cloudinary
         return $if;
     }
 
+    private static function float_to_string($value) {
+        if (!is_float($value)) {
+            return $value;
+        }
+
+        $locale = localeconv();
+        $string = strval($value);
+        $string = str_replace($locale['decimal_point'], '.', $string);
+
+        return $string;
+    }
+
     private static function normalize_expression($exp)
     {
         if (is_float($exp)) {
-            return number_format($exp, 1);
+            return self::float_to_string($exp);
         }
         if (preg_match('/^!.+!$/', $exp)) {
             return $exp;
@@ -1025,6 +1039,23 @@ class Cloudinary
         }
 
         return $out_param;
+    }
+
+    /**
+     * Serializes fps transformation parameter
+     *
+     * @param mixed $fps A single number, an array of mixed type, a string, including open-ended and closed range values
+     *                   Examples: '24-29.97', 24, 24.973, '-24', [24, 29.97]
+     *
+     * @return string
+     */
+    private static function process_fps($fps)
+    {
+        if (!is_array($fps)) {
+            return strval($fps);
+        }
+
+        return implode("-", array_map("self::normalize_expression", $fps));
     }
 
     // Warning: $options are being destructively updated!

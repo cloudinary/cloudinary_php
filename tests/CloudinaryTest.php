@@ -1044,6 +1044,31 @@ class CloudinaryTest extends TestCase
             CloudinaryTest::VIDEO_UPLOAD_PATH . "vc_h264:basic:3.1/video_id");
     }
 
+    /**
+     * Should support a single number, an array of mixed type and a string, including open-ended and closed range values
+     */
+    public function test_fps()
+    {
+        $fps_test_values = [
+            ['24-29.97', 'fps_24-29.97'],
+            [24, 'fps_24'],
+            [24.973, 'fps_24.973'],
+            ['24', 'fps_24'],
+            ['-24', 'fps_-24'],
+            ['$v', 'fps_$v'],
+            [[24, 29.97], 'fps_24-29.97'],
+            [['24', '$v'], 'fps_24-$v']
+        ];
+
+        foreach ($fps_test_values as $value) {
+            $this->cloudinary_url_assertion(
+                "video_id",
+                array('resource_type' => 'video', 'fps' => $value[0]),
+                CloudinaryTest::VIDEO_UPLOAD_PATH . $value[1] . "/video_id"
+            );
+        }
+    }
+
     public function test_audio_codec()
     {
         // should support a string value
