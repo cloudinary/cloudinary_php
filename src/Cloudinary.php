@@ -1041,9 +1041,17 @@ class Cloudinary
         return $out_param;
     }
 
+    /**
+     * Serializes fps transformation parameter
+     *
+     * @param mixed $fps A single number, an array of mixed type, a string, including open-ended and closed range values
+     *                   Examples: '24-29.97', 24, 24.973, '-24', [24, 29.97]
+     *
+     * @return string
+     */
     private static function process_fps($fps)
     {
-       if (!is_array($fps)) {
+        if (!is_array($fps)) {
             return strval($fps);
         }
 
