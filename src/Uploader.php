@@ -103,8 +103,10 @@ namespace Cloudinary {
             if (preg_match(self::REMOTE_URL_REGEX, $file)) {
                 return self::upload($file, $options);
             }
+            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
             $src = fopen($file, 'r');
-            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.' . pathinfo($file, PATHINFO_EXTENSION));
+            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.') .
+                              (!empty($file_extension)) ? "." . $file_extension : "";
             $upload = null;
             $upload_id = \Cloudinary::random_public_id();
             $chunk_size = \Cloudinary::option_get($options, "chunk_size", 20000000);
