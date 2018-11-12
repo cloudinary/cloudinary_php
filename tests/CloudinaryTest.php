@@ -564,7 +564,7 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion(
             "test",
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc/test"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "l_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test"
         );
     }
 
@@ -575,7 +575,7 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion(
             "test",
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc/test"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "u_fetch:aHR0cDovL2Nsb3VkaW5hcnkuY29tL2ltYWdlcy9vbGRfbG9nby5wbmc=/test"
         );
     }
 
@@ -631,7 +631,7 @@ class CloudinaryTest extends TestCase
         ];
 
         $s = 'aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlGdW5jd' .
-             'Glvbg';
+             'Glvbg==';
         $custom_function_remote_str = "remote:$s";
 
 
