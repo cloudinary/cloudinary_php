@@ -421,8 +421,9 @@ class Cloudinary
      *
      * @return string The encoded data, as a string.
      */
-    private static function base64url_encode($data) {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    private static function base64url_encode($data)
+    {
+        return strtr(base64_encode($data), '+/', '-_');
     }
 
     /**
