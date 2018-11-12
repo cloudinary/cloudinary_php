@@ -480,11 +480,15 @@ TAG
 
         public function test_large_upload()
         {
-            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.test.');
+            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.') . ".bmp";
             $temp_file = fopen($temp_file_name, 'w');
             fwrite(
                 $temp_file,
-                "BMJ\xB9Y\x00\x00\x00\x00\x00\x8A\x00\x00\x00|\x00\x00\x00x\x05\x00\x00x\x05\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\xC0\xB8Y\x00a\x0F\x00\x00a\x0F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\x00\x00\xFF\x00\x00\xFF\x00\x00\x00\x00\x00\x00\xFFBGRs\x00\x00\x00\x00\x00\x00\x00\x00T\xB8\x1E\xFC\x00\x00\x00\x00\x00\x00\x00\x00fff\xFC\x00\x00\x00\x00\x00\x00\x00\x00\xC4\xF5(\xFF\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+                "BMJ\xB9Y\x00\x00\x00\x00\x00\x8A\x00\x00\x00|\x00\x00\x00x\x05\x00\x00x\x05\x00\x00\x01\x00\x18\x00" .
+                "\x00\x00\x00\x00\xC0\xB8Y\x00a\x0F\x00\x00a\x0F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF" .
+                "\x00\x00\xFF\x00\x00\xFF\x00\x00\x00\x00\x00\x00\xFFBGRs\x00\x00\x00\x00\x00\x00\x00\x00T\xB8\x1E" .
+                "\xFC\x00\x00\x00\x00\x00\x00\x00\x00fff\xFC\x00\x00\x00\x00\x00\x00\x00\x00\xC4\xF5(\xFF\x00\x00\x00" .
+                "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
             );
             for ($i = 1; $i <= 588000; $i++) {
                 fwrite($temp_file, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF");
@@ -494,32 +498,44 @@ TAG
 
             $resource = Uploader::upload_large(
                 $temp_file_name,
-                array("chunk_size" => 5243000, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG))
+                array(
+                    "chunk_size" => 5243000,
+                    "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG),
+                    "allowed_formats" => ["bmp"]
+                )
             );
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "raw");
-            assertHasHeader($this,'X-Unique-Upload-Id');
+
+            assertHasHeader($this, 'X-Unique-Upload-Id');
 
             $resource = Uploader::upload_large(
                 $temp_file_name,
-                array("chunk_size" => 5243000, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
+                array("chunk_size" => 5243000,
+                      "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG),
+                      "resource_type" => "image")
             );
+
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
-            assertHasHeader($this,'X-Unique-Upload-Id');
+
+            assertHasHeader($this, 'X-Unique-Upload-Id');
 
             #where chunk size equals file size
             $resource = Uploader::upload_large(
                 $temp_file_name,
-                array("chunk_size" => 5880138, "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
+                array("chunk_size" => 5880138,
+                      "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG), "resource_type" => "image")
             );
+
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
-            assertHasHeader($this,'X-Unique-Upload-Id');
+
+            assertHasHeader($this, 'X-Unique-Upload-Id');
         }
 
         public function test_upload_large_url()
