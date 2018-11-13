@@ -406,6 +406,18 @@ namespace Cloudinary {
         }
 
         /**
+         * Should allow getting resource quality analysis
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_resource_quality_analysis()
+        {
+            $resource = $this->api->resource(self::$api_test, ["quality_analysis" => true]);
+            $this->assertArrayHasKey("quality_analysis", $resource);
+            $this->assertInternalType("double", $resource["quality_analysis"]["focus"]);
+        }
+
+        /**
          * Should allow deleting derived resource
          *
          * @throws Api\GeneralError
@@ -561,7 +573,7 @@ namespace Cloudinary {
             $this->assertNotNull($transformation);
             $this->assertArrayHasKey('used', $transformation);
         }
-        
+
         /**
          * Should allow listing of named transformations
          *

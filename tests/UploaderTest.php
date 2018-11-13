@@ -340,6 +340,20 @@ namespace Cloudinary {
             );
         }
 
+        public function test_quality_analysis()
+        {
+            //should return quality analysis information
+            $result = Uploader::upload(TEST_IMG, ["quality_analysis" => true, "tags" => [TEST_TAG, UNIQUE_TEST_TAG]]);
+
+            $this->assertArrayHasKey("quality_analysis", $result);
+            $this->assertInternalType("double", $result["quality_analysis"]["focus"]);
+
+            $explicitRes = Uploader::explicit($result["public_id"], ["quality_analysis" => true, "type" => "upload"]);
+
+            $this->assertArrayHasKey("quality_analysis", $explicitRes);
+            $this->assertInternalType("double", $explicitRes["quality_analysis"]["focus"]);
+        }
+
         public function test_context()
         {
             //should allow sending context
