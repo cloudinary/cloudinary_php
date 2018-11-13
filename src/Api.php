@@ -327,6 +327,7 @@ namespace Cloudinary {
          *          Supported for images, video, and audio. Default: false
          *      @var boolean    exif     Deprecated. Use image_metadata instead
          *      @var boolean    faces    Include a list of coordinates of detected faces. Default: false
+         *      @var boolean    quality_analysis Include quality analysis information. Default: false
          *      @var boolean    pages    Report the number of pages in multi-page documents (e.g., PDF). Default: false
          *      @var boolean    phash    Include the perceptual hash (pHash) of the uploaded photo for image similarity
          *          detection. Default: false
@@ -346,7 +347,17 @@ namespace Cloudinary {
             $uri = array("resources", $resource_type, $type, $public_id);
             $params = $this->only(
                 $options,
-                array("exif", "colors", "faces", "image_metadata", "phash", "pages", "coordinates", "max_results")
+                array(
+                    "exif",
+                    "colors",
+                    "faces",
+                    "quality_analysis",
+                    "image_metadata",
+                    "phash",
+                    "pages",
+                    "coordinates",
+                    "max_results"
+                )
             );
 
             return $this->call_api("get", $uri, $params, $options);
@@ -1282,7 +1293,7 @@ namespace Cloudinary {
             if (!$api_secret) {
                 throw new \InvalidArgumentException("Must supply api_secret");
             }
-            
+
             $api_url = implode("/", array_merge(array($prefix, "v1_1", $cloud_name), array_map('rawurlencode', $uri)));
 
             $params = array_filter(
