@@ -474,7 +474,7 @@ TAG
 
         /**
          * @expectedException \Cloudinary\Error
-         * @expectedExceptionMessage illegal is not a valid
+         * @expectedExceptionMessage Detection is invalid
          */
         public function test_detection()
         {
