@@ -25,10 +25,6 @@ namespace Cloudinary {
         protected static $api_test_4;
         protected static $api_test_5;
 
-        protected static $api_test_upload_preset;
-        protected static $api_test_upload_preset_2;
-        protected static $api_test_upload_preset_3;
-
         protected static $api_test_transformation = "api_test_transformation";
         protected static $api_test_transformation_2 = "api_test_transformation2";
         protected static $api_test_transformation_3 = "api_test_transformation3";
@@ -63,9 +59,6 @@ namespace Cloudinary {
             Curl::$instance = new Curl();
 
             self::$api_test_tag = UNIQUE_TEST_TAG;
-            self::$api_test_upload_preset = "api_test_upload_preset" . SUFFIX;
-            self::$api_test_upload_preset_2 = "api_test_upload_preset2" . SUFFIX;
-            self::$api_test_upload_preset_3 = "api_test_upload_preset3" . SUFFIX;
 
             self::$api_test = "api_test" . SUFFIX;
             self::$api_test_2 = "api_test2" . SUFFIX;
@@ -107,7 +100,6 @@ namespace Cloudinary {
 
             self::delete_resources($api);
             self::delete_transformations($api);
-            self::delete_presets($api);
             self::delete_streaming_profiles($api);
         }
 
@@ -145,26 +137,6 @@ namespace Cloudinary {
                 } catch (Exception $e) {
                 }
 
-            }
-        }
-
-        /**
-         * Delete all test related presets
-         *
-         * @param \Cloudinary\Api $api
-         */
-        protected static function delete_presets($api)
-        {
-            $presets = array(
-                self::$api_test_upload_preset,
-                self::$api_test_upload_preset_2,
-                self::$api_test_upload_preset_3
-            );
-            foreach ($presets as $p) {
-                try {
-                    $api->delete_upload_preset($p);
-                } catch (Exception $e) {
-                }
             }
         }
 
@@ -938,10 +910,10 @@ namespace Cloudinary {
         public function test28_create_upload_presets()
         {
             Curl::mockApi($this);
-            $this->api->create_upload_preset(array("name" => self::$api_test_upload_preset, "folder" => "folder"));
+            $this->api->create_upload_preset(array("name" => TEST_PRESET_NAME, "folder" => "folder"));
             assertUrl($this, "/upload_presets");
             assertPost($this);
-            assertParam($this, "name", self::$api_test_upload_preset);
+            assertParam($this, "name", TEST_PRESET_NAME);
             assertParam($this, "folder", "folder");
         }
 
@@ -965,26 +937,10 @@ namespace Cloudinary {
          */
         public function test29_get_upload_presets()
         {
-            $params = array_merge(
-                array(
-                    "unsigned" => true,
-                    "folder" => "folder",
-                    "tags" => array("a", "b", "c"),
-                    "context" => array("a" => "b", "c" => "d"),
-                ),
-                self::$scale_transformation
-            );
-            $result = $this->api->create_upload_preset($params);
-            $name = $result["name"];
-            $preset = $this->api->upload_preset($name);
-            $this->assertEquals($preset["name"], $name);
-            $this->assertEquals($preset["unsigned"], true);
-            $settings = $preset["settings"];
-            $this->api->delete_upload_preset($name);
-            $this->assertEquals($settings["folder"], "folder");
-            $this->assertEquals($settings["transformation"], array(self::$scale_transformation));
-            $this->assertEquals($settings["context"], array("a" => "b", "c" => "d"));
-            $this->assertEquals($settings["tags"], array("a", "b", "c"));
+            Curl::mockApi($this);
+            $this->api->upload_preset(TEST_PRESET_NAME);
+            assertUrl($this, "/upload_presets/" . TEST_PRESET_NAME);
+            assertGet($this);
         }
 
         /**
@@ -995,8 +951,8 @@ namespace Cloudinary {
         public function test30_delete_upload_presets()
         {
             Curl::mockApi($this);
-            $this->api->delete_upload_preset(self::$api_test_upload_preset);
-            assertUrl($this, "/upload_presets/" . self::$api_test_upload_preset);
+            $this->api->delete_upload_preset(TEST_PRESET_NAME);
+            assertUrl($this, "/upload_presets/" . TEST_PRESET_NAME);
             assertDelete($this);
         }
 
@@ -1009,11 +965,11 @@ namespace Cloudinary {
         {
             Curl::mockApi($this);
             $this->api->update_upload_preset(
-                "foobar",
+                TEST_PRESET_NAME,
                 array("colors" => true, "unsigned" => true, "disallow_public_id" => true)
             );
             assertPut($this);
-            assertUrl($this, "/upload_presets/foobar");
+            assertUrl($this, "/upload_presets/" . TEST_PRESET_NAME);
             assertParam($this, "colors", 1);
             assertParam($this, "unsigned", 1);
             assertParam($this, "disallow_public_id", 1);
