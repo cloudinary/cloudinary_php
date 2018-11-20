@@ -578,6 +578,7 @@ class Cloudinary
 
         $video_codec = Cloudinary::process_video_codec_param(Cloudinary::option_consume($options, "video_codec"));
         $fps = Cloudinary::process_fps(Cloudinary::option_consume($options, "fps"));
+        $keyframe_interval = Cloudinary::process_keyframe_interval(Cloudinary::option_consume($options, "keyframe_interval"));
 
         $overlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "overlay"), "overlay");
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
@@ -605,6 +606,7 @@ class Cloudinary
             "fl" => $flags,
             "fn" => $custom_function,
             "fps" => $fps,
+            "ki" => $keyframe_interval,
             "h" => self::normalize_expression($height),
             "l" => $overlay,
             "o" => self::normalize_expression($opacity),
@@ -1057,6 +1059,30 @@ class Cloudinary
         }
 
         return implode("-", array_map("self::normalize_expression", $fps));
+    }
+
+    /**
+     * Serializes keyframe_interval transformation parameter
+     *
+     * @param float|int|string $keyframe_interval A positive number or a string
+     *
+     * @return string
+     */
+    private static function process_keyframe_interval($keyframe_interval)
+    {
+        if (is_string($keyframe_interval) || $keyframe_interval == null) {
+            return $keyframe_interval;
+        }
+        if (!is_numeric($keyframe_interval)) {
+            throw new InvalidArgumentException("Keyframe interval should be a number or a string");
+        }
+        if ($keyframe_interval < 0) {
+            throw new InvalidArgumentException("Keyframe interval should be greater than zero");
+        }
+        if (is_int($keyframe_interval)) {
+            return $keyframe_interval . ".0";
+        }
+        return $keyframe_interval;
     }
 
     // Warning: $options are being destructively updated!
