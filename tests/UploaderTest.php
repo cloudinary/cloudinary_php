@@ -585,11 +585,13 @@ TAG
         public function test_upload_preset()
         {
             // should support unsigned uploading using presets
-            $api = new \Cloudinary\Api();
-            $preset = $api->create_upload_preset(array("folder" => "upload_folder", "unsigned" => true));
-            $result = Uploader::unsigned_upload(TEST_IMG, $preset["name"]);
-            $this->assertRegExp('/^upload_folder\/[a-z0-9]+$/', $result["public_id"]);
-            $api->delete_upload_preset($preset["name"]);
+            Curl::mockUpload($this);
+            Uploader::unsigned_upload(TEST_IMG, TEST_PRESET_NAME);
+            assertUrl($this, "/image/upload");
+            assertPost($this);
+            assertParam($this, "file");
+            assertNoParam($this, "signature");
+            assertParam($this, "upload_preset", TEST_PRESET_NAME);
         }
 
         /**

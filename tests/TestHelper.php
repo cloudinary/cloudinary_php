@@ -5,6 +5,7 @@ namespace Cloudinary {
     const RAW_FILE = "tests/docx.docx";
     const TEST_IMG = "tests/logo.png";
     const TEST_ICO = "tests/favicon.ico";
+    const TEST_PRESET_NAME = 'test_preset';
     const LOGO_SIZE = 3381;
     define("SUFFIX", getenv("TRAVIS_JOB_ID") ?: rand(11111, 99999));
     define('TEST_TAG', 'cloudinary_php');
