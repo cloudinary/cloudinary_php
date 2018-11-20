@@ -1069,6 +1069,36 @@ class CloudinaryTest extends TestCase
         }
     }
 
+    /**
+     * Should support a positive number or a string
+     */
+    public function test_keyframe_interval()
+    {
+        $test_values = [
+            [10, 'ki_10.0'],
+            [0.05, 'ki_0.05'],
+            [3.45, 'ki_3.45'],
+            [300, 'ki_300.0'],
+            ['10', 'ki_10'],
+        ];
+
+        foreach ($test_values as $value) {
+            $this->cloudinary_url_assertion(
+                'video_id',
+                array('resource_type' => 'video', 'keyframe_interval' => $value[0]),
+                CloudinaryTest::VIDEO_UPLOAD_PATH . $value[1] . "/video_id"
+            );
+        }
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function test_keyframe_interval_positive() {
+        $options = array('resource_type' => 'video', 'keyframe_interval' => -1);
+        Cloudinary::cloudinary_url('video_id', $options);
+    }
+
     public function test_audio_codec()
     {
         // should support a string value
