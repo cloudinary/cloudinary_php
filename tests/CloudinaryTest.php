@@ -19,6 +19,16 @@ class CloudinaryTest extends TestCase
     protected static $crop_transformation_str = 'c_crop,w_100';
     protected static $raw_transformation = "c_fill,e_grayscale,q_auto";
 
+    private static $custom_function_wasm = ['function_type' => 'wasm', 'source' => 'blur.wasm'];
+    private static $custom_function_wasm_str = 'wasm:blur.wasm';
+
+    private static $custom_function_remote = [
+        'function_type' => 'remote',
+        'source' => 'https://df34ra4a.execute-api.us-west-2.amazonaws.com/default/cloudinaryFn',
+    ];
+    private static $custom_function_remote_str =
+        'remote:aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlGbg==';
+
     private $range_test_pairs = [
         // integer values
         ["200", "200"], [200, "200"], [0, "0"],
@@ -621,42 +631,73 @@ class CloudinaryTest extends TestCase
     public function test_custom_function()
     {
         $test_id = self::TEST_ID;
-
-        $custom_function_wasm = ['function_type' => 'wasm', 'source' => 'blur.wasm'];
-        $custom_function_wasm_str = 'wasm:blur.wasm';
-
-        $custom_function_remote = [
-            'function_type' => 'remote',
-            'source' => 'https://df34ra4a.execute-api.us-west-2.amazonaws.com/default/cloudinaryFunction'
-        ];
-
-        $s = 'aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlGdW5jd' .
-             'Glvbg==';
-        $custom_function_remote_str = "remote:$s";
-
+        $wasm_str = self::$custom_function_wasm_str;
 
         // should support custom function from string
-        $options = array('custom_function' => $custom_function_wasm_str);
+        $options = array('custom_function' => self::$custom_function_wasm_str);
         $this->cloudinary_url_assertion(
             $test_id,
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_function_wasm_str/$test_id"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$wasm_str/$test_id"
         );
 
         // should support custom function from array
-        $options = array('custom_function' => $custom_function_wasm);
+        $options = array('custom_function' => self::$custom_function_wasm);
         $this->cloudinary_url_assertion(
             $test_id,
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_function_wasm_str/$test_id"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$wasm_str/$test_id"
         );
 
+        $remote_str = self::$custom_function_remote_str;
         // should encode custom function source for remote function
-        $options = array('custom_function' => $custom_function_remote);
+        $options = array('custom_function' => self::$custom_function_remote);
         $this->cloudinary_url_assertion(
             $test_id,
             $options,
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$custom_function_remote_str/$test_id"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_$remote_str/$test_id"
+        );
+    }
+
+    public function test_custom_pre_function_string()
+    {
+        $test_id = self::TEST_ID;
+        $wasm_str = self::$custom_function_wasm_str;
+
+        // should support custom pre function from string
+        $options = array('custom_pre_function' => self::$custom_function_wasm_str);
+        $this->cloudinary_url_assertion(
+            $test_id,
+            $options,
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_pre:$wasm_str/$test_id"
+        );
+    }
+
+    public function test_custom_pre_function_wasm_array()
+    {
+        $test_id = self::TEST_ID;
+        $wasm_str = self::$custom_function_wasm_str;
+
+        // should support custom pre function from array
+        $options = array('custom_pre_function' => self::$custom_function_wasm);
+        $this->cloudinary_url_assertion(
+            $test_id,
+            $options,
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_pre:$wasm_str/$test_id"
+        );
+    }
+
+    public function test_custom_pre_function_remote()
+    {
+        $test_id = self::TEST_ID;
+        $remote_str = self::$custom_function_remote_str;
+
+        // should encode custom pre function source for remote pre function
+        $options = array('custom_pre_function' => self::$custom_function_remote);
+        $this->cloudinary_url_assertion(
+            $test_id,
+            $options,
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "fn_pre:$remote_str/$test_id"
         );
     }
 
