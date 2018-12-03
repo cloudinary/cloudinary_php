@@ -584,6 +584,7 @@ class Cloudinary
         $underlay = Cloudinary::process_layer(Cloudinary::option_consume($options, "underlay"), "underlay");
         $if = Cloudinary::process_if(Cloudinary::option_consume($options, "if"));
         $custom_function = Cloudinary::process_custom_function(Cloudinary::option_consume($options, "custom_function"));
+        $custom_pre_function = Cloudinary::process_custom_pre_function(Cloudinary::option_consume($options, "custom_pre_function"));
         $aspect_ratio = Cloudinary::option_consume($options, "aspect_ratio");
         $opacity = Cloudinary::option_consume($options, "opacity");
         $quality = Cloudinary::option_consume($options, "quality");
@@ -604,7 +605,7 @@ class Cloudinary
             "e" => self::normalize_expression($effect),
             "eo" => $end_offset,
             "fl" => $flags,
-            "fn" => $custom_function,
+            "fn" => $custom_function ?: $custom_pre_function,
             "fps" => $fps,
             "ki" => $keyframe_interval,
             "h" => self::normalize_expression($height),
@@ -979,6 +980,12 @@ class Cloudinary
         }
 
         return implode(':', [$function_type, $source]);
+    }
+
+    private static function process_custom_pre_function($custom_function)
+    {
+        $value = self::process_custom_function($custom_function);
+        return $value ? 'pre:' . $value : null;
     }
 
     private static function split_range($range)
