@@ -181,7 +181,7 @@ function update_version
     read -p "Run the above commands automatically? (y/N): " confirm && [[ ${confirm} == [yY] || ${confirm} == [yY][eE][sS] ]] || { popd; return 0; }
 
     git add composer.json src/Cloudinary.php CHANGELOG.md
-    git commit -m "\"Version ${NEW_VERSION}\""
+    git commit -m "Version ${NEW_VERSION}"
     sed -e "1,/^${NEW_VERSION//./\\.}/d" \
         -e "/^=/d" \
         -e "/^$/d" \
