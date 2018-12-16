@@ -1,4 +1,25 @@
 
+1.13.0 / 2018-12-16
+===================
+
+New functionality and features
+------------------------------
+
+  * Add custom `pre` function support
+  * Add `fps` video transformation parameter
+  * Add `keyframe_interval` video transformation parameter
+  * Add `quality_analysis` upload parameter
+
+Other Changes
+-------------
+
+  * Fix file extension in `upload_large`
+  * Fix for Uploader.php to prevent uploads failing
+  * Fix missing padding in `base64url_encode`
+  * Mock upload presets tests
+  * Fix `test_detection` unit test
+  * Remove secure variables from travis.yml
+  
 1.12.0 / 2018-10-11
 ===================
 
