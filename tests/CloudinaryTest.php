@@ -103,6 +103,13 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion("test", $options, "https://res.cloudinary.com/test123/image/upload/test");
     }
 
+    public function test_secure_distribution_from_config()
+    {
+        // should use default secure distribution if secure=true set in config
+        Cloudinary::config(array("secure" => true));
+        $this->cloudinary_url_assertion("test", array(), "https://res.cloudinary.com/test123/image/upload/test");
+    }
+
     public function test_secure_distribution_overwrite()
     {
         // should allow overwriting secure distribution if secure=TRUE
