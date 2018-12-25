@@ -368,6 +368,9 @@ namespace Cloudinary {
             return $result;
         }
 
+        /**
+         * @throws Error
+         */
         public static function call_api($action, $params, $options = array(), $file = null)
         {
             $return_error = \Cloudinary::option_get($options, "return_error");
@@ -439,8 +442,11 @@ namespace Cloudinary {
             }
 
             $response = curl_exec($ch);
+
+            $errno = curl_errno($ch);
+
             $curl_error = null;
-            if (curl_errno($ch)) {
+            if ($errno != CURLE_OK) {
                 $curl_error = curl_error($ch);
             }
 
@@ -448,24 +454,42 @@ namespace Cloudinary {
             $response_data = $response;
 
             curl_close($ch);
-            if ($curl_error != null) {
-                throw new \Cloudinary\Error("Error in sending request to server - " . $curl_error);
+
+            if ($errno != CURLE_OK) {
+                $message = "Error in sending request to server";
+
+                // Provide user a better error message
+                if ($errno === CURLE_READ_ERROR) {
+                    // Note: race condition can happen here, not that critical, it's only for a message string
+                    if (!file_exists($file)) {
+                        $message .= " - file '{$file}' does not exist";
+                    } else {
+                        $message .= " - failed reading file '{$file}'";
+                    }
+                } else {
+                    $message .= " - $curl_error, errno - $errno";
+                }
+
+                throw new Error($message);
             }
+
             if ($code != 200 && $code != 400 && $code != 500 && $code != 401 && $code != 404) {
-                throw new \Cloudinary\Error(
+                throw new Error(
                     "Server returned unexpected status code - " . $code . " - " . $response_data,
                     $code
                 );
             }
+
             $result = json_decode($response_data, true);
             if ($result == null) {
-                throw new \Cloudinary\Error("Error parsing server response (" . $code . ") - " . $response_data);
+                throw new Error("Error parsing server response (" . $code . ") - " . $response_data);
             }
+
             if (isset($result["error"])) {
                 if ($return_error) {
                     $result["error"]["http_code"] = $code;
                 } else {
-                    throw new \Cloudinary\Error($result["error"]["message"], $code);
+                    throw new Error($result["error"]["message"], $code);
                 }
             }
 

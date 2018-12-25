@@ -582,6 +582,15 @@ TAG
             }
         }
 
+        /**
+         * @expectedException Cloudinary\Error
+         * @expectedExceptionMessage does not exist
+         */
+        public function test_upload_non_existing_file()
+        {
+            Uploader::upload(TEST_IMG . '_non_existing');
+        }
+
         public function test_upload_preset()
         {
             // should support unsigned uploading using presets
