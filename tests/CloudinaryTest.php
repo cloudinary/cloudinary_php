@@ -780,7 +780,10 @@ class CloudinaryTest extends TestCase
 
     public function test_exclude_version()
     {
-        // if exclude_version is true it should not append v1 to resources stored in folders and ignore the version parameter if exists
+        /** 
+         * if exclude_version is true it should not append v1 to resources stored in folders 
+         * and ignore the version parameter if exists
+         */
         $this->cloudinary_url_assertion(
             "folder/test",
             array("exclude_version" => true),
