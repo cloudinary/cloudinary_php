@@ -1102,6 +1102,7 @@ class Cloudinary
 
         $resource_type = Cloudinary::option_consume($options, "resource_type", "image");
         $version = Cloudinary::option_consume($options, "version");
+        $exclude_version = Cloudinary::option_consume($options, "exclude_version");
         $format = Cloudinary::option_consume($options, "format");
 
         $cloud_name = Cloudinary::option_consume($options, "cloud_name", Cloudinary::config_get("cloud_name"));
@@ -1163,7 +1164,7 @@ class Cloudinary
             !preg_match("/^v[0-9]+/", $source_to_sign) && empty($version)) {
             $version = "1";
         }
-        $version = $version ? "v" . $version : null;
+        $version = $version && $exclude_version !== true ? "v" . $version : null;
 
         $signature = null;
         if ($sign_url && !$auth_token) {
