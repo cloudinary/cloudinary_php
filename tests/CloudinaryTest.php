@@ -778,6 +778,28 @@ class CloudinaryTest extends TestCase
         $this->cloudinary_url_assertion("v1234/test", array(), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v1234/test");
     }
 
+    /**
+     * Should not set default version v1 to resources stored in folders and ignore the version parameter
+     * if exclude_version is set to true
+     */
+    public function test_exclude_version()
+    {
+        $this->cloudinary_url_assertion(
+            "folder/test",
+            array("exclude_version" => true),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "folder/test"
+        );
+
+        $this->cloudinary_url_assertion(
+            "sample.jpg",
+            array(
+                "version" => 1234,
+                "exclude_version" => true
+            ),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . "sample.jpg"
+        );
+    }
+
     public function test_shorten()
     {
         $options = array("shorten" => true);
