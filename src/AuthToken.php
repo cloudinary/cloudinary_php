@@ -59,7 +59,7 @@ class AuthToken
             array_push($token, "acl=" . self::escape_to_lower($acl));
         }
         $to_sign = $token;
-        if (isset($url)) {
+        if (isset($url) && !isset($acl)) {
             array_push($to_sign, "url=" . self::escape_to_lower($url));
         }
         $auth = self::digest(join("~", $to_sign), $key);
