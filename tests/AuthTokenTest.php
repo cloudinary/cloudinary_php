@@ -2,9 +2,6 @@
 
 use Cloudinary\AuthToken;
 
-$base = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
-require_once(join(DIRECTORY_SEPARATOR, array($base, 'src', 'Cloudinary.php')));
-
 use PHPUnit\Framework\TestCase;
 
 class AuthTokenTest extends TestCase
@@ -161,6 +158,22 @@ class AuthTokenTest extends TestCase
         $this->fail($message);
     }
 
+    /**
+     * @throws \Cloudinary\Error
+     */
+    public function test_should_ignore_url_if_acl_is_provided()
+    {
+        $acl_opts = ["key" => AuthTokenTest::KEY, "start_time" => 1111111111, "duration" => 300, "acl" => "/image/*"];
+        $acl_token = AuthToken::generate($acl_opts);
 
+        $acl_opts["url"] = "sample.jpg";
+
+        $acl_token_url_ignored = AuthToken::generate($acl_opts);
+
+        $this->assertEquals(
+            $acl_token,
+            $acl_token_url_ignored
+        );
+    }
 }
 
