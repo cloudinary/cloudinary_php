@@ -520,6 +520,7 @@ TAG
             );
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "raw");
+            $this->assertEquals($resource["original_filename"], pathinfo($temp_file_name, PATHINFO_FILENAME));
 
             assertHasHeader($this, 'X-Unique-Upload-Id');
 
@@ -527,11 +528,16 @@ TAG
                 $temp_file_name,
                 array("chunk_size" => 5243000,
                       "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG),
-                      "resource_type" => "image")
+                      "resource_type" => "image",
+                      "use_filename" => true,
+                      "unique_filename" => false
+                )
             );
 
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
+            $this->assertEquals(pathinfo($temp_file_name, PATHINFO_FILENAME), $resource["original_filename"]);
+            $this->assertEquals($resource["original_filename"], $resource["public_id"]);
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
 

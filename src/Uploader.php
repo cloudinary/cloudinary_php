@@ -98,12 +98,21 @@ namespace Cloudinary {
             return Uploader::call_cacheable_api("upload", $params, $options, $file);
         }
 
-        // Upload large raw files. Note that public_id should include an extension for best results.
+        /**
+         * Upload large files. Note that public_id should include an extension for best results.
+         *
+         * @param string    $file       The file to upload
+         * @param array     $options    Additional options
+         *
+         * @return mixed|null
+         * @throws \Exception
+         */
         public static function upload_large($file, $options = array())
         {
             if (preg_match(self::REMOTE_URL_REGEX, $file)) {
                 return self::upload($file, $options);
             }
+
             $file_extension = pathinfo($file, PATHINFO_EXTENSION);
             $src = fopen($file, 'r');
             $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.') .
@@ -119,14 +128,13 @@ namespace Cloudinary {
                 if ($current_loc >= $file_size) {
                     break;
                 }
+
                 $dest = fopen($temp_file_name, 'w');
                 stream_copy_to_stream($src, $dest, $chunk_size);
                 fclose($dest);
-                if (phpversion() >= "5.3.0") {
-                    clearstatcache(true, $temp_file_name);
-                } else {
-                    clearstatcache();
-                }
+
+                clearstatcache(true, $temp_file_name);
+
                 $temp_file_size = filesize($temp_file_name);
                 $range = "bytes " . $current_loc . "-" . ($current_loc + $temp_file_size - 1) . "/" . $file_size;
                 try {
@@ -136,7 +144,8 @@ namespace Cloudinary {
                             "public_id" => $public_id,
                             "content_range" => $range,
                             "x_unique_upload_id" => $upload_id
-                        ))
+                        )),
+                        $file
                     );
                 } catch (\Exception $e) {
                     unlink($temp_file_name);
@@ -152,13 +161,13 @@ namespace Cloudinary {
         }
 
 
-        // Upload large raw files. Note that public_id should include an extension for best results.
-        public static function upload_large_part($file, $options = array())
+        // Upload large files. Note that public_id should include an extension for best results.
+        public static function upload_large_part($file, $options = array(), $filename = null)
         {
             $params = Uploader::build_upload_params($options);
             $full_options = array_merge(array("resource_type" => "raw"), $options);
 
-            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file);
+            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file, $filename);
         }
 
         public static function destroy($public_id, $options = array())
@@ -348,18 +357,19 @@ namespace Cloudinary {
         /**
          * Calls Upload API and saves results to cache (if enabled)
          *
-         * @param string        $action     Action to call
-         * @param array         $params     Array of parameters
-         * @param array|null    $options    Optional. Additional options
-         * @param string|null   $file       Optional. File to upload
+         * @param string      $action   Action to call
+         * @param array       $params   Array of parameters
+         * @param array|null  $options  Optional. Additional options
+         * @param string|null $file     Optional. File to upload
+         * @param string|null $filename Optional. Filename of the uploaded file (may be different from file)
          *
          * @return mixed
          *
-         * @throws \Cloudinary\Error
+         * @throws Error
          */
-        public static function call_cacheable_api($action, $params, $options = array(), $file = null)
+        public static function call_cacheable_api($action, $params, $options = array(), $file = null, $filename = null)
         {
-            $result = self::call_api($action, $params, $options, $file);
+            $result = self::call_api($action, $params, $options, $file, $filename);
 
             if (\Cloudinary::option_get($options, "use_cache", \Cloudinary::config_get("use_cache", false))) {
                 self::save_responsive_breakpoints_to_cache($result);
@@ -369,9 +379,19 @@ namespace Cloudinary {
         }
 
         /**
+         * Perform API call
+         *
+         * @param string      $action   Action to call
+         * @param array       $params   Array of parameters
+         * @param array|null  $options  Optional. Additional options
+         * @param string|null $file     Optional. File to upload
+         * @param string|null $filename Optional. Filename of the uploaded file (may be different from file)
+         *
+         * @return mixed
+         *
          * @throws Error
          */
-        public static function call_api($action, $params, $options = array(), $file = null)
+        public static function call_api($action, $params, $options = array(), $file = null, $filename = null)
         {
             $return_error = \Cloudinary::option_get($options, "return_error");
             if (!\Cloudinary::option_get($options, "unsigned")) {
@@ -395,10 +415,13 @@ namespace Cloudinary {
                 }
             }
             if ($file) {
+                if (is_null($filename)) {
+                    $filename = $file;
+                }
                 if (!preg_match(self::REMOTE_URL_REGEX, $file)) {
                     if (function_exists("curl_file_create")) {
                         $post_params['file'] = curl_file_create($file);
-                        $post_params['file']->setPostFilename($file);
+                        $post_params['file']->setPostFilename($filename);
                     } else {
                         $post_params["file"] = "@" . $file;
                     }
