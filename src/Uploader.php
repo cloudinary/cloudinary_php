@@ -423,7 +423,7 @@ namespace Cloudinary {
                         $post_params['file'] = curl_file_create($file);
                         $post_params['file']->setPostFilename($filename);
                     } else {
-                        $post_params["file"] = "@" . $file;
+                        $post_params["file"] = "@{$file};filename={$filename}";
                     }
                 } else {
                     $post_params["file"] = $file;
