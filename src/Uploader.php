@@ -113,8 +113,12 @@ namespace Cloudinary {
                 return self::upload($file, $options);
             }
 
-            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
             $src = fopen($file, 'r');
+
+            // If not provided, preserve original file name in the upload
+            $options["filename"] = \Cloudinary::option_get($options, 'filename', $file);
+
+            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
             $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.') .
                               (!empty($file_extension) ? "." . $file_extension : "");
             $upload = null;
@@ -144,8 +148,7 @@ namespace Cloudinary {
                             "public_id" => $public_id,
                             "content_range" => $range,
                             "x_unique_upload_id" => $upload_id
-                        )),
-                        $file
+                        ))
                     );
                 } catch (\Exception $e) {
                     unlink($temp_file_name);
@@ -162,12 +165,12 @@ namespace Cloudinary {
 
 
         // Upload large files. Note that public_id should include an extension for best results.
-        public static function upload_large_part($file, $options = array(), $filename = null)
+        public static function upload_large_part($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);
             $full_options = array_merge(array("resource_type" => "raw"), $options);
 
-            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file, $filename);
+            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file);
         }
 
         public static function destroy($public_id, $options = array())
@@ -361,15 +364,14 @@ namespace Cloudinary {
          * @param array       $params   Array of parameters
          * @param array|null  $options  Optional. Additional options
          * @param string|null $file     Optional. File to upload
-         * @param string|null $filename Optional. Filename of the uploaded file (may be different from file)
          *
          * @return mixed
          *
          * @throws Error
          */
-        public static function call_cacheable_api($action, $params, $options = array(), $file = null, $filename = null)
+        public static function call_cacheable_api($action, $params, $options = array(), $file = null)
         {
-            $result = self::call_api($action, $params, $options, $file, $filename);
+            $result = self::call_api($action, $params, $options, $file);
 
             if (\Cloudinary::option_get($options, "use_cache", \Cloudinary::config_get("use_cache", false))) {
                 self::save_responsive_breakpoints_to_cache($result);
@@ -385,13 +387,12 @@ namespace Cloudinary {
          * @param array       $params   Array of parameters
          * @param array|null  $options  Optional. Additional options
          * @param string|null $file     Optional. File to upload
-         * @param string|null $filename Optional. Filename of the uploaded file (may be different from file)
          *
          * @return mixed
          *
          * @throws Error
          */
-        public static function call_api($action, $params, $options = array(), $file = null, $filename = null)
+        public static function call_api($action, $params, $options = array(), $file = null)
         {
             $return_error = \Cloudinary::option_get($options, "return_error");
             if (!\Cloudinary::option_get($options, "unsigned")) {
@@ -415,9 +416,8 @@ namespace Cloudinary {
                 }
             }
             if ($file) {
-                if (is_null($filename)) {
-                    $filename = $file;
-                }
+                $filename = \Cloudinary::option_get($options, 'filename', $file);
+
                 if (!preg_match(self::REMOTE_URL_REGEX, $file)) {
                     if (function_exists("curl_file_create")) {
                         $post_params['file'] = curl_file_create($file);
