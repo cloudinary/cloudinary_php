@@ -100,6 +100,24 @@ namespace Cloudinary {
             $this::assertEquals(self::$rbp_values, $res);
         }
 
+        /*
+         * Should use filename passed in options as original_filename and not the actual filesystem file name
+         */
+        public function test_upload_custom_filename()
+        {
+            $custom_filename = UNIQUE_TEST_ID . '_' . basename(TEST_IMG);
+            $result = Uploader::upload(
+                TEST_IMG,
+                [
+                    'filename' => $custom_filename,
+                    'tags' => array(TEST_TAG, UNIQUE_TEST_TAG)
+                ]
+            );
+
+            // Note that original_filename strips extension
+            $this->assertEquals(pathinfo($custom_filename, PATHINFO_FILENAME), $result["original_filename"]);
+        }
+
         public function test_rename()
         {
             Curl::mockUpload($this);
@@ -494,7 +512,8 @@ TAG
 
         public function test_large_upload()
         {
-            $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.') . ".bmp";
+            $filename = UNIQUE_TEST_ID . '_cld_upload_large';
+            $temp_file_name = tempnam(sys_get_temp_dir(), $filename . ".") . ".bmp";
             $temp_file = fopen($temp_file_name, 'w');
             fwrite(
                 $temp_file,
@@ -520,6 +539,7 @@ TAG
             );
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "raw");
+            $this->assertEquals($resource["original_filename"], pathinfo($temp_file_name, PATHINFO_FILENAME));
 
             assertHasHeader($this, 'X-Unique-Upload-Id');
 
@@ -527,11 +547,17 @@ TAG
                 $temp_file_name,
                 array("chunk_size" => 5243000,
                       "tags" => array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG),
-                      "resource_type" => "image")
+                      "resource_type" => "image",
+                      "use_filename" => true,
+                      "unique_filename" => false,
+                      "filename" => $filename
+                )
             );
 
             $this->assertEquals($resource["tags"], array("upload_large_tag", TEST_TAG, UNIQUE_TEST_TAG));
             $this->assertEquals($resource["resource_type"], "image");
+            $this->assertEquals($filename, $resource["original_filename"]);
+            $this->assertEquals($resource["original_filename"], $resource["public_id"]);
             $this->assertEquals($resource["width"], 1400);
             $this->assertEquals($resource["height"], 1400);
 

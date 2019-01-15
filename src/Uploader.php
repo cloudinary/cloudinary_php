@@ -98,14 +98,27 @@ namespace Cloudinary {
             return Uploader::call_cacheable_api("upload", $params, $options, $file);
         }
 
-        // Upload large raw files. Note that public_id should include an extension for best results.
+        /**
+         * Upload large files. Note that public_id should include an extension for best results.
+         *
+         * @param string    $file       The file to upload
+         * @param array     $options    Additional options
+         *
+         * @return mixed|null
+         * @throws \Exception
+         */
         public static function upload_large($file, $options = array())
         {
             if (preg_match(self::REMOTE_URL_REGEX, $file)) {
                 return self::upload($file, $options);
             }
-            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
+
             $src = fopen($file, 'r');
+
+            // If not provided, preserve original file name in the upload
+            $options["filename"] = \Cloudinary::option_get($options, 'filename', $file);
+
+            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
             $temp_file_name = tempnam(sys_get_temp_dir(), 'cldupload.') .
                               (!empty($file_extension) ? "." . $file_extension : "");
             $upload = null;
@@ -119,14 +132,13 @@ namespace Cloudinary {
                 if ($current_loc >= $file_size) {
                     break;
                 }
+
                 $dest = fopen($temp_file_name, 'w');
                 stream_copy_to_stream($src, $dest, $chunk_size);
                 fclose($dest);
-                if (phpversion() >= "5.3.0") {
-                    clearstatcache(true, $temp_file_name);
-                } else {
-                    clearstatcache();
-                }
+
+                clearstatcache(true, $temp_file_name);
+
                 $temp_file_size = filesize($temp_file_name);
                 $range = "bytes " . $current_loc . "-" . ($current_loc + $temp_file_size - 1) . "/" . $file_size;
                 try {
@@ -152,7 +164,7 @@ namespace Cloudinary {
         }
 
 
-        // Upload large raw files. Note that public_id should include an extension for best results.
+        // Upload large files. Note that public_id should include an extension for best results.
         public static function upload_large_part($file, $options = array())
         {
             $params = Uploader::build_upload_params($options);
@@ -348,14 +360,14 @@ namespace Cloudinary {
         /**
          * Calls Upload API and saves results to cache (if enabled)
          *
-         * @param string        $action     Action to call
-         * @param array         $params     Array of parameters
-         * @param array|null    $options    Optional. Additional options
-         * @param string|null   $file       Optional. File to upload
+         * @param string      $action   Action to call
+         * @param array       $params   Array of parameters
+         * @param array|null  $options  Optional. Additional options
+         * @param string|null $file     Optional. File to upload
          *
          * @return mixed
          *
-         * @throws \Cloudinary\Error
+         * @throws Error
          */
         public static function call_cacheable_api($action, $params, $options = array(), $file = null)
         {
@@ -369,6 +381,15 @@ namespace Cloudinary {
         }
 
         /**
+         * Perform API call
+         *
+         * @param string      $action   Action to call
+         * @param array       $params   Array of parameters
+         * @param array|null  $options  Optional. Additional options
+         * @param string|null $file     Optional. File to upload
+         *
+         * @return mixed
+         *
          * @throws Error
          */
         public static function call_api($action, $params, $options = array(), $file = null)
@@ -395,12 +416,14 @@ namespace Cloudinary {
                 }
             }
             if ($file) {
+                $filename = \Cloudinary::option_get($options, 'filename', $file);
+
                 if (!preg_match(self::REMOTE_URL_REGEX, $file)) {
                     if (function_exists("curl_file_create")) {
                         $post_params['file'] = curl_file_create($file);
-                        $post_params['file']->setPostFilename($file);
+                        $post_params['file']->setPostFilename($filename);
                     } else {
-                        $post_params["file"] = "@" . $file;
+                        $post_params["file"] = "@{$file};filename={$filename}";
                     }
                 } else {
                     $post_params["file"] = $file;
