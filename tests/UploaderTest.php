@@ -596,6 +596,9 @@ TAG
                 "https://cloudinary.com/images/old_logo.png",
                 "s3://s3-us-west-2.amazonaws.com/cloudinary/images/old_logo.png",
                 "gs://cloudinary/images/old_logo.png",
+                "data:image/gif;charset=utf-8;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+                "data:image/gif;param1=value1;param2=value2;".
+                "base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
                 Cloudinary::BLANK
             ];
 
