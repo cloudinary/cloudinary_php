@@ -13,6 +13,8 @@ class SignatureVerificatorTest extends TestCase
     const TEST_VERSION = 1;
     const API_SECRET = 'X7qLTrsES31MzxxkxPPA-pAGGfU';
 
+    public static $mockedNow;
+
     //Cannot concat within a class property in PHP < 5.6, therefore it remains in 1 line
     protected static $notificationBody = '{"notification_type":"eager","eager":[{"transformation":"sp_full_hd/mp4","bytes":1055,"url":"http://res.cloudinary.com/demo/video/upload/sp_full_hd/v1533125278/dog.mp4","secure_url":"https://res.cloudinary.com/demo/video/upload/sp_full_hd/v1533125278/dog.mp4"}],"public_id":"dog","batch_id":"9b11fa058c61fa577f4ec516bf6ee756ac2aefef095af99aef1302142cc1694a"}';
     protected static $timestamp;
@@ -21,6 +23,20 @@ class SignatureVerificatorTest extends TestCase
 
     protected static $publicId = \Cloudinary\TEST_IMG;
     protected static $apiResponseSignature = '08d3107a5b2ad82e7d82c0b972218fbf20b5b1e0';
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        self::$mockedNow = 1549533574;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+
+        self::$mockedNow = null;
+    }
 
     public function setUp()
     {
@@ -211,5 +227,5 @@ namespace Cloudinary;
  */
 function time()
 {
-    return 1549533574;
+    return \Cloudinary\Test\SignatureVerificatorTest::$mockedNow ?: \time();
 }
