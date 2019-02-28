@@ -2,7 +2,11 @@
 
 namespace Cloudinary;
 
-class SignatureVerificator
+/**
+ * Class SignatureVerifier
+ * @package Cloudinary
+ */
+class SignatureVerifier
 {
     /**
      * @var array of parameter => allowed_types for notification signature validator

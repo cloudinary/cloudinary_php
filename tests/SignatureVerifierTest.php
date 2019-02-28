@@ -1,14 +1,14 @@
 <?php
 namespace Cloudinary\Test;
 
-use Cloudinary\SignatureVerificator;
+use Cloudinary\SignatureVerifier;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SignatureVerificatorTest
+ * Class SignatureVerifierTest
  * @package Cloudinary
  */
-class SignatureVerificatorTest extends TestCase
+class SignatureVerifierTest extends TestCase
 {
     const TEST_VERSION = 1;
     const API_SECRET = 'X7qLTrsES31MzxxkxPPA-pAGGfU';
@@ -16,7 +16,7 @@ class SignatureVerificatorTest extends TestCase
     public static $mockedNow;
 
     //Cannot concat within a class property in PHP < 5.6, therefore it remains in 1 line
-    protected static $notificationBody = '{"notification_type":"eager","eager":[{"transformation":"sp_full_hd/mp4","bytes":1055,"url":"http://res.cloudinary.com/demo/video/upload/sp_full_hd/v1533125278/dog.mp4","secure_url":"https://res.cloudinary.com/demo/video/upload/sp_full_hd/v1533125278/dog.mp4"}],"public_id":"dog","batch_id":"9b11fa058c61fa577f4ec516bf6ee756ac2aefef095af99aef1302142cc1694a"}';
+    protected static $notificationBody = '{"notification_type":"eager","eager":[{"transformation":"sp_full_hd/mp4","bytes":1055,"url":"http://res.cloudinary.com/demo/video/upload/sp_full_hd/v1533125278/dog.mp4","secure_url":"https://res.cloudinary.com/demo/video/upload/sp_full_hd/v1533125278/dog.mp4"}],"public_id":"dog","batch_id":"9b11fa058c61fa577f4ec516bf6ee756ac2aefef095af99aef1302142cc1694a"}'; //phpcs:ignore
     protected static $timestamp;
     protected static $notificationSignature = 'dfe82de1d9083fe0b7ea68070649f9a15b8874da';
     protected static $validFor = 60;
@@ -60,7 +60,7 @@ class SignatureVerificatorTest extends TestCase
         ];
 
         foreach ($signatureTestValues as $value) {
-            $result = SignatureVerificator::verifyNotificationSignature(
+            $result = SignatureVerifier::verifyNotificationSignature(
                 self::$notificationBody,
                 $value['timestamp'],
                 self::$notificationSignature,
@@ -83,7 +83,7 @@ class SignatureVerificatorTest extends TestCase
         ];
 
         foreach ($signatureTestValues as $value) {
-            $result = SignatureVerificator::verifyNotificationSignature(
+            $result = SignatureVerifier::verifyNotificationSignature(
                 $value['body'],
                 $value['timestamp'],
                 $value['signature']
@@ -95,7 +95,7 @@ class SignatureVerificatorTest extends TestCase
 
     public function testDefaultValidFor()
     {
-        $result = SignatureVerificator::verifyNotificationSignature(
+        $result = SignatureVerifier::verifyNotificationSignature(
             self::$notificationBody,
             self::$timestamp,
             self::$notificationSignature
@@ -108,7 +108,7 @@ class SignatureVerificatorTest extends TestCase
     {
         $reducedValidFor = self::$validFor - 1;
 
-        $result = SignatureVerificator::verifyNotificationSignature(
+        $result = SignatureVerifier::verifyNotificationSignature(
             self::$notificationBody,
             self::$timestamp,
             self::$notificationSignature,
@@ -126,7 +126,7 @@ class SignatureVerificatorTest extends TestCase
     {
         \Cloudinary::config(['api_secret' => null]);
 
-        SignatureVerificator::verifyNotificationSignature(
+        SignatureVerifier::verifyNotificationSignature(
             self::$notificationBody,
             self::$timestamp,
             self::$notificationSignature
@@ -153,7 +153,7 @@ class SignatureVerificatorTest extends TestCase
         foreach ($invalidValues as $value) {
             $success = false;
             try {
-                SignatureVerificator::verifyNotificationSignature(
+                SignatureVerifier::verifyNotificationSignature(
                     $value['body'],
                     $value['timestamp'],
                     $value['signature']
@@ -170,7 +170,7 @@ class SignatureVerificatorTest extends TestCase
         $signatureTestValues = [self::TEST_VERSION, (string)self::TEST_VERSION];
 
         foreach ($signatureTestValues as $value) {
-            $result = SignatureVerificator::verifyApiResponseSignature(
+            $result = SignatureVerifier::verifyApiResponseSignature(
                 self::$publicId,
                 $value,
                 self::$apiResponseSignature
@@ -183,17 +183,17 @@ class SignatureVerificatorTest extends TestCase
     public function testFailedApiResponseSignatureVerification()
     {
         $signatureTestValues = [
-            ['$publicId' => self::$publicId . 'a', 'version' => self::TEST_VERSION,
+            ['publicId' => self::$publicId . 'a', 'version' => self::TEST_VERSION,
                 'signature' => self::$apiResponseSignature],
-            ['$publicId' => self::$publicId, 'version' => self::TEST_VERSION + 1,
+            ['publicId' => self::$publicId, 'version' => self::TEST_VERSION + 1,
                 'signature' => self::$apiResponseSignature],
-            ['$publicId' => self::$publicId, 'version' => self::TEST_VERSION,
+            ['publicId' => self::$publicId, 'version' => self::TEST_VERSION,
                 'signature' => self::$apiResponseSignature . 'a']
         ];
 
         foreach ($signatureTestValues as $value) {
-            $result = SignatureVerificator::verifyApiResponseSignature(
-                $value['$publicId'],
+            $result = SignatureVerifier::verifyApiResponseSignature(
+                $value['publicId'],
                 $value['version'],
                 $value['signature']
             );
@@ -210,7 +210,7 @@ class SignatureVerificatorTest extends TestCase
     {
         \Cloudinary::config(['api_secret' => null]);
 
-        SignatureVerificator::verifyApiResponseSignature(
+        SignatureVerifier::verifyApiResponseSignature(
             self::$publicId,
             self::TEST_VERSION,
             self::$apiResponseSignature
@@ -227,5 +227,5 @@ namespace Cloudinary;
  */
 function time()
 {
-    return \Cloudinary\Test\SignatureVerificatorTest::$mockedNow ?: \time();
+    return Test\SignatureVerifierTest::$mockedNow ?: \time();
 }
