@@ -210,9 +210,8 @@ namespace Cloudinary {
 
         public static function generate_sprite($tag, $options = array())
         {
-            $transformation = \Cloudinary::generate_transformation_string(
-                array_merge(array("fetch_format" => \Cloudinary::option_get($options, "format")), $options)
-            );
+            $transOptions = array_merge(array("fetch_format" => \Cloudinary::option_get($options, "format")), $options);
+            $transformation = \Cloudinary::generate_transformation_string($transOptions);
             $params = array(
                 "timestamp" => time(),
                 "tag" => $tag,

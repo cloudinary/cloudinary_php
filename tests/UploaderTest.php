@@ -65,6 +65,31 @@ namespace Cloudinary {
             Curl::$instance = new Curl();
         }
 
+        public static function tearDownAfterClass()
+        {
+            if (!Cloudinary::config_get("api_secret")) {
+                self::fail("You need to configure the cloudinary api for the tests to work.");
+            }
+
+            $api = new Cloudinary\Api();
+
+            self::delete_resources($api);
+        }
+
+        /**
+         * Delete all test related resources
+         *
+         * @param \Cloudinary\Api $api an initialized api object
+         */
+        protected static function delete_resources($api)
+        {
+            try {
+                $api->delete_resources_by_tag(UNIQUE_TEST_TAG);
+                $api->delete_resources_by_tag(UNIQUE_TEST_SPRITE_TAG);
+            } catch (Exception $e) {
+            }
+        }
+
         public function test_upload()
         {
             $result = Uploader::upload(TEST_IMG, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG)]);
@@ -762,6 +787,24 @@ TAG
             $this->assertNotNull($result["responsive_breakpoints"]);
             $this->assertEquals($result["responsive_breakpoints"][0]["transformation"], "a_90");
             $this->assertRegExp('/\.gif$/', $result["responsive_breakpoints"][0]["breakpoints"][0]["url"]);
+        }
+
+        /**
+         * Should generate a sprite from all images associated with a tag
+         */
+        public function test_sprite_generation()
+        {
+            for ($i=0; $i<2; $i++) {
+                Uploader::upload(TEST_IMG, array("tags" => array(UNIQUE_TEST_SPRITE_TAG)));
+            }
+            $response = Uploader::generate_sprite(UNIQUE_TEST_SPRITE_TAG);
+            try {
+                Uploader::destroy($response['public_id'], array('type' => 'sprite'));
+            } catch (Exception $e) {
+                error_log("Failed to delete generated sprite: $e");
+            }
+
+            $this->assertEquals(2, count($response["image_infos"]));
         }
     }
 }
