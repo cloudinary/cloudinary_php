@@ -11,6 +11,7 @@ namespace Cloudinary {
     define('TEST_TAG', 'cloudinary_php');
     define('UNIQUE_TEST_TAG', TEST_TAG . "_" . SUFFIX);
     define('UNIQUE_TEST_ID', UNIQUE_TEST_TAG);
+    define('UNIQUE_TEST_SPRITE_TAG', UNIQUE_TEST_TAG . "_sprite");
 
     /**
      * Class Curl
