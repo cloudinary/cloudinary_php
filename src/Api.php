@@ -1018,6 +1018,26 @@ namespace Cloudinary {
         }
 
         /**
+         * Deletes folder
+         *
+         * Deleted folder must be empty, but can have descendant empty sub folders
+         *
+         * @param string $path    The folder to delete
+         * @param array  $options Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\BadRequest
+         * @throws Api\GeneralError
+         */
+        public function delete_folder($path, $options = array())
+        {
+            $uri = array("folders", $path);
+
+            return $this->call_api("delete", $uri, array(), $options);
+        }
+
+        /**
          * Lists upload mappings
          *
          * List all upload mappings by folder and its mapped template (URL).

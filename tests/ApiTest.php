@@ -1017,6 +1017,24 @@ namespace Cloudinary {
         }
 
         /**
+         * Should delete folder
+         *
+         * @throws Api\GeneralError
+         * @throws Exception
+         */
+        public function test_delete_folder()
+        {
+            $folderPath = UNIQUE_TEST_FOLDER;
+
+            Curl::mockApi($this);
+
+            $this->api->delete_folder($folderPath);
+
+            assertDelete($this);
+            assertUrl($this, "/folders/$folderPath");
+        }
+
+        /**
          * Should allow restoring resources
          *
          * @throws Api\GeneralError
