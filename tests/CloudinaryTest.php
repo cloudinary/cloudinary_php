@@ -1,6 +1,5 @@
 <?php
 
-use Cloudinary\Curl;
 use PHPUnit\Framework\TestCase;
 
 class CloudinaryTest extends TestCase
@@ -13,6 +12,11 @@ class CloudinaryTest extends TestCase
     const TEST_ID = 'test';
 
     const FETCH_URL = "http://cloudinary.com/images/logo.png";
+
+    const IMAGE_VERSION = '1234';
+    const IMAGE_VERSION_STR = 'v1234';
+    const DEFAULT_VERSION_STR = 'v1';
+    const TEST_FOLDER = 'folder/test';
 
     protected static $test_id = "test";
     protected static $crop_transformation = ['crop' => 'crop', 'width' => 100];
@@ -274,7 +278,7 @@ class CloudinaryTest extends TestCase
           [['10:20:$v:40'], 'r_10:20:$v:40']
         ];
 
-        foreach ($radius_test_values as $value){
+        foreach ($radius_test_values as $value) {
             $this->cloudinary_url_assertion(
                 CloudinaryTest::TEST_ID,
                 array("radius" => $value[0]),
@@ -769,34 +773,73 @@ class CloudinaryTest extends TestCase
     public function test_folder_version()
     {
         // should add version if public_id contains /
-        $this->cloudinary_url_assertion("folder/test", array(), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v1/folder/test");
         $this->cloudinary_url_assertion(
-            "folder/test",
-            array("version" => 123),
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "v123/folder/test"
+            self::TEST_FOLDER,
+            array(),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH .  self::DEFAULT_VERSION_STR . '/' . self::TEST_FOLDER
         );
-        $this->cloudinary_url_assertion("v1234/test", array(), CloudinaryTest::DEFAULT_UPLOAD_PATH . "v1234/test");
+        $this->cloudinary_url_assertion(
+            self::TEST_FOLDER,
+            array('version' => self::IMAGE_VERSION),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::IMAGE_VERSION_STR . '/' . self::TEST_FOLDER
+        );
+        $this->cloudinary_url_assertion(
+            self::IMAGE_VERSION_STR . '/' . self::TEST_ID,
+            array(),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::IMAGE_VERSION_STR . '/' . self::TEST_ID
+        );
     }
 
     /**
-     * Should not set default version v1 to resources stored in folders and ignore the version parameter
-     * if exclude_version is set to true
+     * Should not set default version v1 to resources stored in folders if force_version is set to false
      */
-    public function test_exclude_version()
+    public function test_force_version()
     {
         $this->cloudinary_url_assertion(
-            "folder/test",
-            array("exclude_version" => true),
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "folder/test"
+            self::TEST_FOLDER,
+            array(),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::DEFAULT_VERSION_STR . '/' . self::TEST_FOLDER
         );
 
         $this->cloudinary_url_assertion(
-            "sample.jpg",
+            self::TEST_FOLDER,
+            array('force_version' => false),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::TEST_FOLDER
+        );
+
+        // Explicitly set version is always passed
+        $this->cloudinary_url_assertion(
+            self::TEST_ID,
             array(
-                "version" => 1234,
-                "exclude_version" => true
+                'version' => self::IMAGE_VERSION,
+                'force_version' => false
             ),
-            CloudinaryTest::DEFAULT_UPLOAD_PATH . "sample.jpg"
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::IMAGE_VERSION_STR . '/' . self::TEST_ID
+        );
+
+        $this->cloudinary_url_assertion(
+            self::TEST_FOLDER,
+            array(
+                'version' => self::IMAGE_VERSION,
+                'force_version' => false
+            ),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::IMAGE_VERSION_STR . '/' . self::TEST_FOLDER
+        );
+
+        // Should use force_version from config
+        Cloudinary::config(array('force_version' => false));
+
+        $this->cloudinary_url_assertion(
+            self::TEST_FOLDER,
+            array(),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::TEST_FOLDER
+        );
+
+        // Should override config with options
+        $this->cloudinary_url_assertion(
+            self::TEST_FOLDER,
+            array('force_version' => true),
+            CloudinaryTest::DEFAULT_UPLOAD_PATH . self::DEFAULT_VERSION_STR . '/' . self::TEST_FOLDER
         );
     }
 
