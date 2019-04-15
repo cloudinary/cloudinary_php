@@ -356,7 +356,9 @@ namespace Cloudinary {
                     "phash",
                     "pages",
                     "coordinates",
-                    "max_results"
+                    "max_results",
+                    "next_cursor",
+                    "derived_next_cursor"
                 )
             );
 
