@@ -382,13 +382,40 @@ namespace Cloudinary {
          *
          * @throws Api\GeneralError
          */
-        public function test_resource_quality_analysis()
+        public function test07a_resource_quality_analysis()
         {
             $resource = $this->api->resource(self::$api_test, ["quality_analysis" => true]);
             $this->assertArrayHasKey("quality_analysis", $resource);
             $this->assertInternalType("double", $resource["quality_analysis"]["focus"]);
         }
 
+        /**
+         * Should allow next_cursor parameter
+         *
+         * @throws Api\GeneralError
+         */
+        public function test07b_resource_allows_next_cursor_parameter()
+        {
+            Curl::mockApi($this);
+
+            $this->api->resource(self::$api_test, ["next_cursor" => "foo"]);
+            assertGet($this);
+            assertParam($this, "next_cursor", "foo");
+        }
+
+        /**
+         * Should allow derived_next_cursor parameter
+         *
+         * @throws Api\GeneralError
+         */
+        public function test07c_resource_allows_derived_next_cursor_parameter()
+        {
+            Curl::mockApi($this);
+
+            $this->api->resource(self::$api_test, ["derived_next_cursor" => "foo"]);
+            assertGet($this);
+            assertParam($this, "derived_next_cursor", "foo");
+        }
         /**
          * Should allow deleting derived resource
          *
