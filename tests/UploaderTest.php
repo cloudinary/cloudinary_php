@@ -806,5 +806,13 @@ TAG
 
             $this->assertEquals(2, count($response["image_infos"]));
         }
+        
+        /**
+         * Should allow access_mode parameter in Uploader::build_upload_params
+         */
+        public function test_build_upload_params()
+        {
+            $this->assertEquals(Uploader::build_upload_params(array("access_mode" => "authenticated")), array("access_mode" => "authenticated"));
+        }
     }
 }
