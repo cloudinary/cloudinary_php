@@ -812,7 +812,7 @@ TAG
          */
         public function test_build_upload_params()
         {
-            $this->assertEquals(Uploader::build_upload_params(array("access_mode" => "authenticated")), array("access_mode" => "authenticated"));
+            $this->assertEquals(Uploader::build_upload_params(array("access_mode" => "authenticated"))["access_mode"], "authenticated");
         }
     }
 }
