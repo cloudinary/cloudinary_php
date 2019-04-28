@@ -1164,8 +1164,8 @@ class Cloudinary
         $source = $sources["source"];
         $source_to_sign = $sources["source_to_sign"];
 
-        if ($force_version && strpos($source_to_sign, "/") && !preg_match("/^https?:\//", $source_to_sign) &&
-            !preg_match("/^v[0-9]+/", $source_to_sign) && empty($version)) {
+        if (empty($version) && $force_version && strpos($source_to_sign, "/") &&
+            !preg_match("/^https?:\//", $source_to_sign) && !preg_match("/^v[0-9]+/", $source_to_sign)) {
             $version = "1";
         }
         $version = $version ? "v" . $version : null;
