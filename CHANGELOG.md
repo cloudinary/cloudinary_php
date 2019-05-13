@@ -1,4 +1,26 @@
 
+1.14.0 / 2019-05-13
+===================
+
+New functionality and features
+------------------------------
+  * Add `delete_folder` admin API
+  * Add `filename` parameter to `upload` API
+  * Add `derived_next_cursor` to `resource` admin API
+  * Add `SignatureVerifier` class
+  * Add `force_version` option to delivery urls
+
+Other Changes
+-------------
+  * Fix notice message in `generate_sprite` method
+  * Fix acl and url escaping in auth_token generation
+  * Ignore URL in AuthToken generation if ACL is provided
+  * Fix base64 regex validation template
+  * Add support of PHP 7.3
+  * Improve error handling when trying to upload non-existing file.
+  * Add `test_secure_distribution_from_config` unit test
+  * Remove redundant quotes in `update_version.sh`
+
 1.13.0 / 2018-12-16
 ===================
 
