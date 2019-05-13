@@ -316,7 +316,7 @@ namespace Cloudinary {
          *
          * @param string    $public_id   The public ID of the resource.
          * @param array $options {
- *
+         *
          *      @var string     resource_type   The type of file. Default: image. Valid values: image, raw, video.
          *      @var string     type            The storage type. Default: all.
          *          Valid values: upload, private, authenticated, facebook, twitter, gplus, instagram_name, gravatar,
@@ -333,7 +333,10 @@ namespace Cloudinary {
          *          detection. Default: false
          *      @var boolean    coordinates    Include previously specified custom cropping coordinates and faces
          *          coordinates. Default: false
-         *      @var int            max_results    The number of derived images to return. Default: 10. Maximum: 100
+         *      @var int        max_results    The number of derived images to return. Default: 10. Maximum: 100
+         *      @var string     derived_next_cursor If there are more derived images than max_results,
+         *          the derived_next_cursor value is returned as part of the response. You can then specify this value
+         *          as the derived_next_cursor parameter of the following listing request.
          * }
          *
          * @return Api\Response
@@ -357,7 +360,6 @@ namespace Cloudinary {
                     "pages",
                     "coordinates",
                     "max_results",
-                    "next_cursor",
                     "derived_next_cursor"
                 )
             );
