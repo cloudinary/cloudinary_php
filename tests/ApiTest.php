@@ -390,6 +390,19 @@ namespace Cloudinary {
         }
 
         /**
+         * Should allow derived_next_cursor parameter
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_resource_derived_next_cursor()
+        {
+            Curl::mockApi($this);
+
+            $this->api->resource(self::$api_test, ["derived_next_cursor" => "foo"]);
+            assertGet($this);
+            assertParam($this, "derived_next_cursor", "foo");
+        }
+        /**
          * Should allow deleting derived resource
          *
          * @throws Api\GeneralError
