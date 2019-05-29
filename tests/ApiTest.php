@@ -585,12 +585,17 @@ namespace Cloudinary {
         {
             Curl::mockApi($this);
             $this->api->transformation(self::$scale_transformation_str, array("next_cursor" => "234123132345"));
-            assertUrl($this, "/transformations/" . self::$encoded_scale_transformation_str);
+            assertUrl($this, "/transformations");
             assertParam(
                 $this,
                 "next_cursor",
                 "234123132345",
                 "api->transformation should pass the next_cursor paramter"
+            );
+            assertParam(
+                $this,
+                "transformation",
+                self::$scale_transformation_str
             );
         }
 
@@ -645,9 +650,10 @@ namespace Cloudinary {
         {
             Curl::mockApi($this);
             $this->api->update_transformation(self::$scale_transformation_str, array("allowed_for_strict" => true));
-            assertUrl($this, "/transformations/" . self::$encoded_scale_transformation_str);
+            assertUrl($this, "/transformations");
             assertPut($this);
             assertParam($this, "allowed_for_strict", 1);
+            assertParam($this, "transformation", self::$scale_transformation_str);
         }
 
         /**
@@ -659,8 +665,9 @@ namespace Cloudinary {
         {
             Curl::mockApi($this);
             $this->api->create_transformation(self::$api_test_transformation, self::$scale_transformation);
-            assertUrl($this, "/transformations/" . self::$api_test_transformation);
+            assertUrl($this, "/transformations");
             assertPost($this);
+            assertParam($this, "name", self::$api_test_transformation);
             assertParam($this, "transformation", self::$scale_transformation_str);
         }
 
@@ -685,6 +692,44 @@ namespace Cloudinary {
             $this->assertNotEquals($transformation, null);
             $this->assertEquals($transformation["info"], array($updated_transformation));
             $this->assertEquals($transformation["used"], false);
+        }
+
+        /**
+         * Should allow creating unnamed transformation with specified format
+         *
+         * @throws Api\GeneralError
+         */
+        public function test15b_transformation_create_unnamed_with_format()
+        {
+            Curl::mockApi($this);
+
+            $with_extension = self::$scale_transformation;
+            $with_extension["format"] = "jpg";
+            $with_extension_str = self::$scale_transformation_str . "/jpg";
+            $this->api->create_transformation($with_extension_str, $with_extension);
+            assertUrl($this, "/transformations");
+            assertPost($this);
+            assertParam($this, "name", $with_extension_str);
+            assertParam($this, "transformation", $with_extension_str);
+        }
+
+        /**
+         * Should allow creating unnamed extensionless transformation
+         *
+         * @throws Api\GeneralError
+         */
+        public function test15c_transformation_create_unnamed_with_empty_format()
+        {
+            Curl::mockApi($this);
+
+            $with_extension = self::$scale_transformation;
+            $with_extension["format"] = "";
+            $with_extension_str = self::$scale_transformation_str . "/";
+            $this->api->create_transformation($with_extension_str, $with_extension);
+            assertUrl($this, "/transformations");
+            assertPost($this);
+            assertParam($this, "name", $with_extension_str);
+            assertParam($this, "transformation", $with_extension_str);
         }
 
         /**
@@ -713,7 +758,8 @@ namespace Cloudinary {
         {
             Curl::mockApi($this);
             $this->api->delete_transformation(self::$scale_transformation_str);
-            assertUrl($this, "/transformations/" . self::$encoded_scale_transformation_str);
+            assertUrl($this, "/transformations");
+            assertParam($this, "transformation", self::$scale_transformation_str);
             assertDelete($this);
         }
 
@@ -727,25 +773,28 @@ namespace Cloudinary {
             Curl::mockApi($this);
 
             $transformation = self::$scale_transformation_str . ",a_90";
-            $expected_url = '/transformations/' . self::$encoded_scale_transformation_str . '%2Ca_90';
+            $expected_url = '/transformations';
 
             // should pass 'invalidate' param when 'invalidate' is set to true
             $this->api->delete_transformation($transformation, array("invalidate" => true));
             assertUrl($this, $expected_url);
             assertDelete($this);
             assertParam($this, "invalidate", "1");
+            assertParam($this, "transformation", self::$scale_transformation_str . ',a_90');
 
             // should pass 'invalidate' param when 'invalidate' is set to false
             $this->api->delete_transformation($transformation, array("invalidate" => false));
             assertUrl($this, $expected_url);
             assertDelete($this);
             assertParam($this, "invalidate", "");
+            assertParam($this, "transformation", self::$scale_transformation_str . ',a_90');
 
             // should not pass 'invalidate' param if not set
             $this->api->delete_transformation($transformation);
             assertUrl($this, $expected_url);
             assertDelete($this);
             assertNoParam($this, "invalidate");
+            assertParam($this, "transformation", self::$scale_transformation_str . ',a_90');
         }
 
         /**

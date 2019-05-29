@@ -1592,20 +1592,41 @@ class Cloudinary
     {
         $eager = array();
         foreach (\Cloudinary::build_array($transformations) as $trans) {
-            $transformation = $trans;
-            if (is_string($transformation)) {
-                $single_eager = $transformation;
-            } else {
-                $format = \Cloudinary::option_consume($transformation, "format");
-                $single_eager = implode(
-                    "/",
-                    array_filter(array(\Cloudinary::generate_transformation_string($transformation), $format))
-                );
-            }
+            $single_eager = \Cloudinary::build_single_eager($trans);
             array_push($eager, $single_eager);
         }
 
         return implode("|", $eager);
+    }
+
+    /**
+     * Builds a single eager transformation which consists of transformation and (optionally) format joined by "/"
+     *
+     * @param  array|string $options Options containing transformation parameters and (optionally) a "format" key
+     *    format can be a string value (jpg, gif, etc) or can be set to "" (empty string).
+     *    The latter leads to transformation ending with "/", which means "No extension, use original format"
+     *    If format is not provided or set to None, only transformation is used (without the trailing "/")
+     *
+     * @return string
+     */
+    public static function build_single_eager($options)
+    {
+        if (is_string($options)) {
+            return $options;
+        }
+
+        $trans_str = \Cloudinary::generate_transformation_string($options);
+
+        if (empty($trans_str)) {
+            return "";
+        }
+
+        $file_format_str = "";
+        if (isset($options["format"])) {
+            $file_format_str = "/" . $options["format"];
+        }
+
+        return $trans_str . $file_format_str;
     }
 
     public static function private_download_url($public_id, $format, $options = array())
