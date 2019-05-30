@@ -800,11 +800,10 @@ namespace Cloudinary {
         public function delete_transformation($transformation, $options = array())
         {
             $uri = array("transformations");
-            $params = array();
+            $params = array("transformation" => \Cloudinary::build_single_eager($transformation));
             if (isset($options["invalidate"])) {
                 $params["invalidate"] = $options["invalidate"];
             }
-            $params["transformation"] = \Cloudinary::build_single_eager($transformation);
 
             return $this->call_api("delete", $uri, $params, $options);
         }
@@ -859,9 +858,7 @@ namespace Cloudinary {
         public function create_transformation($name, $definition, $options = array())
         {
             $uri = array("transformations");
-            $params = array("transformation" => $this->transformation_string($definition));
-            $params["name"] = $name;
-            $params["transformation"] = \Cloudinary::build_single_eager($definition);
+            $params = array("transformation" => \Cloudinary::build_single_eager($definition), "name" => $name);
 
             return $this->call_api("post", $uri, $params, $options);
         }

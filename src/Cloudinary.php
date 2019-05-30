@@ -1605,7 +1605,7 @@ class Cloudinary
      * @param  array|string $options Options containing transformation parameters and (optionally) a "format" key
      *    format can be a string value (jpg, gif, etc) or can be set to "" (empty string).
      *    The latter leads to transformation ending with "/", which means "No extension, use original format"
-     *    If format is not provided or set to None, only transformation is used (without the trailing "/")
+     *    If format is not provided or set to null, only transformation is used (without the trailing "/")
      *
      * @return string
      */
