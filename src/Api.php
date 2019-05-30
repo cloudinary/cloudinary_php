@@ -774,8 +774,9 @@ namespace Cloudinary {
          */
         public function transformation($transformation, $options = array())
         {
-            $uri = array("transformations", $this->transformation_string($transformation));
+            $uri = array("transformations");
             $params = $this->only($options, array("next_cursor", "max_results"));
+            $params["transformation"] = \Cloudinary::build_single_eager($transformation);
 
             return $this->call_api("get", $uri, $params, $options);
         }
@@ -798,8 +799,8 @@ namespace Cloudinary {
          */
         public function delete_transformation($transformation, $options = array())
         {
-            $uri = array("transformations", $this->transformation_string($transformation));
-            $params = array();
+            $uri = array("transformations");
+            $params = array("transformation" => \Cloudinary::build_single_eager($transformation));
             if (isset($options["invalidate"])) {
                 $params["invalidate"] = $options["invalidate"];
             }
@@ -830,11 +831,12 @@ namespace Cloudinary {
          */
         public function update_transformation($transformation, $updates = array(), $options = array())
         {
-            $uri = array("transformations", $this->transformation_string($transformation));
+            $uri = array("transformations");
             $params = $this->only($updates, array("allowed_for_strict"));
             if (isset($updates["unsafe_update"])) {
                 $params["unsafe_update"] = $this->transformation_string($updates["unsafe_update"]);
             }
+            $params["transformation"] = \Cloudinary::build_single_eager($transformation);
 
             return $this->call_api("put", $uri, $params, $options);
         }
@@ -855,8 +857,8 @@ namespace Cloudinary {
          */
         public function create_transformation($name, $definition, $options = array())
         {
-            $uri = array("transformations", $name);
-            $params = array("transformation" => $this->transformation_string($definition));
+            $uri = array("transformations");
+            $params = array("transformation" => \Cloudinary::build_single_eager($definition), "name" => $name);
 
             return $this->call_api("post", $uri, $params, $options);
         }
