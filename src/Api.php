@@ -952,7 +952,7 @@ namespace Cloudinary {
         {
             $uri = array("upload_presets", $name);
             $params = \Cloudinary\Uploader::build_upload_params($options);
-            $params = array_merge($params, $this->only($options, array("unsigned", "disallow_public_id")));
+            $params = array_merge($params, $this->only($options, array("unsigned", "disallow_public_id", "live")));
 
             return $this->call_api("put", $uri, $params, $options);
         }
@@ -981,7 +981,10 @@ namespace Cloudinary {
         public function create_upload_preset($options = array())
         {
             $params = \Cloudinary\Uploader::build_upload_params($options);
-            $params = array_merge($params, $this->only($options, array("name", "unsigned", "disallow_public_id")));
+            $params = array_merge(
+                $params,
+                $this->only($options, array("name", "unsigned", "disallow_public_id", "live"))
+            );
 
             return $this->call_api("post", array("upload_presets"), $params, $options);
         }
