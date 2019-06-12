@@ -1546,9 +1546,15 @@ class Cloudinary
         return \Cloudinary\AuthToken::generate($token_options);
     }
 
-    # Returns a Hash of parameters used to create an archive
-    # @param [Hash] options
-    # @private
+    /**
+     * @internal
+     *
+     * Returns an array of parameters used to create an archive
+     *
+     * @param array $options
+     *
+     * @return array
+     */
     public static function build_archive_params(&$options)
     {
         $params = array(
@@ -1563,6 +1569,9 @@ class Cloudinary
             "phash" => \Cloudinary::option_get($options, "phash"),
             "prefixes" => \Cloudinary::build_array(\Cloudinary::option_get($options, "prefixes")),
             "public_ids" => \Cloudinary::build_array(\Cloudinary::option_get($options, "public_ids")),
+            "fully_qualified_public_ids" => \Cloudinary::build_array(
+                \Cloudinary::option_get($options, "fully_qualified_public_ids")
+            ),
             "skip_transformation_name" => \Cloudinary::option_get($options, "skip_transformation_name"),
             "tags" => \Cloudinary::build_array(\Cloudinary::option_get($options, "tags")),
             "target_format" => \Cloudinary::option_get($options, "target_format"),
