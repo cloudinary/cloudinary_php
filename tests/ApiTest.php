@@ -971,7 +971,7 @@ namespace Cloudinary {
          */
         public function test28_create_upload_presets()
         {
-           // Curl::mockApi($this);
+            Curl::mockApi($this);
             $this->api->create_upload_preset(array("name" => TEST_PRESET_NAME, "folder" => "folder", "live" => true));
             assertUrl($this, "/upload_presets");
             assertPost($this);
