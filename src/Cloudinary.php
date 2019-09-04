@@ -877,6 +877,7 @@ class Cloudinary
         "/" => 'div',
         "+" => 'add',
         "-" => 'sub',
+        "^" => 'pow',
     );
     private static $PREDEFINED_VARS = array(
         "aspect_ratio" => "ar",
@@ -934,7 +935,7 @@ class Cloudinary
             return $exp;
         } else {
             if (empty(self::$IF_REPLACE_RE)) {
-                self::$IF_REPLACE_RE = '/((\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*)(?=[ _])|'.
+                self::$IF_REPLACE_RE = '/((\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*|\^)(?=[ _])|'.
                     implode('|', array_keys(self::$PREDEFINED_VARS)) . ')/';
             }
             if (isset($exp)) {

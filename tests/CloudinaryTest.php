@@ -1570,6 +1570,19 @@ class CloudinaryTest extends TestCase
         $this->assertEquals('$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end', $t);
     }
 
+    public function test_url_should_convert_operators()
+    {
+        $options = array(
+            'transformation' => array(
+                array('width' => 'initial_width ^ 2','height' => 'initial_height * 2', 'crop' => 'scale'),
+            ),
+        );
+
+        $result = Cloudinary::cloudinary_url("test", $options);
+        
+        $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . 'c_scale,h_ih_mul_2,w_iw_pow_2/test', $result);
+    }
+
     public function test_should_support_streaming_profile()
     {
         $options = array(
