@@ -1111,6 +1111,24 @@ namespace Cloudinary {
         }
 
         /**
+         * Should create folder
+         *
+         * @throws Api\GeneralError
+         * @throws Exception
+         */
+        public function test_create_folder()
+        {
+            $folderPath = 'folder7';
+
+            Curl::mockApi($this);
+
+            $this->api->create_folder($folderPath);
+
+            assertPost($this);
+            assertUrl($this, "/folders/$folderPath");
+        }
+
+        /**
          * Should delete folder
          *
          * @throws Api\GeneralError

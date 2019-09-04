@@ -1042,6 +1042,26 @@ namespace Cloudinary {
         }
 
         /**
+         * Creates folder
+         *
+         * Creates an empty folder
+         *
+         * @param string $path    The folder path to create
+         * @param array  $options Additional options
+         *
+         * @return Api\Response
+         *
+         * @throws Api\BadRequest
+         * @throws Api\GeneralError
+         */
+        public function create_folder($path, $options = array())
+        {
+            $uri = array("folders", $path);
+
+            return $this->call_api("post", $uri, array(), $options);
+        }
+
+        /**
          * Deletes folder
          *
          * Deleted folder must be empty, but can have descendant empty sub folders
