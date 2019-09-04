@@ -1111,7 +1111,7 @@ namespace Cloudinary {
         }
 
         /**
-         * Should delete folder
+         * Should create folder
          *
          * @throws Api\GeneralError
          * @throws Exception
