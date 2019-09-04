@@ -994,7 +994,13 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#list_all_root_folders
          *
-         * @param array $options    Additional options
+         * @param array $options {
+         *
+         *      @var int     max_results     Max number of root folders to return. Default: 2000. Maximum: 2000
+         *      @var string  next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as the
+         *          next_cursor parameter of the following listing request.
+         * }
          *
          * @return Api\Response
          *
@@ -1002,7 +1008,9 @@ namespace Cloudinary {
          */
         public function root_folders($options = array())
         {
-            return $this->call_api("get", array("folders"), array(), $options);
+            $params = $this->only($options, array("next_cursor", "max_results"));
+
+            return $this->call_api("get", array("folders"), $params, $options);
         }
 
         /**
@@ -1013,7 +1021,13 @@ namespace Cloudinary {
          * @see https://cloudinary.com/documentation/admin_api#list_subfolders
          *
          * @param string    $of_folder_path The root folder
-         * @param array     $options        Additional options
+         * @param array $options {
+         *
+         *      @var int     max_results     Max number of sub-folders to return. Default: 2000. Maximum: 2000
+         *      @var string  next_cursor     When a listing request has more results to return than max_results,
+         *          the next_cursor value is returned as part of the response. You can then specify this value as the
+         *          next_cursor parameter of the following listing request.
+         * }
          *
          * @return Api\Response
          *
@@ -1022,8 +1036,9 @@ namespace Cloudinary {
         public function subfolders($of_folder_path, $options = array())
         {
             $uri = array("folders", $of_folder_path);
+            $params = $this->only($options, array("next_cursor", "max_results"));
 
-            return $this->call_api("get", $uri, array(), $options);
+            return $this->call_api("get", $uri, $params, $options);
         }
 
         /**

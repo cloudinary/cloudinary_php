@@ -1069,6 +1069,36 @@ namespace Cloudinary {
         }
 
         /**
+         * Should allow max_results and next_cursor in root_folders and subfolders
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_root_folder_and_subfolders_allow_max_results_and_next_cursor()
+        {
+            Curl::mockApi($this);
+            $next_cursor = '72410bbc4bfa1a135d9df56d91c072ba3356570d333450b286'.
+                'aec30af27dbe3b6b51054047a65b007c8363900c3fe6ae';
+
+            $this->api->root_folders([
+                'max_results'   => 3,
+                'next_cursor'   => $next_cursor,
+            ]);
+
+            assertGet($this);
+            assertParam($this, "max_results", 3);
+            assertParam($this, "next_cursor", $next_cursor);
+
+            $this->api->subfolders('folder1', [
+                'max_results'   => 3,
+                'next_cursor'   => $next_cursor,
+            ]);
+
+            assertGet($this);
+            assertParam($this, "max_results", 3);
+            assertParam($this, "next_cursor", $next_cursor);
+        }
+
+        /**
          * Should throw exception on non-existing folder
          *
          * @expectedException \Cloudinary\Api\NotFound
