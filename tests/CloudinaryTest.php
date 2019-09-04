@@ -1574,7 +1574,7 @@ class CloudinaryTest extends TestCase
     {
         $options = array(
             'transformation' => array(
-                array('width' => 'iw ^ 2','height' => 'ih * 2', 'crop' => 'scale'),
+                array('width' => 'initial_width ^ 2','height' => 'initial_height * 2', 'crop' => 'scale'),
             ),
         );
 
