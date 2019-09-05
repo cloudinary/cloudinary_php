@@ -71,6 +71,17 @@ class CloudinaryTest extends TestCase
         \Cloudinary::$USER_PLATFORM = $this->original_user_platform;
     }
 
+    public function test_cloudinary_url()
+    {
+        \Cloudinary::config_from_url("cloudinary://123456789012345:ALKJdjklLJAjhkKJ45hBK92baj3@test/test.example.com?cname=test.example.com");
+
+        try {
+            \Cloudinary::config_from_url("https://123456789012345:ALKJdjklLJAjhkKJ45hBK92baj3@test/test.example.com?cname=test.example.com");
+            $this->fail('InvalidArgumentException was not thrown');
+        } catch (\InvalidArgumentException $e) {
+        }
+    }
+
     public function test_cloud_name()
     {
         // should use cloud_name from config
