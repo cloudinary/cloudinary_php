@@ -1332,7 +1332,7 @@ class CloudinaryTest extends TestCase
         );
     }
 
-    public function test_duration()
+    public function test_duration_parameter()
     {
         // should support decimal seconds
         $this->cloudinary_url_assertion(
@@ -1538,7 +1538,6 @@ class CloudinaryTest extends TestCase
         $this->assertEquals(array(), $options);
     }
 
-
     public function test_array_should_define_set_of_variables()
     {
         $options = array(
@@ -1553,6 +1552,20 @@ class CloudinaryTest extends TestCase
 
         $t = Cloudinary::generate_transformation_string($options);
         $this->assertEquals('if_fc_gt_2,$z_5,$foo_$z_mul_2,c_scale,w_$foo_mul_200', $t);
+    }
+
+
+    public function test_duration_variable()
+    {
+        $options = array('if' => "duration > 30", 'width' => '100', 'crop' => "scale");
+        $t = Cloudinary::generate_transformation_string($options);
+
+        $this->assertEquals('if_du_gt_30,c_scale,w_100', $t);
+
+        $options = array('if' => "initial_duration > 30", 'width' => '100', 'crop' => "scale");
+        $t = Cloudinary::generate_transformation_string($options);
+
+        $this->assertEquals('if_idu_gt_30,c_scale,w_100', $t);
     }
 
     public function test_key_should_define_variable()
@@ -1579,7 +1592,7 @@ class CloudinaryTest extends TestCase
         );
 
         $result = Cloudinary::cloudinary_url("test", $options);
-        
+
         $this->assertEquals(CloudinaryTest::DEFAULT_UPLOAD_PATH . 'c_scale,h_ih_mul_2,w_iw_pow_2/test', $result);
     }
 

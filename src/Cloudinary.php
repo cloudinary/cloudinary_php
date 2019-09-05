@@ -889,9 +889,11 @@ class Cloudinary
     private static $PREDEFINED_VARS = array(
         "aspect_ratio" => "ar",
         "current_page" => "cp",
+        "duration" => "du",
         "face_count" => "fc",
         "height" => "h",
         "initial_aspect_ratio" => "iar",
+        "initial_duration" => "idu",
         "initial_height" => "ih",
         "initial_width" => "iw",
         "page_count" => "pc",
