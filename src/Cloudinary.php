@@ -103,6 +103,11 @@ class Cloudinary
         return !is_null($var);
     }
 
+    private static function is_remote_url($url)
+    {
+        return preg_match(\Cloudinary\Uploader::REMOTE_URL_REGEX,$url);
+    }
+
     /**
      * @internal
      * When upload type is fetch, remove the format options.
@@ -1175,7 +1180,7 @@ class Cloudinary
         $source_to_sign = $sources["source_to_sign"];
 
         if (empty($version) && $force_version && strpos($source_to_sign, "/") &&
-            !preg_match("/^https?:\//", $source_to_sign) && !preg_match("/^v[0-9]+/", $source_to_sign)) {
+            !self::is_remote_url($source_to_sign) && !preg_match("/^v[0-9]+/", $source_to_sign)) {
             $version = "1";
         }
         $version = $version ? "v" . $version : null;
@@ -1228,7 +1233,7 @@ class Cloudinary
     private static function finalize_source($source, $format, $url_suffix)
     {
         $source = preg_replace('/([^:])\/\//', '$1/', $source);
-        if (preg_match('/^https?:\//i', $source)) {
+        if (self::is_remote_url($source)) {
             $source = Cloudinary::smart_escape($source);
             $source_to_sign = $source;
         } else {

@@ -502,6 +502,24 @@ class CloudinaryTest extends TestCase
         );
     }
 
+    public function test_remote_url()
+    {
+        $URLs = [
+            'https://www.example.com/image.jpg',
+            'ftp://ftp.example.com/image.jpg',
+            's3://s3.example.com/image.jpg',
+        ];
+
+        $options = array("type" => "fetch");
+        foreach ($URLs as $URL) {
+            $this->cloudinary_url_assertion(
+                $URL,
+                $options,
+                CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/$URL",
+            );
+        }
+    }
+
     public function test_cname()
     {
         // should support extenal cname
