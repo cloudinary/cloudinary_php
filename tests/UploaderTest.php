@@ -397,6 +397,21 @@ namespace Cloudinary {
             $this->assertInternalType("double", $explicitRes["quality_analysis"]["focus"]);
         }
 
+        public function test_cinemagraph_analysis()
+        {
+            //Should allow cinemagraph_analysis parameter
+
+            Curl::mockUpload($this);
+
+            Uploader::upload(TEST_IMG, ["cinemagraph_analysis" => true]);
+
+            assertParam($this, "cinemagraph_analysis", "1");
+
+            Uploader::explicit("Cloudinary", ["cinemagraph_analysis" => true, "type" => "upload"]);
+
+            assertParam($this, "cinemagraph_analysis", "1");
+        }
+
         public function test_context()
         {
             //should allow sending context

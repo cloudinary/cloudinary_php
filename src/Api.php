@@ -337,6 +337,7 @@ namespace Cloudinary {
          *      @var string     derived_next_cursor If there are more derived images than max_results,
          *          the derived_next_cursor value is returned as part of the response. You can then specify this value
          *          as the derived_next_cursor parameter of the following listing request.
+         *      @var boolean    cinemagraph_analysis    Include cinemagraph analysis information. Default: false
          * }
          *
          * @return Api\Response
@@ -355,6 +356,7 @@ namespace Cloudinary {
                     "colors",
                     "faces",
                     "quality_analysis",
+                    "cinemagraph_analysis",
                     "image_metadata",
                     "phash",
                     "pages",
