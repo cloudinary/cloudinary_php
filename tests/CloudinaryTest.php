@@ -1538,7 +1538,7 @@ class CloudinaryTest extends TestCase
         $this->assertEquals(array(), $options);
     }
 
-    public function test_variable_should_not_convert_predefined_variables()
+    public function test_normalize_expression_should_not_convert_user_variables()
     {
         $options = array(
             'transformation' => array(
