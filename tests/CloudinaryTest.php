@@ -1554,7 +1554,6 @@ class CloudinaryTest extends TestCase
         $this->assertEquals('if_fc_gt_2,$z_5,$foo_$z_mul_2,c_scale,w_$foo_mul_200', $t);
     }
 
-
     public function test_duration_variable()
     {
         $options = array('if' => "duration > 30", 'width' => '100', 'crop' => "scale");
