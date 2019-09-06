@@ -144,10 +144,17 @@ class Cloudinary
         self::$config = array();
         if ($cloudinary_url) {
             $uri = parse_url($cloudinary_url);
+
+            if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
+                throw new InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
+            }
+
             $q_params = array();
+
             if (isset($uri["query"])) {
                 parse_str($uri["query"], $q_params);
             }
+
             $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
             $config = array_merge(
                 $q_params,
