@@ -26,6 +26,7 @@ namespace Cloudinary {
                 "backup" => \Cloudinary::option_get($options, "backup"),
                 "callback" => \Cloudinary::option_get($options, "callback"),
                 "categorization" => \Cloudinary::option_get($options, "categorization"),
+                "cinemagraph_analysis" => \Cloudinary::option_get($options, "cinemagraph_analysis"),
                 "colors" => \Cloudinary::option_get($options, "colors"),
                 "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
                 "custom_coordinates" => \Cloudinary::encode_double_array(

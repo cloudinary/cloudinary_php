@@ -390,6 +390,19 @@ namespace Cloudinary {
         }
 
         /**
+         * Should allow cinemagraph_analysis parameter
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_resource_cinemagraph_analysis()
+        {
+            Curl::mockApi($this);
+
+            $this->api->resource(self::$api_test, ["type" => "upload", "cinemagraph_analysis" => true]);
+            assertParam($this, "cinemagraph_analysis", 1);
+        }
+
+        /**
          * Should allow derived_next_cursor parameter
          *
          * @throws Api\GeneralError
