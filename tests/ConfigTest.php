@@ -25,7 +25,7 @@ class ConfigTest extends TestCase
     public function test_cloudinary_url_invalid_scheme()
     {
         $cloudinary_urls = [
-            'CLOUDINARY_RUL=cloudinary://123456789012345:ALKJdjklLJAjhkKJ45hBK92baj3@test',
+            'CLOUDINARY_URL=cloudinary://123456789012345:ALKJdjklLJAjhkKJ45hBK92baj3@test',
             'https://123456789012345:ALKJdjklLJAjhkKJ45hBK92baj3@test',
             '://123456789012345:ALKJdjklLJAjhkKJ45hBK92baj3@test',
             ' '
