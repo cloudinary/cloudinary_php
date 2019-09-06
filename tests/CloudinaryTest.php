@@ -515,7 +515,7 @@ class CloudinaryTest extends TestCase
             $this->cloudinary_url_assertion(
                 $URL,
                 $options,
-                CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/$URL",
+                CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/$URL"
             );
         }
     }
