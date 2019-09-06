@@ -1538,6 +1538,20 @@ class CloudinaryTest extends TestCase
         $this->assertEquals(array(), $options);
     }
 
+    public function test_variable_should_not_convert_predefined_variables()
+    {
+        $options = array(
+            'transformation' => array(
+                array('$width' => 10),
+                array('width' => '$width + 10 + width'),
+            ),
+        );
+
+        $t = Cloudinary::generate_transformation_string($options);
+
+        $this->assertEquals('$width_10/w_$width_add_10_add_w', $t);
+    }
+
     public function test_array_should_define_set_of_variables()
     {
         $options = array(
