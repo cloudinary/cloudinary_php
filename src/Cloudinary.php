@@ -1709,7 +1709,7 @@ class Cloudinary
             return $key . "=" . $value;
         };
         $to_sign = implode("&", array_map($join_pair, array_keys($params), array_values($params)));
-        return sha1($to_sign . $api_secret);
+        return hash('sha256', $to_sign . $api_secret);
     }
 
     public static function html_attrs($options, $only = null)
