@@ -1,4 +1,27 @@
 
+1.15.0 / 2019-10-02
+===================
+
+New functionality and features
+------------------------------
+
+  * Add `create_folder` admin API
+  * Add `max_results` and `next_cursor` for folders APIs
+  * Add `live` parameter to `create_upload_preset` and `update_upload_preset` APIs
+  * Add `cinemagraph_analysis` parameter
+  * Add `duration` and `initial_duration` predefined variables
+  * Add `pow` transformation operator
+  * Allow generating archive with multiple resource types
+
+Other Changes
+-------------
+
+  * Fix transformations API call
+  * Fix `AuthToken` `UNSAFE` invalid regex
+  * Fix `normalize_expression` to ignore predefined variables
+  * Validate `CLOUDINARY_URL` scheme
+  * Fix travis build
+
 1.14.0 / 2019-05-13
 ===================
 
