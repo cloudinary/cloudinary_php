@@ -36,7 +36,7 @@ namespace {
 
     function cl_upload_url($options = array())
     {
-        $options['resource_type'] = isset($options['resource_type']) ? $options['resource_type'] : 'auto';
+        $options['resource_type'] = Cloudinary::option_get($options, 'resource_type', 'auto');
         $endpoint = array_key_exists('chunk_size', $options) ? 'upload_chunked' : 'upload';
 
         return Cloudinary::cloudinary_api_url($endpoint, $options);
