@@ -1,4 +1,12 @@
 
+1.15.1 / 2019-10-30
+===================
+
+  * Fix `Undefined index` warning in `cl_upload_url`
+  * Fix PHP7.4 deprecation warnings
+  * Detect data URLs with suffix in mime type
+  * Fix samples when using without composer
+
 1.15.0 / 2019-10-02
 ===================
 
