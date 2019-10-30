@@ -533,7 +533,7 @@ class Cloudinary
         $height = Cloudinary::option_get($options, "height");
 
         $has_layer = Cloudinary::option_get($options, "underlay") || Cloudinary::option_get($options, "overlay");
-        $angle = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "angle")), ".");
+        $angle = implode(".", Cloudinary::build_array(Cloudinary::option_consume($options, "angle")));
         $crop = Cloudinary::option_consume($options, "crop");
 
         $no_html_sizes = $has_layer || !empty($angle) || $crop == "fit" || $crop == "limit" || $responsive_width;
@@ -571,7 +571,7 @@ class Cloudinary
 
         $border = Cloudinary::process_border(Cloudinary::option_consume($options, "border"));
 
-        $flags = implode(Cloudinary::build_array(Cloudinary::option_consume($options, "flags")), ".");
+        $flags = implode(".", Cloudinary::build_array(Cloudinary::option_consume($options, "flags")));
         $dpr = Cloudinary::option_consume($options, "dpr", Cloudinary::config_get("dpr"));
 
         $duration = Cloudinary::norm_range_value(Cloudinary::option_consume($options, "duration"));
