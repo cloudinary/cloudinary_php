@@ -822,5 +822,44 @@ TAG
 
             $this->assertEquals(2, count($response["image_infos"]));
         }
+
+        /**
+        * Upload should supported `metadata` parameter
+        */
+        public function test_upload_with_metadata()
+        {
+            $this->markTestIncomplete('There is an error Invalid Signature using a metadata');
+
+            Uploader::upload(
+                TEST_IMG,
+                [
+                    'tags' => array(TEST_TAG, UNIQUE_TEST_TAG),
+                    'metadata' => [
+                        'in_stock_id' => 1,
+                        'color_id' => 2
+                    ]
+                ]
+            );
+        }
+
+        /**
+         * Explicit should supported `metadata` parameter
+         */
+        public function test_explicit_with_metadata()
+        {
+            $this->markTestIncomplete('There is an error Invalid Signature using a metadata');
+
+            Uploader::explicit(
+                "cloudinary",
+                [
+                    'type' => 'twitter_name',
+                    'eager' => ['crop' => 'scale', 'width' => '2.0'],
+                    'metadata' => [
+                        'in_stock_id' => 1,
+                        'color_id' => 2
+                    ]
+                ]
+            );
+        }
     }
 }

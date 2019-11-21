@@ -29,6 +29,7 @@ namespace Cloudinary {
                 "cinemagraph_analysis" => \Cloudinary::option_get($options, "cinemagraph_analysis"),
                 "colors" => \Cloudinary::option_get($options, "colors"),
                 "context" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "context")),
+                "metadata" => \Cloudinary::encode_assoc_array(\Cloudinary::option_get($options, "metadata")),
                 "custom_coordinates" => \Cloudinary::encode_double_array(
                     \Cloudinary::option_get($options, "custom_coordinates")
                 ),
