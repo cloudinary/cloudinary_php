@@ -39,10 +39,10 @@ class MetadataDataSource extends Metadata
         foreach ($values as $entry) {
             if ($entry instanceof MetadataDataEntry) {
                 $this->values[] = $entry;
-            } elseif (is_array($entry)) {
+            } elseif (is_array($entry) && isset($entry['value'])) {
                 $this->values[] = new MetadataDataEntry(
                     $entry['value'],
-                    isset($entry['externalId']) ? $entry['externalId'] : null
+                    isset($entry['external_id']) ? $entry['external_id'] : null
                 );
             } else {
                 throw new InvalidArgumentException('Variable $values is not valid data');

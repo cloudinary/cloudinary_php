@@ -4,6 +4,7 @@ namespace Cloudinary;
 
 use Exception;
 use Cloudinary;
+use Cloudinary\Test\CloudinaryTestCase;
 use Cloudinary\Metadata\DateMetadataField;
 use Cloudinary\Metadata\EnumMetadataField;
 use Cloudinary\Metadata\IntMetadataField;
@@ -19,13 +20,12 @@ use DateInterval;
 use DateTime;
 use Cloudinary\Api\NotFound;
 use Cloudinary\Api\BadRequest;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class MetadataTest
  * @package Cloudinary
  */
-class MetadataTest extends TestCase
+class MetadataTest extends CloudinaryTestCase
 {
     private static $UNIQUE_EXTERNAL_ID_GENERAL;
     private static $UNIQUE_EXTERNAL_ID_STRING;
@@ -38,16 +38,19 @@ class MetadataTest extends TestCase
     private static $DATASOURCE_SINGLE = [
         [
             'value' => 'v1',
-            'externalId' => 'externalId1',
+            'external_id' => 'externalId1',
         ]
     ];
     private static $DATASOURCE_MULTIPLE = [
         [
             'value' => 'v2',
-            'externalId' => 'externalId1',
+            'external_id' => 'externalId1',
         ],
         [
             'value' => 'v3'
+        ],
+        [
+            'value' => 'v4'
         ],
     ];
 
@@ -75,7 +78,7 @@ class MetadataTest extends TestCase
         $stringMetadataField = new StringMetadataField(self::$UNIQUE_EXTERNAL_ID_GENERAL);
         $stringMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_GENERAL);
         try {
-            $api->add_metadata_field($stringMetadataField);
+            $api->add_metadata_field($stringMetadataField->jsonSerialize());
         } catch (Exception $e) {var_dump($e->getMessage());
             self::fail(
                 'Exception thrown while adding metadata field in MetadataFieldsTest::setUpBeforeClass() - ' .
@@ -179,7 +182,7 @@ class MetadataTest extends TestCase
         $stringMetadataField = new StringMetadataField(self::$UNIQUE_EXTERNAL_ID_STRING);
         $stringMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_STRING);
 
-        $result = $this->api->add_metadata_field($stringMetadataField);
+        $result = $this->api->add_metadata_field($stringMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
         $this->assertEquals(self::$UNIQUE_EXTERNAL_ID_STRING, $result['label']);
@@ -197,7 +200,7 @@ class MetadataTest extends TestCase
         $intMetadataField = new IntMetadataField(self::$UNIQUE_EXTERNAL_ID_INT);
         $intMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_INT);
 
-        $result = $this->api->add_metadata_field($intMetadataField);
+        $result = $this->api->add_metadata_field($intMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
         $this->assertEquals(self::$UNIQUE_EXTERNAL_ID_INT, $result['label']);
@@ -215,7 +218,7 @@ class MetadataTest extends TestCase
         $dateMetadataField = new DateMetadataField(self::$UNIQUE_EXTERNAL_ID_DATE);
         $dateMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_DATE);
 
-        $result = $this->api->add_metadata_field($dateMetadataField);
+        $result = $this->api->add_metadata_field($dateMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
         $this->assertEquals(self::$UNIQUE_EXTERNAL_ID_DATE, $result['label']);
@@ -234,7 +237,7 @@ class MetadataTest extends TestCase
         $enumMetadataField->setDataSource(self::$DATASOURCE_SINGLE);
         $enumMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_ENUM);
 
-        $result = $this->api->add_metadata_field($enumMetadataField);
+        $result = $this->api->add_metadata_field($enumMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
         $this->assertEquals(self::$UNIQUE_EXTERNAL_ID_ENUM, $result['label']);
@@ -252,7 +255,7 @@ class MetadataTest extends TestCase
         $setMetadataField = new SetMetadataField(self::$UNIQUE_EXTERNAL_ID_SET, self::$DATASOURCE_MULTIPLE);
         $setMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_SET);
 
-        $result = $this->api->add_metadata_field($setMetadataField);
+        $result = $this->api->add_metadata_field($setMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
         $this->assertEquals(self::$UNIQUE_EXTERNAL_ID_SET, $result['label']);
@@ -273,7 +276,7 @@ class MetadataTest extends TestCase
         $stringMetadataField = new StringMetadataField($newLabel);
         $stringMetadataField->setDefaultValue($newDefaultValue);
         $stringMetadataField->setMandatory(true);
-        $result = $this->api->update_metadata_field(self::$UNIQUE_EXTERNAL_ID_GENERAL, $stringMetadataField);
+        $result = $this->api->update_metadata_field(self::$UNIQUE_EXTERNAL_ID_GENERAL, $stringMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
         $this->assertEquals(self::$UNIQUE_EXTERNAL_ID_GENERAL, $result['external_id']);
@@ -292,17 +295,19 @@ class MetadataTest extends TestCase
         $enumMetadataField = new EnumMetadataField(self::$UNIQUE_EXTERNAL_ID_ENUM_2, self::$DATASOURCE_MULTIPLE);
         $enumMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_ENUM_2);
 
-        $result = $this->api->add_metadata_field($enumMetadataField);
+        $result = $this->api->add_metadata_field($enumMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
 
+        $metadataDataSource = new MetadataDataSource(self::$DATASOURCE_SINGLE);
         $result = $this->api->update_metadata_field_datasource(
             self::$UNIQUE_EXTERNAL_ID_ENUM_2,
-            new MetadataDataSource(self::$DATASOURCE_SINGLE)
+            $metadataDataSource->jsonSerialize()['values']
         );
 
         $this->assertMetadataFieldDataSource($result);
-
+        $this->assertArrayContainsArray($result['values'], self::$DATASOURCE_SINGLE[0]);
+        $this->assertCount(count(self::$DATASOURCE_MULTIPLE), $result['values']);
         $this->assertEquals(self::$DATASOURCE_SINGLE[0]['value'], $result['values'][0]['value']);
     }
 
@@ -317,7 +322,7 @@ class MetadataTest extends TestCase
 
         $intMetadataField = new IntMetadataField($tempMetadataFieldId);
         $intMetadataField->setExternalId($tempMetadataFieldId);
-        $result = $this->api->add_metadata_field($intMetadataField);
+        $result = $this->api->add_metadata_field($intMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
 
@@ -343,19 +348,24 @@ class MetadataTest extends TestCase
         $setMetadataField = new SetMetadataField(self::$UNIQUE_EXTERNAL_ID_SET_2, self::$DATASOURCE_MULTIPLE);
         $setMetadataField->setExternalId(self::$UNIQUE_EXTERNAL_ID_SET_2);
 
-        $result = $this->api->add_metadata_field($setMetadataField);
+        $result = $this->api->add_metadata_field($setMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
 
         $result = $this->api->delete_datasource_entries(
             self::$UNIQUE_EXTERNAL_ID_SET_2,
             [
-                self::$DATASOURCE_MULTIPLE[0]['externalId']
+                self::$DATASOURCE_MULTIPLE[0]['external_id']
             ]
         );
 
         $this->assertMetadataFieldDataSource($result);
-        $this->assertCount(1, $result['values']);
+        $this->assertCount(count(self::$DATASOURCE_MULTIPLE) - 1, $result['values']);
+
+        $values = array_column($result['values'], 'value');
+
+        $this->assertContains(self::$DATASOURCE_MULTIPLE[1]['value'], $values);
+        $this->assertContains(self::$DATASOURCE_MULTIPLE[2]['value'], $values);
     }
 
     /**
@@ -379,7 +389,7 @@ class MetadataTest extends TestCase
         );
 
         $dateMetadataField->setDefaultValue($legalValue);
-        $result = $this->api->add_metadata_field($dateMetadataField);
+        $result = $this->api->add_metadata_field($dateMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
 
@@ -388,7 +398,7 @@ class MetadataTest extends TestCase
         $hasException = false;
         try {
             $dateMetadataField->setDefaultValue($illegalValue);
-            $this->api->add_metadata_field($dateMetadataField);
+            $this->api->add_metadata_field($dateMetadataField->jsonSerialize());
         } catch (BadRequest $e) {
             $hasException = true;
         }
@@ -407,7 +417,7 @@ class MetadataTest extends TestCase
         $intMetadataField->setValidation(new IntLessThan(5, true));
 
         $intMetadataField->setDefaultValue(5);
-        $result = $this->api->add_metadata_field($intMetadataField);
+        $result = $this->api->add_metadata_field($intMetadataField->jsonSerialize());
 
         $this->assertMetadataField($result);
 
@@ -416,7 +426,7 @@ class MetadataTest extends TestCase
         $hasException = false;
         try {
             $intMetadataField->setDefaultValue(6);
-            $this->api->add_metadata_field($intMetadataField);
+            $this->api->add_metadata_field($intMetadataField->jsonSerialize());
         } catch (BadRequest $e) {
             $hasException = true;
         }

@@ -1620,17 +1620,15 @@ namespace Cloudinary {
         /**
          * Add new metadata field definition
          *
-         * @param MetadataField $metadataField The field to add.
+         * @param array $params The field to add.
          *
          * @return \Cloudinary\Api\Response
          *
          * @throws \Cloudinary\Api\GeneralError
          */
-        public function add_metadata_field(MetadataField $metadataField)
+        public function add_metadata_field($params)
         {
             $options['content_type'] = 'application/json';
-
-            $params = $metadataField->jsonSerialize();
 
             $params = $this->only($params, [
                 'type',
@@ -1649,17 +1647,15 @@ namespace Cloudinary {
          * Update metadata field by external id
          *
          * @param string $externalId The id of the field to update
-         * @param MetadataField $metadataField The field definition
+         * @param array $params The field definition
          *
          * @return \Cloudinary\Api\Response
          *
          * @throws \Cloudinary\Api\GeneralError
          */
-        public function update_metadata_field($externalId, MetadataField $metadataField)
+        public function update_metadata_field($externalId, $params)
         {
             $options['content_type'] = 'application/json';
-
-            $params = $metadataField->jsonSerialize();
 
             $params = $this->only($params, [
                 'label',
@@ -1712,19 +1708,22 @@ namespace Cloudinary {
          * Update the data source entries for a given field
          *
          * @param string $externalId The id of the field to update
-         * @param MetadataDataSource $MetadataDataSource
+         * @param array $params
          *
          * @return \Cloudinary\Api\Response
          *
          * @throws \Cloudinary\Api\GeneralError
          */
-        public function update_metadata_field_datasource($externalId, MetadataDataSource $MetadataDataSource)
+        public function update_metadata_field_datasource($externalId, $params)
         {
             $options['content_type'] = 'application/json';
 
-            $params = $MetadataDataSource->jsonSerialize();
+            $metadataDataSource = new MetadataDataSource($params);
 
-            $params = $params = $this->only($params, ['values']);
+            $params = $metadataDataSource->jsonSerialize();
+            foreach ($params['values'] as &$item) {
+                $item = $this->only($item, ['external_id', 'value']);
+            }
 
             return $this->call_api('put', ['metadata_fields', $externalId, 'datasource'], $params, $options);
         }

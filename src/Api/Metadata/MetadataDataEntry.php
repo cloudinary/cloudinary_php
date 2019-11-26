@@ -2,6 +2,8 @@
 
 namespace Cloudinary\Metadata;
 
+use InvalidArgumentException;
+
 /**
  * Class MetadataDataEntry
  *
@@ -44,6 +46,9 @@ class MetadataDataEntry extends Metadata
      */
     public function setValue($value)
     {
+        if (is_null($value)) {
+            throw new InvalidArgumentException('Value is not valid');
+        }
         $this->value = $value;
     }
 

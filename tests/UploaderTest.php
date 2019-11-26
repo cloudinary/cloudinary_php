@@ -3,8 +3,10 @@
 namespace Cloudinary {
 
     use Cloudinary;
+    use Cloudinary\Api\GeneralError;
     use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
     use Cloudinary\Cache\ResponsiveBreakpointsCache;
+    use Cloudinary\Metadata\StringMetadataField;
     use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
     use Exception;
     use PHPUnit\Framework\TestCase;
@@ -23,8 +25,30 @@ namespace Cloudinary {
         protected static $rbp_values = [206, 50];
         protected static $rbp_params;
 
+        private static $unique_external_id_string;
+        private static $metadata;
+
         public static function setUpBeforeClass()
         {
+            self::$unique_external_id_string = 'general-external-id-' . UNIQUE_TEST_TAG;
+            self::$metadata = [
+                self::$unique_external_id_string => 'value-' . UNIQUE_TEST_TAG
+            ];
+
+            Cloudinary::reset_config();
+
+            $api = new Cloudinary\Api();
+            $stringMetadataField = new StringMetadataField(self::$unique_external_id_string);
+            $stringMetadataField->setExternalId(self::$unique_external_id_string);
+            try {
+                $api->add_metadata_field($stringMetadataField->jsonSerialize());
+            } catch (GeneralError $e) {
+                self::fail(
+                    'Exception thrown while adding metadata field in UploaderTest::setUpBeforeClass() - ' .
+                    $e->getMessage()
+                );
+            }
+
             Curl::$instance = new Curl();
 
             self::$rbp_params = [
@@ -824,22 +848,19 @@ TAG
         }
 
         /**
-        * Upload should supported `metadata` parameter
-        */
+         * Upload should supported `metadata` parameter
+         */
         public function test_upload_with_metadata()
         {
-            $this->markTestIncomplete('There is an error Invalid Signature using a metadata');
-
-            Uploader::upload(
+            $result = Uploader::upload(
                 TEST_IMG,
                 [
                     'tags' => array(TEST_TAG, UNIQUE_TEST_TAG),
-                    'metadata' => [
-                        'in_stock_id' => 1,
-                        'color_id' => 2
-                    ]
+                    'metadata' => self::$metadata
                 ]
             );
+
+            $this->assertEquals(self::$metadata[self::$unique_external_id_string], $result['metadata'][self::$unique_external_id_string]);
         }
 
         /**
@@ -847,19 +868,37 @@ TAG
          */
         public function test_explicit_with_metadata()
         {
-            $this->markTestIncomplete('There is an error Invalid Signature using a metadata');
+            $resource = Uploader::upload(TEST_IMG, [
+                "tags" => [TEST_TAG, UNIQUE_TEST_TAG],
+            ]);
 
-            Uploader::explicit(
-                "cloudinary",
+            $result = Uploader::explicit(
+                $resource['public_id'],
                 [
-                    'type' => 'twitter_name',
-                    'eager' => ['crop' => 'scale', 'width' => '2.0'],
-                    'metadata' => [
-                        'in_stock_id' => 1,
-                        'color_id' => 2
-                    ]
+                    'type' => 'upload',
+                    'eager' => self::$rbp_trans,
+                    'metadata' => self::$metadata
                 ]
             );
+
+            $this->assertEquals(self::$metadata[self::$unique_external_id_string], $result['metadata'][self::$unique_external_id_string]);
+        }
+
+        /**
+         * Should sets a metadata to a resource
+         *
+         * @throws \Cloudinary\Error
+         */
+        public function test_set_metadata()
+        {
+            $resource = Uploader::upload(TEST_IMG, [
+                "tags" => [TEST_TAG, UNIQUE_TEST_TAG],
+            ]);
+
+            $result = Uploader::metadata($resource['public_id'], self::$metadata);
+
+            $this->assertCount(1, $result['public_ids']);
+            $this->assertEquals($resource['public_id'], $result['public_ids'][0]);
         }
     }
 }

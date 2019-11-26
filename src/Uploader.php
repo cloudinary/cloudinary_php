@@ -55,6 +55,7 @@ namespace Cloudinary {
                 "phash" => \Cloudinary::option_get($options, "phash"),
                 "proxy" => \Cloudinary::option_get($options, "proxy"),
                 "public_id" => \Cloudinary::option_get($options, "public_id"),
+                "public_ids" => \Cloudinary::option_get($options, "public_ids"),
                 "quality_analysis" => \Cloudinary::option_get($options, "quality_analysis"),
                 "quality_override" => \Cloudinary::option_get($options, "quality_override"),
                 "raw_convert" => \Cloudinary::option_get($options, "raw_convert"),
@@ -208,6 +209,22 @@ namespace Cloudinary {
             $params = Uploader::build_upload_params($options);
 
             return Uploader::call_cacheable_api("explicit", $params, $options);
+        }
+
+        /**
+         * Adds values to metadata fields
+         *
+         * @param $public_id
+         * @param array $options
+         * @return mixed
+         * @throws \Cloudinary\Error
+         */
+        public static function metadata($public_id, $options = array())
+        {
+            $options["public_ids"] = $public_id;
+            $params = Uploader::build_upload_params($options);
+
+            return Uploader::call_cacheable_api("metadata", $params, $options);
         }
 
         public static function generate_sprite($tag, $options = array())
