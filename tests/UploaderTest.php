@@ -885,20 +885,56 @@ TAG
         }
 
         /**
-         * Should sets a metadata to a resource
+         * Editing metadata of an existing resource
          *
          * @throws \Cloudinary\Error
          */
-        public function test_set_metadata()
+        public function test_uploader_update_metadata()
         {
             $resource = Uploader::upload(TEST_IMG, [
-                "tags" => [TEST_TAG, UNIQUE_TEST_TAG],
+                'tags' => [TEST_TAG, UNIQUE_TEST_TAG]
             ]);
 
-            $result = Uploader::metadata($resource['public_id'], self::$metadata);
+            $result = Uploader::metadata(
+                [
+                    $resource['public_id']
+                ],
+                [
+                    'metadata' => self::$metadata
+                ]
+            );
 
             $this->assertCount(1, $result['public_ids']);
-            $this->assertEquals($resource['public_id'], $result['public_ids'][0]);
+            $this->assertContains($resource['public_id'], $result['public_ids']);
+        }
+
+        /**
+         * Editing metadata of some existing resource
+         *
+         * @throws \Cloudinary\Error
+         */
+        public function test_uploader_update_some_resources_metadata()
+        {
+            $resource1 = Uploader::upload(TEST_IMG, [
+                'tags' => [TEST_TAG, UNIQUE_TEST_TAG]
+            ]);
+            $resource2 = Uploader::upload(TEST_IMG, [
+                'tags' => [TEST_TAG, UNIQUE_TEST_TAG]
+            ]);
+
+            $result = Uploader::metadata(
+                [
+                    $resource1['public_id'],
+                    $resource2['public_id']
+                ],
+                [
+                    'metadata' => self::$metadata
+                ]
+            );
+
+            $this->assertCount(2, $result['public_ids']);
+            $this->assertContains($resource1['public_id'], $result['public_ids']);
+            $this->assertContains($resource2['public_id'], $result['public_ids']);
         }
     }
 }

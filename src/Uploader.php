@@ -214,14 +214,14 @@ namespace Cloudinary {
         /**
          * Adds values to metadata fields
          *
-         * @param $public_id
+         * @param array $public_ids
          * @param array $options
          * @return mixed
          * @throws \Cloudinary\Error
          */
-        public static function metadata($public_id, $options = array())
+        public static function metadata($public_ids, $options = array())
         {
-            $options["public_ids"] = $public_id;
+            $options["public_ids"] = $public_ids;
             $params = Uploader::build_upload_params($options);
 
             return Uploader::call_cacheable_api("metadata", $params, $options);
