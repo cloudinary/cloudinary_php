@@ -110,7 +110,10 @@ namespace Cloudinary {
             $this->assertArraySubset(array("ocr" => "adv_ocr"), $fields);
 
             // Test upload with metadata
-            Uploader::upload(TEST_IMG, array("metadata" => array("metadata_color" => "red", "metadata_shape" => "dodecahedron")));
+            Uploader::upload(
+                TEST_IMG,
+                array("metadata" => array("metadata_color" => "red", "metadata_shape" => "dodecahedron"))
+            );
             $fields = Curl::$instance->fields();
             $this->assertArraySubset(array("metadata" => "metadata_color=red|metadata_shape=dodecahedron"), $fields);
         }
