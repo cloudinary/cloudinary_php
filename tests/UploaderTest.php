@@ -183,7 +183,10 @@ namespace Cloudinary {
             $this->assertArraySubset(array("ocr" => "adv_ocr"), $fields);
 
             // Test explicit with metadata
-            Uploader::explicit("cloudinary", array("metadata" => array("metadata_color" => "red", "metadata_shape" => "dodecahedron")));
+            Uploader::explicit(
+                "cloudinary",
+                array("metadata" => array("metadata_color" => "red", "metadata_shape" => "dodecahedron"))
+            );
             $fields = Curl::$instance->fields();
             $this->assertArraySubset(array("metadata" => "metadata_color=red|metadata_shape=dodecahedron"), $fields);
         }
@@ -214,7 +217,13 @@ namespace Cloudinary {
                 array("test_id_1", "test_id_2")
             );
             $fields = Curl::$instance->fields();
-            $this->assertArraySubset(array("metadata" => "metadata_color=red|metadata_shape=", "public_ids[0]" => "test_id_1", "public_ids[1]" => "test_id_2", ), $fields);
+            $this->assertArraySubset(
+                array("metadata"      => "metadata_color=red|metadata_shape=",
+                      "public_ids[0]" => "test_id_1",
+                      "public_ids[1]" => "test_id_2",
+                ),
+                $fields
+            );
         }
 
         public function test_build_eager()

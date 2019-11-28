@@ -227,7 +227,8 @@ namespace Cloudinary {
             $params = array(
                 "timestamp" => time(),
                 "metadata" => \Cloudinary::encode_assoc_array($metadata),
-                "public_ids" => \Cloudinary::build_array($public_ids)
+                "public_ids" => \Cloudinary::build_array($public_ids),
+                "type" => \Cloudinary::option_get($options, "type"),
             );
 
             return Uploader::call_api("metadata", $params, $options);
