@@ -2,9 +2,6 @@
 
 namespace Cloudinary {
 
-    use Cloudinary\Metadata\MetadataDataSource;
-    use Cloudinary\Metadata\MetadataField;
-
     /**
      * Class Api for accessing Cloudinary API functionality
      * @see https://cloudinary.com/documentation/admin_api
@@ -1718,14 +1715,15 @@ namespace Cloudinary {
         {
             $options['content_type'] = 'application/json';
 
-            $metadataDataSource = new MetadataDataSource($params);
-
-            $params = $metadataDataSource->jsonSerialize();
-            foreach ($params['values'] as &$item) {
+            $values['values'] = [];
+            foreach ($params as $item) {
                 $item = $this->only($item, ['external_id', 'value']);
+                if (!empty($item)) {
+                    $values['values'][] = $item;
+                }
             }
 
-            return $this->call_api('put', ['metadata_fields', $externalId, 'datasource'], $params, $options);
+            return $this->call_api('put', ['metadata_fields', $externalId, 'datasource'], $values, $options);
         }
     }
 

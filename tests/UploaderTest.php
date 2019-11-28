@@ -6,7 +6,6 @@ namespace Cloudinary {
     use Cloudinary\Api\GeneralError;
     use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
     use Cloudinary\Cache\ResponsiveBreakpointsCache;
-    use Cloudinary\Metadata\StringMetadataField;
     use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
     use Exception;
     use PHPUnit\Framework\TestCase;
@@ -37,11 +36,12 @@ namespace Cloudinary {
 
             Cloudinary::reset_config();
 
-            $api = new Cloudinary\Api();
-            $stringMetadataField = new StringMetadataField(self::$unique_external_id_string);
-            $stringMetadataField->setExternalId(self::$unique_external_id_string);
             try {
-                $api->add_metadata_field($stringMetadataField->jsonSerialize());
+                (new Cloudinary\Api())->add_metadata_field([
+                    'external_id' => self::$unique_external_id_string,
+                    'label' => self::$unique_external_id_string,
+                    'type' => 'string'
+                ]);
             } catch (GeneralError $e) {
                 self::fail(
                     'Exception thrown while adding metadata field in UploaderTest::setUpBeforeClass() - ' .
