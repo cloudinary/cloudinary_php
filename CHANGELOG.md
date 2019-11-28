@@ -1,4 +1,13 @@
 
+1.16.0 / 2019-11-28
+===================
+
+New functionality and features
+------------------------------
+
+  * Add `update_metadata` Upload API.
+  * Add `metadata` parameter to `upload` and `explicit` Upload APIs.
+
 1.15.1 / 2019-10-30
 ===================
 

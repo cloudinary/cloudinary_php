@@ -12,7 +12,7 @@ class Cloudinary
     const RANGE_VALUE_RE = '/^(?P<value>(\d+\.)?\d+)(?P<modifier>[%pP])?$/';
     const RANGE_RE = '/^(\d+\.)?\d+[%pP]?\.\.(\d+\.)?\d+[%pP]?$/';
 
-    const VERSION = "1.15.1";
+    const VERSION = "1.16.0";
 
     /**
      * @internal
