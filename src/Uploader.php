@@ -545,7 +545,17 @@ namespace Cloudinary {
                 if ($return_error) {
                     $result["error"]["http_code"] = $code;
                 } else {
-                    throw new Error($result["error"]["message"], $code);
+                    $message = "";
+
+                    if (isset($result["error"]["message"])) {
+                        if (is_array($result["error"]["message"])) {
+                            $message = $result["error"]["message"]["message"];
+                        } else {
+                            $message = $result["error"]["message"];
+                        }
+                    }
+
+                    throw new Error($message, $code);
                 }
             }
 
