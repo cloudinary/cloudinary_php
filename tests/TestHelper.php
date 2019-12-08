@@ -267,4 +267,21 @@ END;
         }
         $test->assertContains(strtolower($header), $names, $message);
     }
+
+    /**
+     * Reports an error if the $haystack array does not contain the $needle array.
+     *
+     * @param $test
+     * @param array $haystack
+     * @param array $needle
+     */
+    function assertArrayContainsArray($test, $haystack, $needle)
+    {
+        $result = array_filter($haystack, function ($item) use ($needle) {
+            return $item == $needle;
+        });
+
+        $test->assertGreaterThanOrEqual(1, count($result), 'The $haystack array does not contain the $needle array');
+    }
+
 }
