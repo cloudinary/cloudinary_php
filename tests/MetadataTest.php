@@ -467,7 +467,7 @@ class MetadataTest extends TestCase
     public function test_date_field_default_value_validation()
     {
         $pastDate = date('Y-m-d', time() - 60 * 60 * 24 * 3);
-        $yesterdaydate = date('Y-m-d', time() - 60 * 60 * 24);
+        $yesterdayDate = date('Y-m-d', time() - 60 * 60 * 24);
         $todayDate = date('Y-m-d');
         $futureDate = date('Y-m-d', time() + 60 * 60 * 24 * 3);
         $lastThreeDaysValidation = [
@@ -491,7 +491,7 @@ class MetadataTest extends TestCase
             'external_id' => self::$unique_external_id_for_testing_date_validation,
             'label' => self::$unique_external_id_for_testing_date_validation,
             'type' => 'date',
-            'default_value' => $yesterdaydate,
+            'default_value' => $yesterdayDate,
             'validation' => $lastThreeDaysValidation
         ];
         $result = $this->api->add_metadata_field($metadata_field);
