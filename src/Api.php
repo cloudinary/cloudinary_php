@@ -1339,9 +1339,7 @@ namespace Cloudinary {
          */
         public function list_metadata_fields($options = array())
         {
-            $uri = ['metadata_fields'];
-            $options['content_type'] = 'application/json';
-            return $this->call_api('get', $uri, array(), $options);
+            return $this->call_metadata_api('get', array(), array(), $options);
         }
 
         /**
@@ -1357,9 +1355,9 @@ namespace Cloudinary {
          */
         public function metadata_field_by_field_id($field_external_id, $options = array())
         {
-            $uri = ['metadata_fields', $field_external_id];
-            $options['content_type'] = 'application/json';
-            return $this->call_api('get', $uri, array(), $options);
+            $uri = [$field_external_id];
+
+            return $this->call_metadata_api('get', $uri, array(), $options);
         }
 
         /**
@@ -1376,7 +1374,6 @@ namespace Cloudinary {
          */
         public function add_metadata_field(array $field, $options = array())
         {
-            $uri = ['metadata_fields'];
             $params = $this->only($field, [
                 'type',
                 'external_id',
@@ -1386,9 +1383,8 @@ namespace Cloudinary {
                 'validation',
                 'datasource'
             ]);
-            $options['content_type'] = 'application/json';
 
-            return $this->call_api('post', $uri, $params, $options);
+            return $this->call_metadata_api('post', array(), $params, $options);
         }
 
         /**
@@ -1406,16 +1402,15 @@ namespace Cloudinary {
          */
         public function update_metadata_field($field_external_id, array $field, $options = array())
         {
-            $uri = ['metadata_fields', $field_external_id];
+            $uri = [$field_external_id];
             $params = $this->only($field, [
                 'label',
                 'mandatory',
                 'default_value',
                 'validation'
             ]);
-            $options['content_type'] = 'application/json';
 
-            return $this->call_api('put', $uri, $params, $options);
+            return $this->call_metadata_api('put', $uri, $params, $options);
         }
 
         /**
@@ -1433,10 +1428,9 @@ namespace Cloudinary {
          */
         public function delete_metadata_field($field_external_id, $options = array())
         {
-            $uri = ['metadata_fields', $field_external_id];
-            $options['content_type'] = 'application/json';
+            $uri = [$field_external_id];
 
-            return $this->call_api('delete', $uri, array(), $options);
+            return $this->call_metadata_api('delete', $uri, array(), $options);
         }
 
         /**
@@ -1456,11 +1450,10 @@ namespace Cloudinary {
          */
         public function delete_datasource_entries($field_external_id, array $entries_external_id, $options = array())
         {
-            $uri = ['metadata_fields', $field_external_id, 'datasource'];
+            $uri = [$field_external_id, 'datasource'];
             $params = ['external_ids' => $entries_external_id];
-            $options['content_type'] = 'application/json';
 
-            return $this->call_api("delete", $uri, $params, $options);
+            return $this->call_metadata_api("delete", $uri, $params, $options);
         }
 
         /**
@@ -1480,7 +1473,7 @@ namespace Cloudinary {
          */
         public function update_metadata_field_datasource($field_external_id, array $entries_external_id, $options = array())
         {
-            $uri = ['metadata_fields', $field_external_id, 'datasource'];
+            $uri = [$field_external_id, 'datasource'];
             $params = array('values' => array());
             foreach ($entries_external_id as $item) {
                 $item = $this->only($item, ['external_id', 'value']);
@@ -1488,9 +1481,8 @@ namespace Cloudinary {
                     $params['values'][] = $item;
                 }
             }
-            $options['content_type'] = 'application/json';
 
-            return $this->call_api('put', $uri, $params, $options);
+            return $this->call_metadata_api('put', $uri, $params, $options);
         }
 
         /**
@@ -1511,11 +1503,30 @@ namespace Cloudinary {
          */
         public function restore_metadata_field_datasource($field_external_id, array $entries_external_ids, $options = array())
         {
-            $uri = ['metadata_fields', $field_external_id, 'datasource_restore'];
+            $uri = [$field_external_id, 'datasource_restore'];
             $params['external_ids'] = $entries_external_ids;
+
+            return $this->call_metadata_api('post', $uri, $params, $options);
+        }
+
+        /**
+         * Private function that assists with performing an API call to the metadata_fields part of the Admin API
+         *
+         * @param string    $method    The HTTP method. Valid methods: get, post, put, delete
+         * @param array     $uri       REST endpoint of the API (without 'metadata_fields')
+         * @param array     $params    Query/body parameters passed to the method
+         * @param array     $options   Additional options. Can be an override of the configuration, headers, etc.
+         *
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
+         */
+        private function call_metadata_api($method, $uri, $params, &$options)
+        {
+            array_unshift($uri, 'metadata_fields');
             $options['content_type'] = 'application/json';
 
-            return $this->call_api('post', $uri, $params, $options);
+            return $this->call_api($method, $uri, $params, $options);
         }
 
         /**
