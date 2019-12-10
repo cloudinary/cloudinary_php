@@ -22,6 +22,7 @@ class MetadataTest extends TestCase
     private static $unique_external_id_set_2;
     private static $unique_external_id_set_3;
     private static $unique_external_id_for_deletion;
+    private static $unique_external_id_for_deletion_2;
     private static $unique_external_id_for_testing_date_validation;
     private static $unique_external_id_for_testing_date_validation_2;
     private static $unique_external_id_for_testing_integer_validation;
@@ -50,6 +51,7 @@ class MetadataTest extends TestCase
         self::$unique_external_id_set_2 = 'metadata_external_id_set_2_' . UNIQUE_TEST_ID;
         self::$unique_external_id_set_3 = 'metadata_external_id_set_3_' . UNIQUE_TEST_ID;
         self::$unique_external_id_for_deletion = 'metadata_deletion_test_' . UNIQUE_TEST_ID;
+        self::$unique_external_id_for_deletion_2 = 'metadata_deletion_test_2_' . UNIQUE_TEST_ID;
         self::$unique_external_id_for_testing_date_validation = 'metadata_date_validation_test_' . UNIQUE_TEST_ID;
         self::$unique_external_id_for_testing_date_validation_2 = 'metadata_date_validation_test_2_' . UNIQUE_TEST_ID;
         self::$unique_external_id_for_testing_integer_validation = 'metadata_integer_validation_test_' . UNIQUE_TEST_ID;
@@ -109,6 +111,11 @@ class MetadataTest extends TestCase
                 'label' => self::$unique_external_id_for_deletion,
                 'type' => 'integer'
             ]);
+            (new Api())->add_metadata_field([
+                'external_id' => self::$unique_external_id_for_deletion_2,
+                'label' => self::$unique_external_id_for_deletion_2,
+                'type' => 'integer'
+            ]);
         } catch (Exception $e) {
             self::fail(
                 'Exception thrown while adding metadata field in MetadataFieldsTest::setUpBeforeClass() - ' .
@@ -156,6 +163,7 @@ class MetadataTest extends TestCase
     {
         $externalIds = array(
             self::$unique_external_id_for_deletion,
+            self::$unique_external_id_for_deletion_2,
             self::$unique_external_id_for_testing_date_validation_2,
             self::$unique_external_id_for_testing_integer_validation_2,
         );
@@ -407,6 +415,27 @@ class MetadataTest extends TestCase
 
         $this->setExpectedException('\Cloudinary\Api\NotFound');
         $this->api->metadata_field_by_field_id(self::$unique_external_id_for_deletion);
+    }
+
+    /**
+     * Test deleting a metadata field definition then attempting to create a new one with the same external id which
+     * should fail.
+     *
+     * @throws \Cloudinary\Api\GeneralError
+     */
+    public function test_delete_metadata_field_does_not_release_external_id()
+    {
+        $this->api->delete_metadata_field(self::$unique_external_id_for_deletion_2);
+
+        $this->setExpectedException(
+            '\Cloudinary\Api\BadRequest',
+            'external id ' . self::$unique_external_id_for_deletion_2 . ' already exists'
+        );
+        $this->api->add_metadata_field([
+            'external_id' => self::$unique_external_id_for_deletion_2,
+            'label' => self::$unique_external_id_for_deletion_2,
+            'type' => 'integer'
+        ]);
     }
 
     /**
