@@ -451,7 +451,7 @@ class MetadataTest extends TestCase
         $this->assert_metadata_field_datasource($result);
         $this->assertCount(count(self::$datasource_multiple) - 1, $result['values']);
 
-        $values = array_map(function($datasource_entity){
+        $values = array_map(function ($datasource_entity){
             return $datasource_entity['value'];
         }, $result['values']);
 
