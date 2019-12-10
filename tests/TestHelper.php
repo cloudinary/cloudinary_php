@@ -2,6 +2,7 @@
 
 namespace Cloudinary {
 
+    use PHPUnit\Framework\TestCase;
     const RAW_FILE = "tests/docx.docx";
     const TEST_IMG = "tests/logo.png";
     const TEST_ICO = "tests/favicon.ico";
@@ -271,17 +272,19 @@ END;
     /**
      * Reports an error if the $haystack array does not contain the $needle array.
      *
-     * @param $test
+     * @param TestCase $test
      * @param array $haystack
      * @param array $needle
+     * @param string $message
      */
-    function assertArrayContainsArray($test, $haystack, $needle)
+    function assertArrayContainsArray($test, $haystack, $needle, $message = '')
     {
+        $message = empty($message) ? 'The $haystack array does not contain the $needle array' : $message;
         $result = array_filter($haystack, function ($item) use ($needle) {
             return $item == $needle;
         });
 
-        $test->assertGreaterThanOrEqual(1, count($result), 'The $haystack array does not contain the $needle array');
+        $test->assertGreaterThanOrEqual(1, count($result), $message);
     }
 
 }
