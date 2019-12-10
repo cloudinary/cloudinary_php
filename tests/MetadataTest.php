@@ -405,7 +405,9 @@ class MetadataTest extends TestCase
      */
     public function test_delete_metadata_field()
     {
-        $this->api->delete_metadata_field(self::$unique_external_id_for_deletion);
+        $result = $this->api->delete_metadata_field(self::$unique_external_id_for_deletion);
+
+        $this->assertEquals('ok', $result['message']);
 
         $this->setExpectedException('\Cloudinary\Api\NotFound');
         $this->api->metadata_field_by_field_id(self::$unique_external_id_for_deletion);
