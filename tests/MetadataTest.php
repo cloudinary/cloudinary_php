@@ -43,22 +43,27 @@ class MetadataTest extends TestCase
             self::markTestSkipped('Please setup environment for Api test to run');
         }
 
+        Curl::$instance = new Curl();
+
         $id = UNIQUE_TEST_ID;
+        // External IDs for metadata fields that should be created and later deleted
         self::$metadata_fields[] = self::$external_id_general = 'metadata_external_id_general_' . $id;
-        self::$metadata_fields[] = self::$external_id_string = 'metadata_external_id_string_' . $id;
-        self::$metadata_fields[] = self::$external_id_int = 'metadata_external_id_int_' . $id;
         self::$metadata_fields[] = self::$external_id_date = 'metadata_external_id_date_' . $id;
-        self::$metadata_fields[] = self::$external_id_enum = 'metadata_external_id_enum_' . $id;
         self::$metadata_fields[] = self::$external_id_enum_2 = 'metadata_external_id_enum_2_' . $id;
         self::$metadata_fields[] = self::$external_id_set = 'metadata_external_id_set_' . $id;
         self::$metadata_fields[] = self::$external_id_set_2 = 'metadata_external_id_set_2_' . $id;
         self::$metadata_fields[] = self::$external_id_set_3 = 'metadata_external_id_set_3_' . $id;
-        self::$metadata_fields[] = self::$external_id_delete = 'metadata_deletion_' . $id;
         self::$metadata_fields[] = self::$external_id_delete_2 = 'metadata_deletion_2_' . $id;
         self::$metadata_fields[] = self::$external_id_date_validation = 'metadata_date_validation_' . $id;
         self::$metadata_fields[] = self::$external_id_date_validation_2 = 'metadata_date_validation_2_' . $id;
         self::$metadata_fields[] = self::$external_id_int_validation = 'metadata_int_validation_' . $id;
         self::$metadata_fields[] = self::$external_id_int_validation_2 = 'metadata_int_validation_2_' . $id;
+        // External IDs for metadata fields that will be accessed through a mock (and should not be deleted or created)
+        self::$external_id_string = 'metadata_external_id_string_' . $id;
+        self::$external_id_int = 'metadata_external_id_int_' . $id;
+        self::$external_id_enum = 'metadata_external_id_enum_' . $id;
+        self::$external_id_delete = 'metadata_deletion_' . $id;
+        // Sample datasource data
         self::$datasource_entry_external_id = 'metadata_datasource_entry_external_id' . $id;
         self::$datasource_single = [
             [
@@ -106,10 +111,6 @@ class MetadataTest extends TestCase
                 ]
             ],
             [
-                'external_id' => self::$external_id_delete,
-                'type' => 'integer'
-            ],
-            [
                 'external_id' => self::$external_id_delete_2,
                 'type' => 'integer'
             ]
@@ -133,8 +134,15 @@ class MetadataTest extends TestCase
         $this->api = new Api();
     }
 
+    public function tearDown()
+    {
+        Curl::$instance = new Curl();
+    }
+
     public static function tearDownAfterClass()
     {
+        Curl::$instance = new Curl();
+
         $api = new Api();
 
         foreach (self::$metadata_fields as $externalId) {
@@ -220,10 +228,13 @@ class MetadataTest extends TestCase
      */
     public function test_list_metadata_fields()
     {
-        $result = $this->api->list_metadata_fields();
+        Curl::mockApi($this);
 
-        $this->assertGreaterThanOrEqual(1, count($result['metadata_fields']));
-        $this->assert_metadata_field($result['metadata_fields'][0]);
+        $this->api->list_metadata_fields();
+
+        assertUrl($this, '/metadata_fields');
+        assertGet($this);
+        $this->assertEmpty(Curl::$instance->fields());
     }
 
     /**
@@ -245,17 +256,27 @@ class MetadataTest extends TestCase
      */
     public function test_create_string_metadata_field()
     {
-        $result = $this->api->add_metadata_field([
+        Curl::mockApi($this);
+
+        $this->api->add_metadata_field([
             'external_id' => self::$external_id_string,
             'label' => self::$external_id_string,
             'type' => 'string'
         ]);
 
-        $this->assert_metadata_field($result, 'string', [
-            'label' => self::$external_id_string,
-            'external_id' => self::$external_id_string,
-            'mandatory' => false
-        ]);
+        assertUrl($this, '/metadata_fields');
+        assertPost($this);
+        assertJson(
+            $this,
+            json_encode(
+                array(
+                    'type' => 'string',
+                    'external_id' => self::$external_id_string,
+                    'label' => self::$external_id_string
+                )
+            ),
+            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+        );
     }
 
     /**
@@ -265,17 +286,27 @@ class MetadataTest extends TestCase
      */
     public function test_create_int_metadata_field()
     {
-        $result = $this->api->add_metadata_field([
+        Curl::mockApi($this);
+
+        $this->api->add_metadata_field([
             'external_id' => self::$external_id_int,
             'label' => self::$external_id_int,
             'type' => 'integer'
         ]);
 
-        $this->assert_metadata_field($result, 'integer', [
-            'label' => self::$external_id_int,
-            'external_id' => self::$external_id_int,
-            'mandatory' => false
-        ]);
+        assertUrl($this, '/metadata_fields');
+        assertPost($this);
+        assertJson(
+            $this,
+            json_encode(
+                array(
+                    'type' => 'integer',
+                    'external_id' => self::$external_id_int,
+                    'label' => self::$external_id_int
+                )
+            ),
+            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+        );
     }
 
     /**
@@ -305,7 +336,9 @@ class MetadataTest extends TestCase
      */
     public function test_create_enum_metadata_field()
     {
-        $result = $this->api->add_metadata_field([
+        Curl::mockApi($this);
+
+        $this->api->add_metadata_field([
             'datasource' => [
                 'values' => self::$datasource_single
             ],
@@ -314,11 +347,22 @@ class MetadataTest extends TestCase
             'type' => 'enum'
         ]);
 
-        $this->assert_metadata_field($result, 'enum', [
-            'label' => self::$external_id_enum,
-            'external_id' => self::$external_id_enum,
-            'mandatory' => false
-        ]);
+        assertUrl($this, '/metadata_fields');
+        assertPost($this);
+        assertJson(
+            $this,
+            json_encode(
+                array(
+                    'datasource' => [
+                        'values' => self::$datasource_single
+                    ],
+                    'external_id' => self::$external_id_enum,
+                    'label' => self::$external_id_enum,
+                    'type' => 'enum'
+                )
+            ),
+            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+        );
     }
 
     /**
@@ -405,13 +449,19 @@ class MetadataTest extends TestCase
      */
     public function test_delete_metadata_field()
     {
-        $result = $this->api->delete_metadata_field(self::$external_id_delete);
+        Curl::mockApi($this);
 
-        $this->assertEquals('ok', $result['message']);
+        $this->api->delete_metadata_field(self::$external_id_delete);
 
-        $this->setExpectedException('\Cloudinary\Api\NotFound');
-        $this->api->metadata_field_by_field_id(self::$external_id_delete);
-    }
+        assertUrl($this, '/metadata_fields/' . self::$external_id_delete);
+        assertDelete($this);
+        assertJson(
+            $this,
+            json_encode(
+                array()
+            ),
+            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+        );    }
 
     /**
      * Test deleting a metadata field definition then attempting to create a new one with the same external id which
