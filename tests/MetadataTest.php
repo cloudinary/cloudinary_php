@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MetadataTest extends TestCase
 {
+    private static $metadata_fields = [];
     private static $unique_external_id_general;
     private static $unique_external_id_string;
     private static $unique_external_id_int;
@@ -41,21 +42,21 @@ class MetadataTest extends TestCase
         if (!Cloudinary::config_get("api_secret")) {
             self::markTestSkipped('Please setup environment for Api test to run');
         }
-        self::$unique_external_id_general = 'metadata_external_id_general_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_string = 'metadata_external_id_string_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_int = 'metadata_external_id_int_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_date = 'metadata_external_id_date_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_enum = 'metadata_external_id_enum_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_enum_2 = 'metadata_external_id_enum_2_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_set = 'metadata_external_id_set_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_set_2 = 'metadata_external_id_set_2_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_set_3 = 'metadata_external_id_set_3_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_for_deletion = 'metadata_deletion_test_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_for_deletion_2 = 'metadata_deletion_test_2_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_for_testing_date_validation = 'metadata_date_validation_test_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_for_testing_date_validation_2 = 'metadata_date_validation_test_2_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_for_testing_integer_validation = 'metadata_integer_validation_test_' . UNIQUE_TEST_ID;
-        self::$unique_external_id_for_testing_integer_validation_2 = 'metadata_integer_validation_test_2_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_general = 'metadata_external_id_general_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_string = 'metadata_external_id_string_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_int = 'metadata_external_id_int_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_date = 'metadata_external_id_date_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_enum = 'metadata_external_id_enum_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_enum_2 = 'metadata_external_id_enum_2_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_set = 'metadata_external_id_set_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_set_2 = 'metadata_external_id_set_2_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_set_3 = 'metadata_external_id_set_3_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_for_deletion = 'metadata_deletion_test_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_for_deletion_2 = 'metadata_deletion_test_2_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_for_testing_date_validation = 'metadata_date_validation_test_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_for_testing_date_validation_2 = 'metadata_date_validation_test_2_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_for_testing_integer_validation = 'metadata_integer_validation_test_' . UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$unique_external_id_for_testing_integer_validation_2 = 'metadata_integer_validation_test_2_' . UNIQUE_TEST_ID;
         self::$unique_datasource_entry_external_id = 'metadata_datasource_entry_external_id' . UNIQUE_TEST_ID;
         self::$datasource_single = [
             [
@@ -133,41 +134,7 @@ class MetadataTest extends TestCase
     {
         $api = new Api();
 
-        try {
-            $api->delete_metadata_field(self::$unique_external_id_general);
-            $api->delete_metadata_field(self::$unique_external_id_string);
-            $api->delete_metadata_field(self::$unique_external_id_int);
-            $api->delete_metadata_field(self::$unique_external_id_date);
-            $api->delete_metadata_field(self::$unique_external_id_enum);
-            $api->delete_metadata_field(self::$unique_external_id_enum_2);
-            $api->delete_metadata_field(self::$unique_external_id_set);
-            $api->delete_metadata_field(self::$unique_external_id_set_2);
-            $api->delete_metadata_field(self::$unique_external_id_set_3);
-            $api->delete_metadata_field(self::$unique_external_id_for_testing_date_validation);
-            $api->delete_metadata_field(self::$unique_external_id_for_testing_integer_validation);
-        } catch (Exception $e) {
-            self::fail(
-                'Exception thrown while deleting metadata fields in MetadataFieldsTest::tearDownAfterClass() - ' .
-                $e->getMessage()
-            );
-        }
-        self::delete_extra_metadata_fields($api);
-    }
-
-    /**
-     * Delete leftover metadata fields which should have been deleted in case something broke and they were not deleted
-     *
-     * @param \Cloudinary\Api $api
-     */
-    private static function delete_extra_metadata_fields($api)
-    {
-        $externalIds = array(
-            self::$unique_external_id_for_deletion,
-            self::$unique_external_id_for_deletion_2,
-            self::$unique_external_id_for_testing_date_validation_2,
-            self::$unique_external_id_for_testing_integer_validation_2,
-        );
-        foreach ($externalIds as $externalId) {
+        foreach (self::$metadata_fields as $externalId) {
             try {
                 $api->delete_metadata_field($externalId);
             } catch (Exception $e) {
