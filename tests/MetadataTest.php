@@ -388,7 +388,12 @@ class MetadataTest extends TestCase
         );
 
         $this->assert_metadata_field_datasource($result);
-        assertArrayContainsArray($this, $result['values'], self::$datasource_single[0]);
+        assertArrayContainsArray(
+            $this,
+            $result['values'],
+            self::$datasource_single[0],
+            'The updated metadata field does not contain the updated datasource'
+        );
         $this->assertCount(count(self::$datasource_multiple), $result['values']);
         $this->assertEquals(self::$datasource_single[0]['value'], $result['values'][0]['value']);
     }
