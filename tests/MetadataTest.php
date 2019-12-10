@@ -42,6 +42,9 @@ class MetadataTest extends TestCase
         if (!Cloudinary::config_get("api_secret")) {
             self::markTestSkipped('Please setup environment for Api test to run');
         }
+
+        $api = new Api();
+
         self::$metadata_fields[] = self::$unique_external_id_general = 'metadata_external_id_general_' . UNIQUE_TEST_ID;
         self::$metadata_fields[] = self::$unique_external_id_string = 'metadata_external_id_string_' . UNIQUE_TEST_ID;
         self::$metadata_fields[] = self::$unique_external_id_int = 'metadata_external_id_int_' . UNIQUE_TEST_ID;
@@ -77,46 +80,46 @@ class MetadataTest extends TestCase
             ],
         ];
 
-        try {
-            (new Api())->add_metadata_field([
+        $metadata_fields_to_create = [
+            [
                 'external_id' => self::$unique_external_id_general,
-                'label' => self::$unique_external_id_general,
                 'type' => 'string'
-            ]);
-            (new Api())->add_metadata_field([
-                'datasource' => [
-                    'values' => self::$datasource_multiple
-                ],
+            ],
+            [
                 'external_id' => self::$unique_external_id_enum_2,
-                'label' => self::$unique_external_id_enum_2,
-                'type' => 'enum'
-            ]);
-            (new Api())->add_metadata_field([
+                'type' => 'enum',
                 'datasource' => [
                     'values' => self::$datasource_multiple
-                ],
+                ]
+            ],
+            [
                 'external_id' => self::$unique_external_id_set_2,
-                'label' => self::$unique_external_id_set_2,
-                'type' => 'set'
-            ]);
-            (new Api())->add_metadata_field([
+                'type' => 'set',
                 'datasource' => [
                     'values' => self::$datasource_multiple
-                ],
+                ]
+            ],
+            [
                 'external_id' => self::$unique_external_id_set_3,
-                'label' => self::$unique_external_id_set_3,
-                'type' => 'set'
-            ]);
-            (new Api())->add_metadata_field([
+                'type' => 'set',
+                'datasource' => [
+                    'values' => self::$datasource_multiple
+                ]
+            ],
+            [
                 'external_id' => self::$unique_external_id_for_deletion,
-                'label' => self::$unique_external_id_for_deletion,
                 'type' => 'integer'
-            ]);
-            (new Api())->add_metadata_field([
+            ],
+            [
                 'external_id' => self::$unique_external_id_for_deletion_2,
-                'label' => self::$unique_external_id_for_deletion_2,
                 'type' => 'integer'
-            ]);
+            ]
+        ];
+
+        try {
+            foreach ($metadata_fields_to_create as $metadata_field_to_create) {
+                self::create_metadata_field_for_test($api, $metadata_field_to_create);
+            }
         } catch (Exception $e) {
             self::fail(
                 'Exception thrown while adding metadata field in MetadataFieldsTest::setUpBeforeClass() - ' .
@@ -140,6 +143,25 @@ class MetadataTest extends TestCase
             } catch (Exception $e) {
             }
         }
+    }
+
+    /**
+     * Private helper method to create metadata fields for this test
+     *
+     * @param Api $api an instance of the Admin API
+     * @param array $field The field to add
+     *
+     * @return \Cloudinary\Api\Response
+     *
+     * @throws \Cloudinary\Api\GeneralError
+     */
+    private static function create_metadata_field_for_test(&$api, $field)
+    {
+        if (!isset($field['label'])) {
+            $field['label'] = $field['external_id'];
+        }
+
+        return $api->add_metadata_field($field);
     }
 
     /**
