@@ -351,8 +351,8 @@ class MetadataTest extends TestCase
      */
     public function test_update_metadata_field()
     {
-        $newLabel = 'update_metadata_test_' . self::$unique_external_id_general;
-        $newDefaultValue = 'update_metadata_test_' . self::$unique_external_id_general;
+        $newLabel = 'update_metadata_test_new_label' . self::$unique_external_id_general;
+        $newDefaultValue = 'update_metadata_test_new_default_value' . self::$unique_external_id_general;
 
         // Call the API to update the metadata field
         // Will also attempt to update some fields that cannot be updated (external_id and type) which will be ignored
