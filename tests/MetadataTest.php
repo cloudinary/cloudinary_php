@@ -13,22 +13,22 @@ use PHPUnit\Framework\TestCase;
 class MetadataTest extends TestCase
 {
     private static $metadata_fields = [];
-    private static $unique_external_id_general;
-    private static $unique_external_id_string;
-    private static $unique_external_id_int;
-    private static $unique_external_id_date;
-    private static $unique_external_id_enum;
-    private static $unique_external_id_enum_2;
-    private static $unique_external_id_set;
-    private static $unique_external_id_set_2;
-    private static $unique_external_id_set_3;
-    private static $unique_external_id_for_deletion;
-    private static $unique_external_id_for_deletion_2;
-    private static $unique_external_id_for_testing_date_validation;
-    private static $unique_external_id_for_testing_date_validation_2;
-    private static $unique_external_id_for_testing_integer_validation;
-    private static $unique_external_id_for_testing_integer_validation_2;
-    private static $unique_datasource_entry_external_id;
+    private static $external_id_general;
+    private static $external_id_string;
+    private static $external_id_int;
+    private static $external_id_date;
+    private static $external_id_enum;
+    private static $external_id_enum_2;
+    private static $external_id_set;
+    private static $external_id_set_2;
+    private static $external_id_set_3;
+    private static $external_id_delete;
+    private static $external_id_delete_2;
+    private static $external_id_date_validation;
+    private static $external_id_date_validation_2;
+    private static $external_id_int_validation;
+    private static $external_id_int_validation_2;
+    private static $datasource_entry_external_id;
     private static $datasource_single;
     private static $datasource_multiple;
 
@@ -43,34 +43,33 @@ class MetadataTest extends TestCase
             self::markTestSkipped('Please setup environment for Api test to run');
         }
 
-        $api = new Api();
-
-        self::$metadata_fields[] = self::$unique_external_id_general = 'metadata_external_id_general_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_string = 'metadata_external_id_string_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_int = 'metadata_external_id_int_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_date = 'metadata_external_id_date_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_enum = 'metadata_external_id_enum_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_enum_2 = 'metadata_external_id_enum_2_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_set = 'metadata_external_id_set_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_set_2 = 'metadata_external_id_set_2_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_set_3 = 'metadata_external_id_set_3_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_for_deletion = 'metadata_deletion_test_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_for_deletion_2 = 'metadata_deletion_test_2_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_for_testing_date_validation = 'metadata_date_validation_test_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_for_testing_date_validation_2 = 'metadata_date_validation_test_2_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_for_testing_integer_validation = 'metadata_integer_validation_test_' . UNIQUE_TEST_ID;
-        self::$metadata_fields[] = self::$unique_external_id_for_testing_integer_validation_2 = 'metadata_integer_validation_test_2_' . UNIQUE_TEST_ID;
-        self::$unique_datasource_entry_external_id = 'metadata_datasource_entry_external_id' . UNIQUE_TEST_ID;
+        $id = UNIQUE_TEST_ID;
+        self::$metadata_fields[] = self::$external_id_general = 'metadata_external_id_general_' . $id;
+        self::$metadata_fields[] = self::$external_id_string = 'metadata_external_id_string_' . $id;
+        self::$metadata_fields[] = self::$external_id_int = 'metadata_external_id_int_' . $id;
+        self::$metadata_fields[] = self::$external_id_date = 'metadata_external_id_date_' . $id;
+        self::$metadata_fields[] = self::$external_id_enum = 'metadata_external_id_enum_' . $id;
+        self::$metadata_fields[] = self::$external_id_enum_2 = 'metadata_external_id_enum_2_' . $id;
+        self::$metadata_fields[] = self::$external_id_set = 'metadata_external_id_set_' . $id;
+        self::$metadata_fields[] = self::$external_id_set_2 = 'metadata_external_id_set_2_' . $id;
+        self::$metadata_fields[] = self::$external_id_set_3 = 'metadata_external_id_set_3_' . $id;
+        self::$metadata_fields[] = self::$external_id_delete = 'metadata_deletion_' . $id;
+        self::$metadata_fields[] = self::$external_id_delete_2 = 'metadata_deletion_2_' . $id;
+        self::$metadata_fields[] = self::$external_id_date_validation = 'metadata_date_validation_' . $id;
+        self::$metadata_fields[] = self::$external_id_date_validation_2 = 'metadata_date_validation_2_' . $id;
+        self::$metadata_fields[] = self::$external_id_int_validation = 'metadata_int_validation_' . $id;
+        self::$metadata_fields[] = self::$external_id_int_validation_2 = 'metadata_int_validation_2_' . $id;
+        self::$datasource_entry_external_id = 'metadata_datasource_entry_external_id' . $id;
         self::$datasource_single = [
             [
                 'value' => 'v1',
-                'external_id' => self::$unique_datasource_entry_external_id,
+                'external_id' => self::$datasource_entry_external_id,
             ]
         ];
         self::$datasource_multiple = [
             [
                 'value' => 'v2',
-                'external_id' => self::$unique_datasource_entry_external_id,
+                'external_id' => self::$datasource_entry_external_id,
             ],
             [
                 'value' => 'v3'
@@ -82,40 +81,41 @@ class MetadataTest extends TestCase
 
         $metadata_fields_to_create = [
             [
-                'external_id' => self::$unique_external_id_general,
+                'external_id' => self::$external_id_general,
                 'type' => 'string'
             ],
             [
-                'external_id' => self::$unique_external_id_enum_2,
+                'external_id' => self::$external_id_enum_2,
                 'type' => 'enum',
                 'datasource' => [
                     'values' => self::$datasource_multiple
                 ]
             ],
             [
-                'external_id' => self::$unique_external_id_set_2,
+                'external_id' => self::$external_id_set_2,
                 'type' => 'set',
                 'datasource' => [
                     'values' => self::$datasource_multiple
                 ]
             ],
             [
-                'external_id' => self::$unique_external_id_set_3,
+                'external_id' => self::$external_id_set_3,
                 'type' => 'set',
                 'datasource' => [
                     'values' => self::$datasource_multiple
                 ]
             ],
             [
-                'external_id' => self::$unique_external_id_for_deletion,
+                'external_id' => self::$external_id_delete,
                 'type' => 'integer'
             ],
             [
-                'external_id' => self::$unique_external_id_for_deletion_2,
+                'external_id' => self::$external_id_delete_2,
                 'type' => 'integer'
             ]
         ];
 
+        $api = new Api();
         try {
             foreach ($metadata_fields_to_create as $metadata_field_to_create) {
                 self::create_metadata_field_for_test($api, $metadata_field_to_create);
@@ -233,9 +233,9 @@ class MetadataTest extends TestCase
      */
     public function test_get_metadata_field()
     {
-        $result = $this->api->metadata_field_by_field_id(self::$unique_external_id_general);
+        $result = $this->api->metadata_field_by_field_id(self::$external_id_general);
 
-        $this->assert_metadata_field($result, 'string', ['label' => self::$unique_external_id_general]);
+        $this->assert_metadata_field($result, 'string', ['label' => self::$external_id_general]);
     }
 
     /**
@@ -246,14 +246,14 @@ class MetadataTest extends TestCase
     public function test_create_string_metadata_field()
     {
         $result = $this->api->add_metadata_field([
-            'external_id' => self::$unique_external_id_string,
-            'label' => self::$unique_external_id_string,
+            'external_id' => self::$external_id_string,
+            'label' => self::$external_id_string,
             'type' => 'string'
         ]);
 
         $this->assert_metadata_field($result, 'string', [
-            'label' => self::$unique_external_id_string,
-            'external_id' => self::$unique_external_id_string,
+            'label' => self::$external_id_string,
+            'external_id' => self::$external_id_string,
             'mandatory' => false
         ]);
     }
@@ -266,14 +266,14 @@ class MetadataTest extends TestCase
     public function test_create_int_metadata_field()
     {
         $result = $this->api->add_metadata_field([
-            'external_id' => self::$unique_external_id_int,
-            'label' => self::$unique_external_id_int,
+            'external_id' => self::$external_id_int,
+            'label' => self::$external_id_int,
             'type' => 'integer'
         ]);
 
         $this->assert_metadata_field($result, 'integer', [
-            'label' => self::$unique_external_id_int,
-            'external_id' => self::$unique_external_id_int,
+            'label' => self::$external_id_int,
+            'external_id' => self::$external_id_int,
             'mandatory' => false
         ]);
     }
@@ -286,14 +286,14 @@ class MetadataTest extends TestCase
     public function test_create_date_metadata_field()
     {
         $result = $this->api->add_metadata_field([
-            'external_id' => self::$unique_external_id_date,
-            'label' => self::$unique_external_id_date,
+            'external_id' => self::$external_id_date,
+            'label' => self::$external_id_date,
             'type' => 'date'
         ]);
 
         $this->assert_metadata_field($result, 'date', [
-            'label' => self::$unique_external_id_date,
-            'external_id' => self::$unique_external_id_date,
+            'label' => self::$external_id_date,
+            'external_id' => self::$external_id_date,
             'mandatory' => false
         ]);
     }
@@ -309,14 +309,14 @@ class MetadataTest extends TestCase
             'datasource' => [
                 'values' => self::$datasource_single
             ],
-            'external_id' => self::$unique_external_id_enum,
-            'label' => self::$unique_external_id_enum,
+            'external_id' => self::$external_id_enum,
+            'label' => self::$external_id_enum,
             'type' => 'enum'
         ]);
 
         $this->assert_metadata_field($result, 'enum', [
-            'label' => self::$unique_external_id_enum,
-            'external_id' => self::$unique_external_id_enum,
+            'label' => self::$external_id_enum,
+            'external_id' => self::$external_id_enum,
             'mandatory' => false
         ]);
     }
@@ -332,14 +332,14 @@ class MetadataTest extends TestCase
             'datasource' => [
                 'values' => self::$datasource_multiple
             ],
-            'external_id' => self::$unique_external_id_set,
-            'label' => self::$unique_external_id_set,
+            'external_id' => self::$external_id_set,
+            'label' => self::$external_id_set,
             'type' => 'set'
         ]);
 
         $this->assert_metadata_field($result, 'set', [
-            'label' => self::$unique_external_id_set,
-            'external_id' => self::$unique_external_id_set,
+            'label' => self::$external_id_set,
+            'external_id' => self::$external_id_set,
             'mandatory' => false
         ]);
     }
@@ -351,15 +351,15 @@ class MetadataTest extends TestCase
      */
     public function test_update_metadata_field()
     {
-        $newLabel = 'update_metadata_test_new_label' . self::$unique_external_id_general;
-        $newDefaultValue = 'update_metadata_test_new_default_value' . self::$unique_external_id_general;
+        $newLabel = 'update_metadata_test_new_label' . self::$external_id_general;
+        $newDefaultValue = 'update_metadata_test_new_default_value' . self::$external_id_general;
 
         // Call the API to update the metadata field
         // Will also attempt to update some fields that cannot be updated (external_id and type) which will be ignored
         $result = $this->api->update_metadata_field(
-            self::$unique_external_id_general,
+            self::$external_id_general,
             [
-                'external_id' => self::$unique_external_id_set,
+                'external_id' => self::$external_id_set,
                 'label' => $newLabel,
                 'type' => 'integer',
                 'mandatory' => true,
@@ -368,7 +368,7 @@ class MetadataTest extends TestCase
         );
 
         $this->assert_metadata_field($result, 'string', [
-            'external_id' => self::$unique_external_id_general,
+            'external_id' => self::$external_id_general,
             'label' => $newLabel,
             'default_value' => $newDefaultValue,
             'mandatory' => true,
@@ -383,7 +383,7 @@ class MetadataTest extends TestCase
     public function test_update_metadata_field_datasource()
     {
         $result = $this->api->update_metadata_field_datasource(
-            self::$unique_external_id_enum_2,
+            self::$external_id_enum_2,
             self::$datasource_single
         );
 
@@ -405,12 +405,12 @@ class MetadataTest extends TestCase
      */
     public function test_delete_metadata_field()
     {
-        $result = $this->api->delete_metadata_field(self::$unique_external_id_for_deletion);
+        $result = $this->api->delete_metadata_field(self::$external_id_delete);
 
         $this->assertEquals('ok', $result['message']);
 
         $this->setExpectedException('\Cloudinary\Api\NotFound');
-        $this->api->metadata_field_by_field_id(self::$unique_external_id_for_deletion);
+        $this->api->metadata_field_by_field_id(self::$external_id_delete);
     }
 
     /**
@@ -421,15 +421,15 @@ class MetadataTest extends TestCase
      */
     public function test_delete_metadata_field_does_not_release_external_id()
     {
-        $this->api->delete_metadata_field(self::$unique_external_id_for_deletion_2);
+        $this->api->delete_metadata_field(self::$external_id_delete_2);
 
         $this->setExpectedException(
             '\Cloudinary\Api\BadRequest',
-            'external id ' . self::$unique_external_id_for_deletion_2 . ' already exists'
+            'external id ' . self::$external_id_delete_2 . ' already exists'
         );
         $this->api->add_metadata_field([
-            'external_id' => self::$unique_external_id_for_deletion_2,
-            'label' => self::$unique_external_id_for_deletion_2,
+            'external_id' => self::$external_id_delete_2,
+            'label' => self::$external_id_delete_2,
             'type' => 'integer'
         ]);
     }
@@ -442,9 +442,9 @@ class MetadataTest extends TestCase
     public function test_delete_metadata_field_data_source()
     {
         $result = $this->api->delete_datasource_entries(
-            self::$unique_external_id_set_2,
+            self::$external_id_set_2,
             [
-                self::$unique_datasource_entry_external_id
+                self::$datasource_entry_external_id
             ]
         );
 
@@ -488,8 +488,8 @@ class MetadataTest extends TestCase
 
         // Test entering a metadata field with date validation and a valid default value
         $metadata_field = [
-            'external_id' => self::$unique_external_id_for_testing_date_validation,
-            'label' => self::$unique_external_id_for_testing_date_validation,
+            'external_id' => self::$external_id_date_validation,
+            'label' => self::$external_id_date_validation,
             'type' => 'date',
             'default_value' => $yesterdayDate,
             'validation' => $lastThreeDaysValidation
@@ -503,8 +503,8 @@ class MetadataTest extends TestCase
 
         // Test entering a metadata field with date validation and an invalid default value
         $metadata_field = [
-            'external_id' => self::$unique_external_id_for_testing_date_validation_2,
-            'label' => self::$unique_external_id_for_testing_date_validation_2,
+            'external_id' => self::$external_id_date_validation_2,
+            'label' => self::$external_id_date_validation_2,
             'type' => 'date',
             'default_value' => $futureDate,
             'validation' => $lastThreeDaysValidation
@@ -528,8 +528,8 @@ class MetadataTest extends TestCase
 
         // Test entering a metadata field with integer validation and a valid default value
         $metadata_field = [
-            'external_id' => self::$unique_external_id_for_testing_integer_validation,
-            'label' => self::$unique_external_id_for_testing_integer_validation,
+            'external_id' => self::$external_id_int_validation,
+            'label' => self::$external_id_int_validation,
             'type' => 'integer',
             'default_value' => 5,
             'validation' => $validation
@@ -543,8 +543,8 @@ class MetadataTest extends TestCase
 
         // Test entering a metadata field with integer validation and a valid default value
         $metadata_field = [
-            'external_id' => self::$unique_external_id_for_testing_integer_validation_2,
-            'label' => self::$unique_external_id_for_testing_integer_validation_2,
+            'external_id' => self::$external_id_int_validation_2,
+            'label' => self::$external_id_int_validation_2,
             'type' => 'integer',
             'default_value' => 6,
             'validation' => $validation
@@ -562,9 +562,9 @@ class MetadataTest extends TestCase
     {
         // Begin by deleting a datasource entry
         $result = $this->api->delete_datasource_entries(
-            self::$unique_external_id_set_3,
+            self::$external_id_set_3,
             [
-                self::$unique_datasource_entry_external_id
+                self::$datasource_entry_external_id
             ]
         );
 
@@ -573,9 +573,9 @@ class MetadataTest extends TestCase
 
         // Restore datasource entry
         $result = $this->api->restore_metadata_field_datasource(
-            self::$unique_external_id_set_3,
+            self::$external_id_set_3,
             [
-                self::$unique_datasource_entry_external_id
+                self::$datasource_entry_external_id
             ]
         );
         $this->assert_metadata_field_datasource($result);
