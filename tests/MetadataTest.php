@@ -2,8 +2,9 @@
 
 namespace Cloudinary;
 
-use Exception;
 use Cloudinary;
+use Cloudinary\Api\Response;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -159,11 +160,11 @@ class MetadataTest extends TestCase
      * @param Api   $api    An instance of the Admin API
      * @param array $field  The field to add
      *
-     * @return Api\Response
+     * @return Response
      *
      * @throws Api\GeneralError
      */
-    private static function create_metadata_field_for_test(&$api, $field)
+    private static function create_metadata_field_for_test(Api &$api, array $field)
     {
         if (!isset($field['label'])) {
             $field['label'] = $field['external_id'];
@@ -177,12 +178,12 @@ class MetadataTest extends TestCase
      *
      * @see https://cloudinary.com/documentation/admin_api#generic_structure_of_a_metadata_field
      *
-     * @param Api\Response  $metadataField  The object to test
+     * @param Response      $metadataField  The object to test
      * @param string        $type           The type of metadata field we expect
      * @param array         $values         An associative array where the key is the name of the parameter to check and the
      *                                      value is the value
      */
-    private function assert_metadata_field($metadataField, $type = null, $values = array())
+    private function assert_metadata_field(Response $metadataField, $type = null, array $values = array())
     {
         $this->assertInternalType('string', $metadataField['external_id']);
         if ($type) {
