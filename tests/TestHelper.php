@@ -287,4 +287,20 @@ END;
         $test->assertGreaterThanOrEqual(1, count($result), $message);
     }
 
+    /**
+     * Assert that fields is correctly encoded into the HTTP request
+     *
+     * @param TestCase  $test
+     * @param array     $fields
+     * @param string    $message
+     */
+    function assertEncodedRequestFields(TestCase $test, array $fields = array(), $message = '')
+    {
+        assertJson(
+            $test,
+            json_encode($fields),
+            Curl::$instance->fields(),
+            empty($message) ? 'Should correctly encode JSON into the HTTP request' : $message
+        );
+    }
 }

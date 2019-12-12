@@ -267,16 +267,13 @@ class MetadataTest extends TestCase
 
         assertUrl($this, '/metadata_fields');
         assertPost($this);
-        assertJson(
+        assertEncodedRequestFields(
             $this,
-            json_encode(
-                array(
-                    'type' => 'string',
-                    'external_id' => self::$external_id_string,
-                    'label' => self::$external_id_string
-                )
-            ),
-            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+            array(
+                'type' => 'string',
+                'external_id' => self::$external_id_string,
+                'label' => self::$external_id_string
+            )
         );
     }
 
@@ -297,16 +294,13 @@ class MetadataTest extends TestCase
 
         assertUrl($this, '/metadata_fields');
         assertPost($this);
-        assertJson(
+        assertEncodedRequestFields(
             $this,
-            json_encode(
-                array(
-                    'type' => 'integer',
-                    'external_id' => self::$external_id_int,
-                    'label' => self::$external_id_int
-                )
-            ),
-            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+            array(
+                'type' => 'integer',
+                'external_id' => self::$external_id_int,
+                'label' => self::$external_id_int
+            )
         );
     }
 
@@ -350,19 +344,16 @@ class MetadataTest extends TestCase
 
         assertUrl($this, '/metadata_fields');
         assertPost($this);
-        assertJson(
+        assertEncodedRequestFields(
             $this,
-            json_encode(
-                array(
-                    'datasource' => [
-                        'values' => self::$datasource_single
-                    ],
-                    'external_id' => self::$external_id_enum,
-                    'label' => self::$external_id_enum,
-                    'type' => 'enum'
-                )
-            ),
-            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
+            array(
+                'datasource' => [
+                    'values' => self::$datasource_single
+                ],
+                'external_id' => self::$external_id_enum,
+                'label' => self::$external_id_enum,
+                'type' => 'enum'
+            )
         );
     }
 
@@ -456,13 +447,8 @@ class MetadataTest extends TestCase
 
         assertUrl($this, '/metadata_fields/' . self::$external_id_delete);
         assertDelete($this);
-        assertJson(
-            $this,
-            json_encode(
-                array()
-            ),
-            Curl::$instance->fields(), 'Should correctly encode JSON into the HTTP request'
-        );    }
+        assertEncodedRequestFields($this, array());
+    }
 
     /**
      * Test deleting a metadata field definition then attempting to create a new one with the same external id which
