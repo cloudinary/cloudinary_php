@@ -1333,9 +1333,9 @@ namespace Cloudinary {
          *
          * @param array $options Additional options
          *
-         * @return \Cloudinary\Api\Response
+         * @return Api\Response
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function list_metadata_fields($options = array())
         {
@@ -1343,15 +1343,16 @@ namespace Cloudinary {
         }
 
         /**
-         * Get a metadata field by external id
+         * Gets a metadata field by external id
          *
          * @see https://cloudinary.com/documentation/admin_api#get_a_metadata_field_by_external_id
          *
-         * @param string $field_external_id The ID of the metadata field to retrieve
-         * @param array $options Additional options
+         * @param string    $field_external_id  The ID of the metadata field to retrieve
+         * @param array     $options            Additional options
          *
-         * @return \Cloudinary\Api\Response
-         * @throws \Cloudinary\Api\GeneralError
+         * @return Api\Response
+         *
+         * @throws Api\GeneralError
          */
         public function metadata_field_by_field_id($field_external_id, $options = array())
         {
@@ -1361,16 +1362,16 @@ namespace Cloudinary {
         }
 
         /**
-         * Add a new metadata field definition
+         * Creates a new metadata field definition
          *
          * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field
          *
-         * @param array $field The field to add
-         * @param array $options Additional options
+         * @param array $field      The field to add
+         * @param array $options    Additional options
          *
-         * @return \Cloudinary\Api\Response
+         * @return Api\Response
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function add_metadata_field(array $field, $options = array())
         {
@@ -1388,17 +1389,19 @@ namespace Cloudinary {
         }
 
         /**
+         * Updates a metadata field by external id
+         *
          * Updates a metadata field definition (partially, no need to pass the entire object)
          *
          * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_by_external_id
          *
-         * @param string $field_external_id The id of the metadata field to update
-         * @param array $field The field definition
-         * @param array $options Additional options
+         * @param string    $field_external_id  The id of the metadata field to update
+         * @param array     $field              The field definition
+         * @param array     $options            Additional options
          *
-         * @return \Cloudinary\Api\Response
+         * @return Api\Response
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function update_metadata_field($field_external_id, array $field, $options = array())
         {
@@ -1415,16 +1418,17 @@ namespace Cloudinary {
 
         /**
          * Deletes a metadata field definition.
+         *
          * The field should no longer be considered a valid candidate for all other endpoints
          *
          * @see https://cloudinary.com/documentation/admin_api#delete_a_metadata_field_by_external_id
          *
-         * @param string $field_external_id The external id of the field to delete
-         * @param array $options Additional options
+         * @param string    $field_external_id  The external id of the field to delete
+         * @param array     $options            Additional options
          *
-         * @return \Cloudinary\Api\Response An array with a "message" key. "ok" value indicates a successful deletion.
+         * @return Api\Response An array with a "message" key. "ok" value indicates a successful deletion.
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function delete_metadata_field($field_external_id, $options = array())
         {
@@ -1434,19 +1438,21 @@ namespace Cloudinary {
         }
 
         /**
+         * Deletes entries in a metadata field datasource
+         *
          * Deletes (blocks) the datasource entries for a specified metadata field definition. Sets the state of the
-         * entries to inactive. This is a soft delete, the entries still exist under the hood and can be activated again
-         * with the restore datasource entries method.
+         * entries to inactive. This is a soft delete, the entries still exist under the hood and can be activated
+         * again with the restore datasource entries method.
          *
          * @see https://cloudinary.com/documentation/admin_api#delete_entries_in_a_metadata_field_datasource
          *
-         * @param string $field_external_id The id of the field to update
-         * @param array $entries_external_id The ids of all the entries to delete from the datasource
-         * @param array $options Additional options
+         * @param string    $field_external_id      The id of the field to update
+         * @param array     $entries_external_id    The ids of all the entries to delete from the datasource
+         * @param array     $options                Additional options
          *
-         * @return \Cloudinary\Api\Response The remaining datasource entries.
+         * @return Api\Response The remaining datasource entries.
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function delete_datasource_entries($field_external_id, array $entries_external_id, $options = array())
         {
@@ -1457,19 +1463,21 @@ namespace Cloudinary {
         }
 
         /**
+         * Updates a metadata field datasource
+         *
          * Updates the datasource of a supported field type (currently only enum and set), passed as JSON data. The
          * update is partial: datasource entries with an existing external_id will be updated and entries with new
          * external_id’s (or without external_id’s) will be appended.
          *
          * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_datasource
          *
-         * @param string $field_external_id The external id of the field to update
-         * @param array $entries_external_id
-         * @param array $options Additional options
+         * @param string    $field_external_id      The external id of the field to update
+         * @param array     $entries_external_id
+         * @param array     $options                Additional options
          *
-         * @return \Cloudinary\Api\Response
+         * @return Api\Response
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function update_metadata_field_datasource($field_external_id, array $entries_external_id, $options = array())
         {
@@ -1486,20 +1494,20 @@ namespace Cloudinary {
         }
 
         /**
-         * Restore entries in a metadata field datasource
+         * Restores entries in a metadata field datasource
          *
          * Restores (unblocks) any previously deleted datasource entries for a specified metadata field definition.
          * Sets the state of the entries to active.
          *
          * @see https://cloudinary.com/documentation/admin_api#restore_entries_in_a_metadata_field_datasource
          *
-         * @param string $field_external_id The ID of the metadata field
-         * @param array $entries_external_ids An array of IDs of datasource entries to restore (unblock)
-         * @param array $options Additional options
+         * @param string    $field_external_id      The ID of the metadata field
+         * @param array     $entries_external_ids   An array of IDs of datasource entries to restore (unblock)
+         * @param array     $options                Additional options
          *
-         * @return \Cloudinary\Api\Response
+         * @return Api\Response
          *
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws Api\GeneralError
          */
         public function restore_metadata_field_datasource($field_external_id, array $entries_external_ids, $options = array())
         {

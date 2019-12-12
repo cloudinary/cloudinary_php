@@ -33,7 +33,7 @@ class MetadataTest extends TestCase
     private static $datasource_multiple;
 
     /**
-     * @var  \Cloudinary\Api $api
+     * @var Api $api
      */
     private $api;
 
@@ -156,12 +156,12 @@ class MetadataTest extends TestCase
     /**
      * Private helper method to create metadata fields for this test
      *
-     * @param Api $api an instance of the Admin API
-     * @param array $field The field to add
+     * @param Api   $api    An instance of the Admin API
+     * @param array $field  The field to add
      *
-     * @return \Cloudinary\Api\Response
+     * @return Api\Response
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     private static function create_metadata_field_for_test(&$api, $field)
     {
@@ -177,10 +177,10 @@ class MetadataTest extends TestCase
      *
      * @see https://cloudinary.com/documentation/admin_api#generic_structure_of_a_metadata_field
      *
-     * @param \Cloudinary\Api\Response $metadataField The object to test
-     * @param string $type          The type of metadata field we expect
-     * @param array $values         An associative array where the key is the name of the parameter to check and the
-     *                              value is the value
+     * @param Api\Response  $metadataField  The object to test
+     * @param string        $type           The type of metadata field we expect
+     * @param array         $values         An associative array where the key is the name of the parameter to check and the
+     *                                      value is the value
      */
     private function assert_metadata_field($metadataField, $type = null, $values = array())
     {
@@ -224,7 +224,7 @@ class MetadataTest extends TestCase
     /**
      * Test getting a list of all metadata fields
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_list_metadata_fields()
     {
@@ -240,7 +240,7 @@ class MetadataTest extends TestCase
     /**
      * Test getting a metadata field by external id
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_get_metadata_field()
     {
@@ -252,7 +252,7 @@ class MetadataTest extends TestCase
     /**
      * Test creating a string metadata field
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_create_string_metadata_field()
     {
@@ -282,7 +282,7 @@ class MetadataTest extends TestCase
     /**
      * Test creating an integer metadata field
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_create_int_metadata_field()
     {
@@ -312,7 +312,7 @@ class MetadataTest extends TestCase
     /**
      * Test creating a date metadata field
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_create_date_metadata_field()
     {
@@ -332,7 +332,7 @@ class MetadataTest extends TestCase
     /**
      * Test creating an Enum metadata field
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_create_enum_metadata_field()
     {
@@ -368,7 +368,7 @@ class MetadataTest extends TestCase
     /**
      * Test creating a set metadata field
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_create_set_metadata_field()
     {
@@ -391,7 +391,7 @@ class MetadataTest extends TestCase
     /**
      * Update a metadata field by external id
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_update_metadata_field()
     {
@@ -422,7 +422,7 @@ class MetadataTest extends TestCase
     /**
      * Update a metadata field datasource
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_update_metadata_field_datasource()
     {
@@ -445,7 +445,7 @@ class MetadataTest extends TestCase
     /**
      * Test deleting a metadata field definition by its external id.
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_delete_metadata_field()
     {
@@ -467,7 +467,7 @@ class MetadataTest extends TestCase
      * Test deleting a metadata field definition then attempting to create a new one with the same external id which
      * should fail.
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_delete_metadata_field_does_not_release_external_id()
     {
@@ -487,7 +487,7 @@ class MetadataTest extends TestCase
     /**
      * Delete entries in a metadata field datasource
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_delete_metadata_field_data_source()
     {
@@ -512,7 +512,7 @@ class MetadataTest extends TestCase
     /**
      * Test date field validation
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_date_field_default_value_validation()
     {
@@ -566,7 +566,7 @@ class MetadataTest extends TestCase
     /**
      * Test integer field validation
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_integer_field_validation()
     {
@@ -606,7 +606,7 @@ class MetadataTest extends TestCase
     /**
      * Restore a deleted entry in a metadata field datasource
      *
-     * @throws \Cloudinary\Api\GeneralError
+     * @throws Api\GeneralError
      */
     public function test_restore_metadata_field_datasource()
     {
