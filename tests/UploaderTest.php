@@ -93,7 +93,7 @@ namespace Cloudinary {
         }
 
         /**
-         * @throws \Cloudinary\Api\GeneralError
+         * @throws GeneralError
          */
         public static function tearDownAfterClass()
         {
@@ -929,7 +929,7 @@ TAG
         /**
          * Editing metadata of an existing resource
          *
-         * @throws \Cloudinary\Error
+         * @throws Error
          */
         public function test_uploader_update_metadata()
         {
@@ -944,7 +944,7 @@ TAG
         /**
          * Editing metadata of multiple existing resources
          *
-         * @throws \Cloudinary\Error
+         * @throws Error
          */
         public function test_uploader_update_metadata_on_multiple_resources()
         {
