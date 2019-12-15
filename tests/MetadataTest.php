@@ -164,7 +164,7 @@ class MetadataTest extends TestCase
      *
      * @throws Api\GeneralError
      */
-    private static function create_metadata_field_for_test(Api &$api, array $field)
+    private static function create_metadata_field_for_test(Api &$api, $field)
     {
         if (!isset($field['label'])) {
             $field['label'] = $field['external_id'];
@@ -183,7 +183,7 @@ class MetadataTest extends TestCase
      * @param array         $values         An associative array where the key is the name of the parameter to check and the
      *                                      value is the value
      */
-    private function assert_metadata_field(Response $metadataField, $type = null, array $values = array())
+    private function assert_metadata_field(Response $metadataField, $type = null, $values = array())
     {
         $this->assertInternalType('string', $metadataField['external_id']);
         if ($type) {

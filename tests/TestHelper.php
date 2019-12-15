@@ -294,7 +294,7 @@ END;
      * @param array     $fields
      * @param string    $message
      */
-    function assertEncodedRequestFields(TestCase $test, array $fields = array(), $message = '')
+    function assertEncodedRequestFields(TestCase $test, $fields = array(), $message = '')
     {
         assertJson(
             $test,
