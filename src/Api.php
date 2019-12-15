@@ -1533,7 +1533,7 @@ namespace Cloudinary {
          *
          * @throws Api\GeneralError
          */
-        private function call_metadata_api($method, $uri, $params, array &$options)
+        private function call_metadata_api($method, $uri, $params, &$options)
         {
             array_unshift($uri, 'metadata_fields');
             $options['content_type'] = 'application/json';
