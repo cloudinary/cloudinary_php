@@ -216,10 +216,12 @@ class MetadataTest extends TestCase
     {
         $this->assertNotEmpty($dataSource);
         $this->assertArrayHasKey('values', $dataSource);
-        if (!empty($values)) {
+        if (!empty($dataSource['values'])) {
             $this->assertInternalType('string', $dataSource['values'][0]['value']);
             $this->assertInternalType('string', $dataSource['values'][0]['external_id']);
-            $this->assertContains($dataSource['values'][0]['state'], ['active', 'inactive']);
+            if (!empty($dataSource['values'][0]['state'])) {
+                $this->assertContains($dataSource['values'][0]['state'], ['active', 'inactive']);
+            }
         }
     }
 
