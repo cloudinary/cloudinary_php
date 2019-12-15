@@ -288,7 +288,7 @@ END;
     }
 
     /**
-     * Assert that fields is correctly encoded into the HTTP request
+     * Asserts that request fields are correctly encoded into the HTTP request
      *
      * @param TestCase  $test
      * @param array     $fields
