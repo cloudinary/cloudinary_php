@@ -177,12 +177,12 @@ class MetadataTest extends TestCase
     /**
      * Asserts that a given object fits the generic structure of a metadata field
      *
-     * @see https://cloudinary.com/documentation/admin_api#generic_structure_of_a_metadata_field
+     * @see https://cloudinary.com/documentation/admin_api#generic_structure_of_a_metadata_field Generic structure of a metadata field in API reference
      *
-     * @param Response $metadataField       The object to test
-     * @param string   $type                The type of metadata field we expect
-     * @param array    $values              An associative array where the key is the name of the parameter to check
-     *                                      and the value is the value
+     * @param Response $metadataField The object to test
+     * @param string   $type          The type of metadata field we expect
+     * @param array    $values        An associative array where the key is the name of the parameter to check and the
+     *                                value is the value
      */
     private function assert_metadata_field(Response $metadataField, $type = null, $values = array())
     {
@@ -208,7 +208,7 @@ class MetadataTest extends TestCase
     /**
      * Asserts that a given object fits the generic structure of a metadata field datasource
      *
-     * @see https://cloudinary.com/documentation/admin_api#datasource_values
+     * @see https://cloudinary.com/documentation/admin_api#datasource_values Datasource values in Admin API
      *
      * @param $dataSource
      */

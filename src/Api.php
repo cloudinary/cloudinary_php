@@ -1329,7 +1329,7 @@ namespace Cloudinary {
         /**
          * Returns a list of all metadata field definitions
          *
-         * @see https://cloudinary.com/documentation/admin_api#get_metadata_fields
+         * @see https://cloudinary.com/documentation/admin_api#get_metadata_fields Get metadata fields API reference
          *
          * @param array $options Additional options
          *
@@ -1345,7 +1345,7 @@ namespace Cloudinary {
         /**
          * Gets a metadata field by external id
          *
-         * @see https://cloudinary.com/documentation/admin_api#get_a_metadata_field_by_external_id
+         * @see https://cloudinary.com/documentation/admin_api#get_a_metadata_field_by_external_id Get metadata field by external ID API reference
          *
          * @param string $field_external_id The ID of the metadata field to retrieve
          * @param array  $options           Additional options
@@ -1364,7 +1364,7 @@ namespace Cloudinary {
         /**
          * Creates a new metadata field definition
          *
-         * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field
+         * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field Create metadata field API reference
          *
          * @param array $field   The field to add
          * @param array $options Additional options
@@ -1391,9 +1391,10 @@ namespace Cloudinary {
         /**
          * Updates a metadata field by external id
          *
-         * Updates a metadata field definition (partially, no need to pass the entire object)
+         * Updates a metadata field definition (partially, no need to pass the entire object) passed as JSON data.
+         * See {@see https://cloudinary.com/documentation/admin_api#generic_structure_of_a_metadata_field Generic structure of a metadata field} for details.
          *
-         * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_by_external_id
+         * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_by_external_id Update metadata field API reference
          *
          * @param string $field_external_id The id of the metadata field to update
          * @param array  $field             The field definition
@@ -1421,7 +1422,7 @@ namespace Cloudinary {
          *
          * The field should no longer be considered a valid candidate for all other endpoints
          *
-         * @see https://cloudinary.com/documentation/admin_api#delete_a_metadata_field_by_external_id
+         * @see https://cloudinary.com/documentation/admin_api#delete_a_metadata_field_by_external_id Delete metadata field API reference
          *
          * @param string $field_external_id The external id of the field to delete
          * @param array  $options           Additional options
@@ -1444,7 +1445,7 @@ namespace Cloudinary {
          * entries to inactive. This is a soft delete, the entries still exist under the hood and can be activated
          * again with the restore datasource entries method.
          *
-         * @see https://cloudinary.com/documentation/admin_api#delete_entries_in_a_metadata_field_datasource
+         * @see https://cloudinary.com/documentation/admin_api#delete_entries_in_a_metadata_field_datasource Delete entries in a metadata field datasource API reference
          *
          * @param string $field_external_id   The id of the field to update
          * @param array  $entries_external_id The ids of all the entries to delete from the datasource
@@ -1470,7 +1471,7 @@ namespace Cloudinary {
          * update is partial: datasource entries with an existing external_id will be updated and entries with new
          * external_id’s (or without external_id’s) will be appended.
          *
-         * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_datasource
+         * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_datasource Update a metadata field datasource API reference
          *
          * @param string $field_external_id The external id of the field to update
          * @param array  $entries_external_id
@@ -1501,7 +1502,7 @@ namespace Cloudinary {
          * Restores (unblocks) any previously deleted datasource entries for a specified metadata field definition.
          * Sets the state of the entries to active.
          *
-         * @see https://cloudinary.com/documentation/admin_api#restore_entries_in_a_metadata_field_datasource
+         * @see https://cloudinary.com/documentation/admin_api#restore_entries_in_a_metadata_field_datasource Restore entries in a metadata field datasource API reference
          *
          * @param string $field_external_id    The ID of the metadata field
          * @param array  $entries_external_ids An array of IDs of datasource entries to restore (unblock)
