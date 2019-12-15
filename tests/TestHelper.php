@@ -2,6 +2,7 @@
 
 namespace Cloudinary {
 
+    use PHPUnit\Framework\TestCase;
     const RAW_FILE = "tests/docx.docx";
     const TEST_IMG = "tests/logo.png";
     const TEST_ICO = "tests/favicon.ico";
@@ -266,5 +267,40 @@ END;
             $names[] = strtolower(trim($chunks[0]));
         }
         $test->assertContains(strtolower($header), $names, $message);
+    }
+
+    /**
+     * Reports an error if the $haystack array does not contain the $needle array.
+     *
+     * @param TestCase $test
+     * @param array $haystack
+     * @param array $needle
+     * @param string $message
+     */
+    function assertArrayContainsArray($test, $haystack, $needle, $message = '')
+    {
+        $message = empty($message) ? 'The $haystack array does not contain the $needle array' : $message;
+        $result = array_filter($haystack, function ($item) use ($needle) {
+            return $item == $needle;
+        });
+
+        $test->assertGreaterThanOrEqual(1, count($result), $message);
+    }
+
+    /**
+     * Asserts that request fields are correctly encoded into the HTTP request
+     *
+     * @param TestCase $test
+     * @param array    $fields
+     * @param string   $message
+     */
+    function assertEncodedRequestFields(TestCase $test, $fields = array(), $message = '')
+    {
+        assertJson(
+            $test,
+            json_encode($fields),
+            Curl::$instance->fields(),
+            empty($message) ? 'Should correctly encode JSON into the HTTP request' : $message
+        );
     }
 }

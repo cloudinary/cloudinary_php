@@ -146,22 +146,19 @@ namespace Cloudinary {
                 ->with_field("image_metadata")
                 ->execute();
 
-            assertJson(
+            assertEncodedRequestFields(
                 $this,
-                json_encode(
-                    array(
-                        "sort_by" => array(
-                            array("created_at" => "asc"),
-                            array("updated_at" => "desc"),
-                        ),
+                array(
+                    "sort_by" => array(
+                        array("created_at" => "asc"),
+                        array("updated_at" => "desc"),
+                    ),
                     "aggregate" => array("format", "resource_type"),
                     "with_field" => array("tags", "image_metadata"),
                     "expression" => "format:jpg",
                     "max_results" => 10,
-                    "next_cursor" => "abcd",
-                    )
-                ),
-                Curl::$instance->fields(), "Should correctly encode JSON into the HTTP request"
+                    "next_cursor" => "abcd"
+                )
             );
 
             assertJson(
