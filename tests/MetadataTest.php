@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class MetadataTest
+ *
  * @package Cloudinary
  */
 class MetadataTest extends TestCase
@@ -157,8 +158,8 @@ class MetadataTest extends TestCase
     /**
      * Private helper method to create metadata fields for this test
      *
-     * @param Api   $api    An instance of the Admin API
-     * @param array $field  The field to add
+     * @param Api   $api   An instance of the Admin API
+     * @param array $field The field to add
      *
      * @return Response
      *
@@ -178,10 +179,10 @@ class MetadataTest extends TestCase
      *
      * @see https://cloudinary.com/documentation/admin_api#generic_structure_of_a_metadata_field
      *
-     * @param Response      $metadataField  The object to test
-     * @param string        $type           The type of metadata field we expect
-     * @param array         $values         An associative array where the key is the name of the parameter to check and the
-     *                                      value is the value
+     * @param Response $metadataField       The object to test
+     * @param string   $type                The type of metadata field we expect
+     * @param array    $values              An associative array where the key is the name of the parameter to check
+     *                                      and the value is the value
      */
     private function assert_metadata_field(Response $metadataField, $type = null, $values = array())
     {
@@ -488,7 +489,7 @@ class MetadataTest extends TestCase
         $this->assert_metadata_field_datasource($result);
         $this->assertCount(count(self::$datasource_multiple) - 1, $result['values']);
 
-        $values = array_map(function ($datasource_entity){
+        $values = array_map(function ($datasource_entity) {
             return $datasource_entity['value'];
         }, $result['values']);
 

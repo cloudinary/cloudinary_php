@@ -290,9 +290,9 @@ END;
     /**
      * Asserts that request fields are correctly encoded into the HTTP request
      *
-     * @param TestCase  $test
-     * @param array     $fields
-     * @param string    $message
+     * @param TestCase $test
+     * @param array    $fields
+     * @param string   $message
      */
     function assertEncodedRequestFields(TestCase $test, $fields = array(), $message = '')
     {

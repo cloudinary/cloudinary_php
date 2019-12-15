@@ -1347,8 +1347,8 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#get_a_metadata_field_by_external_id
          *
-         * @param string    $field_external_id  The ID of the metadata field to retrieve
-         * @param array     $options            Additional options
+         * @param string $field_external_id The ID of the metadata field to retrieve
+         * @param array  $options           Additional options
          *
          * @return Api\Response
          *
@@ -1366,8 +1366,8 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field
          *
-         * @param array $field      The field to add
-         * @param array $options    Additional options
+         * @param array $field   The field to add
+         * @param array $options Additional options
          *
          * @return Api\Response
          *
@@ -1395,9 +1395,9 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_by_external_id
          *
-         * @param string    $field_external_id  The id of the metadata field to update
-         * @param array     $field              The field definition
-         * @param array     $options            Additional options
+         * @param string $field_external_id The id of the metadata field to update
+         * @param array  $field             The field definition
+         * @param array  $options           Additional options
          *
          * @return Api\Response
          *
@@ -1423,8 +1423,8 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#delete_a_metadata_field_by_external_id
          *
-         * @param string    $field_external_id  The external id of the field to delete
-         * @param array     $options            Additional options
+         * @param string $field_external_id The external id of the field to delete
+         * @param array  $options           Additional options
          *
          * @return Api\Response An array with a "message" key. "ok" value indicates a successful deletion.
          *
@@ -1446,9 +1446,9 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#delete_entries_in_a_metadata_field_datasource
          *
-         * @param string    $field_external_id      The id of the field to update
-         * @param array     $entries_external_id    The ids of all the entries to delete from the datasource
-         * @param array     $options                Additional options
+         * @param string $field_external_id   The id of the field to update
+         * @param array  $entries_external_id The ids of all the entries to delete from the datasource
+         * @param array  $options             Additional options
          *
          * @return Api\Response The remaining datasource entries.
          *
@@ -1472,9 +1472,9 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#update_a_metadata_field_datasource
          *
-         * @param string    $field_external_id      The external id of the field to update
-         * @param array     $entries_external_id
-         * @param array     $options                Additional options
+         * @param string $field_external_id The external id of the field to update
+         * @param array  $entries_external_id
+         * @param array  $options           Additional options
          *
          * @return Api\Response
          *
@@ -1503,9 +1503,9 @@ namespace Cloudinary {
          *
          * @see https://cloudinary.com/documentation/admin_api#restore_entries_in_a_metadata_field_datasource
          *
-         * @param string    $field_external_id      The ID of the metadata field
-         * @param array     $entries_external_ids   An array of IDs of datasource entries to restore (unblock)
-         * @param array     $options                Additional options
+         * @param string $field_external_id    The ID of the metadata field
+         * @param array  $entries_external_ids An array of IDs of datasource entries to restore (unblock)
+         * @param array  $options              Additional options
          *
          * @return Api\Response
          *
@@ -1523,10 +1523,10 @@ namespace Cloudinary {
         /**
          * Private function that assists with performing an API call to the metadata_fields part of the Admin API
          *
-         * @param string    $method    The HTTP method. Valid methods: get, post, put, delete
-         * @param array     $uri       REST endpoint of the API (without 'metadata_fields')
-         * @param array     $params    Query/body parameters passed to the method
-         * @param array     $options   Additional options. Can be an override of the configuration, headers, etc.
+         * @param string $method  The HTTP method. Valid methods: get, post, put, delete
+         * @param array  $uri     REST endpoint of the API (without 'metadata_fields')
+         * @param array  $params  Query/body parameters passed to the method
+         * @param array  $options Additional options. Can be an override of the configuration, headers, etc.
          *
          * @return Api\Response
          *
