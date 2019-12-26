@@ -9,6 +9,13 @@ php:
   - '5.5'
   - '5.4'
 
+jobs:
+  include:
+    - php: 5.4
+      dist: trusty
+    - php: 5.5
+      dist: trusty
+
 script: vendor/bin/phpunit
 install: composer install
 branches:
