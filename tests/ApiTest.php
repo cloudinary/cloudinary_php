@@ -248,11 +248,14 @@ namespace Cloudinary {
             $this->assertNotEquals($result["resources"], null);
             $this->assertEquals(count($result["resources"]), 1);
             $this->assertNotEquals($result["next_cursor"], null);
+            assertValidResource($this, $result["resources"][0]);
 
             $result2 = $this->api->resources(array("max_results" => 1, "next_cursor" => $result["next_cursor"]));
             $this->assertNotEquals($result2["resources"], null);
             $this->assertEquals(count($result2["resources"]), 1);
             $this->assertNotEquals($result2["resources"][0]["public_id"], $result["resources"][0]["public_id"]);
+            assertValidResource($this, $result2["resources"][0]);
+
         }
 
         /**

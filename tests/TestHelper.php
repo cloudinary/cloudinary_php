@@ -291,8 +291,8 @@ END;
      * Asserts that request fields are correctly encoded into the HTTP request
      *
      * @param TestCase $test
-     * @param array    $fields
-     * @param string   $message
+     * @param array $fields
+     * @param string $message
      */
     function assertEncodedRequestFields(TestCase $test, $fields = array(), $message = '')
     {
@@ -303,4 +303,170 @@ END;
             empty($message) ? 'Should correctly encode JSON into the HTTP request' : $message
         );
     }
+
+    /**
+     * Verifies that a resource is valid.
+     *
+     * @param \PHPUnit\Framework\TestCase $test .
+     * @param array $resource An uploaded resource.
+     * @param array $fields Optional array of fields the resource is expected to have.
+     */
+    function assertValidResource(TestCase $test, $resource, $expectedValues = array())
+    {
+
+        $incorrectTypeMessage = "Incorrect type for %s received %s a(n) %s, expected %s ";
+        $valueNotInSetMessage = "Value %s not allowed for %s. Should be one of %s";
+        $doesNotContainKeyMessage = "Array for %s does not contain key %s";
+        $doesNotContainExpectedElementMessage = "Resource does not contain expected key %s";
+        $doesNotContainExpectedValueMessage = "%s does not contain expected value %s";
+        $doesNotMatchExpectedValueMessage = "Resource value for key %s does not match the expected value";
+
+        /* Common fields a resource always returns (either from upload call or from resources call (for image, video, pdf file, zip etc.) */
+        $commonFields = array(
+            'public_id',
+            'version',
+            'resource_type',
+            'type',
+            'created_at',
+            'bytes',
+            'url',
+            'secure_url'
+        );
+
+        foreach($commonFields as $field){
+            $test->assertArrayHasKey("$field", $resource, sprintf($doesNotContainKeyMessage, 'resource', $field));
+        }
+
+        /* Verify types of fields if the resource does include them. */
+        $types = array(
+            'public_id'         => 'string',
+            'version'           => 'int',
+            'resource_type'     => 'string',
+            'type'              => 'string',
+            'created_at'        => 'string',
+            'bytes'             => 'int',
+            'url'               => 'string',
+            'secure_url'        => 'string',
+            'format'            => 'string',
+            'width'             => 'int',
+            'height'            => 'int',
+            'signature'         => 'string',
+            'etag'              => 'string',
+            'placeholder'       => 'boolean',
+            'original_filename' => 'string',
+            'access_mode'       => 'string',
+        );
+
+        foreach($types as $name => $type) {
+            if (array_key_exists($name, $resource)) {
+
+                $test->assertInternalType($type, $resource[$name], sprintf($incorrectTypeMessage, $name, $resource[$name], gettype($resource[$name]), $type));
+
+                if ($name == 'access_mode') {
+                    $test->assertContains($resource['access_mode'], array('public', 'authenticated'), sprintf($valueNotInSetMessage, $resource['access_mode'], 'access_mode', 'public, authenticated'));
+                }
+            }
+        }
+
+
+        /* Check a few specific elements that are arrays
+           Tags: array of strings
+           Access Control: array of arrays, each subarray should have the field 'access_type' with a value of 'token' or 'anonymous'
+           Eager: array of arrays, each subarray should have the fields: transformation, width, height, url, secure_url
+        */
+
+        /*tags*/
+        if (array_key_exists('tags', $resource)){
+            $test->assertTrue(is_array($resource['tags']), sprintf($incorrectTypeMessage, 'tags', '', gettype($resource['tags']), 'array'));
+            foreach($resource['tags'] as $tag){
+                $test->assertInternalType('string', $tag, sprintf($incorrectTypeMessage, 'tag', $tag, gettype($tag), 'string'));
+            }
+        }
+
+        /* access_control*/
+        if (array_key_exists('access_control', $resource)){
+            $test->assertTrue(is_array($resource['access_control']), sprintf($incorrectTypeMessage, 'access_control', '', gettype($resource['access_control']), 'array'));
+            foreach($resource['access_control'] as $accessControlDetails){
+                $test->assertTrue(is_array($accessControlDetails), sprintf($incorrectTypeMessage, 'access_control item', '', gettype($accessControlDetails), 'array'));
+                $test->assertArrayHasKey('access_type', $accessControlDetails, sprintf($doesNotContainKeyMessage, 'access_control', 'access_type'));
+                foreach($accessControlDetails as $k=>$v){
+                    $test->assertContains($k, array('access_type', 'start', 'end'), sprintf($valueNotInSetMessage, $k, 'access_control item', 'access_type, start, end'));
+                    $test->assertInternalType('string', $v, sprintf($incorrectTypeMessage, 'access_control item', $v, gettype($v), 'string'));
+                    if ($k == 'access_type'){
+                        $test->assertContains($v, array('token', 'anonymous'), sprintf($valueNotInSetMessage, $v, 'access_type', 'token, anonymous'));
+                    }
+                    unset($k); //unset in case there is an element without a key
+                }
+            }
+
+        }
+
+        /*eager*/
+        if (array_key_exists('eager', $resource)){
+            $test->assertTrue(is_array($resource['eager']), sprintf($incorrectTypeMessage, 'eager', '', gettype($resource['eager']), 'array'));
+            foreach($resource['eager'] as $eagerDetails){
+                $test->assertTrue(is_array($eagerDetails), sprintf($incorrectTypeMessage, 'eager details', '', gettype($eagerDetails), 'array'));
+                $eagerFieldsTypes = array('transformation' => 'string',
+                                               'width'          => 'int',
+                                               'height'         => 'int',
+                                               'url'            => 'string',
+                                               'secure_url'     => 'string');
+
+                foreach($eagerFieldsTypes as $name=>$type){
+                    $test->assertArrayHasKey($name, $eagerDetails, sprintf($doesNotContainKeyMessage, 'eager details', $name));
+
+                    $test->assertInternalType($type, $eagerDetails[$name], sprintf($incorrectTypeMessage, "eager details $name", $eagerDetails[$name], gettype($eagerDetails[$name]), $type));
+                }
+            }
+        }
+
+        /* Check expected values passed in match what the resource returns */
+
+        $test->assertTrue(is_array($expectedValues));
+
+        foreach ($expectedValues as $eField => $eValue) {
+            $test->assertArrayHasKey($eField, $resource, sprintf($doesNotContainExpectedElementMessage, $eField));
+
+            if ($eField == 'tags'){
+                $expectedTagValues = $expectedValues['tags'];
+                foreach($expectedTagValues as $expectedTag){
+                    $test->assertContains($expectedTag, $resource['tags'], sprintf($doesNotContainExpectedValueMessage, 'tags', $expectedTag));
+                }
+            }
+            elseif($eField == 'access_control'){
+                $expectedACValues = $expectedValues['access_control'];
+                foreach($expectedACValues as $expectedACItem){
+                    $foundItem = false;
+                    foreach($resource['access_control'] as $resourceACItem){
+                        $diff = array_diff_assoc($expectedACItem, $resourceACItem);
+                        if (empty($diff)){
+                            $foundItem = true;
+                            continue 2;
+                        }
+                    }
+                    $test->assertEquals($foundItem, true, sprintf($doesNotMatchExpectedValueMessage, $eField));
+                }
+            }elseif($eField == 'eager'){
+                $expectedEValues = $expectedValues['eager'];
+                foreach($expectedEValues as $expectedEItem){
+                    $foundItem = false;
+                    foreach($resource['eager'] as $resourceEItem){
+                        $diff = array_diff_assoc($expectedEItem, $resourceEItem);
+                        if (empty($diff)){
+                            $foundItem = true;
+                            continue 2;
+                        }
+                    }
+                    $test->assertEquals($foundItem, true, sprintf($doesNotMatchExpectedValueMessage, $eField));
+                }
+            }else{
+                $test->assertEquals($eValue, $resource[$eField], sprintf($doesNotMatchExpectedValueMessage, $eField));
+            }
+
+        }
+
+    }
+
 }
+
+

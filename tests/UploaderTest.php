@@ -129,8 +129,7 @@ namespace Cloudinary {
         public function test_upload()
         {
             $result = Uploader::upload(TEST_IMG, ["tags" => array(TEST_TAG, UNIQUE_TEST_TAG)]);
-            $this->assertEquals($result["width"], 241);
-            $this->assertEquals($result["height"], 51);
+
             $expected_signature = Cloudinary::api_sign_request(
                 array(
                     "public_id" => $result["public_id"],
@@ -138,7 +137,9 @@ namespace Cloudinary {
                 ),
                 Cloudinary::config_get("api_secret")
             );
-            $this->assertEquals($result["signature"], $expected_signature);
+
+            assertValidResource($this, $result, array('width' => 241, 'height' => 51, 'signature' => $expected_signature));
+
             Curl::mockUpload($this);
 
             Uploader::upload(TEST_IMG, array("ocr" => "adv_ocr", "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),));
