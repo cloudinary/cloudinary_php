@@ -581,7 +581,7 @@ class MetadataTest extends TestCase
             'default_value' => $metadata_field['default_value'],
         ]);
 
-        // Test entering a metadata field with integer validation and a valid default value
+        // Test entering a metadata field with integer validation and an invalid default value
         $metadata_field = [
             'external_id' => self::$external_id_int_validation_2,
             'label' => self::$external_id_int_validation_2,
