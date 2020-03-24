@@ -1,0 +1,185 @@
+<?php
+/**
+ * This file is part of the Cloudinary PHP package.
+ *
+ * (c) Cloudinary
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Cloudinary\Transformation;
+
+use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
+
+/**
+ * Trait VideoSpecificTransformationTrait
+ *
+ * @api
+ */
+trait VideoSpecificTransformationTrait
+{
+    use VideoTransformationFlagTrait;
+
+    /**
+     * Trims a video (and discards the rest).
+     *
+     * @param VideoRange $range Specify the range of the video to leave.
+     *
+     * @return static
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#trimming_videos
+     */
+    public function trim(VideoRange $range)
+    {
+        return $this->addAction($range);
+    }
+
+    /**
+     * Rounds the corners of a video.
+     *
+     * @param int|string $radius The radius of the corners in pixels.
+     *
+     * @return static
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#rounding_corners_and_creating_circular_videos
+     */
+    public function roundCorners($radius)
+    {
+        return $this->addAction(RoundCorners::radius($radius));
+    }
+
+    /**
+     * Adds another video, text, image as an overlay over the container video.
+     *
+     * @param BaseLayer|string  $videoLayer       The overlay.
+     * @param BasePosition|null $position         The position of the overlay.
+     * @param VideoRange|null   $timelinePosition The timeline position of the overlay.
+     *
+     * @return static
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#adding_video_overlays
+     */
+    public function overlay($videoLayer, $position = null, $timelinePosition = null)
+    {
+        return $this->addAction(new VideoOverlay($videoLayer, $position, $timelinePosition));
+    }
+
+    /**
+     * Concatenates another video or image.
+     *
+     * @param VideoLayer|string $videoLayer       The layer to concatenate.
+     * @param VideoRange        $timelinePosition The position of the concatenated video.
+     *
+     * @return static
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#concatenating_videos
+     */
+    public function concatenate($videoLayer, $timelinePosition = null)
+    {
+        return $this->addAction(
+            (new VideoOverlay($videoLayer, null, $timelinePosition))->concatenate()
+        );
+    }
+
+    /**
+     * Applies the video as a cutter for the main video.
+     *
+     * @param VideoLayer|string $videoLayer       The cutter video layer.
+     * @param BasePosition|null $position         The position of the cutter.
+     * @param VideoRange|null   $timelinePosition The timeline position of the cutter.
+     *
+     * @return static
+     */
+    public function cutter($videoLayer, $position = null, $timelinePosition = null)
+    {
+        return $this->addAction(
+            (new VideoOverlay($videoLayer, $position, $timelinePosition))->cutter()
+        );
+    }
+
+    /**
+     * Adds subtitles to the video.
+     *
+     * @param string $subtitlesId The subtitles file public ID.
+     *
+     * @return static
+     */
+    public function addSubtitles($subtitlesId)
+    {
+        return $this->overlay(VideoLayer::subtitles($subtitlesId));
+    }
+
+    /**
+     * Transcodes the video (or audio) to another format.
+     *
+     * @param AudioCodec|VideoCodec|AudioFrequency $transcode The new format.
+     *
+     * @return static
+     */
+    public function transcode($transcode)
+    {
+        return $this->addAction($transcode);
+    }
+
+    /**
+     * Controls the range of acceptable FPS (Frames Per Second) to ensure that video (even when optimized)
+     * is delivered with an expected fps level (helps with sync to audio).
+     *
+     * @param float|int|string      $min The minimum frame rate.
+     * @param float|int|string|null $max The maximum frame rate.
+     *
+     * @return static
+     */
+    public function fps($min, $max = null)
+    {
+        return $this->addAction(new FPS($min, $max));
+    }
+
+    /**
+     * Explicitly sets the keyframe interval of the delivered video.
+     *
+     * @param float $interval Positive float number in seconds.
+     *
+     * @return static
+     */
+    public function keyframeInterval($interval)
+    {
+        return $this->addAction(new KeyframeInterval($interval));
+    }
+
+    /**
+     * Controls the video bitrate.
+     *
+     * @param int|string $bitRate  The number of bits used to represent the video data per second. By default the video
+     *                             uses a variable bitrate (VBR), with this value indicating the maximum bitrate.
+     *                             Can be an integer e.g. 120000, or a string supporting "k" and "m"
+     *                             (kilobits and megabits respectively) e.g. 250k or 2m.
+     * @param string     $type     The type of bitrate. If "constant" is specified, the video plays with a constant
+     *                             bitrate (CBR). Use the constant defined in the BitRate class.
+     *
+     * @return static
+     */
+    public function bitRate($bitRate, $type = null)
+    {
+        return $this->addAction(new BitRate($bitRate, $type));
+    }
+
+    /**
+     * Sets the streaming profile to apply to an HLS or MPEG-DASH adaptive bitrate streaming video.
+     *
+     * The value can be one of the
+     * {@see https://cloudinary.com/documentation/video_manipulation_and_delivery#predefined_streaming_profiles
+     * pre-defined streaming profiles} or a custom-defined one.
+     * You can use the streaming profiles methods of {@see \Cloudinary\Api\Admin\StreamingProfilesTrait
+     * StreamingProfilesTrait} to get a list of the available streaming profiles or to create new custom profiles.
+     *
+     * @param string $streamingProfile The streaming profile.
+     *
+     * @return static
+     */
+    public function streamingProfile($streamingProfile)
+    {
+        return $this->addAction(new StreamingProfile($streamingProfile));
+    }
+}

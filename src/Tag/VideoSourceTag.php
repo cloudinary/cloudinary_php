@@ -1,0 +1,111 @@
+<?php
+/**
+ * This file is part of the Cloudinary PHP package.
+ *
+ * (c) Cloudinary
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Cloudinary\Tag;
+
+use Cloudinary\Asset\Video;
+use Cloudinary\ClassUtils;
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Configuration\TagConfig;
+use Cloudinary\Transformation\VideoTransformation;
+
+/**
+ * Class VideoSourceTag
+ *
+ * Generates HTML `source` tag that can be used by `video` or `audio` tag
+ */
+class VideoSourceTag extends BaseTag
+{
+    const NAME    = 'source';
+    const IS_VOID = true;
+
+    /**
+     * @var Video $video The video source of the tag.
+     */
+    public $video;
+
+    /**
+     * @var SourceType $sourceType The 'type' attribute.
+     */
+    protected $sourceType;
+
+    /**
+     * @var VideoTransformation $additionalTransformation Additional transformation to be applied on the tag video.
+     */
+    public $additionalTransformation;
+
+
+    /**
+     * VideoSourceTag constructor.
+     *
+     * @param mixed                           $asset                    The public ID or the Video asset.
+     * @param Configuration|string|array|null $configuration            The Configuration source.
+     * @param null                            $additionalTransformation Additional transformation to be applied.
+     */
+    public function __construct($asset, $configuration = null, $additionalTransformation = null)
+    {
+        parent::__construct($configuration);
+
+        $this->video($asset, $configuration);
+
+        $this->additionalTransformation = $additionalTransformation;
+    }
+
+    /**
+     * Sets the video of the tag.
+     *
+     * @param mixed         $video         The public ID or the Video asset.
+     * @param Configuration $configuration The configuration instance.
+     *
+     * @return static
+     */
+    public function video($video, $configuration = null)
+    {
+        $this->video = new Video($video, $configuration);
+
+        return $this;
+    }
+
+    /**
+     * Sets the type.
+     *
+     * @param SourceType|string $type The type of the source.
+     *
+     * @return static
+     */
+    public function type($type)
+    {
+        $this->sourceType = ClassUtils::verifyInstance($type, SourceType::class);
+
+        $this->video->asset->extension = $this->sourceType->type;
+
+        return $this;
+    }
+
+    /**
+     * Serializes the tag attributes.
+     *
+     * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
+     *
+     * @return string
+     */
+    public function serializeAttributes($attributes = [])
+    {
+        if (! empty((string)$this->video)) {
+            $attributes['src'] = $this->video->toUrl($this->additionalTransformation);
+        }
+
+        if (! empty((string)$this->sourceType)) {
+            $attributes['type'] = $this->sourceType;
+        }
+
+        return parent::serializeAttributes($attributes);
+    }
+}
