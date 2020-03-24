@@ -1,0 +1,4 @@
+name:   cloudinary
+parent: default
+static:
+  'css/cloudinary.css': 'css/cloudinary.css'
