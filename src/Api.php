@@ -338,6 +338,7 @@ namespace Cloudinary {
          *          the derived_next_cursor value is returned as part of the response. You can then specify this value
          *          as the derived_next_cursor parameter of the following listing request.
          *      @var boolean    cinemagraph_analysis    Include cinemagraph analysis information. Default: false
+         *      @var boolean    accessibility_analysis    Include accessibility analysis information. Default: false
          * }
          *
          * @return Api\Response
@@ -362,7 +363,8 @@ namespace Cloudinary {
                     "pages",
                     "coordinates",
                     "max_results",
-                    "derived_next_cursor"
+                    "derived_next_cursor",
+                    "accessibility_analysis"
                 )
             );
 

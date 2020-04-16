@@ -1410,5 +1410,17 @@ namespace Cloudinary {
                 assertUrl($this, "/resources/image/tags/" . $expected_tags[$index]);
             }
         }
+
+        /**
+         * Get accessibility analysis of an an uploaded image
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_resource_accessibility_analysis()
+        {
+            $resource = $this->api->resource(self::$api_test, ["accessibility_analysis" => true]);
+
+            $this->assertArrayHasKey('accessibility_analysis', $resource);
+        }
     }
 }
