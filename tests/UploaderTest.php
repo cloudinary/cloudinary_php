@@ -965,5 +965,21 @@ TAG
             $this->assertContains($resource1['public_id'], $result['public_ids']);
             $this->assertContains($resource2['public_id'], $result['public_ids']);
         }
+
+        /**
+         * Get the accessibility analysis of an uploaded image
+         *
+         * @throws Error
+         */
+        public function test_accessibility_analysis()
+        {
+            $result = Uploader::upload(TEST_IMG, ["accessibility_analysis" => true, "tags" => [TEST_TAG, UNIQUE_TEST_TAG]]);
+
+            $this->assertArrayHasKey('accessibility_analysis', $result);
+
+            $explicitRes = Uploader::explicit($result["public_id"], ["accessibility_analysis" => true, "type" => "upload"]);
+
+            $this->assertArrayHasKey("accessibility_analysis", $explicitRes);
+        }
     }
 }
