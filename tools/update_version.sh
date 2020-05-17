@@ -12,6 +12,8 @@ QUOTE=
 
 NEW_VERSION=
 
+UPDATE_ONLY=false
+
 function echo_err
 {
     echo "$@" 1>&2;
@@ -22,6 +24,7 @@ function usage
       echo "Usage: $0 [parameters]"
       echo "      -v | --version <version>"
       echo "      -d | --dry-run print the commands without executing them"
+      echo "      -u | --update-only only update the version"
       echo "      -h | --help print this information and exit"
       echo
       echo "For example: $0 -v 1.2.3"
@@ -46,6 +49,11 @@ function process_arguments
             -d | --dry-run )
                 CMD_PREFIX=echo
                 echo "Dry Run"
+                echo ""
+                ;;
+            -u | --update-only )
+                UPDATE_ONLY=true
+                echo "Only update version"
                 echo ""
                 ;;
             -h | --help )
@@ -160,6 +168,11 @@ function update_version
                  "const VERSION = \"${NEW_VERSION}\""\
                   src/Cloudinary.php\
                   || return 1
+
+    if [ "${UPDATE_ONLY}" = true ]; then
+      popd;
+      return 0;
+    fi
 
     ${CMD_PREFIX} git changelog -t ${NEW_VERSION} || true
 
