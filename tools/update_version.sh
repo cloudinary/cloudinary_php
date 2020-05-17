@@ -111,6 +111,10 @@ function verify_dependencies
         return 1
     fi
 
+    if [ "${UPDATE_ONLY}" = true ]; then
+      return 0;
+    fi
+
     if [[ -z "$(type -t git-changelog)" ]]
     then
         echo_err "git-extras packages is not installed."
@@ -205,6 +209,6 @@ function update_version
     popd
 }
 
+process_arguments "$@"
 verify_dependencies
-process_arguments $*
 update_version
