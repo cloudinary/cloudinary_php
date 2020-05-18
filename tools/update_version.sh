@@ -75,7 +75,7 @@ function pushd
 # Intentionally make popd silent
 function popd
 {
-    command popd "$@" > /dev/null
+    command popd > /dev/null
 }
 
 # Check if one version is less than or equal than other
@@ -134,7 +134,7 @@ function safe_replace
 
     grep -q "${old}" "${file}" || { echo_err "${old} was not found in ${file}"; return 1; }
 
-    ${CMD_PREFIX} sed -E -i '.bak' "${QUOTE}s/${old}/${new}/${QUOTE}" "${file}"
+    ${CMD_PREFIX} sed -i.bak -e "${QUOTE}s/${old}/${new}/${QUOTE}" -- "${file}"  && rm -- "${file}.bak"
 }
 
 function update_version
