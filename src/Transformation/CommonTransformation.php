@@ -94,18 +94,6 @@ class CommonTransformation extends BaseComponent implements CommonTransformation
     }
 
     /**
-     * Adds a flag as a separate action.
-     *
-     * @param FlagParameter|string $flag The flag to add.
-     *
-     * @return static
-     */
-    public function addFlag($flag)
-    {
-        return $this->addAction(ClassUtils::verifyInstance($flag, FlagParameter::class));
-    }
-
-    /**
      * Adds (appends) a transformation.
      *
      * Appended transformation is nested.
@@ -156,7 +144,6 @@ class CommonTransformation extends BaseComponent implements CommonTransformation
         return ArrayUtils::implodeUrl($resultingComponents);
     }
 
-
     /**
      * Serializes to string.
      *
@@ -166,7 +153,6 @@ class CommonTransformation extends BaseComponent implements CommonTransformation
     {
         return $this->toUrl();
     }
-
 
     /**
      * Serializes to json.

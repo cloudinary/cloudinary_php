@@ -17,6 +17,8 @@ use Cloudinary\Transformation\ImageTransformationTrait;
 
 /**
  * Class Image
+ *
+ * @api
  */
 class Image extends BaseMediaAsset implements ImageTransformationInterface
 {

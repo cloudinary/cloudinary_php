@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Trait PredefinedVariableTrait
+ *
+ * @api
  */
 trait PredefinedVariableTrait
 {

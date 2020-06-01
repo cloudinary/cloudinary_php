@@ -22,7 +22,7 @@ trait PageIndexTrait
      *
      * @param int $index The index.
      *
-     * @return PageParam
+     * @return static
      */
     public static function index($index)
     {

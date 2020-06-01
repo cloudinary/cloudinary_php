@@ -11,6 +11,8 @@
 namespace Cloudinary\Test\Transformation\Image;
 
 use Cloudinary\Transformation\Chroma;
+use Cloudinary\Transformation\Delivery;
+use Cloudinary\Transformation\JpegMini;
 use Cloudinary\Transformation\Quality;
 use Cloudinary\Transformation\QualityParam;
 use PHPUnit\Framework\TestCase;
@@ -57,5 +59,15 @@ final class QualityTest extends TestCase
         $aqeaf = Quality::eco()->anyFormat();
 
         self::assertEquals('fl_any_format,q_auto:eco', (string)$aqeaf);
+
+        $qjm = Quality::jpegmini();
+
+        self::assertEquals('q_jpegmini', (string)$qjm);
+
+        $qjm = Quality::jpegmini(JpegMini::HIGH);
+
+        self::assertEquals('q_jpegmini:1', (string)$qjm);
+
+        self::assertEquals('q_auto:best', (string)Delivery::quality(Quality::best()));
     }
 }

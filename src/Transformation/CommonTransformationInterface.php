@@ -139,41 +139,40 @@ interface CommonTransformationInterface extends ComponentInterface
     /**
      * Specifies a condition to be met before applying a transformation.
      *
-     * See {@see https://cloudinary.com/documentation/conditional_transformations Conditional transformations}.
-     *
      * @param BaseExpressionComponent|string $expression The conditional expression
      *
      * @return static
+     *
+     * @see https://cloudinary.com/documentation/conditional_transformations
      */
     public function ifCondition($expression);
 
     /**
      * Specifies a transformation that is applied in the case that the initial condition is evaluated as false.
      *
-     * See {@see https://cloudinary.com/documentation/conditional_transformations Conditional transformations}.
-     *
      * @return static
+     *
+     * @see https://cloudinary.com/documentation/conditional_transformations
      */
     public function ifElse();
 
     /**
      * Finishes the conditional transformation.
      *
-     * See {@see https://cloudinary.com/documentation/conditional_transformations Conditional transformations}.
-     *
      * @return static
+     *
+     * @see https://cloudinary.com/documentation/conditional_transformations
      */
     public function endIfCondition();
 
     /**
      * Applies the 3D look-up table (LUT) file to the asset.
      *
-     * See {@see https://cloudinary.com/documentation/image_transformations#applying_3d_luts_to_images Applying 3D
-     * LUTs to images}.
-     *
      * @param string $lutId The 3D LUT file id
      *
      * @return static
+     *
+     * @see https://cloudinary.com/documentation/image_transformations#applying_3d_luts_to_images
      */
     public function add3DLut($lutId);
 }

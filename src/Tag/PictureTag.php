@@ -17,7 +17,8 @@ use Cloudinary\Configuration\Configuration;
 /**
  * Class PictureTag
  *
- * @api Generates HTML 'picture' tag
+ * Generates HTML 'picture' tag
+ * @api
  */
 class PictureTag extends BaseTag
 {
@@ -91,7 +92,6 @@ class PictureTag extends BaseTag
 
         return $this;
     }
-
 
     /**
      * Serializes the tag content.

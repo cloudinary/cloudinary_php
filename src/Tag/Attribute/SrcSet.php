@@ -22,6 +22,8 @@ use InvalidArgumentException;
  * Class SrcSet
  *
  * 'srcset' attribute of the img/source tag
+ *
+ * @internal
  */
 class SrcSet
 {
@@ -143,7 +145,6 @@ class SrcSet
 
         return $this;
     }
-
 
     /**
      * Serializes to string.

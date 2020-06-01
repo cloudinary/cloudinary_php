@@ -26,10 +26,12 @@ class LayerParamFactory
      * Overlay properties can come as array or as string.
      *
      * @param string|array $layerParams
-     * @param string       $layerStackPosition Supported values: {@see LayerStackPosition::OVERLAY},
-     *                                         {@see LayerStackPosition::UNDERLAY}
+     * @param string       $layerStackPosition Supported values: LayerStackPosition::OVERLAY,
+     *                                         LayerStackPosition::UNDERLAY
      *
      * @return BaseLayerParam
+     *
+     * @see LayerStackPosition::OVERLAY
      */
     public static function fromParams($layerParams, $layerStackPosition = LayerStackPosition::OVERLAY)
     {
@@ -64,7 +66,7 @@ class LayerParamFactory
                 if (! ($publicId !== null xor ! empty((string)$textStyle))) {
                     throw new InvalidArgumentException(
                         'Must supply either style parameters or a public_id when providing text parameter' .
-                        ' in a text leyer'
+                        ' in a text layer'
                     );
                 }
 
@@ -75,7 +77,7 @@ class LayerParamFactory
                 throw new InvalidArgumentException("Must supply public_id for $resourceType layer");
             }
 
-            $format   = ArrayUtils::get($layerParams, 'format');
+            $format = ArrayUtils::get($layerParams, 'format');
             if ($format !== null) {
                 $publicId .= '.' . $format;
             }

@@ -40,35 +40,54 @@ class ApiConfig extends BaseConfigSection
     const CALLBACK_URL       = 'callback_url';
 
     /**
-     * @var string Used for changing default API host.
+     * Used for changing default API host.
+     *
+     * @var string
      */
     protected $uploadPrefix;
+
     /**
-     * @var int $apiProxy Optional. Specifies a proxy through which to make calls to the Cloudinary API.
-     *             Format: http://hostname:port.
+     * Optional. Specifies a proxy through which to make calls to the Cloudinary API.  Format: http://hostname:port.
+     *
+     * @var int $apiProxy
      */
     public $apiProxy;
+
     /**
-     * @var int|float Describing the number of seconds to wait while trying to connect to a server.
-     *                Use 0 to wait indefinitely (the default behavior).
+     *  Describing the number of seconds to wait while trying to connect to a server.
+     *  Use 0 to wait indefinitely (the default behavior).
+     *
+     * @var int|float
      */
     public $connectionTimeout;
+
     /**
-     * @var int|float Describing the timeout of the request in seconds.
-     *                Use 0 to wait indefinitely (the default behavior).
+     * Describing the timeout of the request in seconds.
+     * Use 0 to wait indefinitely (the default behavior).
+     *
+     * @var int|float
      */
     protected $timeout;
+
     /**
-     * @var int|float Describing the timeout of the upload request in seconds.
-     *                Use 0 to wait indefinitely (the default behavior).
+     * Describing the timeout of the upload request in seconds.
+     * Use 0 to wait indefinitely (the default behavior).
+     *
+     * @var int|float
      */
     protected $uploadTimeout;
+
     /**
-     * @var int Size of single chunk when uploading large files.
+     * Size of a single chunk when uploading large files.
+     *
+     * @var int
      */
     protected $chunkSize;
+
     /**
-     * @var string A public URL of your web application that has the cloudinary_cors.html file.
+     * A public URL of your web application that has the cloudinary_cors.html file.
+     *
+     * @var string
      */
     public $callbackUrl;
 }

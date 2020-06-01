@@ -175,11 +175,11 @@ trait CropModeTrait
     /**
      * Crops your image based on automatically calculated areas of interest within each specific photo.
      *
-     * For more information see the
-     * {@see https://cloudinary.com/documentation/imagga_crop_and_scale_addon#smartly_crop_images Imagga Crop
-     * and Scale} add-on documentation.
+     * For details, see the Imagga Crop and Scale add-on documentation.
      *
      * @return CropMode
+     *
+     * @see https://cloudinary.com/documentation/imagga_crop_and_scale_addon#smartly_crop_images
      */
     public static function imaggaCrop()
     {
@@ -189,11 +189,11 @@ trait CropModeTrait
     /**
      * Scales your image based on automatically calculated areas of interest within each specific photo.
      *
-     * For more information see the
-     * {@see https://cloudinary.com/documentation/imagga_crop_and_scale_addon#smartly_scale_images Imagga Crop
-     * and Scale} add-on documentation.
+     * For details, see the Imagga Crop and Scale add-on documentation.
      *
      * @return CropMode
+     *
+     * @see https://cloudinary.com/documentation/imagga_crop_and_scale_addon#smartly_scale_images
      */
     public static function imaggaScale()
     {

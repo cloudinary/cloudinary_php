@@ -25,6 +25,7 @@ abstract class BaseNamedArgument extends BaseComponent
      * @var string $argName The name of the argument.
      */
     protected $argName;
+
     /**
      * @var array $argMultiValue The value of the argument.
      */
@@ -34,6 +35,7 @@ abstract class BaseNamedArgument extends BaseComponent
      * @var string $nameValueDelimiter Run-time settable name-value delimiter.
      */
     protected $nameValueDelimiter;
+
     /**
      * @var string $innerValueDelimiter Run-time settable inner value delimiter.
      */

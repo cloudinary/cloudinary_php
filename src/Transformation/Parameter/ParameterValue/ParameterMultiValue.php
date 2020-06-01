@@ -27,6 +27,7 @@ class ParameterMultiValue extends BaseComponent
      * @var string VALUE_DELIMITER Serialisation delimiter in case value is an array.
      */
     const VALUE_DELIMITER     = ':';
+
     /**
      * @var string KEY_VALUE_DELIMITER Serialisation delimiter between the key and the value.
      */
@@ -51,10 +52,12 @@ class ParameterMultiValue extends BaseComponent
      * @var array $argumentOrder Used for serialisation order .Can be defined in the derived class.
      */
     protected $argumentOrder = [];
+
     /**
      * @var array $arguments The arguments (unnamed).
      */
     protected $arguments = [];
+
     /**
      * @var array $arguments The named arguments.
      */

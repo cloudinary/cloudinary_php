@@ -15,6 +15,8 @@ use UnexpectedValueException;
 
 /**
  * Class BaseOperator
+ *
+ * @api
  */
 abstract class BaseOperator extends BaseExpressionComponent
 {
@@ -28,7 +30,6 @@ abstract class BaseOperator extends BaseExpressionComponent
 
     // protected static $operators;
     // protected static $friendlyRepresentations;
-
 
     /**
      * BaseOperator constructor.
@@ -86,7 +87,6 @@ abstract class BaseOperator extends BaseExpressionComponent
         throw new UnexpectedValueException('Invalid ' . ClassUtils::getBaseName(static::class) . " $operator");
     }
 
-
     /**
      * Serializes to string.
      *
@@ -96,7 +96,6 @@ abstract class BaseOperator extends BaseExpressionComponent
     {
         return $this->operator;
     }
-
 
     /**
      * Serializes to json.

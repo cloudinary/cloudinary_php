@@ -48,7 +48,7 @@ trait ScaleTrait
     }
 
     /**
-     * Same as the {@see Scale::fit} mode but only if the original image is larger than the given limit (width and
+     * Same as the Scale::fit mode but only if the original image is larger than the given limit (width and
      * height), in which case the image is scaled down so that it takes up as much space as possible within a bounding
      * box defined by the given width and height parameters. The original aspect ratio is retained and all of the
      * original image is visible.
@@ -58,6 +58,8 @@ trait ScaleTrait
      * @param int|float|array  $aspectRatio Resizes the asset to a new aspect ratio.
      *
      * @return static
+     *
+     * @see Scale::fit
      */
     public static function limitFit($width = null, $height = null, $aspectRatio = null)
     {
@@ -65,7 +67,7 @@ trait ScaleTrait
     }
 
     /**
-     * Same as the {@see Scale::fit} mode but only if the original image is smaller than the given minimum (width and
+     * Same as the Scale::fit mode but only if the original image is smaller than the given minimum (width and
      * height), in which case the image is scaled up so that it takes up as much space as possible within a bounding
      * box defined by the given width and height parameters. The original aspect ratio is retained and all of the
      * original image is visible.
@@ -75,6 +77,8 @@ trait ScaleTrait
      * @param int|float|array       $aspectRatio Resizes the asset to a new aspect ratio.
      *
      * @return static
+     *
+     * @see Scale::fit
      */
     public static function minimumFit($width = null, $height = null, $aspectRatio = null)
     {

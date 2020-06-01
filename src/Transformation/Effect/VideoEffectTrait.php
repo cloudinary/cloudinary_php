@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait VideoEffectTrait
+ *
+ * @api
  */
 trait VideoEffectTrait
 {

@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class ImageLayer
+ *
+ * @api
  */
 class ImageLayer extends AssetBasedLayer implements ImageTransformationInterface
 {

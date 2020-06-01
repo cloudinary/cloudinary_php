@@ -34,7 +34,6 @@ class Region extends BaseAction
         $this->x($x)->y($y)->width($width)->height($height);
     }
 
-
     /**
      * Internal setter for the point value.
      *
@@ -54,7 +53,6 @@ class Region extends BaseAction
 
         return $this;
     }
-
 
     /**
      * Internal setter for the dimensions.

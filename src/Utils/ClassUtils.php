@@ -81,11 +81,11 @@ class ClassUtils
      * If $notSureIfT is a string, then $t will be a new Transformation initialized with the value of $notSureIfT.
      * In case $notSureIfT is already an instance of CommonTransformation, it is returned as is.
      *
-     * @param object|mixed $object        The value to verify
-     * @param string       $baseClass     Base class name
-     * @param string       $instanceClass Instance class to create in case $object is not derivative of the $baseClass.
+     * @param mixed  $object              The value to verify
+     * @param string $baseClass           Base class name
+     * @param string $instanceClass       Instance class to create in case $object is not derivative of the $baseClass.
      *                                    $baseClass is used in case it is not provided.
-     * @param array        $params        Additional parameters for the constructor
+     * @param array  $params              Additional parameters for the constructor
      *
      * @return mixed
      */
@@ -100,7 +100,7 @@ class ClassUtils
     }
 
     /**
-     * Similar to  {@see ClassUtils::forceInstance}, but does not propagate null values.
+     * Similar to ClassUtils::forceInstance, but does not propagate null values.
      *
      * @param object|mixed $object        The value to verify
      * @param string       $baseClass     Base class name
@@ -109,6 +109,8 @@ class ClassUtils
      * @param array        $params        Additional parameters for the constructor
      *
      * @return mixed
+     *
+     * @see ClassUtils::forceInstance
      */
     public static function verifyInstance($object, $baseClass, $instanceClass = null, ...$params)
     {
@@ -120,7 +122,7 @@ class ClassUtils
     }
 
     /**
-     * Variable arguments version of the {@see ClassUtils::verifyInstance}.
+     * Variable arguments version of the ClassUtils::verifyInstance.
      *
      * @param array  $varArgs       Arguments to verify
      * @param string $baseClass     Base class name
@@ -128,6 +130,8 @@ class ClassUtils
      *                              $baseClass is used in case it is not provided.
      *
      * @return mixed
+     *
+     * @see ClassUtils::verifyInstance
      */
     public static function verifyVarArgsInstance(array $varArgs, $baseClass, $instanceClass = null)
     {

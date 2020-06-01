@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Class ArithmeticOperator
+ *
+ * @api
  */
 class ArithmeticOperator extends BaseOperator
 {
@@ -51,11 +53,13 @@ class ArithmeticOperator extends BaseOperator
     }
 
     /**
-     * Alias for {@see ArithmeticOperator::add}
+     * Alias for ArithmeticOperator::add.
      *
      * +
      *
      * @return ArithmeticOperator
+     *
+     * @see ArithmeticOperator::add
      */
     public static function plus()
     {
@@ -75,11 +79,13 @@ class ArithmeticOperator extends BaseOperator
     }
 
     /**
-     * Alias for {@see ArithmeticOperator::subtract}
+     * Alias for ArithmeticOperator::subtract.
      *
      * -
      *
      * @return ArithmeticOperator
+     *
+     * @see ArithmeticOperator::subtract
      */
     public static function minus()
     {

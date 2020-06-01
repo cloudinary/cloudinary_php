@@ -15,13 +15,15 @@ use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
  * Trait ColorValueTrait
+ *
+ * @api
  */
 trait ColorValueTrait
 {
     /**
      * Sets the color.
      *
-     * @param string $color The color.  Can be RGB, HEX, named color, etc.
+     * @param string $color The color. Can be RGB, HEX, named color, etc.
      *
      * @return $this
      */

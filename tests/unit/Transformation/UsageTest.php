@@ -12,17 +12,23 @@ namespace Cloudinary\Test\Transformation\Common;
 
 use Cloudinary\StringUtils;
 use Cloudinary\Transformation\Adjust;
-use Cloudinary\Transformation\AutoBackground;
-use Cloudinary\Transformation\Background;
-use Cloudinary\Transformation\Border;
-use Cloudinary\Transformation\Chroma;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\ColorValue;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Gradient;
+use Cloudinary\Transformation\Argument\GradientDirection;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontStyle;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\Argument\Text\TextDecoration;
 use Cloudinary\Transformation\Argument\Text\TextStyle;
+use Cloudinary\Transformation\AudioCodec;
+use Cloudinary\Transformation\AudioFrequency;
+use Cloudinary\Transformation\AutoBackground;
+use Cloudinary\Transformation\Background;
+use Cloudinary\Transformation\Border;
+use Cloudinary\Transformation\Chroma;
+use Cloudinary\Transformation\Codec\VideoCodecLevel;
+use Cloudinary\Transformation\Codec\VideoCodecProfile;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\CustomFunction;
@@ -32,16 +38,16 @@ use Cloudinary\Transformation\Fill;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Gravity;
-use Cloudinary\Transformation\Argument\Gradient;
-use Cloudinary\Transformation\Argument\GradientDirection;
 use Cloudinary\Transformation\ImageLayer;
-use Cloudinary\Transformation\Layer;
+use Cloudinary\Transformation\Reshape;
+use Cloudinary\Transformation\Source;
 use Cloudinary\Transformation\LayerFlag;
 use Cloudinary\Transformation\ObjectGravity;
 use Cloudinary\Transformation\Outline;
 use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Page;
 use Cloudinary\Transformation\Parameter;
+use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\PSDLayer;
 use Cloudinary\Transformation\Quality;
@@ -50,14 +56,9 @@ use Cloudinary\Transformation\RoundCorners;
 use Cloudinary\Transformation\Scale;
 use Cloudinary\Transformation\TextLayer;
 use Cloudinary\Transformation\Transformation;
-use Cloudinary\Transformation\AudioCodec;
-use Cloudinary\Transformation\AudioFrequency;
-use Cloudinary\Transformation\Codec\VideoCodecLevel;
-use Cloudinary\Transformation\Codec\VideoCodecProfile;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
-use Cloudinary\Transformation\VideoTransformation;
 use Cloudinary\Transformation\VideoCodec;
 use Cloudinary\Transformation\VideoLayer;
+use Cloudinary\Transformation\VideoTransformation;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -138,15 +139,19 @@ final class UsageTest extends TestCase
 
         $this->assertEquals(
             'c_thumb,g_auto:body:clown,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80)
-                                                       ->gravity(Gravity::auto(FocalGravity::BODY)->add('clown')))
+            (string)(new Transformation())->resize(
+                Crop::thumbnail(80, 80)
+                    ->gravity(Gravity::auto(FocalGravity::BODY)->add('clown'))
+            )
         );
 
         $this->assertEquals(
             'c_thumb,g_north,h_80,w_80',
             (string)(new Transformation())
-                ->resize(Crop::thumbnail(80, 80)
-                             ->gravity(CompassGravity::north()))
+                ->resize(
+                    Crop::thumbnail(80, 80)
+                        ->gravity(CompassGravity::north())
+                )
         );
 
         $this->assertEquals(
@@ -169,91 +174,96 @@ final class UsageTest extends TestCase
     {
         $this->assertEquals(
             'c_thumb,g_auto:bowl:cup,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80)
-                                                       ->gravity(Gravity::auto(ObjectGravity::BOWL)->add('cup')))
+            (string)(new Transformation())->resize(
+                Crop::thumbnail(80, 80)->gravity(Gravity::auto(ObjectGravity::BOWL)->add('cup'))
+            )
+        );
+
+        // empty object gravity omits g_
+        $this->assertEquals(
+            'c_thumb,h_80,w_80',
+            (string)(new Transformation())->resize(Crop::thumbnail(80, 80)->gravity(Gravity::object()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()))
+            'c_thumb,g_cat,h_80,w_80',
+            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object(ObjectGravity::CAT)))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:accessory,h_80,w_80',
+            'c_thumb,g_accessory,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->accessory()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:animal,h_80,w_80',
+            'c_thumb,g_animal,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->animal()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:appliance,h_80,w_80',
+            'c_thumb,g_appliance,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->appliance()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:electronic,h_80,w_80',
+            'c_thumb,g_electronic,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->electronic()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:food,h_80,w_80',
+            'c_thumb,g_food,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->food()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:furniture,h_80,w_80',
+            'c_thumb,g_furniture,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->furniture()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:indoor,h_80,w_80',
+            'c_thumb,g_indoor,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->indoor()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:kitchen,h_80,w_80',
+            'c_thumb,g_kitchen,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->kitchen()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:outdoor,h_80,w_80',
+            'c_thumb,g_outdoor,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->outdoor()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:person,h_80,w_80',
+            'c_thumb,g_person,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->person()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:vehicle,h_80,w_80',
+            'c_thumb,g_vehicle,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->vehicle()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:person:kitchen,h_80,w_80',
+            'c_thumb,g_person:kitchen,h_80,w_80',
             (string)(new Transformation())->resize(Crop::thumbnail(80, 80, Gravity::object()->person()->kitchen()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:person:kitchen:cup,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(
-                80,
-                80,
-                Gravity::object()->person()->kitchen()->cup()
-            ))
+            'c_crop,g_person:kitchen:cup,h_80,w_80',
+            (string)(new Transformation())->resize(Crop::crop(80, 80, Gravity::object()->person()->kitchen()->cup()))
         );
 
         $this->assertEquals(
-            'c_thumb,g_auto:person:kitchen:cup:falafel_100:large_50,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(
-                80,
-                80,
-                Gravity::object()->person()->kitchen()->cup()->large(50)->priority('falafel', 100)
-            ))
+            'c_thumb,g_person:kitchen:cup:falafel_100:large_50,h_80,w_80',
+            (string)(new Transformation())->resize(
+                Crop::thumbnail(
+                    80,
+                    80,
+                    Gravity::object()->person()->kitchen()->cup()->large(50)->priority('falafel', 100)
+                )
+            )
         );
     }
 
@@ -283,7 +293,7 @@ final class UsageTest extends TestCase
     {
         $this->assertEquals(
             'b_green,c_pad,h_80,w_80',
-            (string)(new Transformation())->resize(Pad::pad(80, 80)->background(Background::green()))
+            (string)(new Transformation())->resize(Pad::pad(80, 80)->background(Color::GREEN))
         );
 
         $this->assertEquals(
@@ -309,10 +319,6 @@ final class UsageTest extends TestCase
         //c_thumb,h_80,w_80,g_auto:cars:cats
         // TODO: implement SUBJECT
         //new Transformation().crop(Crop.thumb(80, 80, Gravity.object([Gravity.Objects.CARS, Gravity.Objects.CATS])))
-
-        //c_blabla,w_100,g_auto
-        // TODO: implement CUSTOM
-        //new Transformation().crop(Crop.custom("blabla,w_100,g_auto"))
     }
 
     public function testMultipleTransformations()
@@ -344,26 +350,26 @@ final class UsageTest extends TestCase
 
         $this->assertEquals(
             'e_tint:100:green:red',
-            (string)(new Transformation())->adjust(Adjust::tint(100, NamedColor::GREEN, NamedColor::RED))
+            (string)(new Transformation())->adjust(Adjust::tint(100, Color::GREEN, Color::RED))
         );
 
         $this->assertEquals(
             'co_green,e_shadow,x_10,y_h_div_50',
             (string)(new Transformation())->effect(
-                Effect::shadow()->position(10, PVar::height()->divide()->numeric(50))->color(NamedColor::GREEN)
+                Effect::shadow()->position(10, PVar::height()->divide()->numeric(50))->color(Color::GREEN)
             )
         );
 
         $this->assertEquals(
             'e_replace_color:maroon:80:2b38aa',
-            (string)(new Transformation())->adjust(Adjust::replaceColor(NamedColor::MAROON, 80, '2b38aa'))
+            (string)(new Transformation())->adjust(Adjust::replaceColor(Color::MAROON, 80, '2b38aa'))
         );
 
         $this->assertEquals(
             'co_orange,e_outline:inner:15:200',
             (string)(new Transformation())
                 ->effect(
-                    Effect::outline(Outline::INNER, 15, 200)->color(NamedColor::ORANGE)
+                    Effect::outline(Outline::INNER, 15, 200)->color(Color::ORANGE)
                 )
         );
     }
@@ -515,7 +521,7 @@ final class UsageTest extends TestCase
                 ImageLayer::text(
                     'Your Logo Here',
                     new TextStyle(FontFamily::IMPACT, 150)
-                )->color(NamedColor::GREEN)->background(NamedColor::RED)->effect(Effect::distortArc(-120)),
+                )->color(Color::GREEN)->background(Color::RED)->reshape(Reshape::distortArc(-120)),
                 Position::south(null, 840)
             )
         );
@@ -555,12 +561,12 @@ final class UsageTest extends TestCase
             'if_w_gt_1000/l_text:Arial_50:this%20is%20big/c_fill,h_80,w_80/fl_layer_apply/if_else/e_grayscale/if_end',
             (string)(new Transformation())
                 ->ifCondition(PVar::width()->greaterThan()->numeric(1000))
-                    ->overlay(
-                        Layer::text('this is big', new TextStyle(FontFamily::ARIAL, 50))
-                        ->resize(Resize::fill(80, 80))
-                    )
+                ->overlay(
+                    Source::text('this is big', new TextStyle(FontFamily::ARIAL, 50))
+                         ->resize(Resize::fill(80, 80))
+                )
                 ->ifElse()
-                    ->effect(Effect::grayscale())
+                ->effect(Effect::grayscale())
                 ->endIfCondition()
         );
     }
@@ -606,21 +612,21 @@ final class UsageTest extends TestCase
                 ->resize(Fill::fill(300, 200))
                 ->overlay(
                     VideoLayer::video('dog')
-                        ->trim(VideoRange::range(0, 5))
-                        ->resize(Fill::fill(300, 200))
-                        ->setFlag(LayerFlag::splice())
+                              ->trim(VideoRange::range(0, 5))
+                              ->resize(Fill::fill(300, 200))
+                              ->setFlag(LayerFlag::splice())
                 )
         );
 
         $this->assertEquals(
             'vc_h264:baseline:3.1',
             (string)(new VideoTransformation())
-                ->transcode(VideoCodec::h264(VideoCodecProfile::VCP_BASELINE, VideoCodecLevel::VCL_31))
+                ->transcode(VideoCodec::h264(VideoCodecProfile::BASELINE, VideoCodecLevel::VCL_31))
         );
 
         $this->assertEquals(
             'af_22050',
-            (string)(new VideoTransformation())->transcode(AudioFrequency::af22050())
+            (string)(new VideoTransformation())->transcode(AudioFrequency::freq22050())
         );
 
         $this->assertEquals(

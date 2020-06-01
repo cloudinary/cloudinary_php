@@ -39,6 +39,7 @@ trait UploadTrait
     public static function buildUploadParams($options)
     {
         $simpleParams = [
+            'accessibility_analysis',
             'async',
             'auto_tagging',
             'background_removal',

@@ -42,19 +42,17 @@ class ObjectGravity extends GravityParam implements
     use PersonObjectGravityBuilderTrait;
     use VehicleObjectGravityBuilderTrait;
 
-    const GRAVITY_TYPE = 'auto';
-
     /**
      * ObjectGravity constructor.
      *
-     * @param string $objectName
-     * @param mixed $args
+     * @param string $objectName The name of the object.
+     * @param mixed $args Optional fallback.
      */
     public function __construct($objectName = null, ...$args)
     {
         parent::__construct();
 
-        $this->setParamValue(self::GRAVITY_TYPE);
-        $this->add($objectName, ...$args);
+        $this->setParamValue($objectName);
+        $this->add(...$args);
     }
 }

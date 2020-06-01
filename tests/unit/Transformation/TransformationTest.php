@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Cloudinary\Test\Transformation\Image;
+namespace Cloudinary\Test\Transformation;
 
+use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Action;
 use Cloudinary\Transformation\Adjust;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\Chroma;
 use Cloudinary\Transformation\ColorSpace;
 use Cloudinary\Transformation\CompassGravity;
-use Cloudinary\Transformation\CornerRadius;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Expression\PVar;
@@ -39,23 +39,26 @@ use Cloudinary\Transformation\SmartObject;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\Variable\Variable;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class TransformationTest
  */
-final class TransformationTest extends TestCase
+final class TransformationTest extends UnitTestCase
 {
     public function testTransformation()
     {
         $t = new Transformation();
 
-        $t->resize(Pad::limitPad(17, 18)->background(NamedColor::BLUE)
-                      ->gravity(CompassGravity::southWest()))
-          ->adjust(Adjust::replaceColor(NamedColor::GREEN, 17, NamedColor::RED));
+        $t->resize(
+            Pad::limitPad(17, 18)->background(Color::BLUE)
+               ->gravity(CompassGravity::southWest())
+        )
+          ->adjust(Adjust::replaceColor(Color::GREEN, 17, Color::RED));
 
-        $t->resize(Scale::scale(Parameter::width(100), 200)->ignoreAspectRatio(true)
-                        ->setFlag(Flag::attachment('file.bin')));
+        $t->resize(
+            Scale::scale(Parameter::width(100), 200)->ignoreAspectRatio(true)
+                 ->setFlag(Flag::attachment('file.bin'))
+        );
 
         $t->addAction(Effect::sepia(100));
 
@@ -70,7 +73,7 @@ final class TransformationTest extends TestCase
 
         $t2->resize(Crop::thumbnail(100, 200, Gravity::auto(FocalGravity::ADVANCED_EYES)))
            ->adjust(Adjust::hue(99))
-           ->adjust(Adjust::replaceColor(NamedColor::PINK, 50, NamedColor::CYAN));
+           ->adjust(Adjust::replaceColor(Color::PINK, 50, Color::CYAN));
 
         $t2_expected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan';
         self::assertEquals(
@@ -97,10 +100,17 @@ final class TransformationTest extends TestCase
             (string)$t
         );
 
+        $t->dpr(2.5);
+
+        self::assertEquals(
+            'c_scale,h_200,w_100/dpr_2.5',
+            (string)$t
+        );
+
         $t->crop(100, 200, null, 10, 20);
 
         self::assertEquals(
-            'c_scale,h_200,w_100/c_crop,h_200,w_100,x_10,y_20',
+            'c_scale,h_200,w_100/dpr_2.5/c_crop,h_200,w_100,x_10,y_20',
             (string)$t
         );
 
@@ -339,6 +349,15 @@ final class TransformationTest extends TestCase
             (string)(new Transformation())->prefix('my_prefix')
         );
     }
+
+    public function testDensity()
+    {
+        $this->assertStrEquals(
+            'dn_20',
+            (new Transformation())->density(20)
+        );
+    }
+
 
     public function testPage()
     {

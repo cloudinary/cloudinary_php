@@ -16,6 +16,8 @@ use Cloudinary\Transformation\VideoTransformationTrait;
 
 /**
  * Class Video
+ *
+ * @api
  */
 class Video extends BaseMediaAsset implements VideoTransformationInterface
 {

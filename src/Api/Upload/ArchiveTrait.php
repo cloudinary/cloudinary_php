@@ -189,7 +189,7 @@ trait ArchiveTrait
     /**
      * Returns a URL that when invokes creates a zip archive and returns it.
      *
-     * @param array $options Additional options. See {@see ArchiveTrait::downloadArchiveUrl}
+     * @param array $options Additional options. See ArchiveTrait::downloadArchiveUrl.
      *
      * @return string The resulting archive URL
      *
@@ -201,5 +201,4 @@ trait ArchiveTrait
 
         return $this->downloadArchiveUrl($options);
     }
-
 }

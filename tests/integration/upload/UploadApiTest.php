@@ -264,4 +264,16 @@ final class UploadApiTest extends IntegrationTestCase
     {
         $this->markTestIncomplete('This functionality is not implemented yet');
     }
+
+    /**
+     * Get the accessibility analysis of an uploaded image
+     *
+     * @throws ApiError
+     */
+    public function testAccessibilityAnalysis()
+    {
+        $result = self::uploadTestResourceImage(['accessibility_analysis' => true], self::TEST_IMAGE_PATH);
+
+        $this->assertArrayHasKey('accessibility_analysis', $result);
+    }
 }

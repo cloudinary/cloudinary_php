@@ -12,6 +12,8 @@ namespace Cloudinary\Asset;
 
 /**
  * Class AssetType
+ *
+ * @api
  */
 abstract class AssetType
 {

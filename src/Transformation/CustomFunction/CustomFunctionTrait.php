@@ -22,13 +22,14 @@ trait CustomFunctionTrait
     /**
      * Specifies the wasm file to use for the custom function.
      *
-     * For more information about WebAssembly functions see
-     * the {@see https://cloudinary.com/documentation/custom_functions#webassembly_functions documentation}.
+     * For more information about WebAssembly functions see the documentation.
      *
      * @param string $source The public ID of the wasm file.
      *
      * @return CustomFunction
+     *
      * @see \Cloudinary\Transformation\CustomFunction
+     * @see https://cloudinary.com/documentation/custom_functions#webassembly_functions
      *
      */
     public static function wasm($source)
@@ -39,13 +40,14 @@ trait CustomFunctionTrait
     /**
      * Specifies the URL of the remote custom function.
      *
-     * For more information about remote custom functions see
-     * the {@see https://cloudinary.com/documentation/custom_functions#remote_functions documentation}.
+     * For more information about remote custom functions see the documentation.
      *
      * @param string $source The URL of the remote function.
      *
      * @return CustomFunction
+     *
      * @see \Cloudinary\Transformation\CustomFunction
+     * @see https://cloudinary.com/documentation/custom_functions#remote_functions
      *
      */
     public static function remote($source)
@@ -56,14 +58,14 @@ trait CustomFunctionTrait
     /**
      * Specifies the URL of the remote preprocessing custom function.
      *
-     * For more information about preprocessing custom functions see
-     * the {@see https://cloudinary.com/documentation/custom_functions#preprocessing_custom_functions documentation}.
+     * For more information about preprocessing custom functions see the documentation.
      *
-     * @param string $source The URL of the remote preprocessing function
+     * @param string $source The URL of the remote preprocessing function.
      *
      * @return CustomFunction
-     * @see \Cloudinary\Transformation\CustomFunction
      *
+     * @see \Cloudinary\Transformation\CustomFunction
+     * @see https://cloudinary.com/documentation/custom_functions#preprocessing_custom_functions
      */
     public static function preprocessRemote($source)
     {

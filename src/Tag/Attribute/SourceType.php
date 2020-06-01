@@ -16,6 +16,8 @@ use Cloudinary\ArrayUtils;
  * Class SourceType
  *
  * 'type' attribute of the source tag
+ *
+ * @internal
  */
 class SourceType
 {
@@ -26,10 +28,12 @@ class SourceType
      * @var string $mediaType The media type. Can be self::MEDIA_TYPE_VIDEO or self::MEDIA_TYPE_AUDIO.
      */
     protected $mediaType;
+
     /**
      * @var string $type The type(format) of the source.
      */
     public $type;
+
     /**
      * @var array $codecs The codecs.
      */
@@ -48,7 +52,6 @@ class SourceType
         $this->type      = $type;
         $this->codecs    = ArrayUtils::build($codecs);
     }
-
 
     /**
      * Serializes to string.

@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class VideoEffect
+ *
+ * @api
  */
 abstract class VideoEffect
 {

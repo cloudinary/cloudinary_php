@@ -12,6 +12,7 @@ namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Expression\BaseExpressionComponent;
+use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
 use Cloudinary\Transformation\Parameter\GenericParameter;
 use Cloudinary\Transformation\Variable\Variable;
 
@@ -23,37 +24,9 @@ use Cloudinary\Transformation\Variable\Variable;
 trait CommonTransformationTrait
 {
     use TransformationResizeTrait;
+    use TransformationDeliveryTrait;
     use CommonTransformationFlagTrait;
     use TransformationCustomFunctionTrait;
-
-    /**
-     * Forces format conversion to the given format.
-     *
-     * (Formerly known as fetch format)
-     *
-     * @param Format|string $format
-     *
-     * @return static
-     */
-    public function format($format)
-    {
-        return $this->addAction(ClassUtils::verifyInstance($format, Format::class));
-    }
-
-    /**
-     * Controls compression quality. 1 is the lowest quality and 100 is the
-     * highest.
-     *
-     * Reducing the quality is a trade-off between visual quality and file size.
-     *
-     * @param int|string|Quality $quality
-     *
-     * @return static
-     */
-    public function quality($quality)
-    {
-        return $this->addAction(ClassUtils::verifyInstance($quality, Quality::class));
-    }
 
     /**
      * Applies a filter or an effect on an asset.
@@ -70,7 +43,7 @@ trait CommonTransformationTrait
     /**
      * Applies adjustment effect on an asset.
      *
-     * @param EffectParam|EffectAction $adjustment
+     * @param EffectParam|EffectAction|Opacity $adjustment
      *
      * @return static
      */
@@ -116,6 +89,18 @@ trait CommonTransformationTrait
     public function addActionFromParams($parameters)
     {
         return $this->addAction(new ParametersAction($parameters));
+    }
+
+    /**
+     * Adds a flag as a separate action.
+     *
+     * @param FlagParameter|string $flag The flag to add.
+     *
+     * @return static
+     */
+    public function addFlag($flag)
+    {
+        return $this->addAction(ClassUtils::verifyInstance($flag, FlagParameter::class));
     }
 
     /**

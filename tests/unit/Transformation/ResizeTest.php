@@ -10,7 +10,8 @@
 
 namespace Cloudinary\Test\Transformation\Image;
 
-use Cloudinary\Transformation\Background;
+use Cloudinary\Transformation\Argument\Color;
+use Cloudinary\Transformation\AutoGravity;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\CompassPosition;
 use Cloudinary\Transformation\Crop;
@@ -20,6 +21,7 @@ use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Parameter;
 use Cloudinary\Transformation\Resize;
+use Cloudinary\Transformation\ResizeMode;
 use Cloudinary\Transformation\Scale;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -99,13 +101,6 @@ final class ResizeTest extends TestCase
 //            json_encode($fit)
 //        );
 
-        $scaleWithDPR = Scale::scale(100, 200)->dpr(2.5);
-
-        $this->assertEquals(
-            'c_scale,dpr_2.5,h_200,w_100',
-            (string)$scaleWithDPR
-        );
-
         $this->assertEquals(
             'c_mfit',
             (string)Scale::minimumFit()
@@ -147,7 +142,7 @@ final class ResizeTest extends TestCase
 //            json_encode($padWithParams)
 //        );
 
-        $padWithBuiltParams = Pad::pad(100, 200)->offset(50, 100)->background(Background::red());
+        $padWithBuiltParams = Pad::pad(100, 200)->offset(50, 100)->background(Color::RED);
 
         $this->assertEquals(
             'b_red,c_pad,h_200,w_100,x_50,y_100',
@@ -173,7 +168,7 @@ final class ResizeTest extends TestCase
 
     public function testFillPad()
     {
-        $fillPad = FillPad::fillPad(100, 200)->background(Background::red());
+        $fillPad = FillPad::fillPad(100, 200)->background(Color::RED);
 
         $this->assertEquals(
             'b_red,c_fill_pad,g_auto,h_200,w_100',
@@ -256,6 +251,21 @@ final class ResizeTest extends TestCase
             'c_custom,cu_v1:17,h_200,w_100,x_10,y_20',
             (string)Resize::generic('custom', 100, 200)->addParameter(Parameter::generic('cu', 'v1', 17))
                           ->x(10)->y(20)
+        );
+
+        $this->assertEquals(
+            'c_crop,fl_region_relative,h_200,w_100',
+            (string)Resize::crop(100, 200)->resizeMode(ResizeMode::regionRelative())
+        );
+
+        $this->assertEquals(
+            'c_crop,g_auto:ocr_text_avoid,h_200,w_100',
+            (string)Resize::crop(100, 200)->gravity(Gravity::auto(AutoGravity::object(Gravity::ocrText())->avoid()))
+        );
+
+        $this->assertEquals(
+            'c_crop,g_auto:ocr_text_30,h_200,w_100',
+            (string)Resize::crop(100, 200)->gravity(Gravity::auto(AutoGravity::object(Gravity::ocrText())->weight(30)))
         );
     }
 }

@@ -205,6 +205,7 @@ trait AssetsTrait
                 'pages',
                 'coordinates',
                 'max_results',
+                'accessibility_analysis',
             ]
         );
 

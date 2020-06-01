@@ -78,12 +78,14 @@ trait PredefinedVariableBuilderTrait
     }
 
     /**
-     * The aspect ratio of the image IF it was trimmed (using the {@see Effect::trim} effect) without actually trimming
+     * The aspect ratio of the image IF it was trimmed (using the Effect::trim effect) without actually trimming
      * the image.
      *
      * The compared value can be either decimal (e.g., 1.5) or a ratio (e.g., 3:4).
      *
      * @return Expression
+     *
+     * @see Effect::trim
      */
     public function trimmedAspectRatio()
     {
@@ -154,12 +156,15 @@ trait PredefinedVariableBuilderTrait
     /**
      * The set of tags assigned to the asset.
      *
-     * Used with the {@see Expression::in} or {@see Expression::notIn} operators.
+     * Used with the Expression::in or Expression::notIn operators.
      *
      * Note: The syntax for this characteristic is slightly different:
      * if_!<string1:string2:stringN>!_in_tags, where the : delimiter denotes AND.
      *
      * @return Expression
+     *
+     * @see Expression::in
+     * @see Expression::notIn
      */
     public function tags()
     {

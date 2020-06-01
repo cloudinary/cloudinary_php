@@ -12,6 +12,8 @@ namespace Cloudinary\Cache\Adapter;
 
 /**
  * Interface CacheAdapter
+ *
+ * @api
  */
 interface CacheAdapter
 {

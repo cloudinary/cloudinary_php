@@ -14,6 +14,8 @@ use InvalidArgumentException;
 
 /**
  * Class ConfigurationException
+ *
+ * @api
  */
 final class ConfigurationException extends InvalidArgumentException
 {

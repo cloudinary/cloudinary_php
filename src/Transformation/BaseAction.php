@@ -17,6 +17,8 @@ use InvalidArgumentException;
 
 /**
  * Class BaseAction
+ *
+ * @api
  */
 abstract class BaseAction extends BaseComponent
 {
@@ -102,17 +104,36 @@ abstract class BaseAction extends BaseComponent
     /**
      * Sets the flag.
      *
-     * @param FlagParameter $flag The flag to set.
+     * @param FlagParameter $flag  The flag to set.
+     * @param bool          $set   Indicates whether to set(true) or unset(false) the flag instead.
+     *                             (Used for avoiding if conditions all over the code)
      *
      * @return $this
      */
-    public function setFlag(FlagParameter $flag)
+    public function setFlag(FlagParameter $flag, $set = true)
     {
+        if ($set === false) {
+            return $this->unsetFlag($flag);
+        }
+
         ArrayUtils::addNonEmpty($this->flags, $flag->getFlagName(), $flag);
 
         return $this;
     }
 
+    /**
+     * Removes the flag.
+     *
+     * @param FlagParameter $flag The flag to unset.
+     *
+     * @return $this
+     */
+    public function unsetFlag(FlagParameter $flag)
+    {
+        unset($this->flags[$flag->getFlagName()]);
+
+        return $this;
+    }
 
     /**
      * Serializes to json.
@@ -168,7 +189,6 @@ abstract class BaseAction extends BaseComponent
 
         return ArrayUtils::implodeActionParams(...$allParameters);
     }
-
 
     /**
      * Serializes and merges flags.

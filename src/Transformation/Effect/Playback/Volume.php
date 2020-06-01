@@ -14,6 +14,8 @@ use Cloudinary\Utils;
 
 /**
  * Class Volume
+ *
+ * @api
  */
 class Volume extends LimitedEffectParam
 {

@@ -24,6 +24,8 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
  * Class BaseImageTag
+ *
+ * @api
  */
 abstract class BaseImageTag extends BaseTag implements ImageTransformationInterface
 {
@@ -67,7 +69,6 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
         $this->additionalTransformation = $additionalTransformation;
     }
 
-
     /**
      * Creates a new base image tag from the provided source and an array of parameters.
      *
@@ -76,7 +77,6 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @return mixed
      */
-
     public static function fromParams($source, $params = [])
     {
         $image = Image::fromParams($source, $params);
@@ -114,7 +114,6 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
         return $this;
     }
 
-
     /**
      * Serializes to json.
      *
@@ -124,7 +123,6 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     {
         // TODO: Implement jsonSerialize() method.
     }
-
 
     /**
      * Adds (appends) a transformation.
@@ -142,7 +140,6 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
         return $this;
     }
 
-
     /**
      * Adds (chains) a transformation action.
      *
@@ -157,7 +154,6 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
 
         return $this;
     }
-
 
     /**
      * Explicitly sets the breakpoints.

@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class BlurredBackground
+ *
+ * @api
  */
 class BlurredBackground extends Background
 {
@@ -24,11 +26,12 @@ class BlurredBackground extends Background
      * @var array $valueOrder The order of the values.
      */
     protected $valueOrder = [0, 'intensity', 'brightness']; // FIXME: first item should be named!
+
     /**
      * BlurredBackground constructor.
      *
-     * @param null $intensity
-     * @param null $brightness
+     * @param int $intensity  The intensity of the blur.
+     * @param int $brightness The brightness of the background.
      */
     public function __construct($intensity = null, $brightness = null)
     {

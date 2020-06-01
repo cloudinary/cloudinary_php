@@ -10,9 +10,12 @@
 
 namespace Cloudinary\Test\Asset;
 
-use Cloudinary\Asset\File;
 use Cloudinary\Asset\DeliveryType;
+use Cloudinary\Asset\File;
 use Cloudinary\Test\Cloudinary\AssetTestCase;
+use InvalidArgumentException;
+use Monolog\Logger as Monolog;
+use ReflectionException;
 
 /**
  * Class FileTest
@@ -52,9 +55,29 @@ final class FileTest extends AssetTestCase
         $fNoFormat->deliveryType(DeliveryType::FETCH);
 
         $this->assertErrorThrowing(
-            function () use ($fNoFormat) {
-                (string)$fNoFormat;
+            static function () use ($fNoFormat) {
+                return (string)$fNoFormat;
             }
         );
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testInvalidFileImportJson()
+    {
+        $file = new File(self::FILE_NAME, self::TEST_LOGGING);
+
+        $message = null;
+        $expectedLogMessage = 'Error importing JSON';
+        $expectedExceptionMessage = 'JsonException :';
+        try {
+            $file->importJson('{NOT_A_JSON}');
+        } catch (InvalidArgumentException $e) {
+            $message = $e->getMessage();
+        }
+
+        self::assertStringStartsWith($expectedExceptionMessage, $message);
+        self::assertObjectLoggedMessage($file, $expectedLogMessage, Monolog::CRITICAL);
     }
 }

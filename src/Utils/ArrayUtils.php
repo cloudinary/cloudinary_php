@@ -71,7 +71,7 @@ class ArrayUtils
     }
 
     /**
-     * Safe version of {@see ArrayUtils::implodeAssoc}.
+     * Safe version of ArrayUtils::implodeAssoc.
      *
      * In addition escapes appearances of the delimiters inside strings.
      *
@@ -81,6 +81,8 @@ class ArrayUtils
      * @param bool   $innerIsSafe Whether to omit escaping of the inner delimiter
      *
      * @return string
+     *
+     * @see ArrayUtils::implodeAssoc
      */
     public static function safeImplodeAssoc($array, $outer = '', $inner = null, $innerIsSafe = false)
     {
@@ -111,7 +113,7 @@ class ArrayUtils
     /**
      * Shortcut helper
      *
-     * Strange signature comes from built-in {@see implode) function that has a similar signature
+     * Strange signature comes from the built-in implode function that has a similar signature.
      *
      * @param string $glue
      * @param array  $pieces
@@ -122,6 +124,8 @@ class ArrayUtils
      *
      * @internal
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
+     *
+     * @see          implode
      */
     public static function implodeFiltered(
         $glue = '',
@@ -155,13 +159,16 @@ class ArrayUtils
     }
 
     /**
-     * Uses {@see strlen} instead of {@see empty} to indicate whether value is considered empty.
+     * Uses "strlen()" instead of "empty()" to indicate whether value is considered empty.
      *
      * Used to keep falsy values, like 0, '0', etc.
      *
      * @param mixed|array $value The value to filter
      *
      * @return int
+     *
+     * @see strlen
+     * @see empty
      */
     protected static function safeFilterFunc($value)
     {
@@ -178,17 +185,19 @@ class ArrayUtils
         return strlen($value);
     }
 
-
     /**
-     * Safe version of the {@see array_filter} function.
+     * Safe version of the "array_filter" function.
      *
-     * Uses {@see strlen} filter function by default, which treats non-null values (e.g. 0, false, etc) as non-empty
+     * Uses "strlen" filter function by default, which treats non-null values (e.g. 0, false, etc) as non-empty.
      *
      * @param array           $input
      * @param callback|string $callback
      * @param int             $flag
      *
      * @return array
+     *
+     * @see array_filter
+     * @see strlen
      */
     public static function safeFilter(
         array $input,
@@ -355,7 +364,6 @@ class ArrayUtils
         return array_diff($array, $blacklistedKeys);
     }
 
-
     /**
      * Wraps a $value with an array, if not already an array.
      *
@@ -379,13 +387,15 @@ class ArrayUtils
     /**
      * Returns the first item value from the array in case it has only 1 element.
      *
-     * It is the opposite of {@see ArrayUtils::build} function
+     * It is the opposite of ArrayUtils::build function.
      *
      * @param mixed $array     Input array
      *
      * @param bool  $onlyAssoc Set to true to flatten only associative arrays
      *
      * @return null|string|array
+     *
+     * @see ArrayUtils::build
      */
     public static function flatten($array, $onlyAssoc = false)
     {
@@ -592,7 +602,6 @@ class ArrayUtils
 
         return $result;
     }
-
 
     /**
      * Helper function for making a recursive array copy while cloning objects on the way.

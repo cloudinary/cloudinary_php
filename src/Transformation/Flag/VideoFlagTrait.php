@@ -19,7 +19,7 @@ trait VideoFlagTrait
 {
     /**
      * If the requested video transformation has already been generated, this flag works identically to
-     * {@see Flag::attachment}.
+     * Flag::attachment.
      *
      * However, if the video transformation is being requested for the first time, this flag causes the video download
      * to begin immediately, streaming it as a fragmented video file.
@@ -32,6 +32,8 @@ trait VideoFlagTrait
      * @param string $filename The attachment's filename
      *
      * @return FlagParameter
+     *
+     * @see Flag::attachment
      */
     public static function streamingAttachment($filename = null)
     {
@@ -43,10 +45,9 @@ trait VideoFlagTrait
      *
      * Delivering in this format requires a private CDN configuration.
      *
-     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#adaptive_bitrate_streaming_hls_and_mpeg_dash
-     *      Adaptive bitrate streaming - HLS and MPEG DASH.
-     *
      * @return FlagParameter
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#adaptive_bitrate_streaming_hls_and_mpeg_dash
      */
     public static function hlsv3()
     {

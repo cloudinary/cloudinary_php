@@ -112,11 +112,12 @@ trait ImagePixelEffectTrait
     /**
      * Applies an ordered dither filter to the image.
      *
-     * Use the constants defined in {@see \Cloudinary\Transformation\OrderedDither OrderedDither} for $level.
+     * Use the constants defined in \Cloudinary\Transformation\OrderedDither for $level.
      *
      * @param int $level The level of ordered dither.  Use the constants defined in the OrderedDither class.
      *
      * @return OrderedDither
+     *
      * @see \Cloudinary\Transformation\OrderedDither
      *
      */
@@ -128,17 +129,13 @@ trait ImagePixelEffectTrait
     /**
      * Applies a gradient fade effect from the top edge of the image.
      *
-     * You can specify other edges using the x and y methods of the
-     * {@see \Cloudinary\Transformation\GradientFade} class.
-     *
-     * To fade symmetrically from multiple edges, set the $mode parameter to
-     * {@see \Cloudinary\Transformation\GradientFade::SYMMETRIC GradientFade::SYMMETRIC} or
-     * {@see \Cloudinary\Transformation\GradientFade::SYMMETRIC_PAD GradientFade::SYMMETRIC_PAD}.
+     * You can specify other edges using the x and y methods of the \Cloudinary\Transformation\GradientFade class.
      *
      * @param int    $strength The strength of the fade effect. (Range: 0 to 100, Server default: 20)
      * @param string $mode     The mode of gradient fade: GradientFade::SYMMETRIC or GradientFade::SYMMETRIC_PAD.
      *
      * @return GradientFade
+     *
      * @see \Cloudinary\Transformation\GradientFade
      *
      */

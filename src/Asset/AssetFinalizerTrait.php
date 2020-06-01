@@ -12,6 +12,7 @@ namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\UrlConfig;
+use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
 use Cloudinary\Utils;
 use GuzzleHttp\Psr7\Uri;
@@ -26,6 +27,8 @@ use UnexpectedValueException;
  */
 trait AssetFinalizerTrait
 {
+    use LoggerTrait;
+
     /**
      *
      * Helper function for building hostname of form:
@@ -150,19 +153,27 @@ trait AssetFinalizerTrait
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#seo_friendly_media_asset_urls
      *
      * @return mixed
+     * @throws UnexpectedValueException
      */
     protected function finalizeAssetType()
     {
-        if (! empty($this->asset->suffix)) {
+        if (!empty($this->asset->suffix)) {
             $suffixSupportedDeliveryTypes = static::getSuffixSupportedDeliveryTypes();
-            if (! isset($suffixSupportedDeliveryTypes[$this->asset->assetType][$this->asset->deliveryType])) {
-                throw new UnexpectedValueException(
-                    "URL Suffix is only supported in {$this->asset->assetType} " .
+            if (!isset($suffixSupportedDeliveryTypes[$this->asset->assetType][$this->asset->deliveryType])) {
+                $message = "URL Suffix is only supported in {$this->asset->assetType} " .
                     implode(
                         ',',
                         array_keys(ArrayUtils::get($suffixSupportedDeliveryTypes, [$this->asset->assetType], []))
-                    )
+                    );
+                $this->getLogger()->critical(
+                    $message,
+                    [
+                        'suffix' => $this->asset->suffix,
+                        'assetType' => $this->asset->assetType,
+                        'deliveryType' => $this->asset->deliveryType,
+                    ]
                 );
+                throw new UnexpectedValueException($message);
             }
 
             $finalAssetType = $suffixSupportedDeliveryTypes[$this->asset->assetType][$this->asset->deliveryType];
@@ -232,9 +243,19 @@ trait AssetFinalizerTrait
         }
 
         $toSign    = $this->asset->publicId();
-        $signature = StringUtils::base64UrlEncode(Utils::sign($toSign, $this->account->secret, true));
+        $signature = StringUtils::base64UrlEncode(
+            Utils::sign(
+                $toSign,
+                $this->account->apiSecret,
+                true,
+                $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
+            )
+        );
 
-        return 's--' . substr($signature, 0, 8) . '--';
+        return Utils::formatSimpleSignature(
+            $signature,
+            $this->urlConfig->longUrlSignature ? Utils::LONG_URL_SIGNATURE_LENGTH : Utils::SHORT_URL_SIGNATURE_LENGTH
+        );
     }
 
     /**

@@ -12,12 +12,12 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait ImageEffectTrait
+ *
  * @api
  */
 trait ImageEffectTrait
 {
     use ImageColorEffectTrait;
     use ImagePixelEffectTrait;
-    use ImageShapeEffectTrait;
     use MiscEffectTrait;
 }

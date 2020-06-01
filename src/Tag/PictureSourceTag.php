@@ -14,6 +14,8 @@ namespace Cloudinary\Tag;
  * Class PictureSourceTag
  *
  * Generates HTML `source` tag that can be used by the `picture` tag.
+ *
+ * @api
  */
 class PictureSourceTag extends BaseImageTag
 {
@@ -40,7 +42,6 @@ class PictureSourceTag extends BaseImageTag
 
         return $this;
     }
-
 
     /**
      * Serializes the tag attributes.

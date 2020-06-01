@@ -35,19 +35,22 @@ class JsonUtils
     }
 
     /**
-     * Wrapper around {@see json_decode}, throws exception on error.
+     * Wrapper around json_decode, throws exception on error.
      *
-     * @param mixed $json    JSON to decode
-     * @param bool  $assoc   Whether to convert object to an array
-     * @param int   $depth   Maximum depth
-     * @param int   $options Additional options
+     * @param mixed $json    JSON to decode.
+     * @param bool  $assoc   Whether to convert object to an array.
+     * @param int   $depth   Maximum depth.
+     * @param int   $options Additional options.
      *
      * @return mixed
+     *
      * @throws InvalidArgumentException
+     *
+     * @see json_decode
      */
     public static function decode($json, $assoc = true, $depth = 512, $options = 0)
     {
-        if (is_array($json)) { // Already json array, skip decoding
+        if (is_array($json)) { // Already a json array, skip decoding.
             return $json;
         }
 
@@ -61,15 +64,18 @@ class JsonUtils
     }
 
     /**
-     * Wrapper around {@see json_encode), throws exception on error
+     * Wrapper around json_encode, throws exception on error.
      *
-     * @param mixed $value   The value to encode
-     * @param int   $options Additional options
+     * @param mixed $value   The value to encode.
+     * @param int   $options Additional options.
      *
      * @param int   $depth
      *
      * @return false|string
+     *
      * @throws InvalidArgumentException
+     *
+     * @see json_encode
      */
     public static function encode($value, $options = 0, $depth = 512)
     {
@@ -83,11 +89,13 @@ class JsonUtils
     }
 
     /**
-     * Wrapper for {@see \JsonSerializable::jsonSerialize}, can be called on null or non-objects
+     * Wrapper for \JsonSerializable::jsonSerialize, can be called on null or non-objects.
      *
-     * @param JsonSerializable|mixed $jsonSerializable The serializable to serialize
+     * @param JsonSerializable|mixed $jsonSerializable The serializable to serialize.
      *
      * @return mixed
+     *
+     * @see \JsonSerializable::jsonSerialize
      */
     public static function jsonSerialize($jsonSerializable)
     {
@@ -95,7 +103,7 @@ class JsonUtils
             return [];
         }
 
-        if (is_array($jsonSerializable)) { // Already json array, skip serialization
+        if (is_array($jsonSerializable)) { // Already a json array, skip serialization
             return $jsonSerializable;
         }
 

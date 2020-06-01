@@ -12,7 +12,7 @@ namespace Cloudinary\Test\Transformation;
 
 use Cloudinary\Transformation\ArtisticFilter;
 use Cloudinary\Transformation\Cartoonify;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\GradientFade;
 use Cloudinary\Transformation\Argument\PointValue;
@@ -20,6 +20,7 @@ use Cloudinary\Transformation\OrderedDither;
 use Cloudinary\Transformation\Parameter;
 use Cloudinary\Transformation\PixelEffect;
 use Cloudinary\Transformation\Region;
+use Cloudinary\Transformation\Reshape;
 use Cloudinary\Transformation\SimulateColorBlind;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
@@ -105,17 +106,17 @@ final class EffectTest extends TestCase
 
         $this->assertEquals(
             'co_red,e_colorize:17',
-            (string)Effect::colorize(17, NamedColor::RED)
+            (string)Effect::colorize(17, Color::RED)
         );
 
         $this->assertEquals(
             'co_red,e_colorize:17',
-            (string)Effect::colorize(17)->color(NamedColor::RED)
+            (string)Effect::colorize(17)->color(Color::RED)
         );
 
         $this->assertEquals(
             'co_red,e_colorize:17',
-            (string)Effect::colorize(17, NamedColor::BLUE)->color(NamedColor::RED)
+            (string)Effect::colorize(17, Color::BLUE)->color(Color::RED)
         );
     }
 
@@ -218,7 +219,7 @@ final class EffectTest extends TestCase
     {
         $this->assertEquals(
             'co_green,e_shadow:17,x_30,y_40',
-            (string)Effect::shadow(17)->position(30, 40)->color(NamedColor::GREEN)
+            (string)Effect::shadow(17)->position(30, 40)->color(Color::GREEN)
         );
     }
 
@@ -226,7 +227,7 @@ final class EffectTest extends TestCase
     {
         $this->assertEquals(
             'e_trim:17:blue',
-            (string)Effect::trim(17)->colorOverride(NamedColor::BLUE)
+            (string)Reshape::trim(17)->colorOverride(Color::BLUE)
         );
     }
 
@@ -257,24 +258,24 @@ final class EffectTest extends TestCase
     {
         $this->assertEquals(
             'e_distort:arc:17',
-            (string)Effect::distortArc(17)
+            (string)Reshape::distortArc(17)
         );
 
         $this->assertEquals(
             'e_distort:arc:-17',
-            (string)Effect::distortArc(-17)
+            (string)Reshape::distortArc(-17)
         );
 
         $this->expectException(OutOfRangeException::class);
 
-        Effect::distortArc(361);
+        Reshape::distortArc(361);
     }
 
     public function testDistort()
     {
         $this->assertEquals(
             'e_distort:1:1:1:99:99:99:99:1',
-            (string)Effect::distort(
+            (string)Reshape::distort(
                 new PointValue(1, 1),
                 new PointValue(1, 99),
                 new PointValue(99, 99),
@@ -287,17 +288,17 @@ final class EffectTest extends TestCase
     {
         $this->assertEquals(
             'e_shear:30:60',
-            (string)Effect::shear(30, 60)
+            (string)Reshape::shear(30, 60)
         );
 
         $this->assertEquals(
             'e_shear:30:60',
-            (string)Effect::shear(30)->skewY(60)
+            (string)Reshape::shear(30)->skewY(60)
         );
 
         $this->assertEquals(
             'e_shear:30:60',
-            (string)Effect::shear()->skewX(30)->skewY(60)
+            (string)Reshape::shear()->skewX(30)->skewY(60)
         );
     }
 
@@ -306,7 +307,7 @@ final class EffectTest extends TestCase
     {
         $this->assertEquals(
             'e_art:incognito',
-            (string)Effect::artisticFilter(ArtisticFilter::incognito())
+            (string)Effect::artisticFilter(ArtisticFilter::INCOGNITO)
         );
 
         $this->assertEquals(

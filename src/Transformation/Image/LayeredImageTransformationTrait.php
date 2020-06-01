@@ -20,9 +20,9 @@ use Cloudinary\ClassUtils;
 trait LayeredImageTransformationTrait
 {
     /**
-     * Gets selected pages of a PDF
+     * Gets selected pages of a PDF.
      *
-     * @param Page|int ...$pages
+     * @param Page|PageParam|int ...$pages
      *
      * @return static
      *
@@ -34,7 +34,7 @@ trait LayeredImageTransformationTrait
     }
 
     /**
-     * Alias for {@see self::page}
+     * Gets selected frame of an animated image.
      *
      * @param $frameNumber
      *
@@ -46,7 +46,7 @@ trait LayeredImageTransformationTrait
     }
 
     /**
-     * Delivers an image containing only specified layers of a Photoshop image
+     * Delivers an image containing only specified layers of a Photoshop image.
      *
      * @param PSDLayer|int ...$layers
      *
@@ -60,7 +60,7 @@ trait LayeredImageTransformationTrait
     }
 
     /**
-     * Extracts the original content of an embedded object of a Photoshop image
+     * Extracts the original content of an embedded object of a Photoshop image.
      *
      * @param SmartObject|int ...$smartObjects
      *

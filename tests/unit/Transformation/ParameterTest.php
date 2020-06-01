@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Transformation\Image;
 
 use Cloudinary\Configuration\ResponsiveBreakpointsConfig;
 use Cloudinary\Transformation\Action;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Gradient;
 use Cloudinary\Transformation\Argument\GradientDirection;
 use Cloudinary\Transformation\AutoBackground;
@@ -96,7 +97,7 @@ final class ParameterTest extends TestCase
     {
         $this->assertEquals(
             'b_red',
-            (string)Background::red()
+            (string)Background::color(Color::RED)
         );
     }
 

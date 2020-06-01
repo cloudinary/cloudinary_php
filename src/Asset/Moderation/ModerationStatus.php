@@ -14,26 +14,36 @@ namespace Cloudinary\Asset;
  * Class ModerationStatus
  *
  * Moderation statuses
+ *
+ * @api
  */
 abstract class ModerationStatus
 {
     /**
-     * @var string The moderation status key.
+     * The moderation status key.
+     *
+     * @var string
      */
     const KEY = 'moderation_status';
 
     /**
-     * @var string Asset is pending moderation.
+     * Asset is pending moderation.
+     *
+     * @var string
      */
     const PENDING = 'pending';
 
     /**
-     * @var string Asset has passed moderation and been approved.
+     * Asset has passed moderation and been approved.
+     *
+     * @var string
      */
     const APPROVED = 'approved';
 
     /**
-     * @var string Asset has passed moderation and been rejected.
+     * Asset has passed moderation and been rejected.
+     *
+     * @var string
      */
     const REJECTED = 'rejected';
 }

@@ -15,6 +15,8 @@ use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
  * Class ReplaceColor
+ *
+ * @api
  */
 class ReplaceColor extends EffectParam
 {

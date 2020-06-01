@@ -35,13 +35,13 @@ trait FocalGravityBuilderTrait
      * Detects the largest face in an image with the Advanced Facial Attribute Detection add-on and makes it the focus
      * of the transformation.
      *
-     * For details, see the
-     * {@see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon#face_detection_based_cropping
-     * Advanced Facial Attribute Detection add-on} documentation.
+     * For details, see the Advanced Facial Attribute Detection add-on documentation.
      *
      * @param mixed ...$fallback Fallback gravities.
      *
      * @return FocalGravity
+     *
+     * @see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon#face_detection_based_cropping
      */
     public static function advancedFace(...$fallback)
     {
@@ -52,13 +52,13 @@ trait FocalGravityBuilderTrait
      * Detects all faces in an image with the Advanced Facial Attribute Detection add-on and makes them the focus
      * of the transformation.
      *
-     * For details, see the
-     * {@see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon#face_detection_based_cropping
-     * Advanced Facial Attribute Detection add-on} documentation.
+     * For details, see the Advanced Facial Attribute Detection add-on documentation.
      *
      * @param mixed ...$fallback Fallback gravities.
      *
      * @return FocalGravity
+     *
+     * @see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon#face_detection_based_cropping
      */
     public static function advancedFaces(...$fallback)
     {
@@ -69,13 +69,13 @@ trait FocalGravityBuilderTrait
      * Detects all eyes in an image with the Advanced Facial Attribute Detection add-on and makes them the focus of
      * the transformation.
      *
-     * For details, see the
-     * {@see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon#eyes_detection_based_cropping
-     * Advanced Facial Attribute Detection add-on} documentation.
+     * For details, see the Advanced Facial Attribute Detection add-on documentation.
      *
      * @param mixed ...$fallback Fallback gravities.
      *
      * @return FocalGravity
+     *
+     * @see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon#eyes_detection_based_cropping
      */
     public static function advancedEyes(...$fallback)
     {
@@ -162,12 +162,13 @@ trait FocalGravityBuilderTrait
      * Detects all text elements in an image using the OCR Text Detection and Extraction add-on and uses the detected
      * bounding box coordinates as the focus of the transformation.
      *
-     * For details see the {@see https://cloudinary.com/documentation/ocr_text_detection_and_extraction_addon OCR
-     * Text Detection and Extraction add-on} documentation.
+     * For details, see the OCR Text Detection and Extraction add-on documentation.
      *
      * @param mixed ...$fallback Fallback gravities.
      *
      * @return FocalGravity
+     *
+     * @see https://cloudinary.com/documentation/ocr_text_detection_and_extraction_addon
      */
     public static function ocrText(...$fallback)
     {

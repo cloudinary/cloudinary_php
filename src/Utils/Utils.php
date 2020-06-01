@@ -21,6 +21,11 @@ use Psr\Http\Message\UriInterface;
  */
 class Utils
 {
+    const ALGO_SHA1 = 'sha1';
+    const ALGO_SHA256 = 'sha256';
+    const SHORT_URL_SIGNATURE_LENGTH = 8;
+    const LONG_URL_SIGNATURE_LENGTH = 32;
+
     /**
      * Converts a float value to the string representation.
      *
@@ -30,7 +35,7 @@ class Utils
      */
     public static function floatToString($value)
     {
-        if (!is_float($value)) {
+        if (! is_float($value)) {
             return $value;
         }
 
@@ -50,7 +55,7 @@ class Utils
      */
     public static function boolToString($value)
     {
-        if (!is_bool($value)) {
+        if (! is_bool($value)) {
             return $value;
         }
 
@@ -66,7 +71,7 @@ class Utils
      */
     public static function boolToIntString($value)
     {
-        if (!is_bool($value)) {
+        if (! is_bool($value)) {
             return $value;
         }
 
@@ -126,25 +131,41 @@ class Utils
     }
 
     /**
-     * Creates a signature for content using specified secret.
+     * Format a given signature hash into a string that will be used to sign a url
      *
-     * @param         $content
-     * @param         $secret
-     * @param bool    $raw
+     * @param string $signature The signature to format
+     * @param int    $length    Number of characters to use from the start of the signature
      *
      * @return string
      */
-    public static function sign($content, $secret, $raw = null)
+    public static function formatSimpleSignature($signature, $length)
     {
-        return sha1($content . $secret, $raw);
+        return 's--' . substr($signature, 0, $length) . '--';
+    }
+
+    /**
+     * Creates a signature for content using specified secret.
+     *
+     * @param string $content
+     * @param string $secret
+     * @param bool   $raw
+     * @param string $algo
+     *
+     * @return string
+     */
+    public static function sign($content, $secret, $raw = null, $algo = self::ALGO_SHA1)
+    {
+        return hash($algo, $content . $secret, $raw);
     }
 
     /**
      * Generates a random public ID string.
      *
-     * @param string $prefix Provide unique prefix to avoid collisions, see {@see uniqid} for more details.
+     * @param string $prefix Provide unique prefix to avoid collisions, see uniqid for more details.
      *
      * @return bool|string
+     *
+     * @see uniqid
      */
     public static function randomPublicId($prefix = '')
     {
@@ -161,8 +182,8 @@ class Utils
      */
     public static function tryParseUrl($url, array $allowedSchemes = null)
     {
-        if (!$url instanceof UriInterface) {
-            if (!is_string($url)) {
+        if (! $url instanceof UriInterface) {
+            if (! is_string($url)) {
                 return false;
             }
 
@@ -173,7 +194,7 @@ class Utils
             $url = Uri::fromParts($urlParts);
         }
 
-        if ($allowedSchemes !== null && !in_array($url->getScheme(), $allowedSchemes, false)) {
+        if ($allowedSchemes !== null && ! in_array($url->getScheme(), $allowedSchemes, false)) {
             return false;
         }
 
@@ -228,7 +249,7 @@ class Utils
      */
     public static function tryParseBoolean($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return $value;
         }
 

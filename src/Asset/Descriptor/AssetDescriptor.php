@@ -17,7 +17,9 @@ use Cloudinary\JsonUtils;
 /**
  * Class AssetDescriptor
  *
- * @property string suffix
+ * @property string suffix SEO URL suffix
+ *
+ * @api
  */
 class AssetDescriptor implements AssetInterface
 {
@@ -34,32 +36,32 @@ class AssetDescriptor implements AssetInterface
      */
     public $deliveryType = DeliveryType::UPLOAD; // A.K.A type
     /**
-     * @var int|string $version Asset version, typically set to unix timestamp
+     * @var int|string $version Asset version, typically set to unix timestamp.
      */
     public $version;
     /**
-     * @var string $location Can be directory, URL(including path, excluding filename), etc
+     * @var string $location Can be directory, URL(including path, excluding filename), etc.
      */
     public $location;
     /**
-     * @var string $filename Basename without extension
+     * @var string $filename Basename without extension.
      */
     public $filename;
     /**
-     * @var string $extension A.K.A format
+     * @var string $extension A.K.A format.
      */
     public $extension;
 
     /**
-     * @var string $suffix SEO URL suffix
+     * @var string $suffix SEO URL suffix.
      */
     private $suffix;
 
     /**
      * AssetDescriptor constructor.
      *
-     * @param string $publicId  The public ID of the asset
-     * @param string $assetType The type of the asset
+     * @param string $publicId  The public ID of the asset.
+     * @param string $assetType The type of the asset.
      */
     public function __construct($publicId, $assetType = AssetType::IMAGE)
     {
@@ -76,9 +78,8 @@ class AssetDescriptor implements AssetInterface
      */
     public function __get($name)
     {
-        switch ($name) {
-            case 'suffix':
-                return $this->suffix;
+        if ($name === 'suffix') {
+            return $this->suffix;
         }
 
         trigger_error('Undefined property: ' . static::class . '::$' . $name, E_USER_NOTICE);

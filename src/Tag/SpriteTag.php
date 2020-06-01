@@ -19,6 +19,8 @@ use Cloudinary\Transformation\ImageTransformationTrait;
  * Class SpriteTag
  *
  * Generates <link type="text/css" rel="stylesheet" href="https://res.cloudinary.com/demo/image/sprite/my_sprite.css">
+ *
+ * @api
  */
 class SpriteTag extends BaseTag
 {

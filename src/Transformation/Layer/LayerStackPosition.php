@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class LayerStackPosition
+ *
+ * @api
  */
 class LayerStackPosition
 {

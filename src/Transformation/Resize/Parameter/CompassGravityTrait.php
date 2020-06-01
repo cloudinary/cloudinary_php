@@ -11,29 +11,32 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use TypeError;
 
 /**
  * Trait CompassGravityTrait
+ *
+ * @api
  */
 trait CompassGravityTrait
 {
     /**
      * Sets the compass direction.
      *
-     * The compass direction represents a location in the image, for example, {@see Gravity::northEast} represents the
+     * The compass direction represents a location in the image, for example, Gravity::northEast() represents the
      * top right corner.
      *
      * @param $compassGravity
      *
-     * @return $this
+     * @return static
+     *
+     * @see Gravity::northEast
      */
     public function gravity($compassGravity)
     {
         if (! $compassGravity instanceof GravityParam) {
             $compassGravity = new CompassGravity($compassGravity);
         } elseif (! $compassGravity instanceof CompassGravity) {
-            throw new TypeError(
+            throw new \UnexpectedValueException(
                 'CompassGravity expected, got: ' . ClassUtils::getClassName($compassGravity)
             );
         }

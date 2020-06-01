@@ -11,22 +11,22 @@
 namespace Cloudinary\Test\Transformation\Common;
 
 use Cloudinary\Test\Cloudinary\AssetTestCase;
+use Cloudinary\Transformation\Action;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Argument\ColorValue;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Text\FontAntialiasing;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontHinting;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\Argument\Text\TextStyle;
 use Cloudinary\Transformation\Background;
-use Cloudinary\Transformation\Color;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\ImageLayer;
-use Cloudinary\Transformation\Layer;
 use Cloudinary\Transformation\LutLayer;
+use Cloudinary\Transformation\Parameter;
 use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 use Cloudinary\Transformation\SubtitlesLayer;
 use Cloudinary\Transformation\TextLayer;
@@ -46,7 +46,7 @@ final class LayerTest extends AssetTestCase
 
         $t->resize(Crop::thumbnail(100, 200, Gravity::auto(FocalGravity::ADVANCED_EYES)))
           ->adjust(Adjust::hue(99))
-          ->adjust(Adjust::replaceColor(NamedColor::PINK, 50, NamedColor::CYAN));
+          ->adjust(Adjust::replaceColor(Color::PINK, 50, Color::CYAN));
 
         $t_expected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan';
 
@@ -81,7 +81,7 @@ final class LayerTest extends AssetTestCase
         $t = new Transformation();
 
         $t->adjust(Adjust::hue(99))
-          ->adjust(Adjust::replaceColor(NamedColor::PINK, 50, NamedColor::CYAN));
+          ->adjust(Adjust::replaceColor(Color::PINK, 50, Color::CYAN));
 
         $tExpected = 'e_hue:99/e_replace_color:pink:50:cyan';
 
@@ -108,8 +108,8 @@ final class LayerTest extends AssetTestCase
         $this->assertEquals(
             'b_green,co_red,l_subtitles:Arial_14:sample_sub_en.srt/fl_layer_apply',
             (string)(new SubtitlesLayer('sample_sub_en.srt'))
-                ->color(Color::red())
-                ->background(Background::green())
+                ->color(Color::RED)
+                ->background(Color::GREEN)
                 ->fontFamily(FontFamily::ARIAL)
                 ->fontSize(14)
         );

@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\Transformation\Parameter\Dimensions\AspectRatio;
-use Cloudinary\Transformation\Parameter\Dimensions\DPR;
+use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
 use Cloudinary\Transformation\Parameter\Dimensions\Height;
 use Cloudinary\Transformation\Parameter\Dimensions\Width;
 
@@ -71,12 +71,12 @@ trait DimensionsParamTrait
      *
      * @param float $dpr The device pixel ratio.
      *
-     * @return DPR
+     * @return Dpr
      *
-     * @see \Cloudinary\Transformation\Parameter\Dimensions\DPR
+     * @see \Cloudinary\Transformation\Parameter\Dimensions\Dpr
      */
     public static function dpr($dpr)
     {
-        return new DPR($dpr);
+        return new Dpr($dpr);
     }
 }

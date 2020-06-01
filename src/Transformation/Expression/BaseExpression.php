@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Class BaseExpressionBuilder
+ *
+ * @api
  */
 abstract class BaseExpression extends BaseExpressionComponent
 {

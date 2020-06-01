@@ -22,13 +22,22 @@ use Cloudinary\Tag\VideoTag;
 
 /**
  * Class Cloudinary
+ *
+ * @api
  */
 class Cloudinary
 {
-    const VERSION = '2.0.0-beta';
+    /**
+     * The version of the SDK.
+     *
+     * @var string VERSION
+     */
+    const VERSION = '2.0.0-beta2';
 
     /**
-     * @var Configuration $configuration The configuration instance.
+     * The configuration instance.
+     *
+     * @var Configuration $configuration
      */
     public $configuration;
 

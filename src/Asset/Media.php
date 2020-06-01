@@ -16,6 +16,8 @@ use Cloudinary\Transformation\TransformationTrait;
 
 /**
  * Class Media
+ *
+ * @api
  */
 class Media extends BaseMediaAsset
 {

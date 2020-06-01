@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Transformation
+ *
+ * @api
  */
 class ImageTransformation extends CommonTransformation implements ImageTransformationInterface
 {

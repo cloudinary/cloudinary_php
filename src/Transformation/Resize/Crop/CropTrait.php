@@ -26,7 +26,7 @@ trait CropTrait
      * @param int|float|X           $x       Horizontal position for custom-coordinates based cropping
      * @param int|float|Y           $y       Vertical position for custom-coordinates based cropping
      *
-     * @return static
+     * @return Crop
      */
     public static function crop($width = null, $height = null, $gravity = null, $x = null, $y = null)
     {
@@ -44,11 +44,11 @@ trait CropTrait
      * @param int|float|X           $x       Horizontal position for custom-coordinates based cropping
      * @param int|float|Y           $y       Vertical position for custom-coordinates based cropping
      *
-     * @return static
+     * @return Crop
      */
     public static function thumbnail($width = null, $height = null, $gravity = null, $x = null, $y = null)
     {
-        return new Crop(CropMode::THUMBNAIL, $width, $height, $gravity, $x, $y);
+        return static::createCrop(CropMode::THUMBNAIL, $width, $height, $gravity, $x, $y);
     }
 
     /**
@@ -56,10 +56,10 @@ trait CropTrait
      *
      * @param mixed ...$args
      *
-     * @return static
+     * @return Crop
      */
     protected static function createCrop(...$args)
     {
-        return new static(...$args);
+        return new Crop(...$args);
     }
 }

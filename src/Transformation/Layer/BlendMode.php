@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class BlendMode
+ *
+ * @api
  */
 class BlendMode extends EffectParam
 {
@@ -24,19 +26,23 @@ class BlendMode extends EffectParam
      * Each pixel of the image is made darker according to the pixel value of the overlaid image.
      */
     const MULTIPLY     = 'multiply';
+
     /**
      * Each pixel of the image is made brighter according to the pixel value of the overlaid image.
      */
     const SCREEN       = 'screen';
+
     /**
      * Each pixel of the image is made darker or brighter according to the pixel value of the overlaid image.
      */
     const OVERLAY      = 'overlay';
+
     /**
      * Each pixel of the image is 'cut-out' according to the non-transparent pixels of the overlaid
      * image.
      */
     const MASK         = 'mask';
+
     /**
      * The overlay is slightly distorted to prevent easy removal.
      */
@@ -97,10 +103,12 @@ class BlendMode extends EffectParam
      *
      * In this mode, the overlay is slightly distorted to prevent easy removal.
      *
+     * @param int $level The level of distortion. (Range: 1 to 100, Server default: 50)
+     *
      * @return BlendMode
      */
-    public static function antiRemoval()
+    public static function antiRemoval($level = null)
     {
-        return new self(self::ANTI_REMOVAL);
+        return new self(self::ANTI_REMOVAL, $level);
     }
 }

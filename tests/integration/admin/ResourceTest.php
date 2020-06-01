@@ -16,6 +16,7 @@ use Cloudinary\Asset\ModerationType;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Test\Api\IntegrationTestCase;
+use Cloudinary\Test\Cloudinary\AssetTestCase;
 
 /**
  * Class ResourceTest
@@ -73,6 +74,7 @@ final class ResourceTest extends IntegrationTestCase
         $result = self::$adminApi->resource(self::$UNIQUE_IMAGE_PUBLIC_ID);
 
         self::assertValidResource($result);
+        $this->assertArrayNotHasKey('accessibility_analysis', $result);
         $this->assertArrayNotHasKey('colors', $result);
         $this->assertArrayNotHasKey('exif', $result);
         $this->assertArrayNotHasKey('faces', $result);
@@ -96,6 +98,16 @@ final class ResourceTest extends IntegrationTestCase
                 'faces' => [],
             ]
         );
+    }
+
+    /**
+     * Get accessibility analysis of an an uploaded image
+     */
+    public function testGetUploadedImageAccessibilityAnalysis()
+    {
+        $result = self::$adminApi->resource(AssetTestCase::ASSET_ID, ['accessibility_analysis' => true]);
+
+        $this->assertArrayHasKey('accessibility_analysis', $result);
     }
 
     /**

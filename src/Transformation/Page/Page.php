@@ -19,6 +19,8 @@ abstract class Page
 {
     use PageNumberTrait;
     use PageRangeTrait;
+    use PageAllTrait;
+
 
     /**
      * Internal named constructor.

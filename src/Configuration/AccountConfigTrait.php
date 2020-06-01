@@ -12,6 +12,8 @@ namespace Cloudinary\Configuration;
 
 /**
  * Trait AccountConfigTrait
+ *
+
  */
 trait AccountConfigTrait
 {
@@ -22,6 +24,8 @@ trait AccountConfigTrait
      *                          Used to build the public URL for all your media assets.
      *
      * @return $this
+     *
+     * @api
      */
     public function cloudName($cloudName)
     {

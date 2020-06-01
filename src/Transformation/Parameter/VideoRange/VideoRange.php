@@ -22,6 +22,7 @@ class VideoRange extends BaseParameter
      * @var VideoOffset $offset Determines which part of a video to keep when it is trimmed.
      */
     protected $offset;
+
     /**
      * @var Duration $duration The length of the part of the video to keep.
      */
@@ -47,14 +48,15 @@ class VideoRange extends BaseParameter
      *
      * Each of the parameters can be specified either as a float representing the time in seconds or a string
      * representing the percentage of the video length (for example, "30%" or "30p").
-     * For information and examples see {@see
-     * https://cloudinary.com/documentation/video_manipulation_and_delivery#trimming_videos Trimming videos}.
+     * For information and examples see 'Trimming videos' in the Video Transformations guide.
      *
      * @param mixed $startOffset The starting position of the part of the video to keep.
      * @param mixed $endOffset   The end position of the part of the video to keep.
      * @param mixed $duration    The length of the part of the video to keep.
      *
      * @return VideoRange
+     *
+     * https://cloudinary.com/documentation/video_manipulation_and_delivery#trimming_videos
      */
     public static function range($startOffset = null, $endOffset = null, $duration = null)
     {
@@ -80,13 +82,45 @@ class VideoRange extends BaseParameter
     /**
      * Sets the start and end points of the video to keep.
      *
-     * @param VideoOffset $offset The start and end points of the video.
+     * @param VideoOffset|string $offset The start and end points of the video.
      *
      * @return $this
      */
     public function offset($offset)
     {
         $this->offset = ClassUtils::verifyInstance($offset, VideoOffset::class);
+
+        return $this;
+    }
+
+    /**
+     * Sets the starting position of the part of the video to keep when trimming videos.
+     *
+     * @param mixed $startOffset The starting position of the part of the video to keep. This can be specified as a
+     *                           float representing the time in seconds or a string representing the percentage of the
+     *                           video length (for example, "30%" or "30p").
+     *
+     * @return $this
+     */
+    public function startOffset($startOffset)
+    {
+        $this->offset->startOffset($startOffset);
+
+        return $this;
+    }
+
+    /**
+     * Sets the end position of the part of the video to keep when trimming videos.
+     *
+     * @param mixed $endOffset The end position of the part of the video to keep. This can be specified as a
+     *                         float representing the time in seconds or a string representing the percentage of the
+     *                         video length (for example, "30%" or "30p").
+     *
+     * @return $this
+     */
+    public function endOffset($endOffset)
+    {
+        $this->offset->endOffset($endOffset);
 
         return $this;
     }

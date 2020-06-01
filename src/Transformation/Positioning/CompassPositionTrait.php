@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait CompassPositionTrait
+ *
+ * @api
  */
 trait CompassPositionTrait
 {

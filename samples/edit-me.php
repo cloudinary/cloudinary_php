@@ -20,7 +20,7 @@ use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\Argument\Text\TextStyle;
 use Cloudinary\Transformation\Effect;
-use Cloudinary\Transformation\ImageLayer;
+use Cloudinary\Transformation\Source;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\Resize;
 use Cloudinary\Transformation\Transformation;
@@ -39,48 +39,48 @@ $sample = [
                         ->resize(
                             Resize::fill(220, 140)
                         )->overlay(
-                            ImageLayer::image('brown_sheep')->resize(Resize::fill(220, 140)),
-                            Position::absolute(220)
+                            Source::image('brown_sheep')->resize(Resize::fill(220, 140)),
+                            Position::center(220)
                         )->overlay(
-                            ImageLayer::image('horses')->resize(Resize::fill(220, 140)),
-                            Position::absolute(-110, 140)
+                            Source::image('horses')->resize(Resize::fill(220, 140)),
+                            Position::center(-110, 140)
                         )->overlay(
-                            ImageLayer::image('white_chicken')->resize(Resize::fill(220, 140)),
-                            Position::absolute(110, 70)
+                            Source::image('white_chicken')->resize(Resize::fill(220, 140)),
+                            Position::center(110, 70)
                         )->overlay(
-                            ImageLayer::image('butterfly')->resize(Resize::scale()->height(200))->rotate(10),
-                            Position::absolute(-10)
+                            Source::image('butterfly')->resize(Resize::scale()->height(200))->rotate(10),
+                            Position::center(-10)
                         )->resize(Resize::crop(400, 260))
                         ->roundCorners(20)
                         ->overlay(
-                            ImageLayer::text('Memories from our trip')
+                            Source::text('Memories from our trip')
                                       ->style((new TextStyle(FontFamily::PARISIENNE, 35))->fontWeight(FontWeight::BOLD))
                                       ->color('#990C47'),
-                            Position::absolute()->y(155)
+                            Position::center()->y(155)
                         )->effect(Effect::shadow())
                     ,
                     '(new Transformation())
     ->resize(
         Resize::fill(220, 140)
     )->overlay(
-        ImageLayer::image(\'brown_sheep\')->resize(Resize::fill(220, 140)),
-        Position::absolute(220)
+        Source::image(\'brown_sheep\')->resize(Resize::fill(220, 140)),
+        Position::center(220)
     )->overlay(
-        ImageLayer::image(\'horses\')->resize(Resize::fill(220, 140)),
-        Position::absolute(-110, 140)
+        Source::image(\'horses\')->resize(Resize::fill(220, 140)),
+        Position::center(-110, 140)
     )->overlay(
-        ImageLayer::image(\'white_chicken\')->resize(Resize::fill(220, 140)),
-        Position::absolute(110, 70)
+        Source::image(\'white_chicken\')->resize(Resize::fill(220, 140)),
+        Position::center(110, 70)
     )->overlay(
-        ImageLayer::image(\'butterfly\')->resize(Resize::scale()->height(200))->rotate(10),
-        Position::absolute(-10)
+        Source::image(\'butterfly\')->resize(Resize::scale()->height(200))->rotate(10),
+        Position::center(-10)
     )->resize(Resize::crop(400, 260))
     ->roundCorners(20)
     ->overlay(
-        ImageLayer::text(\'Memories from our trip\')
+        Source::text(\'Memories from our trip\')
                   ->style((new TextStyle(FontFamily::PARISIENNE, 35))->fontWeight(FontWeight::BOLD))
                   ->color(\'#990C47\'),
-        Position::absolute()->y(155)
+        Position::center()->y(155)
     )->effect(Effect::shadow())',
                 ],
             ],

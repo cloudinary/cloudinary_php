@@ -14,6 +14,8 @@ use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 
 /**
  * Interface VideoTransformationInterface
+ *
+ * @api
  */
 interface VideoTransformationInterface extends CommonTransformationInterface
 {

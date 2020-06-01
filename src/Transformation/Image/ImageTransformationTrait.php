@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait ImageTransformationTrait
+ *
+ * @api
  */
 trait ImageTransformationTrait
 {

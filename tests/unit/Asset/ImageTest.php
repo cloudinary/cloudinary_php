@@ -15,7 +15,7 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Test\Cloudinary\AssetTestCase;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Argument\Gradient;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\AutoBackground;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Expression\UVar;
@@ -24,6 +24,9 @@ use Cloudinary\Transformation\ImageLayer;
 use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Palette;
 use Cloudinary\Transformation\Scale;
+use Monolog\Logger as Monolog;
+use ReflectionException;
+use UnexpectedValueException;
 
 /**
  * Class SampleTest
@@ -59,6 +62,26 @@ final class ImageTest extends AssetTestCase
             self::IMAGE_NAME,
             $this->image->toUrl()
         );
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testSuffixForNotSupportedDeliveryType()
+    {
+        $this->image->asset->suffix = self::SEO_NAME;
+        $this->image->asset->deliveryType = DeliveryType::PUBLIC_DELIVERY;
+
+        $message = null;
+        $expectedExceptionMessage = 'URL Suffix is only supported in ';
+        try {
+            $this->image->toUrl();
+        } catch (UnexpectedValueException $e) {
+            $message = $e->getMessage();
+        }
+
+        self::assertStringStartsWith($expectedExceptionMessage, $message);
+        self::assertObjectLoggedMessage($this->image, $expectedExceptionMessage, Monolog::CRITICAL);
     }
 
     public function testFetchImage()
@@ -135,7 +158,7 @@ final class ImageTest extends AssetTestCase
                         new Palette(['cyan', 'magenta', 'yellow', 'black'])
                     )
                 )->gravity(new CompassGravity(CompassGravity::SOUTH_WEST))
-            )->effect(Adjust::replaceColor(NamedColor::GREEN, 17, NamedColor::RED));
+            )->effect(Adjust::replaceColor(Color::GREEN, 17, Color::RED));
 
         $this->image->overlay(ImageLayer::image($this->image->getPublicId()));
 

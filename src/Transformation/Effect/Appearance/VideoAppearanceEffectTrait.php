@@ -35,13 +35,13 @@ trait VideoAppearanceEffectTrait
     /**
      * Fade in at the beginning of the video.
      *
-     * For details and examples,
-     * {@see https://cloudinary.com/documentation/video_manipulation_and_delivery#fade_in_and_out Fade in and out}
-     * in the Video transformation guide.
+     * For details and examples, see 'Fade in and out' in the Video Transformations guide.
      *
      * @param int $duration The time in ms for the fade to occur. (Server default: 2000)
      *
      * @return EffectAction
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#fade_in_and_out
      */
     public static function fadeIn($duration)
     {
@@ -51,13 +51,13 @@ trait VideoAppearanceEffectTrait
     /**
      *  Fade out at the end of the video.
      *
-     * For details and examples,
-     * {@see https://cloudinary.com/documentation/video_manipulation_and_delivery#fade_in_and_out Fade in and out}
-     * in the Video transformation guide.
+     * For details and examples, see 'Fade in and out' in the Video Transformations guide.
      *
      * @param int $duration The time in ms for the fade to occur. (Server default: 2000)
      *
      * @return EffectAction
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#fade_in_and_out
      */
     public static function fadeOut($duration)
     {

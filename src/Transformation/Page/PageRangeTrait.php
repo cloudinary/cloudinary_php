@@ -25,7 +25,7 @@ trait PageRangeTrait
      * @param int|string $start The start of the range.
      * @param int|string $end   The end of the range.
      *
-     * @return PageParam
+     * @return static
      */
     public static function range($start, $end = null)
     {

@@ -17,9 +17,9 @@ use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
+use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\ConfigUtils;
-use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Test\Cloudinary\AssetTestCase;
 use Cloudinary\Test\CloudinaryTestCase;
 use Exception;
@@ -60,7 +60,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $config = ConfigUtils::parseCloudinaryUrl(getenv(Configuration::CLOUDINARY_URL_ENV_VAR));
         $config = array_merge(self::TEST_LOGGING, $config);
         Configuration::instance()->init($config);
-        
+
         self::$adminApi = new AdminApi();
         self::$uploadApi = new UploadApi();
     }
@@ -365,47 +365,29 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $deliveryType = DeliveryType::UPLOAD,
         $assetType = AssetType::IMAGE
     ) {
-        self::assertEquals(
-            self::buildResourceUrl(
-                $resource,
-                $format,
-                strpos($field, 'secure_') === 0,
-                $deliveryType,
-                $assetType
-            ),
-            $resource[$field]
-        );
-    }
-
-    /**
-     * Build resource url
-     *
-     * @param array  $resource
-     * @param string $format
-     * @param bool   $secureProtocol
-     * @param string $deliveryType
-     * @param string $assetType
-     *
-     * @return string
-     */
-    protected static function buildResourceUrl(
-        $resource,
-        $format = null,
-        $secureProtocol = false,
-        $deliveryType = DeliveryType::UPLOAD,
-        $assetType = AssetType::IMAGE
-    ) {
-        $url = ($secureProtocol ? UrlConfig::PROTOCOL_HTTPS : UrlConfig::PROTOCOL_HTTP) . '://'
-            . UrlConfig::DEFAULT_SHARED_HOST . '/' . Configuration::instance()->account->cloudName . '/' . $assetType
-            . '/' . $deliveryType;
+        $media = new Media($resource['public_id']);
+        $media->secure(strpos($field, 'secure_') === 0)->assetType($assetType)->deliveryType($deliveryType);
         if (!empty($resource['version'])) {
-            $url .= '/v' . $resource['version'];
+            $media->version($resource['version']);
         }
-        $url .= '/' . $resource['public_id'];
         if (!empty($format)) {
-            $url .= '.' . $format;
+            $media->extension($format);
         }
-        return $url;
+
+        $resourceUrl = parse_url($resource[$field]);
+        $expectedUrl = parse_url($media->toUrl());
+
+        self::assertEquals(
+            $expectedUrl['scheme'],
+            $resourceUrl['scheme'],
+            "The object's \"$field\" field contains a URL with a scheme that is different than expected."
+        );
+
+        self::assertEquals(
+            $expectedUrl['path'],
+            $resourceUrl['path'],
+            "The object's \"$field\" field contains a URL with a path that is different than expected."
+        );
     }
 
     /**

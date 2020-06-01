@@ -12,6 +12,7 @@ namespace Cloudinary\Api\Upload;
 
 use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
+use Cloudinary\Api\ApiUtils;
 use Cloudinary\ArrayUtils;
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -42,6 +43,8 @@ trait CreativeTrait
      */
     public function generateSpriteAsync($tag, $options = [])
     {
+        $options['transformation'] = ApiUtils::serializeAssetTransformations($options);
+
         $params        = ArrayUtils::whitelist($options, ['async', 'notification_url', 'transformation']);
         $params['tag'] = $tag;
 
@@ -82,6 +85,8 @@ trait CreativeTrait
      */
     public function multiAsync($tag, $options = [])
     {
+        $options['transformation'] = ApiUtils::serializeAssetTransformations($options);
+
         $params        = ArrayUtils::whitelist($options, ['format', 'async', 'notification_url', 'transformation']);
         $params['tag'] = $tag;
 
@@ -121,6 +126,8 @@ trait CreativeTrait
      */
     public function explodeAsync($publicId, $options = [])
     {
+        $options['transformation'] = ApiUtils::serializeAssetTransformations($options);
+
         $params              = ArrayUtils::whitelist(
             $options,
             ['format', 'type', 'notification_url', 'transformation']

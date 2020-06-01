@@ -12,6 +12,8 @@ namespace Cloudinary\Configuration;
 
 /**
  * Class AccountConfig
+ *
+ * @api
  */
 trait AssetConfigTrait
 {

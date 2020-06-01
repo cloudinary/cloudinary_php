@@ -40,7 +40,7 @@ class ConfigUtils
     /**
      * Parses cloudinary url and fills in array that can be consumed by Configuration.
      *
-     * @param string $cloudinaryUrl The Cloudianry Url
+     * @param string $cloudinaryUrl The Cloudinary Url
      *
      * @return array
      */

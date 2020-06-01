@@ -15,6 +15,8 @@ use Cloudinary\Transformation\Argument\Text\TextStyleTrait;
 
 /**
  * Class TextLayer
+ *
+ * @api
  */
 class TextLayer extends BaseLayer implements ImageTransformationInterface
 {

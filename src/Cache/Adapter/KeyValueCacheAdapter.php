@@ -17,6 +17,8 @@ use Psr\SimpleCache\CacheInterface;
 
 /**
  * A cache adapter for a key-value storage type
+ *
+ * @api
  */
 class KeyValueCacheAdapter implements CacheAdapter
 {
@@ -30,7 +32,7 @@ class KeyValueCacheAdapter implements CacheAdapter
     /**
      * Create a new adapter for the provided storage interface.
      *
-     * @param KeyValueStorage $storage a key-value storage interface.
+     * @param KeyValueStorage $storage A key-value storage interface.
      */
     public function __construct($storage)
     {

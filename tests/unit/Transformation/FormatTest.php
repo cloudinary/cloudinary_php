@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Test\Transformation;
 
+use Cloudinary\Transformation\Delivery;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\FormatParam;
 use Cloudinary\Transformation\JpegScanMode;
@@ -51,6 +52,8 @@ final class FormatTest extends TestCase
         $af = Format::auto();
 
         self::assertEquals('f_auto', (string)$af);
+
+        self::assertEquals('f_auto', (string)Delivery::format(Format::auto()));
     }
 
     public function testFormatFlags()

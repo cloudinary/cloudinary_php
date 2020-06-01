@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface KitchenObjectGravityInterface
+ *
+ * @api
  */
 interface KitchenObjectGravityInterface
 {

@@ -19,17 +19,19 @@ class FontHinting
      * Do not hint outlines.
      */
     const NONE = 'none';
+
     /**
      * Hint outlines slightly to improve contrast while retaining good fidelity to the original shapes.
      */
     const SLIGHT = 'slight';
+
     /**
      * Hint outlines with medium strength, providing a compromise between fidelity to the original shapes and contrast.
      */
     const MEDIUM = 'medium';
+
     /**
      * Hint outlines to the maximize contrast.
      */
     const FULL = 'full';
 }
-

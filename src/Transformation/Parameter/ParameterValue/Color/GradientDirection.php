@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Argument;
 
 /**
  * Class GradientType
+ *
+ * @api
  */
 class GradientDirection
 {
@@ -19,14 +21,17 @@ class GradientDirection
      * Blend the colors horizontally.
      */
     const HORIZONTAL = 'horizontal';
+
     /**
      * Blend the colors vertically.
      */
     const VERTICAL = 'vertical';
+
     /**
      * Blend the colors diagonally from top-left to bottom-right.
      */
     const DIAGONAL_DESC = 'diagonal_desc';
+
     /**
      * Blend the colors diagonally from bottom-left to top-right.
      */

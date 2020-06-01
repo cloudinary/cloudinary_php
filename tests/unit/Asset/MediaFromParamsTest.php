@@ -314,7 +314,7 @@ final class MediaFromParamsTest extends AssetTestCase
     /**
      * @return array
      */
-    public function expectedSignatures()
+    public function expectedMediaSignatures()
     {
         return [
             'Should sign transformation and ignore version' => [
@@ -356,16 +356,31 @@ final class MediaFromParamsTest extends AssetTestCase
                 ],
                 's--hH_YcbiS--/v1234',
             ],
+            'Should sign an URL with a short signature by default' => [
+                [
+                    'sign_url' => true,
+                    'source' => 'sample.jpg',
+                ],
+                's--v2fTPYTu--',
+            ],
+            'Should sign an URL with a long signature if long_url_signature is true' => [
+                [
+                    'sign_url' => true,
+                    'long_url_signature' => true,
+                    'source' => 'sample.jpg',
+                ],
+                's--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--',
+            ],
         ];
     }
 
     /**
-     * @dataProvider expectedSignatures
+     * @dataProvider expectedMediaSignatures
      *
      * @param $options
      * @param $expectedPath
      */
-    public function testSignedUrl($options, $expectedPath)
+    public function testMediaSignedUrl($options, $expectedPath)
     {
         // Use values from the previous SDK to preserve signatures.
         $publicIdToSign = ArrayUtils::pop($options, 'source', 'image.jpg');
@@ -375,6 +390,55 @@ final class MediaFromParamsTest extends AssetTestCase
         $deliveryType = ArrayUtils::get($options, 'type', DeliveryType::UPLOAD);
 
         self::assertMediaFromParamsUrl(
+            $publicIdToSign,
+            $options,
+            [
+                'path'          => $expectedPath,
+                'delivery_type' => $deliveryType,
+            ]
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function expectedFileSignatures()
+    {
+        return [
+            'Should sign an URL with a short signature by default' => [
+                [
+                    'sign_url' => true,
+                    'source' => 'sample.jpg',
+                ],
+                's--v2fTPYTu--',
+            ],
+            'Should sign an URL with a long signature if long_url_signature is true' => [
+                [
+                    'sign_url' => true,
+                    'long_url_signature' => true,
+                    'source' => 'sample.jpg',
+                ],
+                's--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider expectedFileSignatures
+     *
+     * @param $options
+     * @param $expectedPath
+     */
+    public function testFileSignedUrl($options, $expectedPath)
+    {
+        // Use values from the previous SDK to preserve signatures.
+        $publicIdToSign = ArrayUtils::pop($options, 'source', 'image.jpg');
+
+        Configuration::instance()->account->apiSecret = 'b';
+
+        $deliveryType = ArrayUtils::get($options, 'type', DeliveryType::UPLOAD);
+
+        self::assertFileFromParamsUrl(
             $publicIdToSign,
             $options,
             [

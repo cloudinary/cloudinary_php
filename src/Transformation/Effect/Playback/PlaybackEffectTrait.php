@@ -38,11 +38,11 @@ trait PlaybackEffectTrait
      *
      * Use in conjunction with trimming parameters ('duration', 'start_offset', or 'end_offset') and the 'loop' effect
      * to deliver a classic (short, repeating) boomerang clip.
-     * For details and examples, see
-     * {@see https://cloudinary.com/documentation/video_manipulation_and_delivery#create_a_boomerang_video_clip
-     * Create a boomerang video clip}.
+     * For details and examples, see 'Create a boomerang video clip' in the Video Transformations guide.
      *
      * @return EffectAction
+     *
+     * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#create_a_boomerang_video_clip
      */
     public static function boomerang()
     {
@@ -73,7 +73,7 @@ trait PlaybackEffectTrait
      *
      * @return EffectAction
      */
-    public static function preview($duration)
+    public static function preview($duration = null)
     {
         return EffectAction::valued(PlaybackEffect::PREVIEW, ClassUtils::verifyInstance($duration, Duration::class));
     }
@@ -91,9 +91,9 @@ trait PlaybackEffectTrait
     /**
      * Increases or decreases the volume by a percentage of the current volume.
      *
-     * Also see {@see \Cloudinary\Transformation\Volume Volume} for different ways to change the volume.
+     * Also see \Cloudinary\Transformation\Volume for different ways to change the volume.
      *
-     * @param int $level The percentage change of volume (Range: -100 to 400).
+     * @param int|Volume $level The percentage change of volume (Range: -100 to 400).
      *
      * @return EffectAction
      *

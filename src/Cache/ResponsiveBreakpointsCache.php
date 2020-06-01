@@ -13,19 +13,25 @@ namespace Cloudinary\Cache;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\Image;
 use Cloudinary\Cache\Adapter\CacheAdapter;
+use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\ResponsiveBreakpointsConfig;
 use Cloudinary\Exception\Error;
 use Cloudinary\HttpClient;
+use Cloudinary\Log\LoggerTrait;
 use Cloudinary\Transformation\Parameter\Misc\BreakpointsJson;
 use Exception;
 use InvalidArgumentException;
 
 /**
- * Caches breakpoint values for image resources.
+ * Caches breakpoint values for image assets.
+ *
+ * @api
  */
 class ResponsiveBreakpointsCache
 {
+    use LoggerTrait;
+
     /**
      * @var bool|ResponsiveBreakpointsCache $instance The instance of the cache.
      */
@@ -35,10 +41,12 @@ class ResponsiveBreakpointsCache
      * @var CacheAdapter The cache adapter used to store and retrieve values.
      */
     protected $cacheAdapter;
+
     /**
      * @var ResponsiveBreakpointsConfig $config The configuration of the cache.
      */
     protected $config;
+
     /**
      * @var HttpClient $client The HTTP client.
      */
@@ -47,19 +55,21 @@ class ResponsiveBreakpointsCache
     /**
      * ResponsiveBreakpointsCache constructor.
      *
-     * @param $config
+     * @param Configuration|null $configuration
+     *
+     * @api
      */
-    public function __construct($config = null)
+    public function __construct($configuration = null)
     {
-        $this->client = new HttpClient();
+        $this->client = new HttpClient($configuration);
 
-        $this->init($config);
+        $this->init($configuration);
     }
 
     /**
      * Returns a singleton instance of the cache.
      *
-     * @param array|ResponsiveBreakpointsConfig $config Optional configuration to pass during the first initialization.
+     * @param Configuration|null $config Optional configuration to pass during the first initialization.
      *
      * @return bool|ResponsiveBreakpointsCache
      */
@@ -75,15 +85,19 @@ class ResponsiveBreakpointsCache
     /**
      * Initializes the cache.
      *
-     * @param null $configuration
+     * @param Configuration|array|null $configuration
      */
     public function init($configuration = null)
     {
         if ($configuration === null) {
-            $configuration = Configuration::instance()->responsiveBreakpoints; // get global instance
+            $configuration = Configuration::instance(); // get global instance
         }
 
-        $this->config = new ResponsiveBreakpointsConfig($configuration);
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+        $configuration = ClassUtils::verifyInstance($configuration, Configuration::class);
+
+        $this->config = new ResponsiveBreakpointsConfig($configuration->responsiveBreakpoints);
+        $this->logging = $configuration->logging;
 
         $this->setCacheAdapter($this->config->cacheAdapter);
     }
@@ -214,7 +228,9 @@ class ResponsiveBreakpointsCache
         }
 
         if (! is_array($value)) {
-            throw new InvalidArgumentException('An array of breakpoints is expected');
+            $message = 'An array of breakpoints is expected';
+            $this->getLogger()->critical($message, ['class' => static::class, 'value' => $value]);
+            throw new InvalidArgumentException($message);
         }
 
         $params    = self::extractParameters($asset);

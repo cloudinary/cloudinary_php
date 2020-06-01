@@ -14,6 +14,8 @@ use Cloudinary\ClassUtils;
 
 /**
  * Trait OffsetTrait
+ *
+ * @api
  */
 trait OffsetTrait
 {

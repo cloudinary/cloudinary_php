@@ -22,7 +22,7 @@ use Cloudinary\StringUtils;
 /**
  * Class BaseAsset
  *
- * @internal
+ * @api
  */
 abstract class BaseAsset implements AssetInterface
 {
@@ -86,7 +86,6 @@ abstract class BaseAsset implements AssetInterface
             $this->urlConfig = clone $source->urlConfig;
             $this->authToken = clone $source->authToken;
             return;
-
         }
 
         if ($source instanceof AssetDescriptor) {
@@ -228,12 +227,25 @@ abstract class BaseAsset implements AssetInterface
      */
     public function importJson($json)
     {
-        $json = JsonUtils::decode($json);
+        try {
+            $json = JsonUtils::decode($json);
 
-        $this->account   = AccountConfig::fromJson($json, true);
-        $this->urlConfig = UrlConfig::fromJson($json, false);
-        $this->asset     = AssetDescriptor::fromJson($json);
-        $this->authToken = AuthToken::fromJson($json);
+            $this->account = AccountConfig::fromJson($json, true);
+            $this->urlConfig = UrlConfig::fromJson($json, false);
+            $this->asset = AssetDescriptor::fromJson($json);
+            $this->authToken = AuthToken::fromJson($json);
+        } catch (\InvalidArgumentException $e) {
+            $this->getLogger()->critical(
+                'Error importing JSON',
+                [
+                    'exception' => $e->getMessage(),
+                    'json' => json_encode($json),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+            throw $e;
+        }
 
         return $this;
     }
@@ -248,9 +260,9 @@ abstract class BaseAsset implements AssetInterface
     public function configuration($configuration)
     {
         $tempConfiguration = new Configuration($configuration, true); // TODO: improve performance here
-
         $this->account   = $tempConfiguration->account;
         $this->urlConfig = $tempConfiguration->url;
+        $this->logging   = $tempConfiguration->logging;
 
         return $this;
     }
@@ -361,7 +373,20 @@ abstract class BaseAsset implements AssetInterface
      */
     public function setAssetProperty($propertyName, $propertyValue)
     {
-        $this->asset->setAssetProperty($propertyName, $propertyValue);
+        try {
+            $this->asset->setAssetProperty($propertyName, $propertyValue);
+        } catch (\UnexpectedValueException $e) {
+            $this->getLogger()->critical(
+                $e->getMessage(),
+                [
+                    'propertyName' => $propertyName,
+                    'propertyValue' => $propertyValue,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+            throw $e;
+        }
 
         return $this;
     }

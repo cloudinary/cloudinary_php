@@ -237,7 +237,7 @@ $(function() {
                     </div>
                 </li>
             {% else %}
-                {% if not (element[1].name ends with 'Trait') %}
+                {% if (not (element[1].name ends with 'Trait')) and (not ('Base' in element[1].name)) and (not ('Interface' in element[1].name)) %}
                 <li data-name="class:{{ (element[1].name)|replace({'\\': '_'}) }}" {% if depth < opened %}class="opened"{% endif %}>
                     <div style="padding-left:{{ 8 + (depth * 18) }}px" class="hd leaf">
                         <a href="{{ class_path(element[1]) }}">{{ element[0] }}</a>

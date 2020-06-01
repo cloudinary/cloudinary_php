@@ -16,6 +16,8 @@ use InvalidArgumentException;
 
 /**
  * Class Variable
+ *
+ * @api
  */
 class Variable extends GenericParameter
 {
@@ -72,7 +74,7 @@ class Variable extends GenericParameter
         return (boolean)preg_match('/^\$[a-zA-Z]\w*$/', $candidate);
     }
 
-     /**
+    /**
      * Serializes to json.
      *
      * @return mixed

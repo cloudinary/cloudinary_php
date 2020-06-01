@@ -11,7 +11,9 @@
 namespace Cloudinary\Cache\Storage;
 
 /**
- * A simple key-value storage interface
+ * A simple key-value storage interface.
+ *
+ * @api
  */
 interface KeyValueStorage
 {

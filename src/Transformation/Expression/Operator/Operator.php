@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Class Operator
+ *
+ * @api
  */
 class Operator extends BaseOperator
 {

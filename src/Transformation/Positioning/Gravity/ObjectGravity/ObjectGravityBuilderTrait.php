@@ -20,10 +20,12 @@ trait ObjectGravityBuilderTrait
     /**
      * Creates a new instance of the ObjectGravity.
      *
+     * @param mixed ...$objects The names of the objects.
+     *
      * @return ObjectGravity
      */
-    public static function object()
+    public static function object(...$objects)
     {
-        return new ObjectGravity();
+        return new ObjectGravity(...$objects);
     }
 }

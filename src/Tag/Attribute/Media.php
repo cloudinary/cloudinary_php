@@ -21,6 +21,7 @@ class Media
      * @var int $minWidth The minimum width of the screen.
      */
     protected $minWidth;
+
     /**
      * @var int $maxWidthThe maximum width of the screen.
      */
@@ -37,7 +38,6 @@ class Media
         $this->minWidth = $minWidth;
         $this->maxWidth = $maxWidth;
     }
-
 
     /**
      * Serializes to string.

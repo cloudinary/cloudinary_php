@@ -218,6 +218,17 @@ final class DistributionTest extends AssetTestCase
         self::assertImageUrl('s--MDvxhRxa--/' . self::IMAGE_NAME, $this->image->signUrl());
     }
 
+    /**
+     * Should support long url signature
+     */
+    public function testLongSignature()
+    {
+        $this->image->urlConfig->signUrl = true;
+        $this->image->urlConfig->longUrlSignature = true;
+
+        self::assertImageUrl('s--RVsT3IpYGITMIc0RjCpde9T9Uujc2c1X--/' . self::IMAGE_NAME, $this->image);
+    }
+
     public function testForceVersion()
     {
         self::assertImageUrl(

@@ -14,6 +14,8 @@ use Cloudinary\ClassUtils;
 
 /**
  * Class ClippingPath
+ *
+ * @api
  */
 class ClippingPath extends Action
 {
@@ -24,7 +26,10 @@ class ClippingPath extends Action
      * ClippingPath constructor.
      *
      * @param string        $clippingPath The clipping path name.
-     * @param FlagParameter $method       The clipping method. Can be {@see Flag::clip()} or {@see Flag::clipEvenOdd()}.
+     * @param FlagParameter $method       The clipping method. Can be Flag::clip() or Flag::clipEvenOdd().
+     *
+     * @see Flag::clip
+     * @see Flag::clipEvenOdd
      */
     public function __construct($clippingPath, FlagParameter $method)
     {

@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface OutdoorObjectGravityInterface
+ *
+ * @api
  */
 interface OutdoorObjectGravityInterface
 {

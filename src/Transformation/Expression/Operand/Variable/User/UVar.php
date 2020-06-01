@@ -17,6 +17,8 @@ use Cloudinary\Transformation\Variable\Variable;
  * Class UVar
  *
  * Represents a user variable expression component.
+ *
+ * @api
  */
 class UVar extends Expression
 {

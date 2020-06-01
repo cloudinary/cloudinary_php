@@ -116,7 +116,9 @@ class ParametersAction extends BaseAction
      */
     protected function generateTransformationAction($transformationAction)
     {
-        $options = is_array($transformationAction) ? $transformationAction :
+        $options = is_array($transformationAction) || $this->isTransformationComponent(
+            $transformationAction
+        ) ? $transformationAction :
             ['transformation' => $transformationAction];
 
         return $this->generateTransformationString($options);
@@ -133,8 +135,8 @@ class ParametersAction extends BaseAction
      */
     protected function generateTransformationString($options)
     {
-        if (is_string($options)) {
-            return $options;
+        if (is_string($options) || $this->isTransformationComponent($options)) {
+            return (string)$options;
         }
 
         if (is_array($options) && ! ArrayUtils::isAssoc($options)) {
@@ -145,7 +147,7 @@ class ParametersAction extends BaseAction
 
         // Handle nested transformations
         $nestedTransformations = ArrayUtils::build(ArrayUtils::pop($options, 'transformation'));
-        if (count(array_filter($nestedTransformations, 'is_array')) > 0) {
+        if (count(array_filter($nestedTransformations, [$this, 'isTransformation'])) > 0) {
             $baseTransformations = array_map([$this, 'generateTransformationAction'], $nestedTransformations);
         } else { // array of strings (named transformations)
             $options['transformation'] = $nestedTransformations; // put named transformations back
@@ -219,7 +221,7 @@ class ParametersAction extends BaseAction
             case 'custom_pre_function':
                 return CustomFunction::fromParams($paramValue, true);
             case 'fps':
-                return FPS::fromParams($paramValue);
+                return Fps::fromParams($paramValue);
             case 'overlay':
                 return LayerParamFactory::fromParams($paramValue, LayerStackPosition::OVERLAY);
             case 'transformation':
@@ -264,5 +266,25 @@ class ParametersAction extends BaseAction
         }
 
         return ArrayUtils::implodeActionParams(...$varParams);
+    }
+
+    /**
+     * @param $candidate
+     *
+     * @return bool
+     */
+    private function isTransformationComponent($candidate)
+    {
+        return $candidate instanceof BaseComponent;
+    }
+
+    /**
+     * @param $candidate
+     *
+     * @return bool
+     */
+    private function isTransformation($candidate)
+    {
+        return is_array($candidate) || $this->isTransformationComponent($candidate);
     }
 }

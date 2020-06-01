@@ -22,6 +22,8 @@ use Cloudinary\Transformation\VideoTransformation;
 
 /**
  * Class BaseMediaAsset
+ *
+ * @api
  */
 abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationInterface
 {
@@ -97,7 +99,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      *
      * Appended transformation is nested.
      *
-     * @param CommonTransformation $transformation The transformation to add.
+     * @param CommonTransformation|string $transformation The transformation to add.
      *
      * @return $this
      */

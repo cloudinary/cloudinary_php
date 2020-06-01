@@ -37,7 +37,7 @@ trait FillTrait
     }
 
     /**
-     * Same as the {@see Fill::fill} mode, but only if the original image is larger than the specified resolution
+     * Same as the Fill::fill mode, but only if the original image is larger than the specified resolution
      * limits, in which case the image is scaled down to fill the given width and height without distorting the image,
      * and then the dimension that exceeds the request is cropped.
      *
@@ -51,6 +51,8 @@ trait FillTrait
      *                                       smaller than the original or the proportions do not match.
      *
      * @return static
+     *
+     * @see Fill::fill
      */
     public static function limitFill($width = null, $height = null, $gravity = null)
     {

@@ -18,7 +18,7 @@ use Cloudinary\Transformation\ParameterMultiValue;
  */
 class ColorValue extends ParameterMultiValue
 {
-    use NamedColorTrait;
+    use ColorTrait;
 
     /**
      * ColorValue constructor.
@@ -42,10 +42,10 @@ class ColorValue extends ParameterMultiValue
     public function color($color)
     {
         if ($color instanceof BaseParameter) {
-            $color = $color->getValue(); // for those who accidentally pass Color parameter instead of the value
+            $color = $color->getValue(); // for those who accidentally pass ColorParam parameter instead of the value
         }
 
-        $this->setSimpleValue('color', preg_replace('/^#/', 'rgb:', $color));
+        $this->setSimpleValue('color', preg_replace('/^#/', 'rgb:', (string)$color));
 
         return $this;
     }

@@ -15,6 +15,8 @@ use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
  * Trait BackgroundTrait
+ *
+ * @api
  */
 trait BackgroundTrait
 {

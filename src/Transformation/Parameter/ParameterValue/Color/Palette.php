@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Palette
+ *
+ * @api
  */
 class Palette extends BaseComponent
 {
@@ -52,7 +54,7 @@ class Palette extends BaseComponent
         return ! empty($this->colors) ? implode('_', ['palette'] + $this->colors) : '';
     }
 
-     /**
+    /**
      * Serializes to json.
      *
      * @return mixed

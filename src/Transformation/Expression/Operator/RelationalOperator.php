@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Class RelationalOperator
+ *
+ * @api
  */
 class RelationalOperator extends BaseOperator
 {
@@ -23,11 +25,16 @@ class RelationalOperator extends BaseOperator
     const GREATER_THAN_OR_EQUAL = 'gte';
 
     /**
-     * @var array $operators The supported relational operators.
+     * The supported relational operators.
+     *
+     * @var array $operators
      */
     protected static $operators;
+
     /**
-     * @var array $friendlyRepresentations The user friendly representations of the relational operators.
+     * The user friendly representations of the relational operators.
+     *
+     * @var array $friendlyRepresentations
      */
     protected static $friendlyRepresentations = [
         '='  => self::EQUAL,

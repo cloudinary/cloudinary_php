@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait ElectronicObjectGravityBuilderTrait
+ *
+ * @api
  */
 trait ElectronicObjectGravityBuilderTrait
 {

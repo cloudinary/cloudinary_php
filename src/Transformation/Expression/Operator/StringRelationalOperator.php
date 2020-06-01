@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Class StringRelationalOperator
+ *
+ * @api
  */
 class StringRelationalOperator extends BaseOperator
 {
@@ -21,11 +23,16 @@ class StringRelationalOperator extends BaseOperator
     const NOT_IN    = 'nin';
 
     /**
-     * @var array $operators The supported string relational operators.
+     * The supported string relational operators.
+     *
+     * @var array $operators
      */
     protected static $operators;
+
     /**
-     * @var array $friendlyRepresentations The user friendly representations of the string relational operators.
+     * The user friendly representations of the string relational operators.
+     *
+     * @var array $friendlyRepresentations
      */
     protected static $friendlyRepresentations = [
         '='   => self::EQUAL,

@@ -47,6 +47,6 @@ class CloudinaryFilter extends PublicFilter
      */
     public function acceptProperty(PropertyReflection $property)
     {
-        return $property->isPublic()&& ! $property->getTags(self::INTERNAL);
+        return $property->isPublic() && ! $property->getTags(self::INTERNAL);
     }
 }

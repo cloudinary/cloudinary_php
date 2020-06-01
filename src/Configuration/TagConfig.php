@@ -15,9 +15,12 @@ use Cloudinary\Tag\BaseTag;
 /**
  * Class TagConfig
  *
- * @property string $videoPosterFormat
- * @property string $quotesType
- * @property string $contentDelimiter
+ * @property string $videoPosterFormat Image format of the video poster.
+ * @property string $quotesType        Sets the type of the quotes to use (single or double). Default:
+ *           BaseTag::DOUBLE_QUOTES.
+ * @property string $contentDelimiter  The delimiter between content items.
+ *
+ * @api
  */
 class TagConfig extends BaseConfigSection
 {
@@ -42,53 +45,90 @@ class TagConfig extends BaseConfigSection
     const CONTENT_DELIMITER      = 'content_delimiter';
 
     /**
-     * @var bool $responsive Whether to generate responsive image tags.
+     * Whether to generate responsive image tags.
+     *
+     * @var bool $responsive
      */
     public $responsive;
+
     /**
-     * @var string $responsiveClass The class of the responsive tag.
+     * The class of the responsive tag.
+     *
+     * @var string $responsiveClass
      */
     public $responsiveClass;
+
     /**
-     * @var bool $responsiveWidth Whether to use responsive width.
+     * Whether to use responsive width.
+     *
+     * @var bool $responsiveWidth
      */
     public $responsiveWidth;
+
     /**
-     * @var string $responsivePlaceholder The value of the 'src' attribute.
+     * The value of the 'src' attribute.
+     *
+     * @var string $responsivePlaceholder
      */
     public $responsivePlaceholder;
+
     /**
-     * @var bool $hiDpi Whether to use hi dpi.
+     * Whether to use hi dpi.
+     *
+     * @var bool $hiDpi
      */
     public $hiDpi;
+
     /**
-     * @var bool $clientHints Whether to use client hints.
+     * Whether to use client hints.
+     *
+     * @var bool $clientHints
      */
     public $clientHints;
+
     /**
-     * @var bool $unsignedUpload Whether to perform unsigned upload in the {@see UploadTag}
+     * Whether to perform unsigned upload in the UploadTag.
+     *
+     * @var bool $unsignedUpload
+     *
+     * @see UploadTag
      */
     public $unsignedUpload;
+
     /**
-     * @var string $videoPosterFormat Image format of the video poster.
+     * Image format of the video poster.
+     *
+     * @var string $videoPosterFormat
      */
     protected $videoPosterFormat;
+
     /**
-     * @var string $quotesType Sets the type of the quotes to use (single or double). Default: BaseTag::DOUBLE_QUOTES.
+     * Sets the type of the quotes to use (single or double). Default: BaseTag::DOUBLE_QUOTES.
+     *
+     * @var string $quotesType
+     *
+     * @see BaseTag::DOUBLE_QUOTES
      */
     protected $quotesType;
+
     /**
-     * @var bool $voidClosingSlash Defines whether to add slash to the void tag ending, e.g. "/>" or simply ">".
+     * Defines whether to add slash to the void tag ending, e.g. "/>" or simply ">".
+     *
+     * @var bool $voidClosingSlash
      */
     public $voidClosingSlash;
+
     /**
-     * @var bool $sortAttributes Defines whether to sort attributes by keys alphabetically.
+     * Defines whether to sort attributes by keys alphabetically.
+     *
+     * @var bool $sortAttributes
      */
     public $sortAttributes;
 
     /**
-     * @var string $contentDelimiter The delimiter between content items.
+     * The delimiter between content items.
+     *
+     * @var string $contentDelimiter
      */
     protected $contentDelimiter;
-
 }

@@ -13,12 +13,15 @@ namespace Cloudinary\Configuration;
 /**
  * Class UrlConfig
  *
- * @property bool $secure
+ * @property bool $secure  Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
  * @property bool $forceVersion By default set to self::DEFAULT_FORCE_VERSION.
+ *
+ * @api
  */
 class UrlConfig extends BaseConfigSection
 {
     use UrlConfigTrait;
+
     /**
      * @internal
      */
@@ -45,7 +48,8 @@ class UrlConfig extends BaseConfigSection
     /**
      * Default value for secure (distribution)
      */
-    const DEFAULT_SECURE        = true;
+    const DEFAULT_SECURE = true;
+
     /**
      * Default value for forcing version
      */
@@ -59,65 +63,101 @@ class UrlConfig extends BaseConfigSection
     const SECURE_DISTRIBUTION  = 'secure_distribution';
     const PRIVATE_CDN          = 'private_cdn';
 
-    const SIGN_URL      = 'sign_url';
-    const SHORTEN       = 'shorten';
-    const USE_ROOT_PATH = 'use_root_path';
-    const FORCE_VERSION = 'force_version';
+    const SIGN_URL           = 'sign_url';
+    const LONG_URL_SIGNATURE = 'long_url_signature';
+    const SHORTEN            = 'shorten';
+    const USE_ROOT_PATH      = 'use_root_path';
+    const FORCE_VERSION      = 'force_version';
 
     /**
-     * @var bool Whether to automatically build URLs with multiple CDN sub-domains.
+     * Whether to automatically build URLs with multiple CDN sub-domains.
+     *
+     * @var bool
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#multiple_sub_domains
      */
     public $cdnSubdomain;
+
     /**
-     * @var bool Secure CDN sub-domain.
+     * Secure CDN sub-domain.
+     * @var bool
      */
     public $secureCdnSubdomain;
+
     /**
-     * @var string The custom domain name to use for building HTTP URLs.
-     *             Relevant only for Advanced plan users that have a private CDN distribution and a custom CNAME
+     * The custom domain name to use for building HTTP URLs. Relevant only for Advanced plan users that have a private
+     * CDN distribution and a custom CNAME
+     *
+     * @var string
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
     public $cname;
+
     /**
-     * @var bool Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
+     * Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
+     *
+     * @var bool
      */
     protected $secure;
+
     /**
-     * @var string The domain name of the CDN distribution to use for building HTTPS URLs.
-     *             Relevant only for Advanced plan users that have a private CDN distribution.
+     * The domain name of the CDN distribution to use for building HTTPS URLs. Relevant only for Advanced plan users
+     * that have a private CDN distribution.
+     *
+     * @var string
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
     public $secureDistribution;
+
     /**
-     * @var bool Set this parameter to true if you are an Advanced plan user with a private CDN distribution
+     * Set this parameter to true if you are an Advanced plan user with a private CDN distribution.
+     *
+     * @var bool
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
     public $privateCdn;
 
     /**
-     * @var bool Set to true to create a signed Cloudinary URL
+     * Set to true to create a Cloudinary URL signed with the first 8 characters of a SHA-1 hash.
+     *
+     * @var bool
+     *
+     * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      */
     public $signUrl;
 
     /**
-     * @var bool Set to true to use shorten asset type
+     * Setting both this and signUrl to true will sign the URL using the first 32 characters of a SHA-256 hash.
+     *
+     * @var bool
+     *
+     * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
+     */
+    public $longUrlSignature;
+
+    /**
+     * Set to true to use shorten asset type.
+     *
+     * @var bool
      */
     public $shorten;
 
     /**
-     * @var bool Set to true to omit type and resource_type in the URL
+     * Set to true to omit type and resource_type in the URL.
+     *
+     * @var bool
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#root_path_urls
      */
     public $useRootPath;
 
     /**
-     * @var bool Set to false to omit default version string for assets in folders in the delivery URL
+     * Set to false to omit default version string for assets in folders in the delivery URL.
+     *
+     * @var bool
      */
     protected $forceVersion;
 

@@ -12,6 +12,8 @@ namespace Cloudinary\Asset;
 
 /**
  * Class File
+ *
+ * @api
  */
 class File extends BaseAsset
 {

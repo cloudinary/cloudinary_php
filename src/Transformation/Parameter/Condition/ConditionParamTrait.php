@@ -20,14 +20,12 @@ trait ConditionParamTrait
     /**
      * Sets up a conditional transformation.
      *
-     * For examples of conditional transformations see
-     * {@see https://cloudinary.com/documentation/conditional_transformations Conditional transformations}.
-     *
      * @param string $expression The condition to meet in order to apply the transformation.
      *
      * @return IfCondition
      *
      * @see \Cloudinary\Transformation\IfCondition
+     * @see https://cloudinary.com/documentation/conditional_transformations Conditional transformations
      */
     public static function ifCondition($expression)
     {

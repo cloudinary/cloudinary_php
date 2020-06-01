@@ -13,13 +13,14 @@ namespace Cloudinary\Tag;
 use Cloudinary\Asset\Video;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Configuration\TagConfig;
 use Cloudinary\Transformation\VideoTransformation;
 
 /**
  * Class VideoSourceTag
  *
  * Generates HTML `source` tag that can be used by `video` or `audio` tag
+ *
+ * @api
  */
 class VideoSourceTag extends BaseTag
 {
@@ -40,7 +41,6 @@ class VideoSourceTag extends BaseTag
      * @var VideoTransformation $additionalTransformation Additional transformation to be applied on the tag video.
      */
     public $additionalTransformation;
-
 
     /**
      * VideoSourceTag constructor.

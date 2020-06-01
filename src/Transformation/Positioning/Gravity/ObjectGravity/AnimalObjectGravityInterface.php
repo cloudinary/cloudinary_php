@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface AnimalObjectGravityInterface
+ *
+ * @api
  */
 interface AnimalObjectGravityInterface
 {

@@ -12,8 +12,6 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Corners
- *
- * @api
  */
 class Corners extends ParameterMultiValue
 {

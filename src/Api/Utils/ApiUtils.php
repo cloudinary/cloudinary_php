@@ -34,13 +34,15 @@ class ApiUtils
     /**
      * Serializes a simple parameter, which can be a serializable object.
      *
-     * In case the parameter is an array, it is joined using {@see ApiUtils::API_PARAM_DELIMITER}
+     * In case the parameter is an array, it is joined using ApiUtils::API_PARAM_DELIMITER.
      *
      * @param string|array|mixed $parameter The parameter to serialize.
      *
      * @return string The resulting serialized parameter.
      *
      * @internal
+     *
+     * @see ApiUtils::API_PARAM_DELIMITER
      */
     public static function serializeSimpleApiParam($parameter)
     {
@@ -235,7 +237,7 @@ class ApiUtils
     /**
      * Signs parameters of the request.
      *
-     * @param string $secret The API secret of the account.
+     * @param string $secret     The API secret of the account.
      * @param array  $parameters Parameters to sign.
      *
      * @return string The signature.
@@ -254,7 +256,7 @@ class ApiUtils
     /**
      * Adds signature and api_key to $parameters.
      *
-     * @param array|null                              $parameters
+     * @param array|null    $parameters
      * @param AccountConfig $account
      *
      * @internal

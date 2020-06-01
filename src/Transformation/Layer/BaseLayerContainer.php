@@ -17,6 +17,8 @@ use Cloudinary\ClassUtils;
  * Class BaseLayerContainer
  *
  * This is a base class for all layer containers (overlays/underlays).
+ *
+ * @internal
  */
 abstract class BaseLayerContainer extends BaseAction
 {
@@ -24,10 +26,12 @@ abstract class BaseLayerContainer extends BaseAction
      * @var BaseLayer $layer The layer
      */
     protected $layer;
+
     /**
      * @var Position $position Layer position.
      */
     protected $position;
+
     /**
      * @var BlendMode $blendMode Layer blend mode.
      */
@@ -81,7 +85,6 @@ abstract class BaseLayerContainer extends BaseAction
         return $this;
     }
 
-
     /**
      * Serializes to Cloudinary URL format
      *
@@ -92,7 +95,6 @@ abstract class BaseLayerContainer extends BaseAction
         // We actually combine components...
         return ArrayUtils::implodeActionParams($this->layer, $this->position, $this->blendMode);
     }
-
 
     /**
      * Serializes to json.

@@ -35,9 +35,9 @@ class ConfigurationTest extends UnitTestCase
         $config->url->secureDistribution = 'my_distribution';
         $config->url->cname              = 'my.domain.com';
 
-        $this->assertEquals(
+        $this->assertStrEquals(
             $this->cloudinaryUrl . '/my_distribution?url[cname]=my.domain.com',
-            (string)$config
+            $config
         );
     }
 

@@ -10,7 +10,6 @@
 
 namespace Cloudinary\Configuration;
 
-use Cloudinary\Asset\AuthToken;
 use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\JsonUtils;
 use Psr\Http\Message\UriInterface;
@@ -25,12 +24,16 @@ class Configuration implements ConfigurableInterface
     const CLOUDINARY_URL_ENV_VAR = 'CLOUDINARY_URL';
 
     /**
-     * @var int The version of the configuration scheme
+     * The version of the configuration scheme
+     *
+     * @var int
      */
     const VERSION = 1;
 
     /**
-     * @var array Main configuration sections
+     * Main configuration sections
+     *
+     * @var array
      */
     protected $sections = [
         'account',
@@ -51,34 +54,52 @@ class Configuration implements ConfigurableInterface
      * @var static Singleton instance for the Configuration.
      */
     private static $instance;
+
     /**
-     * @var AccountConfig $account The configuration of the account.
+     * The configuration of the account.
+     *
+     * @var AccountConfig $account
      */
     public $account;
+
     /**
-     * @var ApiConfig $api The configuration of the API.
+     * The configuration of the API.
+     *
+     * @var ApiConfig $api
      */
     public $api;
+
     /**
-     * @var UrlConfig $url The configuration of the URL.
+     * The configuration of the URL.
+     *
+     * @var UrlConfig $url
      */
     public $url;
 
     /**
-     * @var TagConfig $tag The configuration of tags.
+     * The configuration of tags.
+     *
+     * @var TagConfig $tag
      */
     public $tag;
 
     /**
-     * @var ResponsiveBreakpointsConfig $responsiveBreakpoints The configuration of the responsive breakpoints cache.
+     * The configuration of the responsive breakpoints cache.
+     *
+     * @var ResponsiveBreakpointsConfig $responsiveBreakpoints
      */
     public $responsiveBreakpoints;
+
     /**
-     * @var AuthTokenConfig $authToken The authentication token.
+     * The authentication token.
+     *
+     * @var AuthTokenConfig $authToken
      */
     public $authToken;
 
     /**
+     * The configuration of the logging.
+     *
      * @var LoggingConfig $logging
      */
     public $logging;
@@ -95,7 +116,6 @@ class Configuration implements ConfigurableInterface
     {
         $this->init($config, $includeSensitive);
     }
-
 
     /**
      * Configuration initializer.
@@ -163,7 +183,6 @@ class Configuration implements ConfigurableInterface
 
         return self::$instance;
     }
-
 
     /**
      * Creates Configuration using json string or array as a source.

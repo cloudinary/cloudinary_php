@@ -18,6 +18,8 @@ use Cloudinary\Utils;
  * Class BreakpointsJson
  *
  * An alias for w_auto:breakpoints:json parameter
+ *
+ * @api
  */
 class BreakpointsJson extends BaseParameter
 {
@@ -25,6 +27,7 @@ class BreakpointsJson extends BaseParameter
      * @var string $name The name of the parameter. Actually width parameter is used for this purpose
      */
     protected static $name = 'width';
+
     /**
      * @var string $name The key of the parameter.
      */
@@ -34,15 +37,18 @@ class BreakpointsJson extends BaseParameter
      * @var int The minimum width needed for this image. Default: 50.
      */
     protected $minWidth;
+
     /**
      * @var int The maximum width needed for this image. If specifying a width bigger than the original image,
      * the width of the original image is used instead. Default: 1000.
      */
     protected $maxWidth;
+
     /**
      * @var int The minimum number of bytes between two consecutive breakpoints (images). Default: 20000.
      */
     protected $bytesStep;
+
     /**
      * @var int The maximum number of breakpoints to find, between 3 and 200. This means that there might be size
      * differences bigger than the given bytes_step value between consecutive images. Default: 20.

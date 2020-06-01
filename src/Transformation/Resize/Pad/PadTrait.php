@@ -44,7 +44,7 @@ trait PadTrait
     }
 
     /**
-     * Same as the {@see Pad::pad} mode but only if the original image is larger than the given limit (width and
+     * Same as the Pad::pad mode but only if the original image is larger than the given limit (width and
      * height), in which case the image is scaled down to fill the given width and height while retaining the original
      * aspect ratio and with all of the original image visible.
      *
@@ -55,6 +55,8 @@ trait PadTrait
      * @param string|ColorValue     $background Sets the background color of the image.
      *
      * @return static
+     *
+     * @see \Cloudinary\Transformation\Pad::pad
      */
     public static function limitPad(
         $width = null,
@@ -65,7 +67,7 @@ trait PadTrait
     }
 
     /**
-     * Same as the {@see Pad::pad} mode but only if the original image is smaller than the given minimum (width and
+     * Same as the Pad::pad mode but only if the original image is smaller than the given minimum (width and
      * height), in which case the image is scaled up to fill the given width and height while retaining the original
      * aspect ratio and with all of the original image visible.
      *
@@ -76,6 +78,8 @@ trait PadTrait
      * @param string|ColorValue     $background Sets the background color of the image.
      *
      * @return static
+     *
+     * @see \Cloudinary\Transformation\Pad::pad
      */
     public static function minimumPad(
         $width = null,

@@ -25,10 +25,12 @@ abstract class BaseParameter extends BaseComponent
      * @var string VALUE_CLASS The class of the parameter value. Can be customized by derived classes.
      */
     const VALUE_CLASS = ParameterMultiValue::class;
+
     /**
      * @var string KEY_VALUE_DELIMITER The delimiter between the key and the value.
      */
     const KEY_VALUE_DELIMITER = '_';
+
     /**
      * @var string Omit class suffix, example: QualityParam -> quality_param -> quality -> q
      */
@@ -43,6 +45,7 @@ abstract class BaseParameter extends BaseComponent
      * @var ParameterMultiValue $value The value.
      */
     protected $value;
+
     /**
      * @var array $valueOrder The order of the values.
      */
@@ -169,7 +172,6 @@ abstract class BaseParameter extends BaseComponent
         return [(string)$this];
     }
 
-
     /**
      * Serializes to string.
      *
@@ -182,7 +184,6 @@ abstract class BaseParameter extends BaseComponent
         /** @noinspection TypeUnsafeComparisonInspection */
         return $value == '' ? '' : self::getKey() . static::KEY_VALUE_DELIMITER . $value;
     }
-
 
     /**
      * Serializes to json.

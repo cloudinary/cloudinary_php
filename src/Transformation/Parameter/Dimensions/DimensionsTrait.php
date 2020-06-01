@@ -15,6 +15,8 @@ use Cloudinary\ClassUtils;
 
 /**
  * Trait DimensionsTrait
+ *
+ * @api
  */
 trait DimensionsTrait
 {
@@ -79,7 +81,6 @@ trait DimensionsTrait
 
         return $this;
     }
-
 
     /**
      * Internal setter for the dimensions.

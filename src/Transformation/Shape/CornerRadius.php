@@ -14,8 +14,6 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
  * Class CornerRadius
- *
- * @api
  */
 class CornerRadius extends BaseParameter
 {

@@ -12,6 +12,7 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait ImageColorEffectTrait
+ *
  * @api
  */
 trait ImageColorEffectTrait
@@ -79,12 +80,12 @@ trait ImageColorEffectTrait
      * Applies stripes to the image to help people with common color-blind conditions to differentiate between colors
      * that are similar for them.
      *
-     * You can replace colors using the {@see \Cloudinary\Transformation\AssistColorBlind::xRay() xRay} method of the
-     * {@see \Cloudinary\Transformation\AssistColorBlind} class.
+     * You can replace colors using the xRay() method of the \Cloudinary\Transformation\AssistColorBlind class.
      *
      * @param int $strength The strength of the stripes.  (Range: 1 to 100, Server default: 10)
      *
      * @return AssistColorBlind
+     *
      * @see \Cloudinary\Transformation\AssistColorBlind
      *
      */
@@ -96,12 +97,12 @@ trait ImageColorEffectTrait
     /**
      * Simulates the way an image would appear to someone with the specified color blind condition.
      *
-     * For a list of supported color blind conditions see the {@see \Cloudinary\Transformation\SimulateColorBlind
-     * SimulateColorBlind} class.
+     * For a list of supported color blind conditions see the \Cloudinary\Transformation\SimulateColorBlind class.
      *
      * @param string $condition The color blind condition. Use the constants defined in the SimulateColorBlind class.
      *
      * @return SimulateColorBlind
+     *
      * @see \Cloudinary\Transformation\SimulateColorBlind
      *
      */

@@ -9,6 +9,8 @@ use Cloudinary\Transformation\ImageTransformation;
 
 /**
  * Class Tag
+ *
+ * @api
  */
 abstract class Tag
 {

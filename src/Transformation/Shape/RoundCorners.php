@@ -14,6 +14,8 @@ use Cloudinary\ClassUtils;
 
 /**
  * Class RoundCorners
+ *
+ * @api
  */
 class RoundCorners extends BaseAction
 {

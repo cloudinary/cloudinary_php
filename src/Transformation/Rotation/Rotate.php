@@ -14,7 +14,9 @@ use Cloudinary\Transformation\Argument\AngleTrait;
 use Cloudinary\Transformation\Argument\Degree;
 
 /**
- * Class Rotation
+ * Class Rotate
+ *
+ * @api
  */
 class Rotate extends BaseAction
 {

@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class CompassGravity
+ *
+ * @api
  */
 class CompassGravity extends GravityParam
 {

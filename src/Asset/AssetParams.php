@@ -29,6 +29,7 @@ abstract class AssetParams
         'cloud_name',
         'cname',
         'format',
+        'long_url_signature',
         'private_cdn',
         'resource_type',
         'secure',

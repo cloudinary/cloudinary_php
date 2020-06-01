@@ -26,7 +26,7 @@ trait ColorTrait
      */
     public function color($color)
     {
-        $this->addParameter(ClassUtils::verifyInstance($color, Color::class));
+        $this->addParameter(ClassUtils::verifyInstance($color, ColorParam::class));
 
         return $this;
     }

@@ -21,17 +21,32 @@ use Cloudinary\ArrayUtils;
 class ApiResponse extends ArrayObject
 {
     /**
-     * @var false|int Unix timestamp of the time the hourly count will be reset
+     * Unix timestamp of the time the hourly count will be reset.
+     *
+     * @var false|int
      */
     public $rateLimitResetAt;
+
     /**
-     * @var int Per-hour limit
+     * Per-hour limit.
+     *
+     * @var int
      */
     public $rateLimitAllowed;
+
     /**
-     * @var int Remaining number of actions
+     * Remaining number of actions.
+     *
+     * @var int
      */
     public $rateLimitRemaining;
+
+    /**
+     * Response headers.
+     *
+     * @var array $headers
+     */
+    public $headers;
 
     /**
      * ApiResponse constructor.
@@ -41,9 +56,11 @@ class ApiResponse extends ArrayObject
      */
     public function __construct($responseJson, $headers)
     {
-        $this->rateLimitResetAt   = strtotime(Arrayutils::get($headers, ['X-FeatureRateLimit-Reset', 0]));
-        $this->rateLimitAllowed   = (int)Arrayutils::get($headers, ['X-FeatureRateLimit-Limit', 0]);
-        $this->rateLimitRemaining = (int)Arrayutils::get($headers, ['X-FeatureRateLimit-Remaining', 0]);
+        $this->headers = $headers;
+
+        $this->rateLimitResetAt   = strtotime(ArrayUtils::get($headers, ['X-FeatureRateLimit-Reset', 0]));
+        $this->rateLimitAllowed   = (int)ArrayUtils::get($headers, ['X-FeatureRateLimit-Limit', 0]);
+        $this->rateLimitRemaining = (int)ArrayUtils::get($headers, ['X-FeatureRateLimit-Remaining', 0]);
 
         parent::__construct($responseJson);
     }

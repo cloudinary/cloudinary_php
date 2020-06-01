@@ -16,6 +16,8 @@ use Cloudinary\Transformation\Argument\Text\TextStyleTrait;
 
 /**
  * Class SubtitlesLayer
+ *
+ * @api
  */
 class SubtitlesLayer extends AssetBasedLayer
 {

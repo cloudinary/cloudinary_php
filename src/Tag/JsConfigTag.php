@@ -15,6 +15,8 @@ use Cloudinary\Configuration\Configuration;
 
 /**
  * Class JsConfigTag
+ *
+ * @api
  */
 class JsConfigTag extends BaseTag
 {

@@ -12,6 +12,8 @@ namespace Cloudinary\Configuration;
 
 /**
  * Class AccountConfig
+ *
+ * @api
  */
 class AccountConfig extends BaseConfigSection
 {
@@ -30,21 +32,27 @@ class AccountConfig extends BaseConfigSection
     protected static $sensitiveDataKeys = [self::API_KEY, self::API_SECRET];
 
     /**
-     * @var string Mandatory. The name of your Cloudinary account.
-     *             Used to build the public URL for all your media assets.
+     * Mandatory. The name of your Cloudinary account. Used to build the public URL for all your media assets.
+     *
+     * @var string
      */
     public $cloudName;
+
     /**
-     * @var string Mandatory for server-side operations. Used together with the API secret to communicate with the
-     *             Cloudinary API and sign requests.
+     * Mandatory for server-side operations. Used together with the API secret to communicate with the Cloudinary API
+     * and sign requests.
+     *
+     * @var string
      */
     public $apiKey;
+
     /**
-     * @var string Mandatory for server-side operations. Used together with the API key to communicate with the
-     *             Cloudinary API and sign requests.
+     * Mandatory for server-side operations. Used together with the API key to communicate with the Cloudinary API and
+     * sign requests.
+     *
+     * @var string
      */
     public $apiSecret;
-
 
     /**
      * Serialises configuration section to a string representation.

@@ -22,7 +22,7 @@ trait PageNamesTrait
      *
      * @param string ...$names The names.
      *
-     * @return $this
+     * @return static
      */
     public static function names(...$names)
     {

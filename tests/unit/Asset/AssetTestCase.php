@@ -13,12 +13,11 @@ namespace Cloudinary\Test\Cloudinary;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
+use Cloudinary\Asset\File;
 use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Test\Unit\UnitTestCase;
-use Monolog\Handler\TestHandler;
 
 /**
  * Class AssetTestCase
@@ -63,17 +62,6 @@ abstract class AssetTestCase extends UnitTestCase
     const URL_SUFFIX              = 'hello';
     const URL_SUFFIXED_ASSET_ID   = self::ASSET_ID . '/' . self::URL_SUFFIX;
     const URL_SUFFIXED_IMAGE_NAME = self::URL_SUFFIXED_ASSET_ID . '.' . self::IMG_EXT;
-
-    const TEST_LOGGING = ['logging' => ['test' => ['level' => 'debug']]];
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $config = ConfigUtils::parseCloudinaryUrl(getenv(Configuration::CLOUDINARY_URL_ENV_VAR));
-        $config = array_merge($config, self::TEST_LOGGING);
-        Configuration::instance()->init($config);
-    }
 
     public function tearDown()
     {
@@ -163,22 +151,21 @@ abstract class AssetTestCase extends UnitTestCase
     }
 
     /**
-     * @param       $source
-     * @param array $params
-     * @param array $expectationOptions
+     * @param        $source
+     * @param mixed  $actualUrl
+     * @param string $assetType
+     * @param array  $expectationOptions
      */
-    protected static function assertMediaFromParamsUrl(
+    protected static function assertAssetFromParamsUrl(
         $source,
-        $params = [],
+        $actualUrl,
+        $assetType,
         $expectationOptions = []
     ) {
-        $actualUrl = Media::fromParams($source, $params);
-
         ArrayUtils::setDefaultValue($expectationOptions, 'protocol', 'http');
 
         $path = ArrayUtils::get($expectationOptions, 'path');
 
-        $assetType    = ArrayUtils::get($expectationOptions, 'asset_type', AssetType::IMAGE);
         $deliveryType = ArrayUtils::get($expectationOptions, 'delivery_type', DeliveryType::UPLOAD);
 
         $actualSource = ArrayUtils::get($expectationOptions, 'source', $source);
@@ -194,32 +181,35 @@ abstract class AssetTestCase extends UnitTestCase
     }
 
     /**
-     * Asserts that a given object logged a message of a certain level
-     *
-     * @param object     $obj     The object that should have logged a message
-     * @param string     $message The message that was logged
-     * @param string|int $level   Logging level value or name
+     * @param       $source
+     * @param array $params
+     * @param array $expectationOptions
      */
-    protected static function assertObjectLoggedMessage($obj, $message, $level)
-    {
-        $reflectionMethod = new \ReflectionMethod(get_class($obj), 'getLogger');
-        $reflectionMethod->setAccessible(true);
-        $logger = $reflectionMethod->invoke($obj);
+    protected static function assertMediaFromParamsUrl(
+        $source,
+        $params = [],
+        $expectationOptions = []
+    ) {
+        $actualUrl = Media::fromParams($source, $params);
+        $assetType = ArrayUtils::get($expectationOptions, 'asset_type', AssetType::IMAGE);
 
-        self::assertLoggerHasRecordThatContains($logger->getTestHandler(), $message, $level);
+        self::assertAssetFromParamsUrl($source, $actualUrl, $assetType, $expectationOptions);
     }
 
     /**
-     * Asserts that a given Logger TestHandler has logged a message of a certain level
-     *
-     * @param TestHandler $testHandler The TestHandler to inspect
-     * @param string      $message     The message that was logged
-     * @param string|int  $level       Logging level value or name
+     * @param       $source
+     * @param array $params
+     * @param array $expectationOptions
      */
-    protected static function assertLoggerHasRecordThatContains($testHandler, $message, $level)
-    {
-        self::assertInstanceOf(TestHandler::class, $testHandler);
-        self::assertTrue($testHandler->hasRecordThatContains($message, $level));
+    protected static function assertFileFromParamsUrl(
+        $source,
+        $params = [],
+        $expectationOptions = []
+    ) {
+        $actualUrl = File::fromParams($source, $params);
+        $assetType = ArrayUtils::get($expectationOptions, 'asset_type', AssetType::RAW);
+
+        self::assertAssetFromParamsUrl($source, $actualUrl, $assetType, $expectationOptions);
     }
 
     protected function assertErrorThrowing(callable $function)

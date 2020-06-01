@@ -25,6 +25,7 @@ class Range implements ComponentInterface
      * @var int The start offset of the range.
      */
     public $startOffset;
+
     /**
      * @var int The end offset of the range.
      */
@@ -76,7 +77,7 @@ class Range implements ComponentInterface
         return ArrayUtils::implodeActionParams($this->startOffset, $this->endOffset);
     }
 
-     /**
+    /**
      * Serializes to json.
      *
      * @return mixed

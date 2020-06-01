@@ -13,12 +13,16 @@ namespace Cloudinary\Cache\Storage;
 use GlobIterator;
 
 /**
- * File-based key-value storage
+ * File-based key-value storage.
+ *
+ * @api
  */
 class FileSystemKeyValueStorage implements KeyValueStorage
 {
     /**
-     * @var string $rootPath The root path of the storage.
+     * The root path of the storage.
+     *
+     * @var string $rootPath
      */
     private $rootPath;
 
@@ -30,7 +34,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     /**
      * Creates a new Storage object.
      *
-     * All files will be stored under the $rootPath location
+     * All files will be stored under the $rootPath location.
      *
      * @param string $rootPath The base folder for all storage files.
      */
@@ -85,7 +89,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
 
 
     /**
-     * Deletes item by key
+     * Deletes item by key.
      *
      * @param string $key A unique identifier.
      *
@@ -109,7 +113,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
     {
         $success = true;
 
-        $cacheItems = new GlobIterator($this->rootPath.DIRECTORY_SEPARATOR . '*' . self::$itemExt);
+        $cacheItems = new GlobIterator($this->rootPath . DIRECTORY_SEPARATOR . '*' . self::$itemExt);
 
         if (! $cacheItems->count()) {
             return true;
@@ -133,7 +137,7 @@ class FileSystemKeyValueStorage implements KeyValueStorage
      */
     private function getKeyFullPath($key)
     {
-        return $this->rootPath.DIRECTORY_SEPARATOR.$key.self::$itemExt;
+        return $this->rootPath . DIRECTORY_SEPARATOR . $key . self::$itemExt;
     }
 
     /**

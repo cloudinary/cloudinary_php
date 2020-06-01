@@ -12,30 +12,44 @@ namespace Cloudinary\Asset;
 
 /**
  * Class DeliveryType
+ *
+ * @api
  */
 class DeliveryType
 {
     const KEY = 'type';
 
     /**
-     * @const string UPLOAD Uploaded public asset
+     * Uploaded public asset.
+     *
+     * @const string UPLOAD
      */
     const UPLOAD = 'upload';
+
     /**
-     * @const string PRIVATE_ Private asset
+     * Private asset.
+     *
+     * @const string PRIVATE_DELIVERY
      */
     const PRIVATE_DELIVERY = 'private';
 
     /**
-     * @const string PUBLIC Public asset
+     * Public asset.
+     *
+     * @const string PUBLIC_DELIVERY
      */
     const PUBLIC_DELIVERY = 'public';
+
     /**
-     * @const string AUTHENTICATED Authenticated asset
+     * Authenticated asset.
+     *
+     * @const string AUTHENTICATED
      */
     const AUTHENTICATED = 'authenticated';
     /**
-     * @const string FETCH  Fetch remote asset from URL(ftp/http[s]/s3/gs)
+     * Fetch remote asset from URL(ftp/http[s]/s3/gs).
+     *
+     * @const string FETCH
      */
     const FETCH           = 'fetch';
     const SPRITE          = 'sprite';

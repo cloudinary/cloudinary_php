@@ -22,6 +22,7 @@ class VideoOffset extends BaseParameter
      * @var int|float|string $startOffset The starting position of the part of the video to keep.
      */
     protected $startOffset;
+
     /**
      * @var int|float|string $endOffset The end position of the part of the video to keep.
      */
@@ -96,7 +97,7 @@ class VideoOffset extends BaseParameter
         return implode(',', array_filter([(string)$this->startOffset, (string)$this->endOffset]));
     }
 
-     /**
+    /**
      * Serializes to json.
      *
      * @return mixed

@@ -40,7 +40,7 @@ class FileUtils
      */
     public static function dirName($path)
     {
-        return !empty($path) && pathinfo($path, PATHINFO_DIRNAME) !== '.' ? pathinfo($path, PATHINFO_DIRNAME) : null;
+        return ! empty($path) && pathinfo($path, PATHINFO_DIRNAME) !== '.' ? pathinfo($path, PATHINFO_DIRNAME) : null;
     }
 
     /**
@@ -117,7 +117,7 @@ class FileUtils
     }
 
     /**
-     * Safe version of {@see fopen} that throws an exception when file can't be opened (non-existing, permissions, etc).
+     * Safe version of fopen that throws an exception when file can't be opened (non-existing, permissions, etc).
      *
      * @param string $filename       The file to open.
      * @param string $mode           Access mode.
@@ -126,6 +126,8 @@ class FileUtils
      * @return resource
      *
      * @throws GeneralError
+     *
+     * @see fopen
      */
     public static function safeFileOpen($filename, $mode, $useIncludePath = null)
     {

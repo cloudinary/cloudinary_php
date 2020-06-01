@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class FocalGravity
+ *
+ * @api
  */
 class FocalGravity extends GravityParam
 {

@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Action
+ *
+ * @api
  */
 class Action extends BaseAction
 {

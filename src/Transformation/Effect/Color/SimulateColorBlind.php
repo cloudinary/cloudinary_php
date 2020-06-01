@@ -19,26 +19,32 @@ class SimulateColorBlind extends ValueEffectParam
      * Color blind condition: deuteranopia (Server default).
      */
     const DEUTERANOPIA      = 'deuteranopia';
+
     /**
      * Color blind condition: protanopia.
      */
     const PROTANOPIA        = 'protanopia';
+
     /**
      * Color blind condition: tritanopia.
      */
     const TRITANOPIA        = 'tritanopia';
+
     /**
      * Color blind condition: tritanomaly.
      */
     const TRITANOMALY       = 'tritanomaly';
+
     /**
      * Color blind condition: deuteranomaly.
      */
     const DEUTERANOMALY     = 'deuteranomaly';
+
     /**
      * Color blind condition: cone_monochromacy.
      */
     const CONE_MONOCHROMACY = 'cone_monochromacy';
+
     /**
      * Color blind condition: rod_monochromacy.
      */

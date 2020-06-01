@@ -10,7 +10,9 @@
 
 namespace Cloudinary;
 
+use Cloudinary\Configuration\Configuration;
 use Cloudinary\Exception\Error;
+use Cloudinary\Log\LoggerTrait;
 use GuzzleHttp\Client;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -22,6 +24,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpClient
 {
+    use LoggerTrait;
+
     /**
      * @var Client $httpClient The HTTP client instance.
      */
@@ -29,11 +33,17 @@ class HttpClient
 
     /**
      * HttpClient constructor.
-     *
+     * @param Configuration|null $configuration
      */
-    public function __construct()
+    public function __construct($configuration = null)
     {
         $this->httpClient = new Client();
+
+        if ($configuration === null) {
+            $configuration = Configuration::instance();
+        }
+
+        $this->logging = $configuration->logging;
     }
 
     /**
@@ -47,7 +57,19 @@ class HttpClient
      */
     public function getJson($url)
     {
-        return self::parseJsonResponse($this->httpClient->get($url));
+        try {
+            return self::parseJsonResponse($this->httpClient->get($url));
+        } catch (Error $e) {
+            $this->getLogger()->critical(
+                'Error parsing JSON server response',
+                [
+                    'exception' => $e->getMessage(),
+                    'class' => self::class,
+                    'url' => $url,
+                ]
+            );
+            throw $e;
+        }
     }
 
     /**
@@ -64,9 +86,13 @@ class HttpClient
         try {
             $responseJson = JsonUtils::decode($response->getBody(), true);
         } catch (InvalidArgumentException $iae) {
-            throw new Error(
-                "Error parsing server response ({$response->getStatusCode()}) - {$response->getBody()}. Got - {$iae}"
+            $message = sprintf(
+                'Error parsing server response (%s) - %s. Got - %s',
+                $response->getStatusCode(),
+                $response->getBody(),
+                $iae
             );
+            throw new Error($message);
         }
 
         return $responseJson;

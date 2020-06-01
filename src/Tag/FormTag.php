@@ -30,6 +30,7 @@ use Cloudinary\ArrayUtils;
 class FormTag extends BaseConfigurableApiTag
 {
     const NAME = 'form';
+
     /**
      * @var array $attributes An array of tag attributes.
      */
@@ -37,7 +38,6 @@ class FormTag extends BaseConfigurableApiTag
         'enctype' => 'multipart/form-data',
         'method'  => HttpMethod::POST,
     ];
-
 
     /**
      * Serializes the tag attributes.

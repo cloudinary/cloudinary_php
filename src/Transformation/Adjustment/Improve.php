@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Improve
+ *
+ * @api
  */
 class Improve extends LimitedEffectParam
 {
@@ -21,6 +23,7 @@ class Improve extends LimitedEffectParam
      * INDOOR mode. Use this mode to get better results on images with indoor lighting and shadows.
      */
     const INDOOR = 'indoor';
+
     /**
      * OUTDOOR mode (Server default).
      */

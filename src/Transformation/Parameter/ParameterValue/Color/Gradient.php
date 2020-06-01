@@ -14,6 +14,8 @@ use Cloudinary\Transformation\BaseComponent;
 
 /**
  * Class Gradient
+ *
+ * @api
  */
 class Gradient extends BaseComponent
 {
@@ -21,14 +23,17 @@ class Gradient extends BaseComponent
      * Base the gradient fade effect on the predominant colors in the image.
      */
     const PREDOMINANT_GRADIENT = 'predominant_gradient';
+
     /**
      * Base the effect on the colors that contrast the predominant colors in the image.
      */
     const PREDOMINANT_GRADIENT_CONTRAST = 'predominant_gradient_contrast';
+
     /**
      * Base the gradient fade effect on the predominant colors in the border pixels of the image.
      */
     const BORDER_GRADIENT = 'border_gradient';
+
     /**
      * Base the effect on the colors that contrast the predominant colors in the border pixels of the image.
      */
@@ -38,10 +43,12 @@ class Gradient extends BaseComponent
      * @var string $type The type of gradient fade.
      */
     protected $type;
+
     /**
      * @var int $numberOfColors The number of predominant colors to use (2 or 4).
      */
     protected $numberOfColors;
+
     /**
      * @var string $direction The direction of fade.
      */

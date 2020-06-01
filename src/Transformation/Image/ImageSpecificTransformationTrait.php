@@ -21,7 +21,7 @@ use Cloudinary\ClassUtils;
 trait ImageSpecificTransformationTrait
 {
     use ImageTransformationFlagTrait;
-    use AnimatedImageTransformationTrait;
+    use ImageParameterTransformationTrait;
     use LayeredImageTransformationTrait;
 
     /**
@@ -55,7 +55,7 @@ trait ImageSpecificTransformationTrait
      */
     public function underlay($layer, $position = null, $blendMode = null)
     {
-        $layer = ClassUtils::verifyInstance($layer, BaseLayer::class, ImageLayer::class);
+        $layer = ClassUtils::forceInstance($layer, BaseLayer::class, ImageLayer::class);
 
         $layer->setStackPosition(LayerStackPosition::UNDERLAY);
 
@@ -78,6 +78,18 @@ trait ImageSpecificTransformationTrait
     public function cutter($layer, $position = null)
     {
         return $this->addAction((new Overlay($layer, $position))->cutter());
+    }
+
+    /**
+     * Changes the shape of the image.
+     *
+     * @param ReshapeParam|EffectAction|EffectParam $reshape The reshape to apply.
+     *
+     * @return static
+     */
+    public function reshape($reshape)
+    {
+        return $this->addAction($reshape);
     }
 
     /**
@@ -128,7 +140,7 @@ trait ImageSpecificTransformationTrait
     /**
      * Sets the color of the background.
      *
-     * @param Background $background
+     * @param Background|string $background
      *
      * @return static
      *
@@ -136,7 +148,7 @@ trait ImageSpecificTransformationTrait
      */
     public function background($background)
     {
-        return $this->addAction($background);
+        return $this->addAction(ClassUtils::verifyInstance($background, Background::class));
     }
 
     /**
@@ -153,7 +165,6 @@ trait ImageSpecificTransformationTrait
     {
         return $this->addAction(ClassUtils::verifyInstance($defaultImage, DefaultImage::class));
     }
-
 
     /**
      * Controls the color space used for the delivered image.

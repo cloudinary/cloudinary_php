@@ -26,7 +26,6 @@ interface AssetInterface extends JsonSerializable
      */
     public static function fromString($string);
 
-
     /**
      * Creates a new asset from the provided JSON.
      *

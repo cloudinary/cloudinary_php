@@ -12,6 +12,8 @@ namespace Cloudinary\Tag;
 
 /**
  * Class ImageTag
+ *
+ * @api
  */
 class ImageTag extends BaseImageTag
 {
@@ -21,7 +23,6 @@ class ImageTag extends BaseImageTag
     const BLANK            = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     const RESPONSIVE_CLASS = 'cld-responsive';
     const HI_DPI_CLASS     = 'cld-hidpi';
-
 
     /**
      * Serializes the tag attributes.

@@ -220,14 +220,17 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagStaticBreakpointsLoggingWrongMaxImage()
     {
-        $message = null;
         $tag = new ImageTag(self::IMAGE_NAME);
+
+        $message = null;
+        $expectedExceptionMessage = 'maxImages must be a positive integer';
         try {
             $tag->srcset->staticBreakpoints(self::MIN_WIDTH, self::MIN_WIDTH, -1);
         } catch (InvalidArgumentException $e) {
-            $expectedMessage = 'maxImages must be a positive integer';
+            $message = $e->getMessage();
         }
-        self::assertObjectLoggedMessage($tag->srcset, $expectedMessage, Monolog::CRITICAL);
+        self::assertStringStartsWith($expectedExceptionMessage, $message);
+        self::assertObjectLoggedMessage($tag->srcset, $expectedExceptionMessage, Monolog::CRITICAL);
     }
 
     public function testImageTagStaticBreakpointsExceptionWrongMaxImage()
@@ -239,15 +242,18 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagStaticBreakpointsLoggingWrongAttributes()
     {
-        $message = null;
         $tag = new ImageTag(self::IMAGE_NAME);
+
+        $message = null;
+        $expectedExceptionMessage = 'Either valid (minWidth, maxWidth, maxImages) or breakpointsmust be provided to ' .
+            'the image srcset attribute';
         try {
             $tag->srcset->staticBreakpoints(0, 0, 0);
         } catch (InvalidArgumentException $e) {
-            $expectedMessage = 'Either valid (minWidth, maxWidth, maxImages) or breakpointsmust be provided to the ' .
-                'image srcset attribute';
+            $message = $e->getMessage();
         }
-        self::assertObjectLoggedMessage($tag->srcset, $expectedMessage, Monolog::CRITICAL);
+        self::assertStringStartsWith($expectedExceptionMessage, $message);
+        self::assertObjectLoggedMessage($tag->srcset, $expectedExceptionMessage, Monolog::CRITICAL);
     }
 
     public function testImageTagStaticBreakpointsExceptionAttributes()

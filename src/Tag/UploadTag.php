@@ -25,6 +25,8 @@ use Cloudinary\JsonUtils;
  *              name="file"
  *              type="file"
  *           >
+ *
+ * @api
  */
 class UploadTag extends BaseConfigurableApiTag
 {
@@ -38,6 +40,7 @@ class UploadTag extends BaseConfigurableApiTag
         'name' => 'file',
         'type' => 'file',
     ];
+
     /**
      * @var array $classes An array of tag (unique) classes. Keys are used for uniqueness.
      */
@@ -58,7 +61,6 @@ class UploadTag extends BaseConfigurableApiTag
 
         $this->setAttribute('data-cloudinary-field', $field);
     }
-
 
     /**
      * Serializes the tag attributes.
@@ -103,7 +105,7 @@ class UploadTag extends BaseConfigurableApiTag
             $assetType
         );
 
-        $tag->config->unsignedUpload = true;
+        $tag->config->tag->unsignedUpload = true;
 
         return $tag;
     }

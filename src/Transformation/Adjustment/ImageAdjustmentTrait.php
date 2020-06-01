@@ -31,7 +31,6 @@ trait ImageAdjustmentTrait
         return EffectAction::limited(Adjust::AUTO_BRIGHTNESS, EffectRange::PERCENT, $blendPercentage);
     }
 
-
     /**
      * Adjusts the color balance and blends the result with the original image.
      *
@@ -79,7 +78,7 @@ trait ImageAdjustmentTrait
     /**
      * Adjusts the image colors, contrast and brightness.
      *
-     * Use the constants defined in {@see \Cloudinary\Transformation\Improve Improve} for $mode.
+     * Use the constants defined in \Cloudinary\Transformation\Improve for $mode.
      *
      * @param int    $blendPercentage How much to blend the improved result with the original image,
      *                                where 0 means only use the original and 100 means only use the improved result.
@@ -111,9 +110,7 @@ trait ImageAdjustmentTrait
     /**
      * Enhances an image to its best visual quality with the Viesus Automatic Image Enhancement add-on.
      *
-     * See {@see https://cloudinary.com/documentation/viesus_automatic_image_enhancement_addon Viesus Automatic Image
-     * Enhancement add-on} for details. Use the constants defined in {@see \Cloudinary\Transformation\ViesusCorrect
-     * ViesusCorrect} for $mode.
+     * For details, see the Viesus Automatic Image Enhancement add-on documentation.
      *
      * @param string $mode  The mode of use.  Use the constants defined in the ViesusCorrect class.
      * @param int    $level The level of saturation to apply to skin tones.  It is only applicable when $mode is set to
@@ -124,12 +121,12 @@ trait ImageAdjustmentTrait
      * @return ViesusCorrect
      *
      * @see \Cloudinary\Transformation\ViesusCorrect
+     * @see https://cloudinary.com/documentation/viesus_automatic_image_enhancement_addon
      */
     public static function viesusCorrect($mode = null, $level = null)
     {
         return new ViesusCorrect($mode, $level);
     }
-
 
     /**
      * Adjusts the image's red channel.
@@ -205,7 +202,6 @@ trait ImageAdjustmentTrait
     {
         return EffectAction::named(Adjust::TINT, ...$params);
     }
-
 
     /**
      * Maps an input color and those similar to the input color to corresponding shades of a specified output color,
@@ -297,12 +293,12 @@ trait ImageAdjustmentTrait
      * @param float $level The level of opacity. 100 means opaque, while 0 is completely transparent.
      *                   (Range: 0 to 100)
      *
-     * @return Action
+     * @return Opacity
      *
      * @see \Cloudinary\Transformation\Opacity
      */
     public static function opacity($level = null)
     {
-        return new Action(new Opacity($level));
+        return new Opacity($level);
     }
 }

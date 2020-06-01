@@ -15,6 +15,8 @@ use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 
 /**
  * Class VideoOverlay
+ *
+ * @api
  */
 class VideoOverlay extends BaseLayerContainer
 {
@@ -115,5 +117,4 @@ class VideoOverlay extends BaseLayerContainer
     {
         return implode(',', array_filter([parent::__toString(), $this->timelinePosition]));
     }
-
 }

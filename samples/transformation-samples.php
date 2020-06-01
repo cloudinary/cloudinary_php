@@ -19,7 +19,7 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Argument\Gradient;
 use Cloudinary\Transformation\Argument\GradientDirection;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontStyle;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
@@ -31,7 +31,6 @@ use Cloudinary\Transformation\Background;
 use Cloudinary\Transformation\Chroma;
 use Cloudinary\Transformation\Codec\VideoCodecLevel;
 use Cloudinary\Transformation\Codec\VideoCodecProfile;
-use Cloudinary\Transformation\Color;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\Effect;
@@ -40,7 +39,8 @@ use Cloudinary\Transformation\Fill;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Gravity;
-use Cloudinary\Transformation\Layer;
+use Cloudinary\Transformation\Reshape;
+use Cloudinary\Transformation\Source;
 use Cloudinary\Transformation\Outline;
 use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Parameter;
@@ -160,8 +160,8 @@ $imageGroup = [
             'name'  => 'Pad',
             'items' => [
                 [
-                    (new Transformation())->resize(Pad::pad(200, 200)->background(Background::coral())),
-                    '(new Transformation())->resize(Pad::pad(200, 200)->background(Background::coral()))',
+                    (new Transformation())->resize(Pad::pad(200, 200)->background(Color::CORAL)),
+                    '(new Transformation())->resize(Pad::pad(200, 200)->background(Color::CORAL))',
                 ],
                 [
                     (new Transformation())->resize(Pad::pad(200, 200)->background(AutoBackground::borderContrast())),
@@ -215,7 +215,7 @@ $imageGroup = [
                     '(new Transformation())->adjust(Adjust::saturation(82))',
                 ],
                 [
-                    (new Transformation())->adjust(Adjust::tint(100, NamedColor::GREEN, NamedColor::RED)),
+                    (new Transformation())->adjust(Adjust::tint(100, Color::GREEN, Color::RED)),
                     '(new Transformation())->adjust(Adjust::tint(100, NamedColor::GREEN, NamedColor::RED))',
                 ],
                 [
@@ -228,7 +228,7 @@ $imageGroup = [
 )',
                 ],
                 [
-                    (new Transformation())->adjust(Adjust::replaceColor(NamedColor::MAROON, 80, '2b38aa')),
+                    (new Transformation())->adjust(Adjust::replaceColor(Color::MAROON, 80, '2b38aa')),
                     '(new Transformation())->adjust(Adjust::replaceColor(NamedColor::MAROON, 80, \'2b38aa\'))',
                 ],
                 [
@@ -319,30 +319,30 @@ $imageGroup = [
                     '(new Transformation())->underlay(\'logo\')',
                 ],
                 [
-                    (new Transformation())->overlay(Layer::image('logo')->resize(Scale::scale(200, 200))),
-                    '(new Transformation())->overlay(Layer::image(\'logo\')->resize(Scale::scale(200, 200)))',
+                    (new Transformation())->overlay(Source::image('logo')->resize(Scale::scale(200, 200))),
+                    '(new Transformation())->overlay(Source::image(\'logo\')->resize(Scale::scale(200, 200)))',
                 ],
                 [
                     (new Transformation())->overlay(
-                        Layer::image('logo')->resize(Fill::fill(200, 200, Gravity::auto())),
+                        Source::image('logo')->resize(Fill::fill(200, 200, Gravity::auto())),
                         Position::north(10, 10)
                     ),
                     '(new Transformation())->overlay(
-    Layer::image(\'logo\')->resize(Fill::fill(200, 200, Gravity::auto())),
+    Source::image(\'logo\')->resize(Fill::fill(200, 200, Gravity::auto())),
     Position::north(10, 10)
 )',
                 ],
                 [
                     (new Transformation())->overlay(
-                        Layer::text('my_text')->fontFamily(FontFamily::ARIAL)->fontSize(50)
+                        Source::text('my_text')->fontFamily(FontFamily::ARIAL)->fontSize(50)
                     ),
                     '(new Transformation())->overlay(
-    Layer::text(\'my_text\')->fontFamily(FontFamily::ARIAL)->fontSize(50)
+    Source::text(\'my_text\')->fontFamily(FontFamily::ARIAL)->fontSize(50)
 )',
                 ],
                 [
                     (new Transformation())->overlay(
-                        Layer::text('Flowers')
+                        Source::text('Flowers')
                              ->fontFamily(FontFamily::VERDANA)
                              ->fontSize(75)
                              ->fontWeight(FontWeight::BOLD)
@@ -351,7 +351,7 @@ $imageGroup = [
                              ->letterSpacing(14)
                     ),
                     '(new Transformation())->overlay(
-    Layer::text(\'Flowers\')
+    Source::text(\'Flowers\')
         ->fontFamily(FontFamily::VERDANA)
         ->fontSize(75)
         ->fontWeight(FontWeight::BOLD)
@@ -362,15 +362,15 @@ $imageGroup = [
                 ],
                 [
                     (new Transformation())->overlay(
-                        Layer::text('Your Logo Here')->fontFamily(FontFamily::IMPACT)->fontSize(150)
-                             ->color(NamedColor::WHITE)
-                             ->effect(Effect::distortArc(-120)),
+                        Source::text('Your Logo Here')->fontFamily(FontFamily::IMPACT)->fontSize(150)
+                             ->color(Color::WHITE)
+                             ->reshape(Reshape::distortArc(-120)),
                         Position::south()->y(140)
                     ),
                     '(new Transformation())->overlay(
-    Layer::text(\'Your Logo Here\')->fontFamily(FontFamily::IMPACT)->fontSize(150)
+    Source::text(\'Your Logo Here\')->fontFamily(FontFamily::IMPACT)->fontSize(150)
         ->color(NamedColor::WHITE)
-        ->effect(Effect::distortArc(-120)),
+        ->reshape(Reshape::distortArc(-120)),
     Position::south()->y(140)
 )',
                 ],
@@ -418,7 +418,7 @@ $videoGroup = [
                         ->resize(Fill::fill(300, 200))
                         ->trim(VideoRange::range(0, 3))
                         ->concatenate(
-                            Layer::video('kitten_fighting')
+                            Source::video('kitten_fighting')
                                  ->trim(VideoRange::range(2, 5))
                                  ->resize(Fill::fill(300, 200))
                         ),
@@ -426,7 +426,7 @@ $videoGroup = [
     ->resize(Fill::fill(300, 200))
     ->trim(VideoRange::range(0, 3))
     ->concatenate(
-        Layer::video(\'kitten_fighting\')
+        Source::video(\'kitten_fighting\')
             ->trim(VideoRange::range(2, 5))
             ->resize(Fill::fill(300, 200))
     )',
@@ -438,13 +438,13 @@ $videoGroup = [
             'items' => [
                 [
                     (new Transformation())
-                        ->transcode(VideoCodec::h264(VideoCodecProfile::VCP_BASELINE, VideoCodecLevel::VCL_31)),
+                        ->transcode(VideoCodec::h264(VideoCodecProfile::BASELINE, VideoCodecLevel::VCL_31)),
                     '(new Transformation())
     ->transcode(VideoCodec::h264(VideoCodecProfile::VCP_BASELINE, VideoCodecLevel::VCL_31))',
                 ],
                 [
-                    (new Transformation())->transcode(AudioFrequency::af22050()),
-                    '(new Transformation())->transcode(AudioFrequency::af22050())',
+                    (new Transformation())->transcode(AudioFrequency::freq22050()),
+                    '(new Transformation())->transcode(AudioFrequency::freq22050())',
                 ],
                 [
                     (new Transformation())->transcode(AudioCodec::none()),

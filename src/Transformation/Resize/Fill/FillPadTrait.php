@@ -26,7 +26,7 @@ trait FillPadTrait
      * Especially useful if the aspect ratio of the delivered image is considerably different from the original's
      * aspect ratio.
      *
-     * Only supported in conjunction with Automatic cropping {@see Gravity::auto})
+     * Only supported in conjunction with Automatic cropping (Gravity::auto())
      *
      * @param int|float|string|null $width      The required width of a transformed asset.
      * @param int|float|null        $height     The required height of a transformed asset.
@@ -34,6 +34,8 @@ trait FillPadTrait
      * @param string|ColorValue     $background The background color of the image.
      *
      * @return FillPad
+     *
+     * @see Gravity::auto
      */
     public static function fillPad($width = null, $height = null, $gravity = null, $background = null)
     {

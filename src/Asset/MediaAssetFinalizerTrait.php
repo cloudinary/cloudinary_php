@@ -61,9 +61,19 @@ trait MediaAssetFinalizerTrait
         }
 
         $toSign    = ArrayUtils::implodeUrl([$this->transformation, $this->asset->publicId()]);
-        $signature = StringUtils::base64UrlEncode(Utils::sign($toSign, $this->account->apiSecret, true));
+        $signature = StringUtils::base64UrlEncode(
+            Utils::sign(
+                $toSign,
+                $this->account->apiSecret,
+                true,
+                $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
+            )
+        );
 
-        return 's--' . substr($signature, 0, 8) . '--';
+        return Utils::formatSimpleSignature(
+            $signature,
+            $this->urlConfig->longUrlSignature ? Utils::LONG_URL_SIGNATURE_LENGTH : Utils::SHORT_URL_SIGNATURE_LENGTH
+        );
     }
 
     /**

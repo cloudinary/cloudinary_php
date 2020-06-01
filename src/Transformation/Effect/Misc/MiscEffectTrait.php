@@ -11,6 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
+use Cloudinary\Transformation\Argument\PointValue;
 
 /**
  * Trait MiscEffectTrait
@@ -22,15 +23,14 @@ trait MiscEffectTrait
     /**
      * Applies the selected artistic filter to the image.
      *
-     * See the {@see https://cloudinary.com/documentation/image_transformations#available_filters image transformation
-     * guide} for examples of each of the filters. Use the constants defined
-     * in {@see \Cloudinary\Transformation\ArtisticFilter ArtisticFilter} for $filter.
+     * See the Image Transformations guide for examples of each of the filters.
      *
      * @param string $filter The filter to apply. Use the constants defined in the ArtisticFilter class.
      *
      * @return mixed
-     * @see \Cloudinary\Transformation\ArtisticFilter
      *
+     * @see \Cloudinary\Transformation\ArtisticFilter
+     * @see https://cloudinary.com/documentation/image_transformations#available_filters
      */
     public static function artisticFilter($filter)
     {
@@ -60,8 +60,7 @@ trait MiscEffectTrait
      * Transfers the style of a source artwork to a target photograph using the Neural Artwork Style Transfer
      * add-on.
      *
-     * See the {@see https://cloudinary.com/documentation/neural_artwork_style_transfer_addon Neural Artwork
-     * Style Transfer add-on documentation} for further information.
+     * For details, see the Neural Artwork Style Transfer add-on documentation.
      *
      * @param string $source        The public ID of the source artwork.
      * @param int    $strength      The strength of the style transfer. Higher numbers result in an output that is more
@@ -73,11 +72,12 @@ trait MiscEffectTrait
      *                              target photo.
      *
      * @return EffectAction
+     *
+     * @see https://cloudinary.com/documentation/neural_artwork_style_transfer_addon
      */
     public static function styleTransfer($source, $strength = null, $preserveColor = null)
     {
-        return EffectAction::fromEffectParam(new StyleTransfer($strength, $preserveColor))
-                           ->addParameter(Layer::image($source)); // TODO: discuss whether we need layer_apply
+        return new StyleTransfer($source, $strength, $preserveColor);
     }
 
     /**
@@ -105,10 +105,11 @@ trait MiscEffectTrait
     /**
      * Removes red eyes with the Advanced Facial Attribute Detection add-on.
      *
-     * See the {@see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon Advanced
-     * Facial Attribute Detection add-on documentation} for further information.
+     * For details, see the Advanced Facial Attribute Detection add-on documentation.
      *
      * @return EffectAction
+     *
+     * @see https://cloudinary.com/documentation/advanced_facial_attributes_detection_addon
      */
     public static function advancedRedEye()
     {
@@ -118,8 +119,7 @@ trait MiscEffectTrait
     /**
      * Vectorizes the image.
      *
-     * Use the methods in {@see \Cloudinary\Transformation\VectorizeTrait VectorizeTrait} to control different
-     * aspects of the vectorize effect.
+     * Use the methods in \Cloudinary\Transformation\Vectorize to control different aspects of the vectorize effect.
      *
      * Notes:
      * * To deliver the image as a vector image, make sure to change the format (or URL extension) to a vector format,
@@ -128,6 +128,7 @@ trait MiscEffectTrait
      * * Large images are scaled down to 1000 pixels in the largest dimension before vectorization.
      *
      * @return Vectorize
+     *
      * @see \Cloudinary\Transformation\Vectorize
      *
      */
@@ -139,9 +140,7 @@ trait MiscEffectTrait
     /**
      * Adds an outline to a transparent image.
      *
-     * See the {@see https://cloudinary.com/documentation/image_transformations#outline_effects image transformation
-     * guide} for examples.  Use the constants defined
-     * in {@see \Cloudinary\Transformation\Outline Outline} for $mode.
+     * For examples, see the Image Transformations guide.
      *
      * @param string $mode  The type of outline effect. Use the constants defined in the Outline class.
      *                      (Default: Outline::INNER and Outline::OUTER).
@@ -149,11 +148,31 @@ trait MiscEffectTrait
      * @param int    $blur  The level of blur of the outline. (Range: 0 to 2000, Server default: 0)
      *
      * @return Outline
+     *
      * @see \Cloudinary\Transformation\Outline
+     * @see https://cloudinary.com/documentation/image_transformations#outline_effects
      *
      */
     public static function outline($mode = null, $width = null, $blur = null)
     {
         return new Outline($mode, $width, $blur);
+    }
+
+    /**
+     * Adds a shadow to the image.
+     *
+     * The shadow is offset by the x and y values specified in the $position parameter.
+     *
+     * @param int        $strength The strength of the shadow. (Range: 0 to 100, Server default: 40)
+     * @param PointValue $position The position of the shadow. (Server default: bottom right)
+     * @param string     $color    The color of the shadow (Server default: gray)
+     *
+     * @return Shadow
+     * @see \Cloudinary\Transformation\Shadow
+     *
+     */
+    public static function shadow($strength = null, $position = null, $color = null)
+    {
+        return new Shadow($strength, $position, $color);
     }
 }

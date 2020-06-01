@@ -17,30 +17,42 @@ use JsonSerializable;
 
 /**
  * Class AccessControlRule
+ *
+ * @api
  */
 class AccessControlRule implements JsonSerializable
 {
     /**
-     * @var string $accessType The type of the access. Use the constants defined in the AccessType class.
+     * The type of the access. Use the constants defined in the AccessType class.
+     *
+     * @var string $accessType
      *
      * @see AccessType for available types.
      */
     protected $accessType;
+
     /**
-     * @var DateTime $start The start time.
+     * The start time.
+     *
+     * @var DateTime $start
      */
     protected $start;
+
     /**
-     * @var DateTime $end The end time.
+     * The end time.
+     *
+     * @var DateTime $end
      */
     protected $end;
 
     /**
      * AccessControlRule constructor.
      *
-     * @param      $accessType
-     * @param null $start
-     * @param null $end
+     * @param string   $accessType The type of the access. Use the constants defined in the AccessType class.
+     * @param DateTime $start      The start time.
+     * @param DateTime $end        The end time.
+     *
+     * @see AccessType for available types.
      */
     public function __construct($accessType, $start = null, $end = null)
     {
@@ -57,10 +69,12 @@ class AccessControlRule implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return ArrayUtils::safeFilter([
-            'access_type' => $this->accessType,
-            'start'       => Utils::formatDate($this->start),
-            'end'         => Utils::formatDate($this->end),
-        ]);
+        return ArrayUtils::safeFilter(
+            [
+                'access_type' => $this->accessType,
+                'start'       => Utils::formatDate($this->start),
+                'end'         => Utils::formatDate($this->end),
+            ]
+        );
     }
 }

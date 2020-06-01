@@ -23,7 +23,6 @@ use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\AccountConfig;
 use Cloudinary\Configuration\ApiConfig;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Configuration\LoggingConfig;
 use Cloudinary\FileUtils;
 use Cloudinary\JsonUtils;
 use Cloudinary\Log\LoggerTrait;
@@ -93,13 +92,15 @@ class ApiClient
     /**
      * Contains information about SDK user agent. Passed to the Cloudinary servers.
      *
-     * Initialized on the first call to {@see self::userAgent()}
+     * Initialized on the first call to self::userAgent().
      *
      * Sample value: CloudinaryPHP/2.3.4 (PHP 5.6.7)
      *
      * @internal
      *
      * Do not change this value
+     *
+     * @see self::userAgent()
      */
     private static $userAgent = 'CloudinaryPHP/' . Cloudinary::VERSION . ' (PHP ' . PHP_VERSION . ')';
 
@@ -398,7 +399,21 @@ class ApiClient
             ApiUtils::signRequest($parameters, $this->account);
         }
 
-        $fileHandle = FileUtils::handleFile($file);
+        try {
+            $fileHandle = FileUtils::handleFile($file);
+        } catch (GeneralError $e) {
+            $this->getLogger()->critical(
+                'Error while attempting to upload a file',
+                [
+                    'exception' => $e->getMessage(),
+                    'class' => self::class,
+                    'endPoint' => $endPoint,
+                    'file' => $file,
+                    'options' => $options,
+                ]
+            );
+            throw $e;
+        }
 
         if ($fileHandle instanceof UriInterface) {
             return $this->postSingleChunkAsync($endPoint, $fileHandle, $parameters, $options);
@@ -475,10 +490,11 @@ class ApiClient
                 $this->getLogger()->critical(
                     'Single Chunk Async POST request failed',
                     [
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage()
+                        'code'    => $e->getCode(),
+                        'message' => $e->getMessage(),
                     ]
                 );
+
                 return Promise\rejection_for($e);
             }
 
@@ -534,6 +550,7 @@ class ApiClient
     {
         $endPoint = self::finalizeEndPoint($endPoint);
         $this->getLogger()->debug('Making DELETE request', ['method' => 'DELETE', 'endPoint' => $endPoint]);
+
         return $this->handleApiResponse(
             $this->httpClient->delete($endPoint, ['form_params' => $fields])
         );
@@ -555,6 +572,7 @@ class ApiClient
     {
         $endPoint = self::finalizeEndPoint($endPoint);
         $this->getLogger()->debug('Making PUT request', ['method' => 'PUT', 'endPoint' => $endPoint]);
+
         return $this->handleApiResponse(
             $this->httpClient->put($endPoint, ['form_params' => $fields])
         );
@@ -575,6 +593,7 @@ class ApiClient
     {
         $endPoint = self::finalizeEndPoint($endPoint);
         $this->getLogger()->debug("Making async $method request", ['method' => $method, 'endPoint' => $endPoint]);
+
         return $this
             ->httpClient
             ->requestAsync($method, $endPoint, $options)
@@ -590,10 +609,11 @@ class ApiClient
                         $this->getLogger()->critical(
                             'Async request failed',
                             [
-                                'code' => $e->getCode(),
-                                'message' => $e->getMessage()
+                                'code'    => $e->getCode(),
+                                'message' => $e->getMessage(),
                             ]
                         );
+
                         return Promise\rejection_for($e);
                     }
                 },
@@ -601,8 +621,8 @@ class ApiClient
                     $this->getLogger()->critical(
                         'Async request failed',
                         [
-                            'code' => $error->getCode(),
-                            'message' => $error->getMessage()
+                            'code'    => $error->getCode(),
+                            'message' => $error->getMessage(),
                         ]
                     );
                     if ($error instanceof ClientException) {
@@ -633,13 +653,16 @@ class ApiClient
     }
 
     /**
-     * Provides the {@see ApiClient::$userAgent} string that is passed to the Cloudinary servers.
+     * Provides the ApiClient::$userAgent string that is passed to the Cloudinary servers.
      *
-     * Prepends {@see ApiClient::$userPlatform} if it is defined.
+     * Prepends ApiClient::$userPlatform if it is defined.
      *
      * @return string
      *
      * @internal
+     *
+     * @see ApiClient::$userAgent
+     * @see ApiClient::$userPlatform
      */
     protected static function userAgent()
     {
@@ -685,13 +708,13 @@ class ApiClient
                     'Request to Cloudinary server returned an error',
                     [
                         'statusCode' => $statusCode,
-                        'message' => $responseJson['error']['message']
+                        'message'    => $responseJson['error']['message'],
                     ]
                 );
                 throw new $errorClass($responseJson['error']['message']);
             }
             $message = "Server returned unexpected status code - {$response->getStatusCode()} - " .
-                StringUtils::truncateMiddle($response->getBody());
+                       StringUtils::truncateMiddle($response->getBody());
             $this->getLogger()->critical($message);
             throw new GeneralError($message);
         }
@@ -718,8 +741,12 @@ class ApiClient
         try {
             $responseJson = JsonUtils::decode($response->getBody(), true);
         } catch (InvalidArgumentException $iae) {
-            $message = "Error parsing server response ({$response->getStatusCode()}) - {$response->getBody()}." .
-                " Got - {$iae}";
+            $message = sprintf(
+                'Error parsing server response (%s) - %s. Got - %s',
+                $response->getStatusCode(),
+                $response->getBody(),
+                $iae
+            );
             $this->getLogger()->error($message);
             throw new GeneralError($message);
         }

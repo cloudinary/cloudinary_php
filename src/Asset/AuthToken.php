@@ -24,7 +24,9 @@ use UnexpectedValueException;
  * frame. An authentication token is added as query parameters to the delivery URL, and is used to validate
  * authentication before delivering the asset.
  *
- * @see     https://cloudinary.com/documentation/control_access_to_media#token_based_authentication
+ * @see https://cloudinary.com/documentation/control_access_to_media#token_based_authentication
+ *
+ * @api
  */
 class AuthToken
 {

@@ -22,7 +22,7 @@ trait PageNumberTrait
      *
      * @param int $value The number.
      *
-     * @return PageParam
+     * @return static
      */
     public static function number($value)
     {

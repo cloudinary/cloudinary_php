@@ -204,7 +204,6 @@ class StringUtils
         return preg_replace('/([' . preg_quote($unsafeChars, '/') . '])/', '\\\$1', $string);
     }
 
-
     /**
      * Encodes data with URL safe base64.
      *
@@ -222,11 +221,13 @@ class StringUtils
     }
 
     /**
-     * Wrapper around {@see parse_str}, returns query parameters.
+     * Wrapper around parse_str, returns query parameters.
      *
      * @param string $query The query string.
      *
      * @return array Query parameters.
+     *
+     * @see parse_str
      */
     public static function parseQueryString($query)
     {

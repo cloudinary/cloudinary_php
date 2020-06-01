@@ -12,6 +12,8 @@ namespace Cloudinary\Tag;
 
 /**
  * Class ClientHintsMetaTag
+ *
+ * @api
  */
 class ClientHintsMetaTag extends BaseTag
 {
@@ -19,6 +21,7 @@ class ClientHintsMetaTag extends BaseTag
      * @var string NAME Mandatory. The name of the tag.
      */
     const NAME = 'meta';
+
     /**
      * @var bool IS_VOID Indicates whether the tag is a void (self-closed, without body) tag.
      */

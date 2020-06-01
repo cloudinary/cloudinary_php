@@ -40,43 +40,69 @@ class ResponsiveBreakpointsConfig extends BaseConfigSection
     const CACHE_ADAPTER = 'cache_adapter';
 
     /**
-     * @var array An array of static breakpoints to use (overrides Cloudinary-optimized breakpoints)
+     * An array of static breakpoints to use (overrides Cloudinary-optimized breakpoints).
+     *
+     * @var array
      */
     public $breakpoints;
+
     /**
-     * @var int The minimum width needed for this image. Default: 50.
+     * The minimum width needed for this image. Default: 50.
+     *
+     * @var int
      */
     public $minWidth;
+
     /**
-     * @var int The maximum width needed for this image. If specifying a width bigger than the original image,
+     * The maximum width needed for this image. If specifying a width bigger than the original image,
      * the width of the original image is used instead. Default: 1000.
+     *
+     * @var int
      */
     public $maxWidth;
+
     /**
-     * @var int The minimum number of bytes between two consecutive breakpoints (images). Default: 20000.
+     * The minimum number of bytes between two consecutive breakpoints (images). Default: 20000.
+     *
+     * @var int
      */
     public $bytesStep;
+
     /**
-     * @var int The maximum number of breakpoints to find, between 3 and 200. This means that there might be size
+     * The maximum number of breakpoints to find, between 3 and 200. This means that there might be size
      * differences bigger than the given bytes_step value between consecutive images. Default: 20.
+     *
+     * @var int
      */
     public $maxImages;
+
     /**
-     * @var array|string (Optional) The base transformation to first apply to the image before finding the best
-     *      breakpoints. The API accepts a string representation of a chained transformation (same as the regular
-     *      transformation parameter of the upload API).
+     * (Optional) The base transformation to first apply to the image before finding the best breakpoints.
+     * The API accepts a string representation of a chained transformation (same as the regular transformation parameter
+     * of the upload API).
+     *
+     * @var array|string
      */
     public $transformation;
+
     /**
-     * @var bool Defines whether to use responsive breakpoints cache or not.
+     * Defines whether to use responsive breakpoints cache or not.
+     *
+     * @var bool
      */
     public $useCache;
+
     /**
-     * @var bool Defines whether to fetch optimal breakpoints from Cloudinary in case of cache miss.
+     * Defines whether to fetch optimal breakpoints from Cloudinary in case of cache miss.
+     *
+     * @var bool
      */
     public $fetchMissing;
+
     /**
-     * @var CacheAdapter The cache adapter to use to store/retrieve responsive breakpoints
+     * The cache adapter to use to store/retrieve responsive breakpoints.
+     *
+     * @var CacheAdapter
      */
     public $cacheAdapter;
 }

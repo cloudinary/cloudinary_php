@@ -14,6 +14,8 @@ use Exception;
 
 /**
  * Class Error
+ *
+ * @api
  */
 class Error extends Exception
 {

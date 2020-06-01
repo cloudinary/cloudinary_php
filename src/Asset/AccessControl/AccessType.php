@@ -12,6 +12,8 @@ namespace Cloudinary\Asset\AccessControl;
 
 /**
  * Class AccessType
+ *
+ * @api
  */
 class AccessType
 {

@@ -14,10 +14,11 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Parameter\Dimensions\Dimensions;
 use Cloudinary\Transformation\Parameter\Dimensions\DimensionsTrait;
-use Cloudinary\Transformation\Parameter\Dimensions\DPR;
 
 /**
  * Class BaseResizeAction
+ *
+ * @api
  */
 abstract class BaseResizeAction extends BaseAction
 {
@@ -70,25 +71,22 @@ abstract class BaseResizeAction extends BaseAction
      */
     public function ignoreAspectRatio($ignoreAspectRatio = true)
     {
-        if ($ignoreAspectRatio === true) {
-            $this->setFlag(Flag::ignoreAspectRatio());
-        } else {
-            unset($this->flags[Flag::IGNORE_ASPECT_RATIO]); // TODO: do we need this (?), if yes, need to add removeFlag
-        }
-
-        return $this;
+        return $this->setFlag(Flag::ignoreAspectRatio(), $ignoreAspectRatio);
     }
 
     /**
-     * Deliver the image in the specified device pixel ratio.
+     * Sets the resize mode.
      *
-     * @param float|string $dpr Any positive float value.
+     * @param string|FlagParameter $resizeMode The resize mode. Can be set to: relative or regionRelative.
      *
      * @return static
+     *
+     * @see ResizeMode::relative
+     * @see ResizeMode::regionRelative
      */
-    public function dpr($dpr)
+    public function resizeMode($resizeMode)
     {
-        return $this->addParameter(ClassUtils::verifyInstance($dpr, DPR::class));
+        return $this->setFlag($resizeMode);
     }
 
     /**

@@ -17,6 +17,8 @@ namespace Cloudinary\Transformation;
  */
 trait LayerFlagTrait
 {
+    use ResizeModeTrait;
+
     /**
      * Trims pixels according to the transparency levels of a given overlay image.
      *
@@ -39,28 +41,6 @@ trait LayerFlagTrait
     public static function layerApply()
     {
         return new FlagParameter(self::LAYER_APPLY);
-    }
-
-    /**
-     * Modifies percentage-based width & height parameters of overlays and underlays (e.g., 1.0) to be relative to the
-     * overlaid region. Currently regions are only defined when using gravity 'face', 'faces' or 'custom'.
-     *
-     * @return FlagParameter
-     */
-    public static function regionRelative()
-    {
-        return new FlagParameter(self::REGION_RELATIVE);
-    }
-
-    /**
-     * Modifies percentage-based width & height parameters of overlays and underlays (e.g., 1.0) to be relative to the
-     * containing image instead of the added layer.
-     *
-     * @return FlagParameter
-     */
-    public static function relative()
-    {
-        return new FlagParameter(self::RELATIVE);
     }
 
     /**

@@ -19,17 +19,17 @@ use InvalidArgumentException;
 /**
  * Class BaseConfigSection
  *
- * A base class for a single configuration section
+ * A base class for a single configuration section.
  */
 abstract class BaseConfigSection implements ConfigurableInterface
 {
     /**
-     * @var string Placeholder for configuration name, must de defined in each derived class
+     * @var string Placeholder for configuration name, must de defined in each derived class.
      */
     const CONFIG_NAME = 'BASE_CONFIG';
 
     /**
-     * @var array of configuration keys that contain sensitive data that should not be exported (for example api key)
+     * @var array of configuration keys that contain sensitive data that should not be exported (for example api key).
      */
     protected static $sensitiveDataKeys = [];
 
@@ -47,11 +47,11 @@ abstract class BaseConfigSection implements ConfigurableInterface
     /**
      * A getter method for accessing non-public properties.
      *
-     * Used for providing default values for not configured parameters
+     * Used for providing default values for not configured parameters.
      *
-     * @param string $property Property name to get
+     * @param string $property Property name to get.
      *
-     * @return mixed|null Property value
+     * @return mixed|null Property value.
      */
     public function __get($property)
     {
@@ -74,8 +74,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
     /**
      * A setter method for accessing non-public properties.
      *
-     * @param string $name  Property name
-     * @param mixed  $value Property value
+     * @param string $name  Property name.
+     * @param mixed  $value Property value.
      */
     public function __set($name, $value)
     {
@@ -85,8 +85,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
     /**
      * A setter method with chaining for accessing non-public properties.
      *
-     * @param string $name  Property name
-     * @param mixed  $value Property value
+     * @param string $name  Property name.
+     * @param mixed  $value Property value.
      *
      * @return $this
      *
@@ -148,9 +148,9 @@ abstract class BaseConfigSection implements ConfigurableInterface
     /**
      * Checks whether provided keys are configured.
      *
-     * @param array $keys The keys to check
+     * @param array $keys The keys to check.
      *
-     * @throws InvalidArgumentException In case not all keys are set
+     * @throws InvalidArgumentException In case not all keys are set.
      */
     public function assertNotEmpty(array $keys)
     {
@@ -185,12 +185,12 @@ abstract class BaseConfigSection implements ConfigurableInterface
 
 
     /**
-     * Instantiates a new config section using json array as a source
+     * Instantiates a new config section using json array as a source.
      *
-     * @param array $json             Configuration source
-     * @param bool  $includeSensitive Whether to include sensitive keys
+     * @param array $json             Configuration source.
+     * @param bool  $includeSensitive Whether to include sensitive keys.
      *
-     * @return static brand new instance of the configuration section
+     * @return static brand new instance of the configuration section.
      */
     public static function fromJson($json, $includeSensitive = true)
     {
@@ -205,10 +205,10 @@ abstract class BaseConfigSection implements ConfigurableInterface
     }
 
     /**
-     * Instantiates a new config section using Cloudinary url as a source
+     * Instantiates a new config section using Cloudinary url as a source.
      *
-     * @param string $cloudinaryUrl    The Cloudianry url
-     * @param bool   $includeSensitive Whether to include sensitive keys
+     * @param string $cloudinaryUrl    The Cloudinary url.
+     * @param bool   $includeSensitive Whether to include sensitive keys.
      *
      * @return static
      */
@@ -223,7 +223,7 @@ abstract class BaseConfigSection implements ConfigurableInterface
     /**
      * Imports configuration from a json string or an array as a source.
      *
-     * @param string|array $json Configuration json
+     * @param string|array $json Configuration json.
      *
      * @return static
      */
@@ -257,8 +257,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
     /**
      * Serialises configuration section to a string representation.
      *
-     * @param array $excludedKeys     The keys to exclude from export to string
-     * @param bool  $includeEmptyKeys Whether to include keys with empty(null) values
+     * @param array $excludedKeys     The keys to exclude from export to string.
+     * @param bool  $includeEmptyKeys Whether to include keys with empty(null) values.
      *
      * @return string
      */
@@ -283,14 +283,14 @@ abstract class BaseConfigSection implements ConfigurableInterface
 
 
     /**
-     * Serialises configuration section to a json array
+     * Serialises configuration section to a json array.
      *
-     * @param bool $includeSensitive     Whether to include sensitive keys during serialisation
-     * @param bool $includeEmptyKeys     Whether to include keys without values
+     * @param bool $includeSensitive     Whether to include sensitive keys during serialisation.
+     * @param bool $includeEmptyKeys     Whether to include keys without values.
      *
-     * @param bool $includeEmptySections Whether to include sections without keys with non-empty values
+     * @param bool $includeEmptySections Whether to include sections without keys with non-empty values.
      *
-     * @return mixed data which can be serialized by json_encode
+     * @return mixed data which can be serialized by json_encode.
      */
     public function jsonSerialize($includeSensitive = true, $includeEmptyKeys = false, $includeEmptySections = false)
     {

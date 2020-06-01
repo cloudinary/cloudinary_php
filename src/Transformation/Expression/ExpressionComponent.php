@@ -26,10 +26,12 @@ class ExpressionComponent extends BaseExpressionComponent
      * @var mixed $leftOperand The left operand.
      */
     protected $leftOperand;
+
     /**
      * @var string $operator The operator
      */
     protected $operator;
+
     /**
      * @var mixed The right operand.
      */
@@ -71,7 +73,6 @@ class ExpressionComponent extends BaseExpressionComponent
         $this->rightOperand = $rightOperand;
     }
 
-
     /**
      * Serializes to string.
      *
@@ -84,7 +85,6 @@ class ExpressionComponent extends BaseExpressionComponent
             [$this->leftOperand, $this->operator, $this->rightOperand]
         );
     }
-
 
     /**
      * Serializes to json.

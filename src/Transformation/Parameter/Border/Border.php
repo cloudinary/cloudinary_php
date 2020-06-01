@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Argument\NamedColorTrait;
+use Cloudinary\Transformation\Argument\ColorTrait;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
 
@@ -18,6 +18,8 @@ use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
  * Class Border
  *
  * @property BorderValue $value
+ *
+ * @api
  */
 class Border extends BaseParameter
 {
@@ -28,7 +30,8 @@ class Border extends BaseParameter
      */
     protected static $key = 'bo';
 
-    use NamedColorTrait;
+    use BorderStyleTrait;
+    use ColorTrait;
     use ColorValueTrait;
 
     /**

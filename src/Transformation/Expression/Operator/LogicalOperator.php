@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation\Expression;
 
 /**
  * Class LogicalOperator
+ *
+ * @api
  */
 class LogicalOperator extends BaseOperator
 {

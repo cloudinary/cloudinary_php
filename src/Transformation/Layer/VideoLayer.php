@@ -14,6 +14,8 @@ use Cloudinary\ClassUtils;
 
 /**
  * Class VideoLayer
+ *
+ * @api
  */
 class VideoLayer extends AssetBasedLayer
 {

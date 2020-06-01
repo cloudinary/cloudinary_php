@@ -13,7 +13,7 @@ namespace Cloudinary\Test\Transformation\Image;
 use Cloudinary\Asset\Image;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\BlendMode;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\TextStyle;
 use Cloudinary\Transformation\Crop;
@@ -39,7 +39,7 @@ final class OverUnderlayTest extends TestCase
 
         $t->resize(Crop::thumbnail(100, 200, Gravity::auto(FocalGravity::ADVANCED_EYES)))
           ->adjust(Adjust::hue(99))
-          ->adjust(Adjust::replaceColor(NamedColor::PINK, 50, NamedColor::CYAN));
+          ->adjust(Adjust::replaceColor(Color::PINK, 50, Color::CYAN));
 
         $tExpected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan';
 

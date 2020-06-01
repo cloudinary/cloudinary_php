@@ -10,23 +10,25 @@
 
 namespace Cloudinary\Test\Transformation\Video\Audio;
 
+use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\AudioFrequency;
-use Cloudinary\Transformation\FPS;
+use Cloudinary\Transformation\AutoBackground;
+use Cloudinary\Transformation\Background;
+use Cloudinary\Transformation\Fps;
 use Cloudinary\Transformation\KeyframeInterval;
 use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class VideoAudioTest
  */
-final class VideoTest extends TestCase
+final class VideoTest extends UnitTestCase
 {
     public function testAudioFrequency()
     {
         $this->assertEquals(
             'af_44100',
-            (string)AudioFrequency::af44100()
+            (string)AudioFrequency::freq44100()
         );
     }
 
@@ -81,13 +83,13 @@ final class VideoTest extends TestCase
             ['-24', 'fps_-24'],
             ['$v', 'fps_$v'],
             [[24, 29.97], 'fps_24-29.97'],
-            [['24', '$v'], 'fps_24-$v']
+            [['24', '$v'], 'fps_24-$v'],
         ];
 
         foreach ($fpsTestValues as $value) {
             $this->assertEquals(
                 $value[1],
-                (string)FPS::fromParams($value[0])
+                (string)Fps::fromParams($value[0])
             );
         }
     }
@@ -109,5 +111,13 @@ final class VideoTest extends TestCase
                 (string)new KeyframeInterval($value[0])
             );
         }
+    }
+
+    public function testBlurredBackground()
+    {
+        $this->assertStrEquals(
+            'b_blurred:400:15',
+            Background::blurred()->intensity(400)->brightness(15)
+        );
     }
 }

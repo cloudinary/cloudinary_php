@@ -26,6 +26,8 @@ use InvalidArgumentException;
  * Class AssetTransformation
  *
  * A.K.A EagerTransformation
+ *
+ * @api
  */
 class AssetTransformation implements ComponentInterface
 {

@@ -15,6 +15,8 @@ use Cloudinary\Configuration\Configuration;
 
 /**
  * Trait ImageTagDeliveryTypeTrait
+ *
+ * @api
  */
 trait ImageTagDeliveryTypeTrait
 {

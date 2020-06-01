@@ -14,6 +14,14 @@ use InvalidArgumentException;
 
 /**
  * Class ViesusCorrect
+ *
+ * Enhances an image to its best visual quality with the Viesus Automatic Image Enhancement add-on.
+ *
+ * For details, see the Viesus Automatic Image Enhancement add-on documentation.
+ *
+ * @api
+ *
+ * @see https://cloudinary.com/documentation/viesus_automatic_image_enhancement_addon
  */
 class ViesusCorrect extends LimitedEffectParam
 {
@@ -23,6 +31,7 @@ class ViesusCorrect extends LimitedEffectParam
      * Enhances the image without correcting for red eye.
      */
     const NO_REDEYE = 'no_redeye';
+
     /**
      * Enhances the image and also applies saturation to the skin tones in the image.
      */

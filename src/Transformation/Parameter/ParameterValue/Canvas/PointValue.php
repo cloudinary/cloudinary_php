@@ -21,6 +21,7 @@ class PointValue extends BaseComponent
      * @var int|string $x The x dimension of the point.
      */
     protected $x;
+
     /**
      * @var int|string $y The y dimension of the point.
      */
@@ -77,7 +78,7 @@ class PointValue extends BaseComponent
         return "{$this->x}:{$this->y}";
     }
 
-     /**
+    /**
      * Serializes to json.
      *
      * @return mixed

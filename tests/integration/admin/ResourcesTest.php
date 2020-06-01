@@ -12,10 +12,10 @@ namespace Cloudinary\Test\Api\Admin;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\NotFound;
-use Cloudinary\Asset\ModerationStatus;
-use Cloudinary\Asset\ModerationType;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
+use Cloudinary\Asset\ModerationStatus;
+use Cloudinary\Asset\ModerationType;
 use Cloudinary\Test\Api\IntegrationTestCase;
 use Cloudinary\Test\Cloudinary\AssetTestCase;
 use Exception;
@@ -25,7 +25,7 @@ use Exception;
  */
 final class ResourcesTest extends IntegrationTestCase
 {
-    const TRANSFORMATION = ['width' => 400, 'height' => 400, 'crop' => 'crop'];
+    const TRANSFORMATION           = ['width' => 400, 'height' => 400, 'crop' => 'crop'];
     const TRANSFORMATION_AS_STRING = 'c_crop,h_400,w_400';
 
     private static $PUBLIC_ID_TEST;
@@ -55,46 +55,48 @@ final class ResourcesTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$UNIQUE_PREFIX = 'resources_prefix_' . self::$UNIQUE_TEST_ID;
-        self::$PUBLIC_ID_TEST = self::$UNIQUE_PREFIX . '_public_id';
-        self::$PUBLIC_ID_TEST_2 = 'resources_public_id_2' . self::$UNIQUE_TEST_ID;
-        self::$DELETE_DERIVED_IMAGE_PUBLIC_ID = 'resources_delete_derived_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$MULTI_DELETE_1_PUBLIC_ID = 'resources_multi_delete_1_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$MULTI_DELETE_2_PUBLIC_ID = 'resources_multi_delete_2_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$MULTI_DELETE_OPTION_1_PUBLIC_ID = 'resources_multi_delete_options_1_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$MULTI_DELETE_OPTION_2_PUBLIC_ID = 'resources_multi_delete_options_2_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$DELETE_SINGLE_PUBLIC_ID = 'resources_delete_single_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RESTORE_PUBLIC_ID = 'resources_restore_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$UNIQUE_CONTEXT_KEY = 'resources_context_key_' . self::$UNIQUE_TEST_ID;
-        self::$UNIQUE_CONTEXT_VALUE = 'resources_context_value_' . self::$UNIQUE_TEST_ID;
-        self::$UNIQUE_CONTEXT = self::$UNIQUE_CONTEXT_KEY . '=' . self::$UNIQUE_CONTEXT_VALUE;
-        self::$UNIQUE_TEST_TAG_DELETE = 'resources_delete_' . self::$UNIQUE_TEST_TAG;
-        self::$UNIQUE_TEST_TAG_DELETE_OPTIONS = 'resources_delete_by_options_' . self::$UNIQUE_TEST_TAG;
-        self::$UNIQUE_TEST_TAG_RESTORE = 'resources_restore_' . self::$UNIQUE_TEST_TAG;
+        self::$UNIQUE_PREFIX                      = 'resources_prefix_' . self::$UNIQUE_TEST_ID;
+        self::$PUBLIC_ID_TEST                     = self::$UNIQUE_PREFIX . '_public_id';
+        self::$PUBLIC_ID_TEST_2                   = 'resources_public_id_2' . self::$UNIQUE_TEST_ID;
+        self::$DELETE_DERIVED_IMAGE_PUBLIC_ID     = 'resources_delete_derived_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$MULTI_DELETE_1_PUBLIC_ID           = 'resources_multi_delete_1_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$MULTI_DELETE_2_PUBLIC_ID           = 'resources_multi_delete_2_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$MULTI_DELETE_OPTION_1_PUBLIC_ID    = 'resources_multi_delete_options_1_public_id_' .
+                                                    self::$UNIQUE_TEST_ID;
+        self::$MULTI_DELETE_OPTION_2_PUBLIC_ID    = 'resources_multi_delete_options_2_public_id_' .
+                                                    self::$UNIQUE_TEST_ID;
+        self::$DELETE_SINGLE_PUBLIC_ID            = 'resources_delete_single_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$RESTORE_PUBLIC_ID                  = 'resources_restore_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$UNIQUE_CONTEXT_KEY                 = 'resources_context_key_' . self::$UNIQUE_TEST_ID;
+        self::$UNIQUE_CONTEXT_VALUE               = 'resources_context_value_' . self::$UNIQUE_TEST_ID;
+        self::$UNIQUE_CONTEXT                     = self::$UNIQUE_CONTEXT_KEY . '=' . self::$UNIQUE_CONTEXT_VALUE;
+        self::$UNIQUE_TEST_TAG_DELETE             = 'resources_delete_' . self::$UNIQUE_TEST_TAG;
+        self::$UNIQUE_TEST_TAG_DELETE_OPTIONS     = 'resources_delete_by_options_' . self::$UNIQUE_TEST_TAG;
+        self::$UNIQUE_TEST_TAG_RESTORE            = 'resources_restore_' . self::$UNIQUE_TEST_TAG;
         self::$UNIQUE_TEST_TAG_TO_ONE_IMAGE_ASSET = 'resources_unique_tag_to_one_image_asset_' . self::$UNIQUE_TEST_TAG;
-        self::$UNIQUE_DELETE_PREFIX = 'resources_delete_by_prefix_' . self::$UNIQUE_TEST_ID;
-        self::$UNIQUE_DELETE_PREFIX_PUBLIC_ID = self::$UNIQUE_DELETE_PREFIX . '_public_id';
+        self::$UNIQUE_DELETE_PREFIX               = 'resources_delete_by_prefix_' . self::$UNIQUE_TEST_ID;
+        self::$UNIQUE_DELETE_PREFIX_PUBLIC_ID     = self::$UNIQUE_DELETE_PREFIX . '_public_id';
 
         self::uploadTestResourceImage(
             [
-                'tags' => [self::$UNIQUE_TEST_TAG_TO_ONE_IMAGE_ASSET],
-                'context' => self::$UNIQUE_CONTEXT,
+                'tags'              => [self::$UNIQUE_TEST_TAG_TO_ONE_IMAGE_ASSET],
+                'context'           => self::$UNIQUE_CONTEXT,
                 ModerationType::KEY => ModerationType::MANUAL,
-                'public_id' => self::$PUBLIC_ID_TEST
+                'public_id'         => self::$PUBLIC_ID_TEST,
             ]
         );
         self::uploadTestResourceImage(
             [
                 'public_id' => self::$RESTORE_PUBLIC_ID,
-                'tags' => [self::$UNIQUE_TEST_TAG_RESTORE],
-                'backup' => true
+                'tags'      => [self::$UNIQUE_TEST_TAG_RESTORE],
+                'backup'    => true,
             ]
         );
         self::uploadTestResourceImage(['public_id' => self::$MULTI_DELETE_OPTION_1_PUBLIC_ID]);
         self::uploadTestResourceImage(
             [
                 DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY,
-                'public_id' => self::$MULTI_DELETE_OPTION_2_PUBLIC_ID
+                'public_id'       => self::$MULTI_DELETE_OPTION_2_PUBLIC_ID,
             ]
         );
         self::uploadTestResourceImage(['public_id' => self::$DELETE_DERIVED_IMAGE_PUBLIC_ID]);
@@ -157,7 +159,7 @@ final class ResourcesTest extends IntegrationTestCase
             $result['resources'][0],
             [
                 DeliveryType::KEY => DeliveryType::UPLOAD,
-                AssetType::KEY => AssetType::IMAGE
+                AssetType::KEY    => AssetType::IMAGE,
             ]
         );
     }
@@ -170,7 +172,7 @@ final class ResourcesTest extends IntegrationTestCase
         $result = self::$adminApi->resources(
             [
                 DeliveryType::KEY => DeliveryType::UPLOAD,
-                'prefix' => self::$UNIQUE_PREFIX
+                'prefix'          => self::$UNIQUE_PREFIX,
             ]
         );
 
@@ -178,9 +180,9 @@ final class ResourcesTest extends IntegrationTestCase
         self::assertValidResource(
             $result['resources'][0],
             [
-                'public_id' => self::$PUBLIC_ID_TEST,
+                'public_id'       => self::$PUBLIC_ID_TEST,
                 DeliveryType::KEY => DeliveryType::UPLOAD,
-                AssetType::KEY => AssetType::IMAGE
+                AssetType::KEY    => AssetType::IMAGE,
             ]
         );
     }
@@ -196,7 +198,7 @@ final class ResourcesTest extends IntegrationTestCase
             $result['resources'][0],
             [
                 DeliveryType::KEY => DeliveryType::FACEBOOK,
-                AssetType::KEY => AssetType::IMAGE
+                AssetType::KEY    => AssetType::IMAGE,
             ]
         );
     }
@@ -232,8 +234,8 @@ final class ResourcesTest extends IntegrationTestCase
         self::assertValidResource(
             $result['resources'][0],
             [
-                'public_id' => self::$PUBLIC_ID_TEST,
-                AssetType::KEY => AssetType::IMAGE
+                'public_id'    => self::$PUBLIC_ID_TEST,
+                AssetType::KEY => AssetType::IMAGE,
             ]
         );
         $this->assertCount(1, $result['resources']);
@@ -333,7 +335,7 @@ final class ResourcesTest extends IntegrationTestCase
      */
     public function testListImagesApprovedByWebPurify()
     {
-        if (!self::shouldTestAddOn('webpurify')) {
+        if (! self::shouldTestAddOn('webpurify')) {
             $this->markTestSkipped('Skipping WebPurify test');
         }
 
@@ -455,7 +457,7 @@ final class ResourcesTest extends IntegrationTestCase
         $result = self::$adminApi->deleteResources(
             [
                 self::$MULTI_DELETE_1_PUBLIC_ID,
-                self::$MULTI_DELETE_2_PUBLIC_ID
+                self::$MULTI_DELETE_2_PUBLIC_ID,
             ]
         );
 
@@ -480,7 +482,7 @@ final class ResourcesTest extends IntegrationTestCase
             [
                 self::$MULTI_DELETE_OPTION_1_PUBLIC_ID,
                 self::$MULTI_DELETE_OPTION_2_PUBLIC_ID,
-                'nonexistent_id'
+                'nonexistent_id',
             ],
             [DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY]
         );
@@ -490,9 +492,9 @@ final class ResourcesTest extends IntegrationTestCase
         $result = self::$adminApi->resource(self::$MULTI_DELETE_OPTION_1_PUBLIC_ID);
         self::assertValidResource($result, [AssetType::KEY => AssetType::IMAGE]);
 
-        $result = self::$adminApi->resources(
+        $result = self::$adminApi->resourcesByIds(
+            self::$MULTI_DELETE_OPTION_2_PUBLIC_ID,
             [
-                'public_ids' => self::$MULTI_DELETE_OPTION_2_PUBLIC_ID,
                 DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY
             ]
         );
@@ -526,7 +528,7 @@ final class ResourcesTest extends IntegrationTestCase
             self::$DELETE_DERIVED_IMAGE_PUBLIC_ID,
             [
                 DeliveryType::KEY => DeliveryType::UPLOAD,
-                'eager' => [self::TRANSFORMATION]
+                'eager'           => [self::TRANSFORMATION],
             ]
         );
 
@@ -535,10 +537,10 @@ final class ResourcesTest extends IntegrationTestCase
             $result['eager'][0],
             [
                 'transformation' => self::TRANSFORMATION_AS_STRING,
-                'format' => AssetTestCase::IMG_EXT_GIF,
-                'bytes' => 43,
-                'width' => 1,
-                'height' => 1
+                'format'         => AssetTestCase::IMG_EXT_GIF,
+                'bytes'          => 43,
+                'width'          => 1,
+                'height'         => 1,
             ]
         );
 
@@ -549,15 +551,15 @@ final class ResourcesTest extends IntegrationTestCase
             $resource['derived'][0],
             [
                 'transformation' => self::TRANSFORMATION_AS_STRING,
-                'format' => AssetTestCase::IMG_EXT_GIF,
-                'bytes' => 43,
+                'format'         => AssetTestCase::IMG_EXT_GIF,
+                'bytes'          => 43,
             ]
         );
 
         $result = self::$adminApi->deleteResources(
             [self::$DELETE_DERIVED_IMAGE_PUBLIC_ID],
             [
-                'keep_original' => true
+                'keep_original' => true,
             ]
         );
 
@@ -576,25 +578,25 @@ final class ResourcesTest extends IntegrationTestCase
      */
     public function testDeleteResourcesByOptions()
     {
-        if (!self::shouldRunDestructiveTests()) {
+        if (! self::shouldRunDestructiveTests()) {
             self::markTestSkipped('Skipping DeleteResourcesByOptions test');
         }
 
         $resource = self::uploadTestResourceImage(
             [
                 DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY,
-                'tags' => [self::$UNIQUE_TEST_TAG_DELETE_OPTIONS]
+                'tags'            => [self::$UNIQUE_TEST_TAG_DELETE_OPTIONS],
             ]
         );
         self::uploadTestResourceImage(
             [
                 DeliveryType::KEY => DeliveryType::UPLOAD,
-                'tags' => [self::$UNIQUE_TEST_TAG_DELETE_OPTIONS]
+                'tags'            => [self::$UNIQUE_TEST_TAG_DELETE_OPTIONS],
             ]
         );
         $result = self::$adminApi->deleteAllResources(
             [
-                DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY
+                DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY,
             ]
         );
 

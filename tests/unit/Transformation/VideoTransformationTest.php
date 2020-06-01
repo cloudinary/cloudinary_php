@@ -10,7 +10,9 @@
 
 namespace Cloudinary\Test\Transformation\Video;
 
+use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Effect;
+use Cloudinary\Transformation\Fps;
 use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Parameter\Dimensions\Width;
 use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
@@ -20,12 +22,11 @@ use Cloudinary\Transformation\SubtitlesLayer;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\VideoEffect;
 use Cloudinary\Transformation\VideoTransformation;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class VideoTransformationTest
  */
-final class VideoTransformationTest extends TestCase
+final class VideoTransformationTest extends UnitTestCase
 {
     public function testVideoTransformation()
     {
@@ -141,6 +142,12 @@ final class VideoTransformationTest extends TestCase
             (string)(new VideoTransformation())
                 ->fps('25-')
         );
+
+        $this->assertEquals(
+            'fps_25',
+            (string)(new VideoTransformation())
+                ->fps(new Fps(25))
+        );
     }
 
     public function testVideoTransformationKeyframeInterval()
@@ -179,6 +186,15 @@ final class VideoTransformationTest extends TestCase
             'br_2m',
             (string)(new VideoTransformation())
                 ->bitRate('2m')
+        );
+    }
+
+    public function testVideoTransformationVariousParams()
+    {
+        $this->assertStrEquals(
+            'vs_2',
+            (new VideoTransformation())
+                ->videoSampling(2)
         );
     }
 

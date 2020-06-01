@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Effect
+ *
+ * @api
  */
 abstract class ImageEffect
 {

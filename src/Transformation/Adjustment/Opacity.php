@@ -14,6 +14,8 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
  * Class Opacity
+ *
+ * @api
  */
 class Opacity extends BaseParameter
 {

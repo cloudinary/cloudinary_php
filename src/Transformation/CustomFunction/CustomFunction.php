@@ -15,6 +15,8 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
  * Class CustomFunction
+ *
+ * @api
  */
 class CustomFunction extends BaseParameter
 {
@@ -24,20 +26,34 @@ class CustomFunction extends BaseParameter
      * @var string $name Serialisation name.
      */
     protected static $name = 'custom_function';
+
     /**
      * @var string $key Serialization key.
      */
-    protected static $key  = 'fn';
+    protected static $key = 'fn';
 
-    const WASM   = 'wasm';
+    /**
+     * WASM.
+     *
+     * @var string
+     */
+    const WASM = 'wasm';
+    /**
+     * Remote.
+     *
+     * @var string
+     */
     const REMOTE = 'remote';
 
     /**
      * CustomFunction constructor.
      *
      * @param string $source Source of this custom function
-     * @param string $type   Type of this custom function ({@see CustomFunction::REMOTE} or {@see CustomFunction::WASM})
+     * @param string $type   The type of custom function (CustomFunction::REMOTE or CustomFunction::WASM).
      * @param bool   $isPre  Preprocess custom function. Only remote functions are supported for preprocess
+     *
+     * @see CustomFunction::REMOTE
+     * @see CustomFunction::WASM
      */
     public function __construct($source, $type = null, $isPre = false)
     {

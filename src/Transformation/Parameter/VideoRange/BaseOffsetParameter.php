@@ -78,7 +78,6 @@ abstract class BaseOffsetParameter extends BaseParameter
         return self::normRangeValue($value);
     }
 
-
     /**
      * Serializes to string.
      *

@@ -6,3 +6,4 @@ phpdocs/
 .idea
 dbfile.db
 *.bak
+sami.phar

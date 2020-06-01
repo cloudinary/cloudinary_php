@@ -14,6 +14,8 @@ use Cloudinary\Transformation\Argument\Gradient;
 
 /**
  * Class AutoBackground
+ *
+ * @api
  */
 class AutoBackground extends Background
 {
@@ -21,15 +23,18 @@ class AutoBackground extends Background
      * Selects the predominant color while taking only the image border pixels into account. (Server default)
      */
     const BORDER = 'border';
+
     /**
      * Selects the predominant color while taking all pixels in the image into account.
      */
     const PREDOMINANT = 'predominant';
+
     /**
      * Selects the strongest contrasting color to the predominant color while taking only the image border pixels
      * into account.
      */
     const BORDER_CONTRAST = 'border_contrast';
+
     /**
      * Selects the strongest contrasting color to the predominant color while taking all pixels in the image into
      * account.

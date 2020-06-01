@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Trait LayerFlagBuilderTrait
+ *
+ * @api
  */
 trait LayerFlagBuilderTrait
 {

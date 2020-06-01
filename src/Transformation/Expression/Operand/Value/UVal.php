@@ -14,6 +14,8 @@ use Cloudinary\StringUtils;
 
 /**
  * Class UVal
+ *
+ * @api
  */
 class UVal extends Expression
 {
@@ -56,7 +58,6 @@ class UVal extends Expression
         return self::uVal($value);
     }
 
-
     /**
      * The string value expression component.
      *
@@ -86,7 +87,6 @@ class UVal extends Expression
      */
     public static function stringArray($array)
     {
-
         return self::string(implode(self::STRING_ARR_DELIM, $array));
     }
 

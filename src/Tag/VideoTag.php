@@ -26,6 +26,8 @@ use Cloudinary\Transformation\VideoTransformationTrait;
 
 /**
  * Class VideoTag
+ *
+ * @api
  */
 class VideoTag extends BaseTag implements VideoTransformationInterface
 {

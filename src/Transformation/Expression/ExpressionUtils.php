@@ -14,14 +14,16 @@ use Cloudinary\Utils;
 
 /**
  * Class ExpressionUtils
+ *
+ * @internal
  */
 class ExpressionUtils
 {
     /**
      * @var array $OPERATORS A list of supported operators (arithmetic, logical, relational).
      */
-
     private static $OPERATORS;
+
     /**
      * @var array $PREDEFINED_VARIABLES A list of supported predefined variables.
      */
@@ -70,7 +72,9 @@ class ExpressionUtils
     }
 
     /**
-     *  Initializes {@see ExpressionUtils::$IF_REPLACE_RE} static member lazily
+     * Initializes ExpressionUtils::$IF_REPLACE_RE static member lazily
+     *
+     * @see ExpressionUtils::$IF_REPLACE_RE
      */
     private static function lazyInit()
     {

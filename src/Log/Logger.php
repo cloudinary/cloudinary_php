@@ -22,10 +22,13 @@ use Monolog\Logger as Monolog;
 
 /**
  * Class Logger
+ *
+ * @api
  */
 class Logger
 {
     const LOGGER_NAME = 'cloudinary';
+
     /**
      * @var Monolog $entity
      */

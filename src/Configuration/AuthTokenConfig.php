@@ -12,6 +12,8 @@ namespace Cloudinary\Configuration;
 
 /**
  * Class AuthTokenConfig
+ *
+ * @api
  */
 class AuthTokenConfig extends BaseConfigSection
 {
@@ -28,32 +30,51 @@ class AuthTokenConfig extends BaseConfigSection
     //protected static $sensitiveDataKeys = [self::KEY];
 
     /**
-     * @var string (Required) - the token must be signed with the encryption key received from Cloudinary.
+     * (Required) – the token must be signed with the encryption key received from Cloudinary.
+     *
+     * @var string
      */
     public $key;
+
     /**
-     * @var string (Optional) - only this IP address can access the resource.
+     * (Optional) – only this IP address can access the resource.
+     *
+     * @var string
      */
     public $ip;
+
     /**
-     * @var string (Optional) – an Access Control List for limiting the allowed URL path to a specified pattern (e.g.,
-     *      /video/authenticated/*). The pattern can include any of Cloudinary's transformations to also apply to the
-     *      delivered assets. Note that if you add an overlay (e.g., for a watermark), you should also include the
-     *      fl_layer_apply flag to ensure the layer cannot be modified. This parameter is useful for generating a token
-     *      that can be added to a number of different URLs that share a common transformation. Without this parameter,
-     *      the pattern defaults to the full URL path of the requested asset.
+     * (Optional) – an Access Control List for limiting the allowed URL path to a specified pattern (e.g.,
+     * /video/authenticated/*).
+     *
+     * The pattern can include any of Cloudinary's transformations to also apply to the
+     * delivered assets. Note that if you add an overlay (e.g., for a watermark), you should also include the
+     * fl_layer_apply flag to ensure the layer cannot be modified. This parameter is useful for generating a token
+     * that can be added to a number of different URLs that share a common transformation. Without this parameter,
+     * the pattern defaults to the full URL path of the requested asset.
+     *
+     * @var string
      */
     public $acl;
+
     /**
-     * @var int (Optional) - timestamp of the UNIX time when the URL becomes valid. Default value: the current time.
+     * (Optional) – timestamp of the UNIX time when the URL becomes valid. Default value: the current time.
+     *
+     * @var int
      */
     public $startTime;
+
     /**
-     * @var int (Optional) – the duration that the URL is valid in seconds (counted from start_time).
+     * (Optional) – the duration that the URL is valid in seconds (counted from start_time).
+     *
+     * @var int
      */
     public $expiration;
+
     /**
-     * @var int (Optional) - timestamp in UNIX time when the URL expires.
+     * (Optional) – timestamp in UNIX time when the URL expires.
+     *
+     * @var int
      */
     public $duration;
 }

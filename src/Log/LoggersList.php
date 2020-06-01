@@ -14,6 +14,7 @@ use Cloudinary\Configuration\LoggingConfig;
 
 /**
  * Class LoggersList
+ *
  */
 class LoggersList
 {

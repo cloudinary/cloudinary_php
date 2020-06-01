@@ -1,6 +1,6 @@
 html, body, #content {
     height: 100%;
-    font-family: "Montserrat",  Helvetica,  Arial,  sans-serif;
+    font-family: "Montserrat", Helvetica, Arial, sans-serif;
 }
 
 /* Cloudinary overrides of bootstrap styles*/
@@ -8,6 +8,7 @@ a {
     color: #F96726;
     text-decoration: none;
 }
+
 a:hover, a:focus {
     color: #F96726;
     text-decoration: underline;
@@ -25,23 +26,23 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     color: #5bc7ef;
 }
 
-.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
     color: #d44e12;
 }
 
-.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus {
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
     color: #F96726;
 }
 
-.pagination>li>a, .pagination>li>span {
+.pagination > li > a, .pagination > li > span {
     color: #F96726;
 }
 
-.pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
     color: #d44e12;
 }
 
-.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
     background-color: #F96726;
     border-color: #F96726;
 }
@@ -59,6 +60,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 #site-nav.navbar-default .navbar-brand,
 #site-nav.navbar-default .navbar-nav > li > a {
     color: #000;
+}
+
+.navbar-brand {
+    background-image: url("https://res.cloudinary.com/cloudinary/image/upload/c_scale,w_30/v1/logo/for_blue_bg/cloudinary_icon_for_blue_bg.png");
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 40px;
 }
 
 #site-nav.navbar-default .navbar-nav > li > a:hover {
@@ -87,6 +95,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .namespace-breadcrumbs .breadcrumb > li + li:before {
     content: "";
 }
+
 .namespace-breadcrumbs .breadcrumb > .backslash {
     color: #ccc;
 }
@@ -116,6 +125,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     #left-column {
         display: none;
     }
+
     #right-column {
         width: 100%;
         margin-left: 0;
@@ -126,11 +136,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 #api-tree {
     background: linear-gradient(
-        to bottom,
-        #FFF,
-        #FFF 50%,
-        #f0f2f5 50%,
-        #f0f2f5
+            to bottom,
+            #FFF,
+            #FFF 50%,
+            #f0f2f5 50%,
+            #f0f2f5
     );
     background-size: 100% 56px;
     overflow: auto;
@@ -248,7 +258,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 8px;
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     padding: 8px;
 }
 
@@ -415,7 +425,7 @@ code {
     padding-bottom: 0.2em;
     margin: 0;
     font-size: 85%;
-    background-color: rgba(0,0,0,0.04);
+    background-color: rgba(0, 0, 0, 0.04);
     border-radius: 3px;
     color: #333;
 }

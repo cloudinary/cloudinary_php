@@ -12,13 +12,18 @@ namespace Cloudinary\Configuration;
 
 /**
  * Trait UrlConfigTrait
+ *
+ * @api
  */
 trait UrlConfigTrait
 {
     /**
-     * @param bool $cdnSubdomain Whether to automatically build URLs with multiple CDN sub-domains.
+     * Whether to automatically build URLs with multiple CDN sub-domains.
+     *
+     * @param bool $cdnSubdomain
      *
      * @return $this
+     *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#multiple_sub_domains
      */
     public function cdnSubdomain($cdnSubdomain = true)
@@ -27,7 +32,9 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $secureCdnSubdomain Secure CDN sub-domain.
+     * Whether to use secure CDN sub-domain.
+     *
+     * @param bool $secureCdnSubdomain
      *
      * @return $this
      */
@@ -37,9 +44,11 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param string $cname The custom domain name to use for building HTTP URLs.
-     *                      Relevant only for Advanced plan users that have a private CDN distribution and a custom
-     *                      CNAME
+     * The custom domain name to use for building HTTP URLs.
+     *
+     * Relevant only for Advanced plan users that have a private CDN distribution and a custom CNAME.
+     *
+     * @param string $cname
      *
      * @return $this
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
@@ -51,7 +60,9 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $secure Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
+     * Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
+     *
+     * @param bool $secure
      *
      * @return $this
      */
@@ -61,8 +72,10 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param string $secureDistribution The domain name of the CDN distribution to use for building HTTPS URLs.
-     *                                   Relevant only for Advanced plan users that have a private CDN distribution.
+     * The domain name of the CDN distribution to use for building HTTPS URLs.
+     * Relevant only for Advanced plan users that have a private CDN distribution.
+     *
+     * @param string $secureDistribution
      *
      * @return $this
      *
@@ -75,8 +88,9 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $privateCdn Set this parameter to true if you are an Advanced plan user with a private CDN
-     *                         distribution
+     * Set this parameter to true if you are an Advanced plan user with a private CDN distribution.
+     *
+     * @param bool $privateCdn
      *
      * @return $this
      *
@@ -89,7 +103,9 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $signUrl Set to true to create a signed Cloudinary URL
+     * Set to true to create a signed Cloudinary URL.
+     *
+     * @param bool $signUrl
      *
      * @return $this
      */
@@ -99,7 +115,23 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $shorten Set to true to use shorten asset type
+     * Setting both this and signUrl to true will sign the URL using the first 32 characters of a SHA-256 hash.
+     *
+     * @param bool $longUrlSignature
+     *
+     * @return $this
+     *
+     * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
+     */
+    public function longUrlSignature($longUrlSignature = true)
+    {
+        return $this->setUrlConfig(UrlConfig::LONG_URL_SIGNATURE, $longUrlSignature);
+    }
+
+    /**
+     * Set to true to use shorten asset type.
+     *
+     * @param bool $shorten
      *
      * @return $this
      */
@@ -109,7 +141,9 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $useRootPath Set to true to omit type and resource_type in the URL
+     * Set to true to omit type and resource_type in the URL.
+     *
+     * @param bool $useRootPath
      *
      * @return $this
      *
@@ -122,7 +156,9 @@ trait UrlConfigTrait
     }
 
     /**
-     * @param bool $forceVersion Set to false to omit default version string for assets in folders in the delivery URL
+     * Set to false to omit default version string for assets in folders in the delivery URL.
+     *
+     * @param bool $forceVersion
      *
      * @return $this
      */

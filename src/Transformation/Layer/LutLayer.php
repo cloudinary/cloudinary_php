@@ -14,6 +14,8 @@ use Cloudinary\ClassUtils;
 
 /**
  * Class LutLayer
+ *
+ * @api
  */
 class LutLayer extends AssetBasedLayer
 {

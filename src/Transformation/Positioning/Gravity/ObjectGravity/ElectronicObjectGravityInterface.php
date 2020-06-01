@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface ElectronicObjectGravityInterface
+ *
+ * @api
  */
 interface ElectronicObjectGravityInterface
 {

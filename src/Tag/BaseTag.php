@@ -15,10 +15,12 @@ use Cloudinary\Asset\AssetParams;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\ParametersAction;
 use Cloudinary\Utils;
-use TypeError;
+use UnexpectedValueException;
 
 /**
  * Class BaseTag
+ *
+ * @api
  */
 abstract class BaseTag
 {
@@ -29,6 +31,7 @@ abstract class BaseTag
      * @var string NAME Mandatory. The name of the tag.
      */
     const NAME = null;
+
     /**
      * @var bool IS_VOID Indicates whether the tag is a void (self-closed, without body) tag.
      */
@@ -38,6 +41,7 @@ abstract class BaseTag
      * @var array $classes An array of tag (unique) classes. Keys are used for uniqueness.
      */
     protected $classes = [];
+
     /**
      * @var array $attributes An array of tag attributes.
      */
@@ -61,7 +65,7 @@ abstract class BaseTag
     public function __construct($configuration = null)
     {
         if (static::NAME === null) {
-            throw new TypeError('Tag name cannot be empty!');
+            throw new UnexpectedValueException('Tag name cannot be empty!');
         }
 
         if ($configuration === null) {
@@ -267,7 +271,6 @@ abstract class BaseTag
         return implode(' ', $attrStrings);
     }
 
-
     /**
      * Serializes a single tag attribute.
      *
@@ -321,8 +324,18 @@ abstract class BaseTag
      *
      * @return string
      */
-    public function __toString()
+    public function toTag()
     {
         return $this->serialize();
+    }
+
+    /**
+     * Serializes the tag to string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toTag();
     }
 }

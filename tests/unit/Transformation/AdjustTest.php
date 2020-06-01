@@ -11,7 +11,7 @@
 namespace Cloudinary\Test\Transformation;
 
 use Cloudinary\Transformation\Adjust;
-use Cloudinary\Transformation\Argument\NamedColor;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Flag;
 use Cloudinary\Transformation\Improve;
 use Cloudinary\Transformation\ViesusCorrect;
@@ -77,17 +77,17 @@ final class AdjustTest extends TestCase
     {
         $this->assertEquals(
             'e_replace_color:green',
-            (string)Adjust::replaceColor(NamedColor::GREEN)
+            (string)Adjust::replaceColor(Color::GREEN)
         );
 
         $this->assertEquals(
             'e_replace_color:green:17:red',
-            (string)Adjust::replaceColor(NamedColor::GREEN, 17, NamedColor::RED)
+            (string)Adjust::replaceColor(Color::GREEN, 17, Color::RED)
         );
 
         $this->assertEquals(
             'e_replace_color:green:17:red',
-            (string)Adjust::replaceColor(NamedColor::GREEN)->from(NamedColor::RED)->tolerance(17)
+            (string)Adjust::replaceColor(Color::GREEN)->from(Color::RED)->tolerance(17)
         );
     }
 

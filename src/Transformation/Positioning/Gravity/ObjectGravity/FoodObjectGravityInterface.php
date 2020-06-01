@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface FoodObjectGravityInterface
+ *
+ * @api
  */
 interface FoodObjectGravityInterface
 {

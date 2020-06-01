@@ -5,6 +5,8 @@ namespace Cloudinary\Test\Api\Upload;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Test\Api\IntegrationTestCase;
+use Cloudinary\Transformation\Page;
+use Cloudinary\Transformation\Transformation;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 
 /**
@@ -23,9 +25,9 @@ final class CreativeTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$TAG_TO_MULTI = 'upload_creative_multi_' . self::$UNIQUE_TEST_TAG;
+        self::$TAG_TO_MULTI           = 'upload_creative_multi_' . self::$UNIQUE_TEST_TAG;
         self::$TAG_TO_GENERATE_SPRITE = 'upload_creative_generate_sprite_' . self::$UNIQUE_TEST_TAG;
-        self::$EXPLODE_GIF_PUBLIC_ID = 'upload_creative_explode_gif_' . self::$UNIQUE_TEST_ID;
+        self::$EXPLODE_GIF_PUBLIC_ID  = 'upload_creative_explode_gif_' . self::$UNIQUE_TEST_ID;
 
         $tags = [
             self::$TAG_TO_GENERATE_SPRITE,
@@ -67,10 +69,10 @@ final class CreativeTest extends IntegrationTestCase
             self::assertObjectStructure(
                 $imageInfo,
                 [
-                    'width' => IsType::TYPE_INT,
+                    'width'  => IsType::TYPE_INT,
                     'height' => IsType::TYPE_INT,
-                    'x' => IsType::TYPE_INT,
-                    'y' => IsType::TYPE_INT
+                    'x'      => IsType::TYPE_INT,
+                    'y'      => IsType::TYPE_INT,
                 ]
             );
             $this->assertNotEmpty($imageInfo['width']);
@@ -96,7 +98,12 @@ final class CreativeTest extends IntegrationTestCase
      */
     public function testExplodeGIF()
     {
-        $result = self::$uploadApi->explode(self::$EXPLODE_GIF_PUBLIC_ID, ['transformation' => 'pg_all']);
+        $result = self::$uploadApi->explode(
+            self::$EXPLODE_GIF_PUBLIC_ID,
+            [
+                'transformation' => Page::all()
+            ]
+        );
 
         $this->assertEquals('processing', $result['status']);
         $this->assertNotEmpty($result['batch_id']);
@@ -115,7 +122,7 @@ final class CreativeTest extends IntegrationTestCase
             $resource,
             [
                 DeliveryType::KEY => DeliveryType::TEXT,
-                'format' => 'png'
+                'format'          => 'png',
             ]
         );
     }

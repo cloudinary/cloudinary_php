@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Trait ColorTrait
+ * Trait ColorParamTrait
  *
  * @api
  */
@@ -22,10 +22,10 @@ trait ColorParamTrait
      *
      * @param string $color The color.
      *
-     * @return Color
+     * @return ColorParam
      */
     public static function color($color)
     {
-        return new Color($color);
+        return new ColorParam($color);
     }
 }

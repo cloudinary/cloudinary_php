@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface FurnitureObjectGravityInterface
+ *
+ * @api
  */
 interface FurnitureObjectGravityInterface
 {

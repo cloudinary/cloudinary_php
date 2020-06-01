@@ -14,6 +14,8 @@ namespace Cloudinary\Tag;
  * Class VideoSourceType
  *
  * 'type' attribute of the video source tag
+ *
+ * @internal
  */
 class VideoSourceType extends SourceType
 {

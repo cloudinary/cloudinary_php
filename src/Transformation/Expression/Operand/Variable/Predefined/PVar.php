@@ -16,6 +16,8 @@ use InvalidArgumentException;
  * Class PVar
  *
  * Predefined variables.
+ *
+ * @api
  */
 class PVar extends Expression
 {

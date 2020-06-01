@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Interface ObjectGravityPriorityInterface
+ *
+ * @api
  */
 interface ObjectGravityPriorityInterface
 {
