@@ -890,6 +890,18 @@ class CloudinaryTest extends TestCase
             array("type" => "fetch", "version" => 1234, "sign_url" => true),
             CloudinaryTest::DEFAULT_ROOT_PATH . "image/fetch/s--hH_YcbiS--/v1234/http://google.com/path/to/image.png"
         );
+        // Should sign an URL with a short signature by default
+        $this->cloudinary_url_assertion(
+            "sample.jpg",
+            array("sign_url" => true),
+            self::DEFAULT_UPLOAD_PATH . "s--v2fTPYTu--/sample.jpg"
+        );
+        // Should sign an URL with a long signature if long_url_signature is true
+        $this->cloudinary_url_assertion(
+            "sample.jpg",
+            array("sign_url" => true, "long_url_signature" => true),
+            self::DEFAULT_UPLOAD_PATH . "s--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--/sample.jpg"
+        );
     }
 
     public function test_escape_public_id()
