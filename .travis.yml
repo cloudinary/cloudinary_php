@@ -7,6 +7,9 @@ php:
   - '7.0'
   - '5.6'
 
+before_script:
+  - export COMPOSER_MEMORY_LIMIT=-1
+
 script: vendor/bin/phpunit
 install: composer install
 branches:
