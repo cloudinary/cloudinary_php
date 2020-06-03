@@ -38,7 +38,7 @@ class BorderValue extends ParameterMultiValue
 
         $this->width($width);
         $this->style($style);
-        $this->setValue(ClassUtils::verifyInstance($color, ColorValue::class));
+        $this->color($color);
     }
 
     /**
@@ -64,4 +64,19 @@ class BorderValue extends ParameterMultiValue
     {
         return $this->setSimpleValue('width', $width ? "{$width}px" : $width);
     }
+
+    /**
+     * Sets the color of the border.
+     *
+     * @param string $color The border color.
+     *
+     * @return $this
+     *
+     * @see Color
+     */
+    public function color($color)
+    {
+        return $this->setSimpleValue('$color', ClassUtils::verifyInstance($color, ColorValue::class));
+    }
+
 }

@@ -10,7 +10,6 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Argument\ColorTrait;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
 
@@ -31,8 +30,6 @@ class Border extends BaseParameter
     protected static $key = 'bo';
 
     use BorderStyleTrait;
-    use ColorTrait;
-    use ColorValueTrait;
 
     /**
      * Sets the width of the border.
@@ -58,6 +55,20 @@ class Border extends BaseParameter
     public function style($style)
     {
         $this->value->style($style);
+
+        return $this;
+    }
+
+    /**
+     * Sets the color of the border.
+     *
+     * @param string $style The color of the border.
+     *
+     * @return $this
+     */
+    public function color($color)
+    {
+        $this->value->color($color);
 
         return $this;
     }
