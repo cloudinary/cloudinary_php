@@ -378,7 +378,7 @@ final class UsageTest extends TestCase
     {
         $this->assertEquals(
             'bo_4px_solid_hotpink',
-            (string)(new Transformation())->border(Border::hotpink()->width(4)->style('solid'))
+            (string)(new Transformation())->border(Border::solid()->width(4)->color(Color::HOTPINK))
         );
     }
 

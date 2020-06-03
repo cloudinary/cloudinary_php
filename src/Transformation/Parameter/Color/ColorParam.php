@@ -12,7 +12,7 @@ namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Argument\ColorValue;
-use Cloudinary\Transformation\Argument\ColorTrait;
+use Cloudinary\Transformation\Argument\ColorTrait as ParamColorTrait; # Fix PHP5.6 conflict
 use Cloudinary\Transformation\Parameter\BaseParameter;
 use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
 
@@ -21,7 +21,7 @@ use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
  */
 class ColorParam extends BaseParameter
 {
-    use ColorTrait;
+    use ParamColorTrait;
     use ColorValueTrait;
 
     /**
