@@ -1193,8 +1193,12 @@ class Cloudinary
         $signature = null;
         if ($sign_url && !$auth_token) {
             $to_sign = implode("/", array_filter(array($transformation, $source_to_sign)));
-            $hash = hash($long_url_signature ? self::ALGO_SHA256 : self::ALGO_SHA1, $to_sign . $api_secret, true);
-            $signature = 's--' . substr(self::base64url_encode($hash), 0, $long_url_signature ? self::LONG_URL_SIGNATURE_LENGTH : self::SHORT_URL_SIGNATURE_LENGTH) . '--';
+
+            $algorithm = $long_url_signature ? self::ALGO_SHA256 : self::ALGO_SHA1;
+            $signature_len = $long_url_signature ? self::LONG_URL_SIGNATURE_LENGTH : self::SHORT_URL_SIGNATURE_LENGTH;
+
+            $hash = hash($algorithm, $to_sign . $api_secret, true);
+            $signature = 's--' . substr(self::base64url_encode($hash), 0, $signature_len) . '--';
         }
 
         $prefix = Cloudinary::unsigned_download_url_prefix(
