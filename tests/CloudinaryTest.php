@@ -1922,4 +1922,18 @@ class CloudinaryTest extends TestCase
         $this->assertEquals($expected, $url);
     }
 
+    /**
+     * Make sure this method is returning a correct sha256 hash.
+     */
+    public function test_api_sign_request() {
+        $params = [
+            'cloud_name' => 'dn6ot3ged',
+            'timestamp' => 1568810420,
+            'username' => 'user@cloudinary.com'
+        ];
+        $signature = Cloudinary::api_sign_request($params, 'hdcixPpR2iKERPwqvH6sHdK9cyac');
+        $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
+        $this->assertEquals($expected, $signature);
+    }
+
 }
