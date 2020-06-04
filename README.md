@@ -44,8 +44,8 @@ $cloudinary = new Cloudinary(
     [
         'account' => [
             'cloud_name' => 'n07t21i7',
-            'key'        => '123456789012345',
-            'secret'     => 'abcdeghijklmnopqrstuvwxyz12',
+            'api_key'    => '123456789012345',
+            'api_secret' => 'abcdeghijklmnopqrstuvwxyz12',
         ],
     ]
 );
