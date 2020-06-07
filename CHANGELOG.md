@@ -1,4 +1,25 @@
 
+1.17.0 / 2020-06-07
+===================
+
+New functionality and features
+------------------------------
+
+  * Add structured metadata administration to Admin API
+  * Add support for 32 char SHA-256 URL signatures
+  * Add SHA-256 signature support
+  * Add `accessibility_analysis` parameter support
+  * Add support of PHP 7.4
+
+Other Changes
+-------------
+
+  * Remove redundant dependencies check in `update_version` script
+  * Fix `update_version` script linux compatibility
+  * Add `update-only` flag to `update_version` script
+  * Fix legacy autoloader on Linux
+  * Update issue templates
+
 1.16.0 / 2019-11-28
 ===================
 
