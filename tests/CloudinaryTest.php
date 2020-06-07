@@ -896,6 +896,12 @@ class CloudinaryTest extends TestCase
             array("sign_url" => true),
             self::DEFAULT_UPLOAD_PATH . "s--v2fTPYTu--/sample.jpg"
         );
+        // Should sign a URL with a short signature by default and use SHA256 when configured
+        $this->cloudinary_url_assertion(
+            "sample.jpg",
+            array("sign_url" => true, "signature_algorithm" => Cloudinary::ALGO_SHA256),
+            self::DEFAULT_UPLOAD_PATH . "s--2hbrSMPO--/sample.jpg"
+        );
         // Should sign an URL with a long signature if long_url_signature is true
         $this->cloudinary_url_assertion(
             "sample.jpg",
@@ -1915,25 +1921,30 @@ class CloudinaryTest extends TestCase
         }
     }
 
+    /**
+     * Make sure this method is returning a correct sha256 and sha1 hashes.
+     */
+    public function test_api_sign_request()
+    {
+        $params = [
+            'cloud_name' => 'dn6ot3ged',
+            'timestamp' => 1568810420,
+            'username' => 'user@cloudinary.com'
+        ];
+        $signature = Cloudinary::api_sign_request($params, 'hdcixPpR2iKERPwqvH6sHdK9cyac', Cloudinary::ALGO_SHA256);
+        $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
+        $this->assertEquals($expected, $signature);
+
+        $signature = Cloudinary::api_sign_request($params, 'hdcixPpR2iKERPwqvH6sHdK9cyac');
+        $expected_sha1 = '14c00ba6d0dfdedbc86b316847d95b9e6cd46d94';
+        $this->assertEquals($expected_sha1, $signature);
+    }
+
+
     private function cloudinary_url_assertion($source, $options, $expected, $expected_options = array())
     {
         $url = Cloudinary::cloudinary_url($source, $options);
         $this->assertEquals($expected_options, $options);
         $this->assertEquals($expected, $url);
     }
-
-    /**
-     * Make sure this method is returning a correct sha256 hash.
-     */
-    public function test_api_sign_request() {
-        $params = [
-            'cloud_name' => 'dn6ot3ged',
-            'timestamp' => 1568810420,
-            'username' => 'user@cloudinary.com'
-        ];
-        $signature = Cloudinary::api_sign_request($params, 'hdcixPpR2iKERPwqvH6sHdK9cyac');
-        $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
-        $this->assertEquals($expected, $signature);
-    }
-
 }
