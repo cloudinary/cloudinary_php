@@ -15,6 +15,7 @@ use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
+use Cloudinary\Utils;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
@@ -59,15 +60,19 @@ trait MiscTrait
      * storage, bandwidth, requests, number of resources, and add-on usage.
      * Note that numbers are updated periodically.
      *
+     * @param array $options The optional parameters. See the admin API documentation.
+     *
      * @return ApiResponse
      *
      * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#usage
      */
-    public function usage()
+    public function usage($options = [])
     {
-        return $this->apiClient->get(ApiEndPoint::USAGE);
+        $uri = [ApiEndPoint::USAGE, Utils::formatDate(ArrayUtils::get($options, 'date'))];
+
+        return $this->apiClient->get($uri);
     }
 
     /**

@@ -20,7 +20,7 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
 final class UsageTest extends IntegrationTestCase
 {
     /**
-     * Get account usage details
+     * Get account usage details.
      *
      * @throws ApiError
      */
@@ -28,22 +28,24 @@ final class UsageTest extends IntegrationTestCase
     {
         $result = self::$adminApi->usage();
 
-        $this->assertNotEmpty($result);
-        self::assertObjectStructure(
-            $result,
-            [
-                'plan' => IsType::TYPE_STRING,
-                'last_updated' => IsType::TYPE_STRING,
-                'transformations' => IsType::TYPE_ARRAY,
-                'objects' => IsType::TYPE_ARRAY,
-                'bandwidth' => IsType::TYPE_ARRAY,
-                'storage' => IsType::TYPE_ARRAY,
-                'requests' => IsType::TYPE_INT,
-                'resources' => IsType::TYPE_INT,
-                'derived_resources' => IsType::TYPE_INT,
-                'media_limits' => IsType::TYPE_ARRAY,
-            ]
-        );
+        self::assertUsageResult($result);
+    }
+
+    /**
+     * Get account usage details for a specific date.
+     *
+     * @throws ApiError
+     */
+    public function testGetAccountUsageDetailsForDate()
+    {
+        $date = date('d-m-Y', strtotime("-1 days"));
+
+        $result = self::$adminApi->usage(['date' => $date]);
+
+        self::assertUsageResult($result);
+
+        $this->assertArrayNotHasKey('limit', $result['bandwidth']);
+        $this->assertArrayNotHasKey('used_percent', $result['bandwidth']);
     }
 
     /**
@@ -69,5 +71,31 @@ final class UsageTest extends IntegrationTestCase
                 ]
             );
         }
+    }
+
+    /**
+     * Asserts a valid usage api response.
+     *
+     * @param \Cloudinary\Api\ApiResponse $result returned from a usage api request.
+     */
+
+    private static function assertUsageResult($result)
+    {
+        self::assertNotEmpty($result);
+        self::assertObjectStructure(
+            $result,
+            [
+                'plan' => IsType::TYPE_STRING,
+                'last_updated' => IsType::TYPE_STRING,
+                'transformations' => IsType::TYPE_ARRAY,
+                'objects' => IsType::TYPE_ARRAY,
+                'bandwidth' => IsType::TYPE_ARRAY,
+                'storage' => IsType::TYPE_ARRAY,
+                'requests' => IsType::TYPE_INT,
+                'resources' => IsType::TYPE_INT,
+                'derived_resources' => IsType::TYPE_INT,
+                'media_limits' => IsType::TYPE_ARRAY,
+            ]
+        );
     }
 }
