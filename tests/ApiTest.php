@@ -811,14 +811,58 @@ namespace Cloudinary {
         }
 
         /**
-         * Should allow listing resource_types
+         * Should return account usage details
          *
          * @throws Api\GeneralError
          */
         public function test18_usage()
         {
             $result = $this->api->usage();
-            $this->assertNotEquals($result["last_updated"], null);
+            $this->assertNotEmpty($result);
+            $keys = array(
+                'plan',
+                'last_updated',
+                'transformations',
+                'objects',
+                'bandwidth',
+                'storage',
+                'requests',
+                'resources',
+                'derived_resources',
+                'media_limits'
+            );
+            foreach ($keys as $key) {
+                $this->assertArrayHasKey($key, $result);
+            }
+        }
+
+        /**
+         * Should return usage values for a specific date
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_usage_by_date()
+        {
+            $result = $this->api->usage(array('date' => date('d-m-Y', strtotime("-1 days"))));
+            $this->assertNotEmpty($result);
+            $keys = array(
+                'plan',
+                'last_updated',
+                'transformations',
+                'objects',
+                'bandwidth',
+                'storage',
+                'requests',
+                'resources',
+                'derived_resources',
+                'media_limits'
+            );
+            foreach ($keys as $key) {
+                $this->assertArrayHasKey($key, $result);
+            }
+            //verify the the structure of the response is that of a single day.
+            $this->assertArrayNotHasKey('limit', $result['bandwidth']);
+            $this->assertArrayNotHasKey('used_percent', $result['bandwidth']);
         }
 
         /**
