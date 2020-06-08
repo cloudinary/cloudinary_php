@@ -818,22 +818,7 @@ namespace Cloudinary {
         public function test18_usage()
         {
             $result = $this->api->usage();
-            $this->assertNotEmpty($result);
-            $keys = array(
-                'plan',
-                'last_updated',
-                'transformations',
-                'objects',
-                'bandwidth',
-                'storage',
-                'requests',
-                'resources',
-                'derived_resources',
-                'media_limits'
-            );
-            foreach ($keys as $key) {
-                $this->assertArrayHasKey($key, $result);
-            }
+            $this->assertUsageResult($result);
         }
 
         /**
@@ -844,22 +829,7 @@ namespace Cloudinary {
         public function test_usage_by_date()
         {
             $result = $this->api->usage(array('date' => date('d-m-Y', strtotime("-1 days"))));
-            $this->assertNotEmpty($result);
-            $keys = array(
-                'plan',
-                'last_updated',
-                'transformations',
-                'objects',
-                'bandwidth',
-                'storage',
-                'requests',
-                'resources',
-                'derived_resources',
-                'media_limits'
-            );
-            foreach ($keys as $key) {
-                $this->assertArrayHasKey($key, $result);
-            }
+            $this->assertUsageResult($result);
             //verify the the structure of the response is that of a single day.
             $this->assertArrayNotHasKey('limit', $result['bandwidth']);
             $this->assertArrayNotHasKey('used_percent', $result['bandwidth']);
@@ -1465,6 +1435,32 @@ namespace Cloudinary {
             $resource = $this->api->resource(self::$api_test, ["accessibility_analysis" => true]);
 
             $this->assertArrayHasKey('accessibility_analysis', $resource);
+        }
+
+        /**
+         * Asserts a valid usage api response.
+         *
+         * @param Api\Response $result returned from a usage api request.
+         */
+
+        private static function assertUsageResult($result)
+        {
+            self::assertNotEmpty($result);
+            $keys = array(
+                'plan',
+                'last_updated',
+                'transformations',
+                'objects',
+                'bandwidth',
+                'storage',
+                'requests',
+                'resources',
+                'derived_resources',
+                'media_limits'
+            );
+            foreach ($keys as $key) {
+                self::assertArrayHasKey($key, $result);
+            }
         }
     }
 }

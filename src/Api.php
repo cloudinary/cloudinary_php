@@ -58,7 +58,7 @@ namespace Cloudinary {
         {
             $uri = (!empty($options['date'])) ? array(
                 "usage",
-                \Cloudinary::encode_dates($options['date'])
+                \Cloudinary::encode_dates(\Cloudinary::option_get($options, 'date'))
             ) : array("usage");
 
             return $this->call_api("get", $uri, array(), $options);
