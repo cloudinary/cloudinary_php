@@ -61,7 +61,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * @param string $source The public ID of the asset.
      * @param array  $params The media asset parameters.
      *
-     * @return mixed
+     * @return static
      */
     public static function fromParams($source, $params = [])
     {

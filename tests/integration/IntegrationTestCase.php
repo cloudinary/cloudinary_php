@@ -23,8 +23,10 @@ use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\Test\Cloudinary\AssetTestCase;
 use Cloudinary\Test\CloudinaryTestCase;
 use Exception;
+use GuzzleHttp\Client;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 use RuntimeException;
+use Teapot\StatusCode;
 
 /**
  * Class IntegrationTestCase
@@ -191,6 +193,23 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
+     * Fetch remote asset
+     *
+     * @param       $assetId
+     * @param array $options
+     *
+     * @return void
+     */
+    protected static function fetchRemoteTestAsset($assetId, $options = [])
+    {
+        $assetUrl = Media::fromParams($assetId, $options)->toUrl();
+
+        $res = (new Client())->head($assetUrl);
+
+        self::assertEquals(StatusCode::OK, $res->getStatusCode());
+    }
+
+    /**
      * Assert that a given object is a valid resource detail object.
      * Optionally checks it against given values.
      *
@@ -202,7 +221,6 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $deliveryType = ArrayUtils::get($values, DeliveryType::KEY, DeliveryType::UPLOAD);
         $assetType = ArrayUtils::get($values, AssetType::KEY, AssetType::IMAGE);
 
-        self::assertEquals('public', $resource['access_mode']);
         self::assertEquals($deliveryType, $resource[DeliveryType::KEY]);
         self::assertEquals($assetType, $resource[AssetType::KEY]);
         self::assertObjectStructure(
@@ -272,8 +290,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             array_merge(
                 [
                     DeliveryType::KEY => DeliveryType::UPLOAD,
-                    AssetType::KEY => AssetType::RAW,
-                    'access_mode' => 'public'
+                    AssetType::KEY => AssetType::RAW
                 ],
                 $values
             )

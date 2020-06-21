@@ -20,7 +20,9 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
  */
 final class FoldersTest extends IntegrationTestCase
 {
+    private static $FOLDER_BASE_NAME;
     private static $FOLDER_NAME;
+    private static $FOLDER2_NAME;
     private static $SUB_FOLDER_NAME;
     private static $SUB_FOLDER_CREATE_NAME;
     private static $SUB_FOLDER_DELETE_NAME;
@@ -29,6 +31,7 @@ final class FoldersTest extends IntegrationTestCase
     private static $SUB_FOLDER_DELETE_FULL_PATH;
     private static $SUB_FOLDER_SINGLE_FULL_PATH;
 
+
     /**
      * @throws ApiError
      */
@@ -36,7 +39,9 @@ final class FoldersTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$FOLDER_NAME = 'test_folder_' . self::$UNIQUE_TEST_ID;
+        self::$FOLDER_BASE_NAME = 'test_folder';
+        self::$FOLDER_NAME = self::$FOLDER_BASE_NAME . '_' . self::$UNIQUE_TEST_ID;
+        self::$FOLDER2_NAME = self::$FOLDER_BASE_NAME . '_2_' . self::$UNIQUE_TEST_ID;
         self::$SUB_FOLDER_NAME = 'test_sub_folder_' . self::$UNIQUE_TEST_ID;
         self::$SUB_FOLDER_CREATE_NAME = 'test_sub_folder_for_create_' . self::$UNIQUE_TEST_ID;
         self::$SUB_FOLDER_DELETE_NAME = 'test_sub_folder_for_delete_' . self::$UNIQUE_TEST_ID;
@@ -48,6 +53,7 @@ final class FoldersTest extends IntegrationTestCase
         self::uploadTestResourceImage(['folder' => self::$SUB_FOLDER_FULL_PATH]);
         self::createTestFolder(self::$SUB_FOLDER_DELETE_FULL_PATH);
         self::createTestFolder(self::$SUB_FOLDER_SINGLE_FULL_PATH);
+        self::createTestFolder(self::$FOLDER2_NAME);
     }
 
     public static function tearDownAfterClass()
