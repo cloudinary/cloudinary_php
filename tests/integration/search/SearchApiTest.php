@@ -11,7 +11,9 @@
 namespace Cloudinary\Test\Api\Search;
 
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Api\Exception\BadRequest;
 use Cloudinary\Api\Search\SearchApi;
+use Cloudinary\StringUtils;
 use Cloudinary\Test\Api\IntegrationTestCase;
 use Cloudinary\Transformation\Scale;
 use Cloudinary\Transformation\Transformation;
@@ -365,12 +367,18 @@ class SearchApiTest extends IntegrationTestCase
             . ' AND context.key:' . self::$STRING_WITH_UNDERSCORE
             . ' AND -tags:' . self::$STRING_WITH_UNDERSCORE;
 
-        $result = $this->search
-            ->expression($expression)
-            ->withField('tags')
-            ->maxResults(1)
-            ->aggregate('format')
-            ->execute();
+        try {
+            $result = $this->search
+                ->expression($expression)
+                ->withField('tags')
+                ->maxResults(1)
+                ->aggregate('format')
+                ->execute();
+        } catch (BadRequest $br) {
+            if (StringUtils::contains($br->getMessage(), 'Your subscription plan does not support aggregations')) {
+                $this->markTestSkipped($br->getMessage());
+            }
+        }
 
         $this->assertEquals(1, $result['aggregations']['format']['gif']);
         $this->assertEquals(1, $result['total_count']);

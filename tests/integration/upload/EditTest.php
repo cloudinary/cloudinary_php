@@ -90,7 +90,7 @@ final class EditTest extends IntegrationTestCase
             ]
         );
 
-        self::assertValidResource($resource, ['access_mode' => 'public']);
+        self::assertValidResource($resource);
         self::assertCount(1, $resource['eager']);
         self::assertValidTransformationRepresentation(
             $resource['eager'][0],

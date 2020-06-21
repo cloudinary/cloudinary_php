@@ -147,7 +147,7 @@ final class ResourcesTest extends IntegrationTestCase
     public function testListAllImages()
     {
         // The resources method defaults to fetching images if resource_type is omitted
-        $result = self::$adminApi->resources([DeliveryType::KEY, DeliveryType::UPLOAD]);
+        $result = self::$adminApi->resources([DeliveryType::KEY => DeliveryType::UPLOAD]);
 
         self::assertValidResource($result['resources'][0], [AssetType::KEY => AssetType::IMAGE]);
     }
