@@ -50,7 +50,7 @@ abstract class AssetTestCase extends UnitTestCase
     const PRIVATE_CDN_HOSTNAME = self::CLOUD_NAME . '-res.' . UrlConfig::DEFAULT_DOMAIN;
     const CUSTOM_CLOUD_NAME    = 'custom-' . self::CLOUD_NAME;
 
-    const TEST_SOCIAL_PROFILE_ID   = 123123;
+    const TEST_SOCIAL_PROFILE_ID   = 65646572251;
     const TEST_SOCIAL_PROFILE_NAME = 'johndoe';
     const TEST_EMAIL               = 'info@cloudinary.com';
 

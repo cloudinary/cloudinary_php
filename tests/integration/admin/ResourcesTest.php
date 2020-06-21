@@ -110,6 +110,10 @@ final class ResourcesTest extends IntegrationTestCase
         self::uploadTestResourceImage(['tags' => [self::$UNIQUE_TEST_TAG_DELETE]]);
         self::uploadTestResourceFile(['tags' => [self::$UNIQUE_TEST_TAG_DELETE]]);
         self::uploadTestResourceVideo(['tags' => [self::$UNIQUE_TEST_TAG_DELETE]]);
+        self::fetchRemoteTestAsset(
+            AssetTestCase::TEST_SOCIAL_PROFILE_ID,
+            [DeliveryType::KEY => DeliveryType::FACEBOOK]
+        );
     }
 
     /**
@@ -143,7 +147,7 @@ final class ResourcesTest extends IntegrationTestCase
     public function testListAllImages()
     {
         // The resources method defaults to fetching images if resource_type is omitted
-        $result = self::$adminApi->resources();
+        $result = self::$adminApi->resources([DeliveryType::KEY, DeliveryType::UPLOAD]);
 
         self::assertValidResource($result['resources'][0], [AssetType::KEY => AssetType::IMAGE]);
     }
@@ -495,7 +499,7 @@ final class ResourcesTest extends IntegrationTestCase
         $result = self::$adminApi->resourcesByIds(
             self::$MULTI_DELETE_OPTION_2_PUBLIC_ID,
             [
-                DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY
+                DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY,
             ]
         );
 

@@ -105,7 +105,7 @@ final class ResourceTest extends IntegrationTestCase
      */
     public function testGetUploadedImageAccessibilityAnalysis()
     {
-        $result = self::$adminApi->resource(AssetTestCase::ASSET_ID, ['accessibility_analysis' => true]);
+        $result = self::$adminApi->resource(self::$UNIQUE_IMAGE_PUBLIC_ID, ['accessibility_analysis' => true]);
 
         $this->assertArrayHasKey('accessibility_analysis', $result);
     }
