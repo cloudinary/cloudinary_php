@@ -14,8 +14,11 @@ jobs:
     - php: 5.5
       dist: trusty
 
-script: vendor/bin/phpunit
 install: composer install
+
+before_script: export CLOUDINARY_URL=$(bash tools/allocate_test_cloud.sh php)
+script: vendor/bin/phpunit
+
 branches:
   except:
   - staging-test
