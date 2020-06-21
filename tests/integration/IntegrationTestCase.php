@@ -202,7 +202,9 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $deliveryType = ArrayUtils::get($values, DeliveryType::KEY, DeliveryType::UPLOAD);
         $assetType = ArrayUtils::get($values, AssetType::KEY, AssetType::IMAGE);
 
-        self::assertEquals('public', $resource['access_mode']);
+        if (isset($resource['access_mode'])) {
+            self::assertEquals('public', $resource['access_mode']);
+        }
         self::assertEquals($deliveryType, $resource[DeliveryType::KEY]);
         self::assertEquals($assetType, $resource[AssetType::KEY]);
         self::assertObjectStructure(
