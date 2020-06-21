@@ -13,6 +13,8 @@ namespace Cloudinary {
 
     class SearchTest extends TestCase
     {
+        use RetryTrait;
+
         public $search;
 
         public static function setUpBeforeClass()
@@ -117,6 +119,9 @@ namespace Cloudinary {
             $this->assertEquals($query, array("with_field" => ["context", "tags"]));
         }
 
+        /**
+         * @retry 3
+         */
         public function test_should_return_all_images_tagged()
         {
 
@@ -124,6 +129,9 @@ namespace Cloudinary {
             $this->assertEquals(count($results['resources']), 3);
         }
 
+        /**
+         * @retry 3
+         */
         public function test_should_return_resource()
         {
             $results = $this->search->expression("public_id:" . UNIQUE_TEST_TAG . "_1")->execute();
