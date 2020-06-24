@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Cloudinary;
 
 use Cloudinary\Asset\Image;
 use Cloudinary\Cloudinary;
+use Cloudinary\Tag\VideoTag;
 
 /**
  * Class CloudinaryTagTest
@@ -60,6 +61,18 @@ class CloudinaryTagTest extends AssetTestCase
         $this->assertEquals(
             '<img src="'.$expectedImage.'">',
             $this->c->imageTag($expectedImage)
+        );
+    }
+
+    public function testCloudinaryVideoTag()
+    {
+        $tag = $this->c->videoTag(self::VIDEO_NAME);
+
+        $expected = new VideoTag(self::VIDEO_NAME);
+
+        $this->assertStrEquals(
+            $expected,
+            $tag
         );
     }
 }

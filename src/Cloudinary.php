@@ -103,12 +103,13 @@ class Cloudinary
      * Creates a new VideoTag with current instance configuration.
      *
      * @param string|mixed $publicId The public ID of the video.
+     * @param array|null   $sources  The tag sources definition.
      *
      * @return VideoTag
      */
-    public function videoTag($publicId)
+    public function videoTag($publicId, $sources = null)
     {
-        return new VideoTag($publicId, $this->configuration);
+        return new VideoTag($publicId, $sources, $this->configuration);
     }
 
     /**
