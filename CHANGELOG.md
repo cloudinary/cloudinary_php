@@ -1,4 +1,10 @@
 
+2.0.0-beta4 / 2020-06-24
+========================
+
+  * Fix `videoTag` builder
+  * Integrate with sub-account test service
+
 2.0.0-beta3 / 2020-06-09
 ========================
 

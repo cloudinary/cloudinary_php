@@ -32,7 +32,7 @@ class Cloudinary
      *
      * @var string VERSION
      */
-    const VERSION = '2.0.0-beta3';
+    const VERSION = '2.0.0-beta4';
 
     /**
      * The configuration instance.
