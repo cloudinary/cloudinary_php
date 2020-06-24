@@ -11,9 +11,11 @@
 namespace Cloudinary\Test\Asset;
 
 use Cloudinary\Asset\Video;
+use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Tag\VideoTag;
 use Cloudinary\Transformation\Angle;
 use Cloudinary\Transformation\Scale;
+use Cloudinary\Transformation\Transformation;
 
 /**
  * Class VideoTagTest
@@ -67,6 +69,38 @@ final class VideoTagTest extends TagTestCase
         $this->assertEquals(
             (string)$expected,
             (string)$tag
+        );
+    }
+
+    public function testVideoTagBuilders()
+    {
+        $host = UrlConfig::DEFAULT_SHARED_HOST;
+        $cloudName = 'test321';
+        $trStr = (new Transformation())->rotate(Angle::angle(17))->resize(Scale::scale(500))->toUrl();
+        $ver = 17;
+        $assetType = 'video/upload';
+        $publicId = self::ASSET_ID;
+
+        $tag = (new VideoTag(self::VIDEO_NAME))
+            ->rotate(Angle::angle(17)) // transformation
+            ->resize(Scale::scale(500))
+            ->cloudName($cloudName) // account config
+            ->secure(false) // url config
+            ->version($ver); // asset descriptor
+
+        $expectedPoster = "http://{$host}/{$cloudName}/{$assetType}/{$trStr}/v{$ver}/{$publicId}.jpg";
+        // TODO: make a good template for all video tag tests and reuse it.
+        $sourcesStr = str_replace(
+            [self::PROTOCOL_HTTPS, self::CLOUD_NAME, "/{$assetType}/", "/{$publicId}"],
+            [self::PROTOCOL_HTTP, $cloudName, "/{$assetType}/{$trStr}/", "/v$ver/{$publicId}"],
+            $this->defaultSourcesStr
+        );
+
+        $expected = "<video poster=\"{$expectedPoster}\">\n{$sourcesStr}\n</video>";
+
+        $this->assertStrEquals(
+            $expected,
+            $tag
         );
     }
 

@@ -252,9 +252,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      */
     public function addTransformation($transformation)
     {
-        $this->video->addTransformation($transformation);
-
-        return $this;
+        return $this->applyAssetModification('addTransformation', $transformation);
     }
 
     /**
@@ -267,9 +265,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      */
     public function addAction($action)
     {
-        $this->video->addAction($action);
-
-        return $this;
+        return $this->applyAssetModification('addAction', $action);
     }
 
     /**
@@ -284,9 +280,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      */
     public function setAssetProperty($propertyName, $propertyValue)
     {
-        $this->video->setAssetProperty($propertyName, $propertyValue);
-
-        return $this;
+        return $this->applyAssetModification('setAssetProperty', $propertyName, $propertyValue);
     }
 
     /**
@@ -301,9 +295,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      */
     public function setAccountConfig($configKey, $configValue)
     {
-        $this->video->setAccountConfig($configKey, $configValue);
-
-        return $this;
+        return $this->applyAssetModification('setAccountConfig', $configKey, $configValue);
     }
 
     /**
@@ -318,7 +310,24 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      */
     public function setUrlConfig($configKey, $configValue)
     {
-        $this->video->setUrlConfig($configKey, $configValue);
+        return $this->applyAssetModification('setUrlConfig', $configKey, $configValue);
+    }
+
+    /**
+     * Applies modification to the asset and to all sources.
+     *
+     * @param string $modificationName The name of the modification.
+     * @param mixed  ...$args          The modification arguments.
+     *
+     * @return $this
+     */
+    private function applyAssetModification($modificationName, ...$args)
+    {
+        $this->video->$modificationName(...$args);
+
+        foreach ($this->sources as $source) {
+            $source->video->$modificationName(...$args);
+        }
 
         return $this;
     }
