@@ -13,7 +13,11 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class AudioFrequency
+ * Controls audio sample frequency.
+ *
+ * **Learn more**: <a href="https://cloudinary.com/documentation/audio_transformations#audio_frequency_control"
+ * target="_blank">Audio frequency control</a>
+ *
  *
  * @api
  */

@@ -13,7 +13,11 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ClassUtils;
 
 /**
- * Class VideoLayer
+ * Defines how to manipulate a video layer.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery#adding_video_overlays" target="_blank">
+ * Video overlays</a>
  *
  * @api
  */

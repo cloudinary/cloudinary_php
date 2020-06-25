@@ -14,7 +14,9 @@ use Cloudinary\StringUtils;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class CustomFunction
+ * Calls a custom function.
+ *
+ * **Learn more**: <a href="https://cloudinary.com/documentation/custom_functions" target="_blank">Custom functions</a>
  *
  * @api
  */

@@ -15,17 +15,20 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\JsonUtils;
 
 /**
- * Class UploadTag
+ * Generates an HTML `<input>` tag to use for uploading files.
  *
- * Generates <input
- *              class="cloudinary-fileupload"
- *              data-cloudinary-field="..."
- *              data-form-data="..."
- *              data-url="..."
- *              name="file"
- *              type="file"
- *           >
+ * For example:
  *
+ *```
+ * <input
+ *    class="cloudinary-fileupload"
+ *    data-cloudinary-field="..."
+ *    data-form-data="..."
+ *    data-url="..."
+ *    name="file"
+ *    type="file"
+ * >
+ *```
  * @api
  */
 class UploadTag extends BaseConfigurableApiTag

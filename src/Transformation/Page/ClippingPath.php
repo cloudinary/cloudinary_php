@@ -13,7 +13,8 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ClassUtils;
 
 /**
- * Class ClippingPath
+ * Defines the clipping path to use when trimming pixels.
+ *
  *
  * @api
  */

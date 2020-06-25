@@ -14,7 +14,14 @@ use Cloudinary\Transformation\Argument\AngleTrait;
 use Cloudinary\Transformation\Argument\Degree;
 
 /**
- * Class Rotate
+ * Rotates or flips an image or video by the specified number of degrees, or automatically (images only) according to its orientation or available metadata.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/image_transformations#rotating_images
+ * target="_blank">Rotating images</a> |
+ * <a href=https://cloudinary.com/documentation/video_manipulation_and_delivery#rotating_videos
+ * target="_blank">Rotating videos</a>
+ *
  *
  * @api
  */

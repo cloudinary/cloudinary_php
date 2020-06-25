@@ -14,7 +14,14 @@ use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
- * Class ReplaceColor
+ * Maps an input color and those similar to the input color to corresponding shades of a specified output color,
+ * taking luminosity and chroma into account, in order to recolor objects in your image in a natural way.
+ * More highly saturated input colors usually give the best results. It is recommended to avoid input colors
+ * approaching white, black, or gray.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/image_transformations#replace_color_effect
+ * target="_blank">Replace colors example</a>
  *
  * @api
  */

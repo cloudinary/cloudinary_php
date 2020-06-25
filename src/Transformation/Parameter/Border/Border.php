@@ -14,7 +14,11 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
 use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
 
 /**
- * Class Border
+ * Adds a solid border around an image or video.
+ *
+ * **Learn more**:
+ * <a href="https://cloudinary.com/documentation/image_transformations#adding_image_borders" target="_blank">
+ * Adding image borders</a>
  *
  * @property BorderValue $value
  *
@@ -62,7 +66,7 @@ class Border extends BaseParameter
     /**
      * Sets the color of the border.
      *
-     * @param string $style The color of the border.
+     * @param string $color The color of the border.
      *
      * @return $this
      */

@@ -21,7 +21,7 @@ use Cloudinary\Configuration\Configuration;
  *
  * Represents a BaseConfigurableTag with an api configuration
  *
- * @internal
+ * @api
  */
 class BaseConfigurableApiTag extends BaseTag
 {

@@ -13,9 +13,11 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class StreamingProfile
+ * The predefined streaming profiles.
  *
- * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#predefined_streaming_profiles
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery#predefined_streaming_profiles"
+ * target="_blank">Predefined streaming profiles</a>
  *
  * @api
  */

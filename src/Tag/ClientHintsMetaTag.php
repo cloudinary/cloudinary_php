@@ -11,7 +11,11 @@
 namespace Cloudinary\Tag;
 
 /**
- * Class ClientHintsMetaTag
+ * Generates an HTML `<meta>` tag to indicate support for Client Hints:
+ *
+ * ```
+ * <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">
+ * ```
  *
  * @api
  */

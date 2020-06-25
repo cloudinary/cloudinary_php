@@ -16,9 +16,19 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\VideoTransformation;
 
 /**
- * Class VideoSourceTag
  *
- * Generates HTML `source` tag that can be used by `video` or `audio` tag
+ * Generates an HTML `<source>` tag that can be used with a `<video>` tag.
+ *
+ * For example:
+ *
+ * ```
+ * <video poster="https://res.cloudinary.com/demo/video/upload/dog.jpg">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_h265/dog.mp4" type="video/mp4; codecs=hev1">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_vp9/dog.webm" type="video/webm; codecs=vp9">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_auto/dog.mp4" type="video/mp4">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_auto/dog.webm" type="video/webm">
+ * </video>
+ * ```
  *
  * @api
  */

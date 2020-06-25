@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class VideoEffect
+ * Defines how to manipulate the appearance of a video.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery#video_effects" target="_blank">
+ * Video effects</a>
  *
  * @api
  */

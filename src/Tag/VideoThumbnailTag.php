@@ -14,9 +14,8 @@ use Cloudinary\Asset\Video;
 use Cloudinary\Configuration\Configuration;
 
 /**
- * Class VideoThumbnailTag
  *
- * Generates an HTML '<img>' tag with the thumbnail for the given video $source and $configuration
+ * Generates an HTML `<img>` tag based on a captured frame from the specified video source.
  *
  * @api
  */

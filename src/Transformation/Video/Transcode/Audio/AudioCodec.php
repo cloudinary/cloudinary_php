@@ -13,7 +13,10 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class AudioCodec
+ * Controls the audio codec or removes the audio channel.
+ *
+ * **Learn more**: <a href="https://cloudinary.com/documentation/audio_transformations#audio_codec_settings"
+ * target="_blank">Audio codec settings</a>
  *
  * @api
  */

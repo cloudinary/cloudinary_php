@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Delivery
+ * Defines transformations for delivering your assets without changing the visual or audio experience
+ * for the end user.
+ *
+ * **Learn more**: <a href=https://cloudinary.com/documentation/image_delivery_options target="_blank">
+ * Media delivery</a>
  *
  * @api
  */

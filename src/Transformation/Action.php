@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Action
+ * Defines the category of transformation to perform.
  *
  * @api
  */

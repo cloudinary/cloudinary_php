@@ -11,7 +11,13 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Gravity
+ * Defines the focal gravity for certain methods of cropping.
+ *
+ * **Learn more**: <a href=https://cloudinary.com/documentation/image_transformations#control_gravity
+ * target="_blank">
+ * Image gravity</a> |
+ * <a href=https://cloudinary.com/documentation/video_manipulation_and_delivery#gravity
+ * target="_blank">Video gravity</a>
  *
  * @api
  */

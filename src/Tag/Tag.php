@@ -8,7 +8,13 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\ImageTransformation;
 
 /**
- * Class Tag
+ * Static builder for all HTML tags.
+ *
+ * Example usage:
+ *
+ * ```
+ * Tag::imageTag("sample.jpg");
+ * ```
  *
  * @api
  */

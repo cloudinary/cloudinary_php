@@ -13,7 +13,11 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class BitRate
+ * Defines the video bitrate in bits per second.
+ *
+ * **Learn more**:
+ * <a href="https://cloudinary.com/documentation/video_manipulation_and_delivery#bitrate_control" target="_blank">
+ * Bitrate control</a>
  *
  * @api
  */

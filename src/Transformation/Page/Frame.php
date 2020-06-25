@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Frame
+ * Represents a frame in an animated GIF.
+ *
+ * **Learn more**: <a href=https://cloudinary.com/documentation/animated_images#deliver_a_single_frame
+ * target="_blank">
+ * Deliver a single frame of an animated image</a>
  *
  * @api
  */

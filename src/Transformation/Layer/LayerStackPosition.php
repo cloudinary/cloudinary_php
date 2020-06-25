@@ -11,7 +11,13 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class LayerStackPosition
+ * Defines the position of a layer - overlay or underlay.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/image_transformations#image_and_text_overlays target="_blank">
+ * Applying overlays to images</a> |
+ * <a href=https://cloudinary.com/documentation/video_manipulation_and_delivery#adding_image_overlays target="_blank">
+ * Applying overlays to videos</a>
  *
  * @api
  */

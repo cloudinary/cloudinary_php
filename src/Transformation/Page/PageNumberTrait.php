@@ -18,7 +18,7 @@ namespace Cloudinary\Transformation;
 trait PageNumberTrait
 {
     /**
-     * Creates a new instance using provided number.
+     * Creates a new instance using the specified number.
      *
      * @param int $value The number.
      *

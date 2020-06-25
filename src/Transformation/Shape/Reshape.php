@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Reshape
+ * Adjusts the shape of the delivered image.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/image_transformations#image_shape_changes_and_distortion_effects
+ * target="_blank">Shape changes and distortion effects</a>
  *
  * @api
  */

@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class PSDLayer
+ * Represents a layer in a Photoshop document.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/paged_and_layered_media#deliver_selected_layers_of_a_psd_image
+ * target="_blank">Deliver selected layers of a PSD image</a>
  *
  * @api
  */

@@ -14,7 +14,12 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class Fps
+ * Controls the range of acceptable FPS (Frames Per Second) to ensure that video (even when optimized) is delivered with
+ * an expected FPS level (helps with sync to audio).
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/video_transformation_reference#video_settings
+ * target="_blank">Video settings</a>
  *
  * @property MinMaxRange value
  *

@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class ObjectGravity
+ * Defines objects to use as the focal gravity of crops.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/cloudinary_object_aware_cropping_addon
+ * target="_blank">Object-aware cropping</a>
  *
  * @api
  */

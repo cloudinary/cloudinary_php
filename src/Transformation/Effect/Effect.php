@@ -13,7 +13,14 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ArrayUtils;
 
 /**
- * Class Effect
+ * Defines effects that you can apply to transform your assets.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/image_transformations#applying_image_effects_and_filters target="_blank">
+ * Image effects</a> |
+ * <a href=https://cloudinary.com/documentation/video_manipulation_and_delivery#video_effects target="_blank">
+ * Video effects</a>
+ *
  * @api
  */
 abstract class Effect

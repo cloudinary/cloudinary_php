@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\GenericParameter;
 
 /**
- * Class Parameter
+ * Defines how to apply a particular transformation.
  *
  * @api
  */

@@ -14,7 +14,13 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\Configuration;
 
 /**
- * Class JsConfigTag
+ * Generates an HTML `<script>` tag for JavaScript:
+ *
+ * ```
+ * <script type="text/javascript">
+ * $.cloudinary.config({"api_key":"key","cloud_name":"name"});
+ * </script>
+ * ```
  *
  * @api
  */

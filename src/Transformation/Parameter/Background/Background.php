@@ -16,7 +16,13 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
 use Cloudinary\Transformation\Parameter\Value\ColorValueTrait;
 
 /**
- * Class Background
+ * Defines the background color to use instead of transparent background areas or when resizing with padding.
+ *
+ * **Learn more**:
+ * <a href="https://cloudinary.com/documentation/image_transformations#setting_background_color" target="_blank">
+ * Setting background for images</a> |
+ * <a href="https://cloudinary.com/documentation/video_manipulation_and_delivery#background_color" target="_blank">
+ * Setting background for videos</a>
  *
  * @api
  */
@@ -62,7 +68,7 @@ class Background extends BaseParameter
     }
 
     /**
-     * Applies blurred background (Relevant only for videos).
+     * Applies background color automatically.
      *
      * @param string $autoBackground The type of the background color. See AutoBackground class.
      *

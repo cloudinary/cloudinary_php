@@ -13,7 +13,11 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Argument\Gradient;
 
 /**
- * Class AutoBackground
+ * Automatically sets the background color when resizing with padding.
+ *
+ * **Learn more**:
+ * <a href="https://cloudinary.com/documentation/image_transformations#content_aware_padding" target="_blank">
+ * Content-aware padding</a>
  *
  * @api
  */

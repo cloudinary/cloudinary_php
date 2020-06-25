@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Adjust
+ * Adjusts the visual appearance of an image or video.
  *
  * @api
  */

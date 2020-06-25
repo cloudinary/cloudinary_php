@@ -15,9 +15,19 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
 
 /**
- * Class PictureTag
  *
- * Generates HTML 'picture' tag
+ * Generates an HTML `<picture>` tag containing `<source>` and `<img>` tags.
+ *
+ * For example:
+ *
+ * ```
+ * <picture>
+ * <source srcset="https://res.cloudinary.com/demo/image/upload/c_scale,w_500/sample.png" media="(max-width: 500px)">
+ * <source srcset="https://res.cloudinary.com/demo/image/upload/c_scale,w_1000/sample.png" media="(min-width: 500px)">
+ * <img src="https://res.cloudinary.com/demo/image/upload/sample.png">
+ * </picture>
+ * ```
+ *
  * @api
  */
 class PictureTag extends BaseTag

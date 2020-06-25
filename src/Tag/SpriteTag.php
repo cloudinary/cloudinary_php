@@ -16,9 +16,13 @@ use Cloudinary\Transformation\ImageTransformation;
 use Cloudinary\Transformation\ImageTransformationTrait;
 
 /**
- * Class SpriteTag
+ * Generates an HTML `<link>` tag to specify the relationship to the CSS file associated with an image sprite.
  *
- * Generates <link type="text/css" rel="stylesheet" href="https://res.cloudinary.com/demo/image/sprite/my_sprite.css">
+ * For example:
+ *
+ *```
+ * <link type="text/css" rel="stylesheet" href="https://res.cloudinary.com/demo/image/sprite/my_sprite.css">
+ * ```
  *
  * @api
  */

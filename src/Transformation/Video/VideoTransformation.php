@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class VideoTransformation
+ * Defines how to manipulate and transform videos.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery" target="_blank">
+ * Video transformations</a>
  *
  * @api
  */

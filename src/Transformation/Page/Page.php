@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Page
+ * Represents one or more pages of a paged document, such as a PDF or TIFF file.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/paged_and_layered_media#delivering_content_from_pdf_files
+ * target="_blank">Delivering content from PDF files</a>
  *
  * @api
  */

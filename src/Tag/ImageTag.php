@@ -11,7 +11,8 @@
 namespace Cloudinary\Tag;
 
 /**
- * Class ImageTag
+ * Generates an HTML `<img>` tag with the `src` attribute set to the transformation URL, optional `srcset` and other
+ * specified attributes.
  *
  * @api
  */

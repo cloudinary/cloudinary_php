@@ -13,7 +13,11 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Utils;
 
 /**
- * Class Volume
+ * Controls the volume of an audio or video file.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/audio_transformations#adjust_the_audio_volume" target="_blank">
+ * Adjust the audio volume</a>
  *
  * @api
  */

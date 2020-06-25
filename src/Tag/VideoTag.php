@@ -25,7 +25,18 @@ use Cloudinary\Transformation\VideoTransformationInterface;
 use Cloudinary\Transformation\VideoTransformationTrait;
 
 /**
- * Class VideoTag
+ * Generates an HTML `<video>` tag with specified attributes, containing `<source>` tags for the transformation URLs.
+ *
+ * For example:
+ *
+ * ```
+ * <video poster="https://res.cloudinary.com/demo/video/upload/dog.jpg">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_h265/dog.mp4" type="video/mp4; codecs=hev1">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_vp9/dog.webm" type="video/webm; codecs=vp9">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_auto/dog.mp4" type="video/mp4">
+ * <source src="https://res.cloudinary.com/demo/video/upload/vc_auto/dog.webm" type="video/webm">
+ * </video>
+ * ```
  *
  * @api
  */

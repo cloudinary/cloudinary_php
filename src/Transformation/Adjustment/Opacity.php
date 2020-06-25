@@ -13,7 +13,12 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class Opacity
+ * Adjusts the opacity of the image to the specified percentage of opaqueness, making it semi-transparent.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/image_transformations#controlling_image_opacity
+ * target="_blank">Controlling image opacity</a>
+ *
  *
  * @api
  */

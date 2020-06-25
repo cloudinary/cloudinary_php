@@ -14,7 +14,11 @@ use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 
 /**
- * Class VideoOverlay
+ * Defines how the video layer is applied.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery#adding_video_overlays" target="_blank">
+ * Video overlays</a>
  *
  * @api
  */

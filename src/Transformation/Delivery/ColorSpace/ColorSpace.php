@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Transformation\Parameter\BaseParameter;
 
 /**
- * Class ColorSpace
+ * Controls the color space used for the delivered image.
  *
  * @api
  */

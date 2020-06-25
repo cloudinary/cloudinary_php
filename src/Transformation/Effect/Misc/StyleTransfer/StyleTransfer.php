@@ -13,7 +13,12 @@ namespace Cloudinary\Transformation;
 use Cloudinary\Asset\Media;
 
 /**
- * Class StyleTransfer
+ * Applies a complex deep learning neural network algorithm that extracts artistic styles from a source image
+ * and applies them to the content of a target photograph.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/neural_artwork_style_transfer_addon" target="_blank">
+ * Neural Artwork Style Transfer</a>
  *
  * @api
  */

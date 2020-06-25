@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class FocalGravity
+ * Defines the area to keep when automatically resizing an image.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/image_transformations#adjusting_the_automatic_gravity_focal_preference
+ * target="_blank">Focal gravity</a>
  *
  * @api
  */

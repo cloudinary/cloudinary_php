@@ -14,15 +14,17 @@ use Cloudinary\Api\HttpMethod;
 use Cloudinary\ArrayUtils;
 
 /**
- * Class FormTag
+ * Generates an HTML `<form>` tag, for example:
  *
- * Generates
+ *
+ * ```
  * <form enctype="multipart/form-data" action=API_URL method="POST"/>
  * <input name="timestamp" type="hidden" value="\d+">
  * <input name="public_id" type="hidden" value="hello">
  * <input name="signature" type="hidden" value="[0-9a-f]+">
  * <input name="api_key" type="hidden" value="1234">
  * </form>
+ * ```
  *
  * @api
  *
@@ -59,10 +61,12 @@ class FormTag extends BaseConfigurableApiTag
      * Returns input tags that are appended to the form tag.
      *
      * For example:
+     * ```
      * <input name="timestamp" type="hidden" value="\d+"\/>
      * <input name="public_id" type="hidden" value="hello"\/>
      * <input name="signature" type="hidden" value="[0-9a-f]+"\/>
      * <input name="api_key" type="hidden" value="1234"\/>
+     * ```
      *
      * @param array $additionalContent The additional content.
      *

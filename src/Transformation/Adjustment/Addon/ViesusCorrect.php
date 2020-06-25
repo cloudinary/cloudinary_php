@@ -13,11 +13,11 @@ namespace Cloudinary\Transformation;
 use InvalidArgumentException;
 
 /**
- * Class ViesusCorrect
- *
  * Enhances an image to its best visual quality with the Viesus Automatic Image Enhancement add-on.
  *
- * For details, see the Viesus Automatic Image Enhancement add-on documentation.
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/viesus_automatic_image_enhancement_addon" target="_blank">
+ * Viesus Automatic Image Enhancement</a>.
  *
  * @api
  *

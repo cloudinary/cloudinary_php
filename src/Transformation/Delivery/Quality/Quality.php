@@ -11,7 +11,13 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class Quality
+ * Controls the quality of the delivered image or video.
+ *
+ * **Learn more**:
+ * <a href=https://cloudinary.com/documentation/image_optimization#how_to_optimize_image_quality
+ * target="_blank">Image quality</a> |
+ * <a href=https://cloudinary.com/documentation/video_manipulation_and_delivery#quality_control
+ * target="_blank">Video quality</a>
  *
  * @api
  */

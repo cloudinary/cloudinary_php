@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class VideoEdit
+ * Methods for editing a video.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery" target="_blank">
+ * Video manipulation</a>
  *
  * @api
  */

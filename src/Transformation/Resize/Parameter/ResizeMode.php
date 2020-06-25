@@ -11,7 +11,8 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class ResizeMode
+ * Indicates that the requested dimensions for the resize are percentage values relative to another asset or element,
+ * rather than pixel values.
  *
  * @api
  */

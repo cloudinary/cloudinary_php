@@ -14,7 +14,7 @@ use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
- * Class TrimEffect
+ * Detect and remove image edges whose color is similar to corner pixels.
  *
  * @api
  *

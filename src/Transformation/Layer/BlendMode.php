@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class BlendMode
+ * Defines the mode of blending to use when overlaying an image.
+ *
+ * **Learn more**:
+ * <a href="https://cloudinary.com/documentation/image_transformations#overlay_blending_effects" target="_blank">
+ * Overlay blending effects</a>
  *
  * @api
  */

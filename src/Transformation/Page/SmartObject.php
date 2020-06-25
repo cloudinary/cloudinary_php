@@ -13,7 +13,12 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ClassUtils;
 
 /**
- * Class SmartObject
+ * Represents an embedded smart object in a Photoshop document.
+ *
+ * **Learn more**:
+ * <a
+ * href=https://cloudinary.com/documentation/paged_and_layered_media#extract_the_original_content_of_an_embedded_object
+ * target="_blank">Extract the original content of an embedded Photoshop object</a>
  *
  * @api
  */

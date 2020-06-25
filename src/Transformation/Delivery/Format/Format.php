@@ -13,7 +13,13 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ClassUtils;
 
 /**
- * Class Format
+ * Defines the format of the delivered asset.
+ *
+ * **Learn more**: <a href=https://cloudinary.com/documentation/image_transformations#image_format_support
+ * target="_blank">
+ * Image formats</a> |
+ * <a href=https://cloudinary.com/documentation/video_manipulation_and_delivery#transcoding_video_to_other_formats
+ * target="_blank">Video formats</a>
  *
  * @api
  */
