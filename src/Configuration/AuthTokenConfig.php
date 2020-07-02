@@ -27,8 +27,6 @@ class AuthTokenConfig extends BaseConfigSection
     const EXPIRATION = 'expiration';
     const DURATION   = 'duration';
 
-    //protected static $sensitiveDataKeys = [self::KEY];
-
     /**
      * (Required) – the token must be signed with the encryption key received from Cloudinary.
      *
@@ -65,14 +63,14 @@ class AuthTokenConfig extends BaseConfigSection
     public $startTime;
 
     /**
-     * (Optional) – the duration that the URL is valid in seconds (counted from start_time).
+     * (Optional) – timestamp of the UNIX time when the URL expires.
      *
      * @var int
      */
     public $expiration;
 
     /**
-     * (Optional) – timestamp in UNIX time when the URL expires.
+     * (Optional) – the duration that the URL is valid in seconds (counted from start_time).
      *
      * @var int
      */
