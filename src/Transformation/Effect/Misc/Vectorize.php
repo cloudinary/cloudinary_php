@@ -12,6 +12,8 @@ namespace Cloudinary\Transformation;
 
 /**
  * Class Vectorize
+ *
+ * @api
  */
 class Vectorize extends EffectParam
 {
@@ -22,11 +24,25 @@ class Vectorize extends EffectParam
     /**
      * Vectorize constructor.
      *
-     * @param mixed ...$arguments
+     * @param int   $colors    The number of colors. (Range: 2 to 30, Server default: 10)
+     * @param float $detail    The level of detail. Specify either a percentage of the original image (Range: 0.0 to
+     *                         1.0) or an absolute number of pixels (Range: 0 to 1000). (Server default: 300)
+     * @param float $despeckle The size of speckles to suppress. Specify either a percentage of the original image
+     *                         (Range: 0.0 to 1.0) or an absolute number of pixels (Range: 0 to 100, Server default: 2)
+     * @param int   $corners   The corner threshold.  Specify 100 for no smoothing (polygon corners), 0 for completely
+     *                         smooth corners. (Range: 0 to 100, Default: 25)
+     * @param int   $paths     The optimization value. Specify 100 for least optimization and the largest file.
+     *                         (Range: 0 to 100, Server default: 100).
      */
-    public function __construct(...$arguments)
+    public function __construct($colors = null, $detail = null, $despeckle = null, $corners = null, $paths = null)
     {
-        parent::__construct(MiscEffect::VECTORIZE, ...$arguments);
+        parent::__construct(MiscEffect::VECTORIZE);
+
+        $this->colors($colors);
+        $this->detail($detail);
+        $this->despeckle($despeckle);
+        $this->corners($corners);
+        $this->paths($paths);
     }
 
     /**

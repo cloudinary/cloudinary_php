@@ -50,7 +50,7 @@ trait VectorizeTrait
      * Suppresses speckles up to the given size.
      *
      * @param float $size The size of speckles to suppress. Specify either a percentage of the original image
-     *                    (Range: 0.0 to 1.0) or an absolute number of pixels (Range: 0 to 100). (Server default: 2)
+     *                    (Range: 0.0 to 1.0) or an absolute number of pixels (Range: 0 to 100, Server default: 2)
      *
      * @return $this
      */

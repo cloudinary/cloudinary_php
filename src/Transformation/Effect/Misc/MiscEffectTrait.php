@@ -48,8 +48,8 @@ trait MiscEffectTrait
      *                                     Cartoonify::BLACK_WHITE for a black and white cartoon effect.
      *
      * @return Cartoonify
-     * @see \Cloudinary\Transformation\Cartoonify
      *
+     * @see \Cloudinary\Transformation\Cartoonify
      */
     public static function cartoonify($lineStrength = null, $colorReduction = null)
     {
@@ -127,14 +127,23 @@ trait MiscEffectTrait
      *  graphic effect.
      * * Large images are scaled down to 1000 pixels in the largest dimension before vectorization.
      *
+     * @param int   $colors    The number of colors. (Range: 2 to 30, Server default: 10)
+     * @param float $detail    The level of detail. Specify either a percentage of the original image (Range: 0.0 to
+     *                         1.0) or an absolute number of pixels (Range: 0 to 1000). (Server default: 300)
+     * @param float $despeckle The size of speckles to suppress. Specify either a percentage of the original image
+     *                         (Range: 0.0 to 1.0) or an absolute number of pixels (Range: 0 to 100, Server default: 2)
+     * @param int   $corners   The corner threshold.  Specify 100 for no smoothing (polygon corners), 0 for completely
+     *                         smooth corners. (Range: 0 to 100, Default: 25)
+     * @param int   $paths     The optimization value. Specify 100 for least optimization and the largest file.
+     *                         (Range: 0 to 100, Server default: 100).
+     *
      * @return Vectorize
      *
      * @see \Cloudinary\Transformation\Vectorize
-     *
      */
-    public static function vectorize()
+    public static function vectorize($colors = null, $detail = null, $despeckle = null, $corners = null, $paths = null)
     {
-        return new Vectorize();
+        return new Vectorize($colors, $detail, $despeckle, $corners, $paths);
     }
 
     /**
