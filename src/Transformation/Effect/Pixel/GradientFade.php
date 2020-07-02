@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Class GradientFadeParam
+ * Class GradientFade
  *
  * Applies a gradient fade effect from one edge of the image.
  *
@@ -25,6 +25,8 @@ namespace Cloudinary\Transformation;
  * To apply different amounts of fade to multiple edges, use chained fade effects.
  *
  * @see ImagePixelEffectTrait::gradientFade()
+ *
+ * @api
  */
 class GradientFade extends EffectAction
 {
