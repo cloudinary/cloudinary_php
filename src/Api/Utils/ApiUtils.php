@@ -242,7 +242,7 @@ class ApiUtils
      *
      * @return string The signature.
      *
-     * @internal
+     * @api
      */
     public static function signParameters($secret, $parameters = [])
     {

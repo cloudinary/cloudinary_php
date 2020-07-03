@@ -287,7 +287,7 @@ class ApiClient
     }
 
     /**
-     * Sings posted parameters using configured account credentials and posts to the endpoint.
+     * Signs posted parameters using configured account credentials and posts to the endpoint.
      *
      * @param string|array $endPoint   The API endpoint path.
      * @param array        $formParams The form parameters
