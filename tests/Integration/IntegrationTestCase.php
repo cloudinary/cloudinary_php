@@ -33,6 +33,8 @@ use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
 
+use function GuzzleHttp\Psr7\parse_query;
+
 /**
  * Class IntegrationTestCase
  */
@@ -479,6 +481,73 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
+     * Assert that a given array is a valid data of single animated image
+     * Optionally checks it against given values.
+     *
+     * @param array|object $resource
+     * @param array        $values
+     */
+    protected static function assertValidMulti($resource, $values = [])
+    {
+        self::assertObjectStructure(
+            $resource,
+            [
+                'url' => IsType::TYPE_STRING,
+                'secure_url' => IsType::TYPE_STRING,
+                'version' => IsType::TYPE_INT,
+                'public_id' => IsType::TYPE_STRING,
+            ]
+        );
+
+        foreach ($values as $key => $value) {
+            self::assertEquals($value, $resource[$key]);
+        }
+    }
+
+    /**
+     * Assert that a given array is a valid sprite
+     * Optionally checks it against given values.
+     *
+     * @param array|object $resource
+     * @param array        $values
+     */
+    protected static function assertValidSprite($resource, $values = [])
+    {
+        self::assertObjectStructure(
+            $resource,
+            [
+                'css_url' => IsType::TYPE_STRING,
+                'image_url' => IsType::TYPE_STRING,
+                'json_url' => IsType::TYPE_STRING,
+                'secure_css_url' => IsType::TYPE_STRING,
+                'secure_image_url' => IsType::TYPE_STRING,
+                'secure_json_url' => IsType::TYPE_STRING,
+                'version' => IsType::TYPE_INT,
+                'public_id' => IsType::TYPE_STRING,
+                'image_infos' => IsType::TYPE_ARRAY,
+            ]
+        );
+
+        foreach ($resource['image_infos'] as $imageInfo) {
+            self::assertObjectStructure(
+                $imageInfo,
+                [
+                    'width'  => IsType::TYPE_INT,
+                    'height' => IsType::TYPE_INT,
+                    'x'      => IsType::TYPE_INT,
+                    'y'      => IsType::TYPE_INT,
+                ]
+            );
+            self::assertNotEmpty($imageInfo['width']);
+            self::assertNotEmpty($imageInfo['height']);
+        }
+
+        foreach ($values as $key => $value) {
+            self::assertEquals($value, $resource[$key]);
+        }
+    }
+
+    /**
      * Assert that a given object contains a valid asset url
      *
      * @param array|object $asset
@@ -517,6 +586,32 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             $assetUrl['path'],
             "The object's \"$field\" field contains a URL with a path that is different than expected."
         );
+    }
+
+    /**
+     * Assert that a given url contains a valid path and values.
+     *
+     * @param string $assetUrl
+     * @param string $prefixUrl
+     * @param string $path
+     * @param array  $values
+     */
+    protected static function assertDownloadSignUrl($assetUrl, $prefixUrl = null, $path = null, $values = [])
+    {
+        $parseUrl = parse_url($assetUrl);
+        $query    = self::parseHttpQuery($parseUrl['query']);
+
+        self::assertArrayHasKey('timestamp', $query);
+        self::assertArrayHasKey('signature', $query);
+        if ($prefixUrl) {
+            self::assertEquals($prefixUrl, $parseUrl['scheme'] . '://' . $parseUrl['host']);
+        }
+        if ($path) {
+            self::assertEquals($path, $parseUrl['path']);
+        }
+        if (!empty($values)) {
+            self::assertArraySubset($values, $query);
+        }
     }
 
     /**
@@ -966,5 +1061,34 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         } catch (Exception $e) {
             //@TODO: Use logger to print ERROR message
         }
+    }
+
+    /**
+     * Fixes a query string decoding.
+     *
+     * parse_query decodes a query string:
+     *   keys[]=value1&keys[]=value2
+     * as:
+     *   ['keys[]' => ['value1', 'value2']]
+     *
+     * This method parse a given query string and deletes brackets in array keys, so the result would look like:
+     *   ['keys' => ['value1', 'value2']]
+     *
+     * @param $httpQuery
+     *
+     * @return array
+     */
+    private static function parseHttpQuery($httpQuery)
+    {
+        $query = parse_query($httpQuery);
+
+        foreach ($query as $key => $value) {
+            if (is_array($value) && strpos($key, '[]') === strlen($key) - 2) {
+                unset($query[$key]);
+                $query[substr($key, 0, -2)] = $value;
+            }
+        }
+
+        return $query;
     }
 }
