@@ -18,6 +18,8 @@ use Cloudinary\Utils;
 
 /**
  * Class ApiUtils
+ *
+ * @api
  */
 class ApiUtils
 {
@@ -69,6 +71,8 @@ class ApiUtils
      * @param array $context
      *
      * @return string The resulting serialized parameter.
+     *
+     * @internal
      */
     public static function serializeContext($context)
     {
