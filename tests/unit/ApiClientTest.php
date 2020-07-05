@@ -60,7 +60,7 @@ final class ApiClientTest extends UnitTestCase
         $message = null;
         $expectedExceptionMessage = 'Error parsing server response';
         try {
-            $reflectionMethod->invoke($apiClient, new Response(200, [],'{NOT_A_JSON}'));
+            $reflectionMethod->invoke($apiClient, new Response(200, [], '{NOT_A_JSON}'));
         } catch (Exception $e) {
             $message = $e->getMessage();
         }

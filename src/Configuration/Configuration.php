@@ -12,6 +12,7 @@ namespace Cloudinary\Configuration;
 
 use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\JsonUtils;
+use Cloudinary\StringUtils;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -36,13 +37,13 @@ class Configuration implements ConfigurableInterface
      * @var array
      */
     protected $sections = [
-        'account',
-        'api',
-        'url',
-        'tag',
-        'responsiveBreakpoints',
-        'authToken',
-        'logging',
+        AccountConfig::CONFIG_NAME,
+        ApiConfig::CONFIG_NAME,
+        UrlConfig::CONFIG_NAME,
+        TagConfig::CONFIG_NAME,
+        ResponsiveBreakpointsConfig::CONFIG_NAME,
+        AuthTokenConfig::CONFIG_NAME,
+        LoggingConfig::CONFIG_NAME,
     ];
 
     /**
@@ -281,6 +282,7 @@ class Configuration implements ConfigurableInterface
 
         $sections = [];
         foreach ($this->sections as $section) {
+            $section = StringUtils::snakeCaseToCamelCase($section);
             $sections [] = (string)($this->$section);
         }
 
@@ -313,6 +315,7 @@ class Configuration implements ConfigurableInterface
         $json = ['version' => self::VERSION];
 
         foreach ($this->sections as $section) {
+            $section = StringUtils::snakeCaseToCamelCase($section);
             $section = $this->$section->jsonSerialize($includeSensitive, $includeEmptyKeys);
             if (! $includeEmptySections && empty(array_values($section)[0])) {
                 continue;

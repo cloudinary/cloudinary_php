@@ -561,28 +561,6 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Assert that a resource has certain keys of certain types
-     *
-     * @param array|object $resource
-     * @param array        $keys
-     * @param string       $message
-     */
-    protected static function assertObjectStructure($resource, array $keys, $message = '')
-    {
-        foreach ($keys as $key => $type) {
-            if (is_object($resource) && property_exists($resource, $key) && is_array($type)) {
-                self::assertOneOfInternalTypes($type, $resource->{$key}, $message);
-            } elseif (is_object($resource) && property_exists($resource, $key)) {
-                self::assertInternalType($type, $resource->{$key}, $message);
-            } elseif (is_array($type)) {
-                self::assertOneOfInternalTypes($type, $resource[$key], $message);
-            } else {
-                self::assertInternalType($type, $resource[$key], $message);
-            }
-        }
-    }
-
-    /**
      * Assert that a given object is an upload mapping object
      * Optionally checks it against given values.
      *
@@ -771,15 +749,18 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * @param string   $method
-     * @param string   $message
-     * @param callable $invalidResult
+     * @param string|array $function
+     * @param string       $message
+     * @param callable     $invalidResult
      */
-    private static function cleanupSoftly($method, $message, $invalidResult)
+    private static function cleanupSoftly($function, $message, $invalidResult)
     {
         $args = array_slice(func_get_args(), 3);
         try {
-            $result = call_user_func_array([self::$adminApi, $method], $args);
+            $result = call_user_func_array(
+                is_array($function) ? $function : [self::$adminApi, $function],
+                $args
+            );
             if ($invalidResult($result)) {
                 throw new RuntimeException($message);
             }

@@ -11,6 +11,7 @@
 namespace Cloudinary\Configuration;
 
 use Cloudinary\ArrayUtils;
+use Cloudinary\Configuration\Provisioning\ProvisioningAccountConfig;
 use Cloudinary\StringUtils;
 use Cloudinary\Utils;
 use InvalidArgumentException;
@@ -56,7 +57,7 @@ class ConfigUtils
 
         if (! $uri) {
             throw new UnexpectedValueException(
-                /** @lang text */
+            /** @lang text */
                 'Invalid CLOUDINARY_URL, "cloudinary://[<key>:<secret>@]<cloud>" expected'
             );
         }

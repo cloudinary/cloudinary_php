@@ -12,6 +12,7 @@ namespace Cloudinary\Test;
 
 use Cloudinary\Cloudinary;
 use Exception;
+use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_Constraint_IsType;
 use PHPUnit_Framework_Constraint_Or;
@@ -28,6 +29,9 @@ abstract class CloudinaryTestCase extends TestCase
     protected static $UNIQUE_TEST_TAG;
     protected static $ASSET_TAGS;
     protected static $UNIQUE_TEST_ID;
+
+    protected static $skipAllTests = false;
+    protected static $skipReason;
 
     public static function setUpBeforeClass()
     {
@@ -185,5 +189,63 @@ abstract class CloudinaryTestCase extends TestCase
             }
         }
         self::assertTrue($instanceFound, 'The $haystack array does not contain an instance of ' . $className);
+    }
+
+    /**
+     * Asserts that string representations of the objects are equal.
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     */
+    public function assertStrEquals($expected, $actual, $message = '')
+    {
+        $this->assertEquals((string)$expected, (string)$actual, $message);
+    }
+
+    /**
+     * Asserts that a given object logged a message of a certain level
+     *
+     * @param object     $obj     The object that should have logged a message
+     * @param string     $message The message that was logged
+     * @param string|int $level   Logging level value or name
+     *
+     * @throws ReflectionException
+     */
+    protected static function assertObjectLoggedMessage($obj, $message, $level)
+    {
+        $reflectionMethod = new ReflectionMethod(get_class($obj), 'getLogger');
+        $reflectionMethod->setAccessible(true);
+        $logger = $reflectionMethod->invoke($obj);
+        /** @var TestHandler $testHandler */
+        $testHandler = $logger->getTestHandler();
+
+        self::assertInstanceOf(TestHandler::class, $testHandler);
+        self::assertTrue(
+            $testHandler->hasRecordThatContains($message, $level),
+            sprintf('Object %s did not log the message or logged it with a different level', get_class($obj))
+        );
+    }
+
+    /**
+     * Assert that a resource has certain keys of certain types
+     *
+     * @param array|object $resource
+     * @param array        $keys
+     * @param string       $message
+     */
+    protected static function assertObjectStructure($resource, array $keys, $message = '')
+    {
+        foreach ($keys as $key => $type) {
+            if (is_object($resource) && property_exists($resource, $key) && is_array($type)) {
+                self::assertOneOfInternalTypes($type, $resource->{$key}, $message);
+            } elseif (is_object($resource) && property_exists($resource, $key)) {
+                self::assertInternalType($type, $resource->{$key}, $message);
+            } elseif (is_array($type)) {
+                self::assertOneOfInternalTypes($type, $resource[$key], $message);
+            } else {
+                self::assertInternalType($type, $resource[$key], $message);
+            }
+        }
     }
 }
