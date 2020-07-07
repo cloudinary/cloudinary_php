@@ -373,7 +373,6 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources_by_tags
      */
-
     public function deleteResourcesByTag($tag, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
