@@ -250,6 +250,8 @@ class ApiUtils
      */
     public static function signParameters($secret, $parameters = [])
     {
+        $parameters = array_map('self::serializeSimpleApiParam', $parameters);
+
         ksort($parameters);
 
         $signatureContent = self::serializeQueryParams($parameters);

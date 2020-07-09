@@ -16,6 +16,8 @@ use Cloudinary\Test\CloudinaryTestCase;
 
 /**
  * Class CloudinaryTestCase
+ *
+ * Base class for all Unit tests.
  */
 abstract class UnitTestCase extends CloudinaryTestCase
 {

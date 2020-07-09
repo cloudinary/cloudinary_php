@@ -144,6 +144,18 @@ class Utils
     }
 
     /**
+     * Formats a DateTime object to ISO8601 format (e.g., "2020-12-25").
+     *
+     * @param DateTime $date
+     *
+     * @return string
+     */
+    public static function toISO8601DateOnly(DateTime $date)
+    {
+        return $date->format('Y-m-d');
+    }
+
+    /**
      * Creates a signature for content using specified secret.
      *
      * @param string $content
@@ -258,5 +270,39 @@ class Utils
         }
 
         return $value;
+    }
+
+    /**
+     * Convert an object to array.
+     *
+     * @param $object
+     *
+     * @return array
+     */
+    public static function objectToArray($object)
+    {
+        $properties = (array) $object;
+
+        $snakeCaseProperties = [];
+        foreach ($properties as $key => $value) {
+            $key = str_replace(["*", "\0"], "", $key);
+            $key = StringUtils::camelCaseToSnakeCase($key);
+
+            if ($value === null) {
+                continue;
+            } elseif (is_object($value)) {
+                $snakeCaseProperties[$key] = self::objectToArray($value);
+            } elseif (is_array($value)) {
+                $subArray = [];
+                foreach ($value as $subArrayValue) {
+                    $subArray[] = self::objectToArray($subArrayValue);
+                }
+                $snakeCaseProperties[$key] = $subArray;
+            } else {
+                $snakeCaseProperties[$key] = $value;
+            }
+        }
+
+        return $snakeCaseProperties;
     }
 }

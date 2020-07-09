@@ -28,11 +28,12 @@ class AdminApi
     use UploadPresetsTrait;
     use UploadMappingsTrait;
     use MiscTrait;
+    use MetadataFieldsTrait;
 
     /**
      * @var ApiClient $apiClient The API client instance.
      */
-    private $apiClient;
+    protected $apiClient;
 
     /**
      * AdminApi constructor.

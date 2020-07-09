@@ -87,6 +87,8 @@ trait UploadTrait
             'eager'                  => ApiUtils::serializeAssetTransformations(ArrayUtils::get($options, 'eager')),
             'face_coordinates'       => ApiUtils::serializeArrayOfArrays(ArrayUtils::get($options, 'face_coordinates')),
             'headers'                => ApiUtils::serializeHeaders(ArrayUtils::get($options, 'headers')),
+            'metadata'               => ApiUtils::serializeContext(ArrayUtils::get($options, 'metadata')),
+            'public_ids'             => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'public_ids')),
             'tags'                   => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
             'responsive_breakpoints' => ApiUtils::serializeJson(ArrayUtils::get($options, 'responsive_breakpoints')),
         ];

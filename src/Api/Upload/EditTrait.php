@@ -12,6 +12,7 @@ namespace Cloudinary\Api\Upload;
 
 use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
+use Cloudinary\Api\ApiUtils;
 use Cloudinary\ArrayUtils;
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -147,5 +148,54 @@ trait EditTrait
     public function explicit($publicId, $options = [])
     {
         return $this->explicitAsync($publicId, $options)->wait();
+    }
+
+    /**
+     * Populates metadata fields with the given values. Existing values will be overwritten.
+     *
+     * Any metadata-value pairs given are merged with any existing metadata-value pairs
+     * (an empty value for an existing metadata field clears the value).
+     *
+     * This is an asynchronous function.
+     *
+     * @param array $metadata   A list of custom metadata fields (by external_id) and the values to assign to each
+     *                          of them.
+     * @param array $publicIds  An array of Public IDs of assets uploaded to Cloudinary.
+     * @param array $options    The optional parameters.  See the upload API documentation.
+     *
+     * @return mixed A list of public IDs that were updated.
+     *
+     * @see https://cloudinary.com/documentation/image_upload_api_reference#metadata_method
+     */
+    public function updateMetadataAsync(array $metadata, array $publicIds, array $options)
+    {
+        $params = ArrayUtils::whitelist($options, ['type']);
+
+        $params['metadata']   = ApiUtils::serializeContext($metadata);
+        $params['public_ids'] = $publicIds; // Public IDs are not serialized similar to tags (intentionally)
+
+        return $this->callUploadApiAsync(UploadEndPoint::METADATA, $params, $options);
+    }
+
+    /**
+     * Populates metadata fields with the given values.
+     *
+     * Existing values will be overwritten.
+     *
+     * Any metadata-value pairs given are merged with any existing metadata-value pairs
+     * (an empty value for an existing metadata field clears the value).
+     *
+     * @param array $metadata   A list of custom metadata fields (by external_id) and the values to assign to each
+     *                          of them.
+     * @param array $publicIds  An array of Public IDs of assets uploaded to Cloudinary.
+     * @param array $options    The optional parameters.  See the upload API documentation.
+     *
+     * @return mixed A list of public IDs that were updated.
+     *
+     * @see https://cloudinary.com/documentation/image_upload_api_reference#metadata_method
+     */
+    public function updateMetadata(array $metadata, array $publicIds, array $options = [])
+    {
+        return $this->updateMetadataAsync($metadata, $publicIds, $options)->wait();
     }
 }

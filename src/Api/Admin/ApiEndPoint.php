@@ -25,4 +25,5 @@ class ApiEndPoint
     const TRANSFORMATIONS    = 'transformations';
     const UPLOAD_PRESETS     = 'upload_presets';
     const UPLOAD_MAPPINGS    = 'upload_mappings';
+    const METADATA_FIELDS    = 'metadata_fields';
 }

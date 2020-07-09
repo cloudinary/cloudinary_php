@@ -21,6 +21,8 @@ use ReflectionMethod;
 
 /**
  * Class CloudinaryTestCase
+ *
+ * Base class for all tests.
  */
 abstract class CloudinaryTestCase extends TestCase
 {

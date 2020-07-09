@@ -13,7 +13,6 @@ namespace Cloudinary\Configuration;
 /**
  * Trait AccountConfigTrait
  *
-
  */
 trait AccountConfigTrait
 {

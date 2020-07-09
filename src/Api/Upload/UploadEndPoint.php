@@ -26,4 +26,5 @@ class UploadEndPoint
     const CONTEXT          = 'context';
     const TEXT             = 'text';
     const GENERATE_ARCHIVE = 'generate_archive';
+    const METADATA         = 'metadata';
 }

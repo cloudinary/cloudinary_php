@@ -181,27 +181,6 @@ class BaseApiClient
     }
 
     /**
-     * Performs an HTTP PUT request with the given JSON object
-     *
-     * @param string|array $endPoint The API endpoint path.
-     * @param array        $fields   Fields to send
-     *
-     * @return ApiResponse
-     *
-     * @throws ApiError
-     *
-     * @internal
-     */
-    public function putJson($endPoint, $fields)
-    {
-        $endPoint = self::finalizeEndPoint($endPoint);
-        $this->getLogger()->debug('Making PUT request', ['method' => 'PUT', 'endPoint' => $endPoint]);
-        return $this->handleApiResponse(
-            $this->httpClient->put($endPoint, ['json' => $fields])
-        );
-    }
-
-    /**
      * Performs an HTTP DELETE request with the given params
      *
      * @param string|array $endPoint The API endpoint path.
@@ -215,11 +194,22 @@ class BaseApiClient
      */
     public function delete($endPoint, $fields = [])
     {
-        $endPoint = self::finalizeEndPoint($endPoint);
-        $this->getLogger()->debug('Making DELETE request', ['method' => 'DELETE', 'endPoint' => $endPoint]);
-        return $this->handleApiResponse(
-            $this->httpClient->delete($endPoint, ['form_params' => $fields])
-        );
+        return $this->callAsync(HttpMethod::DELETE, $endPoint, ['form_params' => $fields])->wait();
+    }
+
+    /**
+     * Performs an HTTP DELETE request with the given params.
+     *
+     * @param string|array           $endPoint The API endpoint path.
+     * @param JsonSerializable|array $json     JSON data.
+     *
+     * @return ApiResponse
+     *
+     * @internal
+     */
+    public function deleteJson($endPoint, $json = [])
+    {
+        return $this->callAsync(HttpMethod::DELETE, $endPoint, ['json' => $json])->wait();
     }
 
     /**
@@ -256,7 +246,7 @@ class BaseApiClient
      * Performs an HTTP PUT request with the given form params
      *
      * @param string|array $endPoint The API endpoint path.
-     * @param array        $fields   Fields to send
+     * @param array        $fields   Fields to send.
      *
      * @return ApiResponse
      *
@@ -266,11 +256,20 @@ class BaseApiClient
      */
     public function put($endPoint, $fields)
     {
-        $endPoint = self::finalizeEndPoint($endPoint);
-        $this->getLogger()->debug('Making PUT request', ['method' => 'PUT', 'endPoint' => $endPoint]);
-        return $this->handleApiResponse(
-            $this->httpClient->put($endPoint, ['form_params' => $fields])
-        );
+        return $this->callAsync(HttpMethod::PUT, $endPoint, ['form_params' => $fields])->wait();
+    }
+
+    /**
+     * Performs an HTTP PUT request with the given form params.
+     *
+     * @param string|array           $endPoint The API endpoint path.
+     * @param JsonSerializable|array $json     JSON data.
+     *
+     * @return ApiResponse
+     */
+    public function putJson($endPoint, $json)
+    {
+        return $this->callAsync(HttpMethod::PUT, $endPoint, ['json' => $json])->wait();
     }
 
     /**
@@ -280,7 +279,7 @@ class BaseApiClient
      *
      * @internal
      */
-    protected static function apiVersion()
+    public static function apiVersion()
     {
         return 'v' . str_replace('.', '_', self::API_VERSION);
     }
@@ -394,14 +393,20 @@ class BaseApiClient
             if (array_key_exists($statusCode, self::CLOUDINARY_API_ERROR_CLASSES)) {
                 $errorClass = self::CLOUDINARY_API_ERROR_CLASSES[$statusCode];
                 $responseJson = $this->parseJsonResponse($response);
+                $message = ArrayUtils::get(
+                    $responseJson['error']['message'],
+                    'message',
+                    $responseJson['error']['message']
+                );
                 $this->getLogger()->critical(
                     'Request to Cloudinary server returned an error',
                     [
                         'statusCode' => $statusCode,
-                        'message' => $responseJson['error']['message']
+                        'message' => $message
+
                     ]
                 );
-                throw new $errorClass($responseJson['error']['message']);
+                throw new $errorClass($message);
             }
             $message = "Server returned unexpected status code - {$response->getStatusCode()} - " .
                 StringUtils::truncateMiddle($response->getBody());

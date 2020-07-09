@@ -12,9 +12,13 @@ namespace Cloudinary\Test\Api\Upload;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\Asset\AssetType;
+use Cloudinary\Asset\DeliveryType;
 use Cloudinary\FileUtils;
+use Cloudinary\Api\Metadata\StringMetadataField;
 use Cloudinary\Test\Api\IntegrationTestCase;
 use Cloudinary\Test\Cloudinary\AssetTestCase;
+use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
 
@@ -40,12 +44,26 @@ final class UploadApiTest extends IntegrationTestCase
     private static $LARGE_TEST_IMAGE_ID;
     private static $REMOTE_TEST_IMAGE_ID;
 
+    private static $METADATA_FIELD_UNIQUE_EXTERNAL_ID;
+    private static $METADATA_FIELD_VALUE;
+    private static $METADATA_FIELDS;
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
 
         self::$LARGE_TEST_IMAGE_ID  = 'upload_large_' . self::$UNIQUE_TEST_ID;
         self::$REMOTE_TEST_IMAGE_ID = 'upload_remote_' . self::$UNIQUE_TEST_ID;
+
+        self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID = 'metadata_field_external_id_' . self::$UNIQUE_TEST_ID;
+        self::$METADATA_FIELD_VALUE = 'metadata_field_value_' . self::$UNIQUE_TEST_ID;
+        self::$METADATA_FIELDS = [
+            self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID => self::$METADATA_FIELD_VALUE
+        ];
+
+        $stringMetadataField = new StringMetadataField(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
+        $stringMetadataField->setExternalId(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
+        self::$adminApi->addMetadataField($stringMetadataField);
 
         $uploadPreset = self::$adminApi->createUploadPreset(
             [
@@ -63,6 +81,7 @@ final class UploadApiTest extends IntegrationTestCase
     {
         self::cleanupTestResources();
         self::cleanupUploadPreset(self::$UNIQUE_UPLOAD_PRESET);
+        self::cleanupMetadataField(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
 
         parent::tearDownAfterClass();
     }
@@ -275,5 +294,93 @@ final class UploadApiTest extends IntegrationTestCase
         $result = self::uploadTestResourceImage(['accessibility_analysis' => true], self::TEST_IMAGE_PATH);
 
         $this->assertArrayHasKey('accessibility_analysis', $result);
+    }
+
+    /**
+     * Upload a resource with a metadata.
+     *
+     * @throws ApiError
+     */
+    public function testUploadWithMetadata()
+    {
+        $resource = self::$uploadApi->upload(
+            self::TEST_IMAGE_PATH,
+            [
+                'tags' => self::$ASSET_TAGS,
+                'metadata' => self::$METADATA_FIELDS
+            ]
+        );
+
+        $this->assertEquals(
+            self::$METADATA_FIELD_VALUE,
+            $resource['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
+        );
+    }
+
+    /**
+     * Applies metadata to existing asset using explicit.
+     *
+     * @throws ApiError
+     */
+    public function testExplicitWithMetadata()
+    {
+        $resource = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
+
+        $result = self::$uploadApi->explicit(
+            $resource['public_id'],
+            [
+                'type' => DeliveryType::UPLOAD,
+                'resource_type' => AssetType::IMAGE,
+                'metadata' => self::$METADATA_FIELDS
+            ]
+        );
+
+        $this->assertEquals(
+            self::$METADATA_FIELDS[self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID],
+            $result['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
+        );
+    }
+
+    /**
+     * Update metadata of an existing asset.
+     *
+     * @throws ApiError
+     */
+    public function testUploaderUpdateMetadata()
+    {
+        $resource = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
+
+        $result = self::$uploadApi->updateMetadata(
+            self::$METADATA_FIELDS,
+            [
+                $resource['public_id']
+            ]
+        );
+
+        $this->assertCount(1, $result['public_ids']);
+        $this->assertContains($resource['public_id'], $result['public_ids']);
+    }
+
+    /**
+     * Editing metadata of multiple existing resources.
+     *
+     * @throws ApiError
+     */
+    public function testUploaderUpdateMetadataOnMultipleResources()
+    {
+        $resource1 = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
+        $resource2 = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
+
+        $result = self::$uploadApi->updateMetadata(
+            self::$METADATA_FIELDS,
+            [
+                $resource1['public_id'],
+                $resource2['public_id']
+            ]
+        );
+
+        $this->assertCount(2, $result['public_ids']);
+        $this->assertContains($resource1['public_id'], $result['public_ids']);
+        $this->assertContains($resource2['public_id'], $result['public_ids']);
     }
 }

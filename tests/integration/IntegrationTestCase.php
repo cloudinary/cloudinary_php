@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Api;
 
 use Cloudinary\Api\Admin\AdminApi;
+use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Upload\UploadApi;
@@ -25,6 +26,7 @@ use Cloudinary\Test\CloudinaryTestCase;
 use Exception;
 use GuzzleHttp\Client;
 use PHPUnit_Framework_Constraint_IsType as IsType;
+use Psr\Http\Message\RequestInterface;
 use RuntimeException;
 use Teapot\StatusCode;
 
@@ -582,6 +584,73 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
+     * Assert that a request was made to the correct url.
+     *
+     * @param RequestInterface $request
+     * @param string           $path
+     * @param string           $message
+     */
+    protected static function assertRequestUrl(RequestInterface $request, $path, $message = '')
+    {
+        $config = Configuration::instance();
+
+        self::assertEquals(
+            '/' . ApiClient::apiVersion() . '/' . $config->account->cloudName . $path,
+            $request->getUri()->getPath(),
+            $message
+        );
+    }
+
+    /**
+     * Assert the HTTP request method is GET.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestGet(RequestInterface $request, $message = 'HTTP method should be GET')
+    {
+        self::assertEquals('GET', $request->getMethod(), $message);
+    }
+
+    /**
+     * Assert the HTTP request method is POST.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestPost(RequestInterface $request, $message = 'HTTP method should be POST')
+    {
+        self::assertEquals('POST', $request->getMethod(), $message);
+    }
+
+    /**
+     * Assert the HTTP request method is DELETE.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestDelete(RequestInterface $request, $message = 'HTTP method should be DELETE')
+    {
+        self::assertEquals('DELETE', $request->getMethod(), $message);
+    }
+
+    /**
+     * Asserts that a request contains the expected fields and values.
+     *
+     * @param RequestInterface $request
+     * @param array|null       $fields
+     * @param string           $message
+     */
+    protected static function assertRequestFields(RequestInterface $request, $fields = null, $message = '')
+    {
+        self::assertEquals(
+            json_decode($request->getBody()->getContents(), true),
+            $fields,
+            $message
+        );
+    }
+
+    /**
      * Creates upload preset
      *
      * @param array $options
@@ -745,6 +814,25 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 return !isset($result['message']) || $result['message'] !== 'deleted';
             },
             $name
+        );
+    }
+
+    /**
+     * Delete a metadata field.
+     *
+     * Try to delete a metadata field if deletion fails log the error.
+     *
+     * @param string $fieldId
+     */
+    protected static function cleanupMetadataField($fieldId)
+    {
+        self::cleanupSoftly(
+            'deleteMetadataField',
+            'Metadata field ' . $fieldId . ' deletion failed during teardown',
+            static function ($result) {
+                return !isset($result['message']) || $result['message'] !== 'deleted';
+            },
+            $fieldId
         );
     }
 
