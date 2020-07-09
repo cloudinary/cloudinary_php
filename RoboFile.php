@@ -43,7 +43,7 @@ class RoboFile extends Tasks
     public function testUnit($opts = self::DEFAULT_OPTIONS_TEST)
     {
         $task = $this->taskPHPUnit()
-            ->option('testsuite', 'unit');
+            ->option('testsuite', 'Unit');
 
         self::applyTestOptions($task, $opts);
 
@@ -60,7 +60,7 @@ class RoboFile extends Tasks
     public function testIntegration($opts = self::DEFAULT_OPTIONS_TEST)
     {
         $task = $this->taskPHPUnit()
-            ->option('testsuite', 'integration');
+            ->option('testsuite', 'Integration');
 
         self::applyTestOptions($task, $opts);
 

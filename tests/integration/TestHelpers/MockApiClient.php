@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cloudinary\Test\Api\TestHelpers;
+namespace Cloudinary\Test\Integration\TestHelpers;
 
 use Cloudinary\Api\ApiClient;
 use GuzzleHttp\Client;
