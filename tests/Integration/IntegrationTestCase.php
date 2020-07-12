@@ -40,6 +40,9 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     const TEST_IMAGE_GIF_PATH = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME_GIF;
     const TEST_BASE64_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     const TEST_LOGGING = ['logging' => ['test' => ['level' => 'debug']]];
+    const TEST_EVAL_STR = 'if (resource_info["width"] < 450) { upload_options["tags"] = "a,b" }; ' .
+                          'upload_options["context"] = "width=" + resource_info["width"]';
+    const TEST_EVAL_TAGS_RESULT = ['a', 'b'];
 
     private static $RESOURCES_STACK = [];
 

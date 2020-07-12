@@ -52,6 +52,7 @@ trait UploadTrait
             'discard_original_filename',
             'eager_async',
             'eager_notification_url',
+            'eval',
             'exif',
             'faces',
             'folder',

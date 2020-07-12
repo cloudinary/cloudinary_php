@@ -383,4 +383,22 @@ final class UploadApiTest extends IntegrationTestCase
         $this->assertContains($resource1['public_id'], $result['public_ids']);
         $this->assertContains($resource2['public_id'], $result['public_ids']);
     }
+
+    /**
+     * Add eval parameter to an uploaded asset
+     *
+     * @throws ApiError
+     */
+    public function testEvalUploadParameter()
+    {
+        $result = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['eval' => self::TEST_EVAL_STR]);
+
+        self::assertValidResource(
+            $result,
+            [
+                'tags'    => self::TEST_EVAL_TAGS_RESULT,
+                'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
+            ]
+        );
+    }
 }

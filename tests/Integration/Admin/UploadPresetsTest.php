@@ -137,7 +137,8 @@ final class UploadPresetsTest extends IntegrationTestCase
                 'unsigned' => true,
                 'tags' => self::$ASSET_TAGS,
                 'allowed_formats' => 'jpg',
-                'live' => true
+                'live' => true,
+                'eval' => self::TEST_EVAL_STR
             ]
         );
 
@@ -152,7 +153,8 @@ final class UploadPresetsTest extends IntegrationTestCase
             [
                 'tags' => self::$ASSET_TAGS,
                 'allowed_formats' => ['jpg'],
-                'live' => true
+                'live' => true,
+                'eval' => self::TEST_EVAL_STR
             ]
         );
     }
@@ -171,7 +173,8 @@ final class UploadPresetsTest extends IntegrationTestCase
             [
                 'unsigned' => true,
                 'tags' => self::$UPLOAD_PRESET_UPDATE_TAG,
-                'live' => true
+                'live' => true,
+                'eval' => self::TEST_EVAL_STR
             ]
         );
 
@@ -187,7 +190,8 @@ final class UploadPresetsTest extends IntegrationTestCase
             ],
             [
                 'tags' => [self::$UPLOAD_PRESET_UPDATE_TAG],
-                'live' => true
+                'live' => true,
+                'eval' => self::TEST_EVAL_STR
             ]
         );
     }
