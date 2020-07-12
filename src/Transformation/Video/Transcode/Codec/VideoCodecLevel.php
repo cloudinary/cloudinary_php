@@ -11,7 +11,11 @@
 namespace Cloudinary\Transformation\Codec;
 
 /**
- * Class VideoCodecLevel
+ * Defines the video codec level.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/video_manipulation_and_delivery#video_codec_settings" target="_blank">
+ * Video codec settings</a>
  *
  * @api
  */

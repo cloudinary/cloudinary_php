@@ -11,7 +11,13 @@
 namespace Cloudinary\Transformation\Expression;
 
 /**
- * Class ExpressionOperator
+ * Defines the supported image characteristics for conditional transformations.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/conditional_transformations#supported_image_characteristics" target="_blank">
+ * Supported image characteristics</a>
+ *
+ *
  *
  * @api
  */

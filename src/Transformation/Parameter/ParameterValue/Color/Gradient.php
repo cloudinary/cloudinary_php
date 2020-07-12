@@ -13,7 +13,12 @@ namespace Cloudinary\Transformation\Argument;
 use Cloudinary\Transformation\BaseComponent;
 
 /**
- * Class Gradient
+ * Defines how to implement a background gradient fade effect.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/image_transformations#content_aware_padding" target="_blank">
+ * Content aware padding</a>
+ *
  *
  * @api
  */

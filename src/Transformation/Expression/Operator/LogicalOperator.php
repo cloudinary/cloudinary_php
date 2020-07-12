@@ -11,7 +11,12 @@
 namespace Cloudinary\Transformation\Expression;
 
 /**
- * Class LogicalOperator
+ * Defines the logical operators for chaining conditional transformations.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/conditional_transformations#multiple_conditions" target="_blank">
+ * Multiple transformation conditions</a>
+ *
  *
  * @api
  */

@@ -13,7 +13,8 @@ namespace Cloudinary\Transformation\Argument;
 use Cloudinary\Transformation\BaseArgument;
 
 /**
- * Class Color
+ *  Defines the available named colors.
+ *
  *
  * @api
  */

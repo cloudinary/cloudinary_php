@@ -13,9 +13,11 @@ namespace Cloudinary\Transformation\Expression;
 use InvalidArgumentException;
 
 /**
- * Class PVar
+ * The predefined variables for specifying conditional transformations.
  *
- * Predefined variables.
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/conditional_transformations#specifying_conditions" target="_blank">
+ * Specifying conditions</a>
  *
  * @api
  */

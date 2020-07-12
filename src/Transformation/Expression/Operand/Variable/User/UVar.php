@@ -14,9 +14,12 @@ use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Variable\Variable;
 
 /**
- * Class UVar
- *
  * Represents a user variable expression component.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/user_defined_variables#user_defined_variables_overview" target="_blank">
+ * User variables</a>
+ *
  *
  * @api
  */

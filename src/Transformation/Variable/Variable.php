@@ -15,7 +15,12 @@ use Cloudinary\Transformation\Parameter\GenericParameter;
 use InvalidArgumentException;
 
 /**
- * Class Variable
+ * Defines methods for using variables.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/user_defined_variables" target="_blank">
+ * User defined variables</a>
+ *
  *
  * @api
  */

@@ -13,7 +13,11 @@ namespace Cloudinary\Transformation\Argument;
 use Cloudinary\Transformation\ParameterMultiValue;
 
 /**
- * Class Degree
+ * Defines how to rotate an image.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/image_transformations#rotating_images" target="_blank">
+ * Rotate an image</a>
  *
  * @api
  */

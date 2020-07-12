@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation\Expression;
 
 /**
- * Class Operator
+ * Methods for managing operators.
  *
  * @api
  */

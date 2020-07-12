@@ -11,7 +11,12 @@
 namespace Cloudinary\Transformation\Expression;
 
 /**
- * Class ArithmeticOperator
+ * Defines the supported operators for arithmetic expressions.
+ *
+ * **Learn more**: <a
+ * href="https://cloudinary.com/documentation/user_defined_variables#supported_arithmetic_operators" target="_blank">
+ * Supported arithmetic operators</a>
+ *
  *
  * @api
  */

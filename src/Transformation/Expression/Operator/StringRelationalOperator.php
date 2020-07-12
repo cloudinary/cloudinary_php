@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation\Expression;
 
 /**
- * Class StringRelationalOperator
+ * The relational operators for evaluating string expressions.
  *
  * @api
  */
