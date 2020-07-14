@@ -72,7 +72,6 @@ trait UploadTrait
             'return_delete_token',
             'similarity_search',
             'type',
-            'transformation',
             'unique_filename',
             'upload_preset',
             'use_filename',
@@ -91,6 +90,9 @@ trait UploadTrait
             'metadata'               => ApiUtils::serializeContext(ArrayUtils::get($options, 'metadata')),
             'public_ids'             => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'public_ids')),
             'tags'                   => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
+            'transformation'         => ApiUtils::serializeAssetTransformations(
+                ArrayUtils::get($options, 'transformation')
+            ),
             'responsive_breakpoints' => ApiUtils::serializeJson(ArrayUtils::get($options, 'responsive_breakpoints')),
         ];
 

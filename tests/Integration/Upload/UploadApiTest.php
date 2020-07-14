@@ -12,13 +12,13 @@ namespace Cloudinary\Test\Integration\Upload;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\Api\Metadata\StringMetadataField;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\FileUtils;
-use Cloudinary\Api\Metadata\StringMetadataField;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
-use Exception;
+use Cloudinary\Transformation\Resize;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
 
@@ -41,12 +41,17 @@ final class UploadApiTest extends IntegrationTestCase
     const SMALL_TEST_IMAGE_WIDTH  = 1;
     const SMALL_TEST_IMAGE_HEIGHT = 1;
 
+    const INCOMING_TRANSFORMATION_WIDTH = 240;
+
     private static $LARGE_TEST_IMAGE_ID;
     private static $REMOTE_TEST_IMAGE_ID;
 
     private static $METADATA_FIELD_UNIQUE_EXTERNAL_ID;
     private static $METADATA_FIELD_VALUE;
     private static $METADATA_FIELDS;
+
+    private static $INCOMING_TRANSFORMATION_ARR;
+    private static $INCOMING_TRANSFORMATION_OBJ;
 
     public static function setUpBeforeClass()
     {
@@ -75,6 +80,9 @@ final class UploadApiTest extends IntegrationTestCase
         );
 
         self::assertUploadPresetCreation($uploadPreset);
+
+        self::$INCOMING_TRANSFORMATION_ARR = ['crop' => 'scale', 'width' => self::INCOMING_TRANSFORMATION_WIDTH];
+        self::$INCOMING_TRANSFORMATION_OBJ = Resize::scale(self::INCOMING_TRANSFORMATION_WIDTH);
     }
 
     public static function tearDownAfterClass()
@@ -272,6 +280,30 @@ final class UploadApiTest extends IntegrationTestCase
         );
 
         self::assertValidResource($result, ['format' => 'gif']);
+    }
+
+    /**
+     * @throws ApiError
+     */
+    public function testUploadIncomingTransformation()
+    {
+        $result = self::uploadTestResourceImage(['transformation' => self::$INCOMING_TRANSFORMATION_ARR]);
+
+        self::assertValidResource(
+            $result,
+            [
+                'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
+            ]
+        );
+
+        $result = self::uploadTestResourceImage(['transformation' => self::$INCOMING_TRANSFORMATION_OBJ]);
+
+        self::assertValidResource(
+            $result,
+            [
+                'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
+            ]
+        );
     }
 
     /**
