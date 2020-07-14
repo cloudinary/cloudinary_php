@@ -33,7 +33,7 @@ final class ActionFromParamsTest extends AssetTestCase
         $lp = LayerParamFactory::fromParams('fetch:' . self::FETCH_IMAGE_URL);
 
         $this->assertEquals(
-            'l_fetch:aHR0cHM6Ly9jbG91ZGluYXJ5LXJlcy5jbG91ZGluYXJ5LmNvbS9pbWFnZS91cGxvYWQvc2FtcGxlLnBuZw==',
+            'l_fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vZGVtby9pbWFnZS91cGxvYWQvc2FtcGxlLnBuZw==',
             (string)$lp
         );
     }
