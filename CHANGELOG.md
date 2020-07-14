@@ -1,4 +1,29 @@
 
+2.0.0-beta6 / 2020-07-14
+========================
+
+New functionality and features
+------------------------------
+
+  * Add Structured Metadata
+  * Add Account Provisioning API
+  * Add support for `eval` upload parameter
+  * Add parameters to `Vectorize` effect constructor
+  * Make `signParameters` function public
+  * Make `ApiUtils` class public
+  
+Other Changes
+-------------
+  
+  * Fix incoming transformation serialization in upload API
+  * PHP doc strings for transformation arguments, codecs, expressions and variables
+  * Add class doc strings
+  * Fix `testLayerParamFactory` unit test
+  * Expose `GradientFade` in documentation
+  * Fix `AuthToken` doc strings
+  * Fix namespaces, folders, and more in tests
+  * Remove spare newline
+
 2.0.0-beta5 / 2020-06-25
 ========================
 
