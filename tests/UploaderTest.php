@@ -2,6 +2,8 @@
 
 namespace Cloudinary {
 
+    require_once('TestHelper.php');
+
     use Cloudinary;
     use Cloudinary\Api\GeneralError;
     use Cloudinary\Api\NotFound;
