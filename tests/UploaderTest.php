@@ -968,8 +968,6 @@ TAG
 
         /**
          * Get the accessibility analysis of an uploaded image
-         *
-         * @throws Error
          */
         public function test_accessibility_analysis()
         {
@@ -980,6 +978,17 @@ TAG
             $explicitRes = Uploader::explicit($result["public_id"], ["accessibility_analysis" => true, "type" => "upload"]);
 
             $this->assertArrayHasKey("accessibility_analysis", $explicitRes);
+        }
+
+        /**
+         * Add eval parameter to an uploaded asset
+         */
+        public function test_eval_upload_parameter()
+        {
+            $result = Uploader::upload(TEST_IMG, ['eval' => TEST_EVAL_STR]);
+
+            $this->assertEquals(TEST_EVAL_TAGS_RESULT, $result['tags']);
+            $this->assertEquals(TEST_IMG_WIDTH, $result['context']['custom']['width']);
         }
     }
 }
