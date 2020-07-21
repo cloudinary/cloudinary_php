@@ -26,6 +26,7 @@ namespace Cloudinary {
         protected static $rbp_format = "png";
         protected static $rbp_values = [206, 50];
         protected static $rbp_params;
+        protected static $test_eval_tags_result = ['a', 'b'];
 
         private static $metadata_field_unique_external_id;
         private static $metadata_field_value;
@@ -989,7 +990,7 @@ TAG
         {
             $result = Uploader::upload(TEST_IMG, ['eval' => TEST_EVAL_STR]);
 
-            $this->assertEquals(TEST_EVAL_TAGS_RESULT, $result['tags']);
+            $this->assertEquals(self::$test_eval_tags_result, $result['tags']);
             $this->assertEquals(TEST_IMG_WIDTH, $result['context']['custom']['width']);
         }
     }
