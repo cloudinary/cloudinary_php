@@ -23,7 +23,7 @@ use Cloudinary\Utils;
  */
 class ApiUtils
 {
-    const HEADERS_OUTER_DELIMITER         = '\n';
+    const HEADERS_OUTER_DELIMITER         = "\n";
     const HEADERS_INNER_DELIMITER         = ':';
     const API_PARAM_DELIMITER             = ',';
     const CONTEXT_OUTER_DELIMITER         = '|';
