@@ -202,9 +202,9 @@ class ApiUtils
      *
      * @internal
      */
-    protected static function serializeResponsiveBreakpoints($breakpoints)
+    public static function serializeResponsiveBreakpoints($breakpoints)
     {
-        if (! $breakpoints) {
+        if (!$breakpoints) {
             return null;
         }
         $breakpointsParams = [];
@@ -212,7 +212,7 @@ class ApiUtils
             if ($breakpointSettings) {
                 $transformation = ArrayUtils::get($breakpointSettings, 'transformation');
                 if ($transformation) {
-                    $breakpointSettings['transformation'] = $transformation;
+                    $breakpointSettings['transformation'] = self::serializeAssetTransformations($transformation);
                 }
                 $breakpointsParams[] = $breakpointSettings;
             }

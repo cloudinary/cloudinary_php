@@ -89,11 +89,13 @@ trait UploadTrait
             'headers'                => ApiUtils::serializeHeaders(ArrayUtils::get($options, 'headers')),
             'metadata'               => ApiUtils::serializeContext(ArrayUtils::get($options, 'metadata')),
             'public_ids'             => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'public_ids')),
+            'responsive_breakpoints' => ApiUtils::serializeResponsiveBreakpoints(
+                ArrayUtils::get($options, 'responsive_breakpoints')
+            ),
             'tags'                   => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
             'transformation'         => ApiUtils::serializeAssetTransformations(
                 ArrayUtils::get($options, 'transformation')
             ),
-            'responsive_breakpoints' => ApiUtils::serializeJson(ArrayUtils::get($options, 'responsive_breakpoints')),
         ];
 
         return ApiUtils::finalizeUploadApiParams(

@@ -18,6 +18,7 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\FileUtils;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
+use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Resize;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
@@ -432,5 +433,35 @@ final class UploadApiTest extends IntegrationTestCase
                 'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
             ]
         );
+    }
+
+    /**
+     * Should support `format` parameter in responsive breakpoints settings
+     *
+     * @throws ApiError
+     */
+    public function testResponsiveBreakpointsFormat()
+    {
+        $resource = self::$uploadApi->upload(
+            self::TEST_IMAGE_PATH,
+            [
+                'responsive_breakpoints' => [
+                    [
+                        'create_derived' => true,
+                        'transformation' => [
+                            'angle' => 90
+                        ],
+                        'format' => Format::GIF
+                    ]
+                ],
+                'tags' => self::$ASSET_TAGS
+            ]
+        );
+
+        self::assertValidResource($resource);
+        self::assertArrayHasKey('responsive_breakpoints', $resource);
+        self::assertEquals('a_90', $resource['responsive_breakpoints'][0]['transformation']);
+        self::assertRegExp('/\.gif$/', $resource['responsive_breakpoints'][0]['breakpoints'][0]['url']);
+        self::assertRegExp('/\.gif$/', $resource['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
     }
 }
