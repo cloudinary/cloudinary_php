@@ -13,7 +13,7 @@ namespace Cloudinary\Api\Metadata;
 use InvalidArgumentException;
 
 /**
- * Class MetadataFieldList
+ * Represents a structured metadata list field.
  *
  * @api
  */
@@ -25,7 +25,7 @@ abstract class MetadataFieldList extends MetadataField
     protected $datasource;
 
     /**
-     * MetadataFieldList constructor.
+     * The MetadataFieldList constructor.
      *
      * @param string                   $label
      * @param array|MetadataDataSource $dataSource
@@ -71,7 +71,7 @@ abstract class MetadataFieldList extends MetadataField
         } elseif (is_array($metadataDataSource)) {
             $this->datasource = new MetadataDataSource($metadataDataSource);
         } else {
-            throw new InvalidArgumentException('MetadataFieldList datasource is not valid');
+            throw new InvalidArgumentException('The specified MetadataFieldList datasource is not valid.');
         }
     }
 }

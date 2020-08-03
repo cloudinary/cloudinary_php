@@ -11,16 +11,14 @@
 namespace Cloudinary\Api\Metadata;
 
 /**
- * Class IntMetadataField
- *
- * Represents a metadata field with 'Int' type.
+ * Represents a structured metadata field with 'Int' type.
  *
  * @api
  */
 class IntMetadataField extends MetadataField
 {
     /**
-     * IntMetadataField constructor.
+     * The IntMetadataField constructor.
      *
      * @param string $label
      */

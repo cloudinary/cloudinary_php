@@ -11,7 +11,7 @@
 namespace Cloudinary\Api\Admin;
 
 /**
- * Class RootEndPoint
+ * Represents the root API endpoint.
  */
 class ApiEndPoint
 {

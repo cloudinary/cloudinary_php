@@ -11,8 +11,6 @@
 namespace Cloudinary\Api\Metadata\Validators;
 
 /**
- * Class AndValidator
- *
  * An 'And' rule validation used to combine other rules with an 'AND' logic relation between them.
  *
  * @api

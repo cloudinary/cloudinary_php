@@ -14,7 +14,7 @@ use Cloudinary\StringUtils;
 use JsonSerializable;
 
 /**
- * Class Metadata
+ * The root structured metadata class.
  *
  * @api
  */
@@ -28,7 +28,7 @@ abstract class Metadata implements JsonSerializable
     abstract protected function getPropertyKeys();
 
     /**
-     * Return data which should be serialized to JSON.
+     * Returns data that should be serialized to JSON.
      * Serializes the object to a value that can be serialized natively by json_encode().
      *
      * @return array

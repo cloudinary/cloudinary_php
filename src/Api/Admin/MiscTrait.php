@@ -19,7 +19,7 @@ use Cloudinary\Utils;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
- * Trait MiscTrait
+ * Represents several Admin API methods.
  *
  * @property ApiClient $apiClient Defined in AdminApi class.
  *
@@ -56,11 +56,12 @@ trait MiscTrait
     /**
      * Gets account usage details.
      *
-     * Get a report on the status of your Cloudinary account usage details, including
+     * Returns a report detailing your current Cloudinary account usage details, including
      * storage, bandwidth, requests, number of resources, and add-on usage.
      * Note that numbers are updated periodically.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#usage target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -76,11 +77,11 @@ trait MiscTrait
     }
 
     /**
-     * Lists tags.
+     * Lists all the tags currently used for a specified asset type.
      *
-     * Enables you to retrieve a list of all the tags currently used for a specified resource_type.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_tags target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *

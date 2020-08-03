@@ -13,9 +13,7 @@ namespace Cloudinary\Api\Metadata;
 use Cloudinary\Api\Metadata\Validators\MetadataValidation;
 
 /**
- * Class MetadataField
- *
- * Represents a single metadata field. Use one of the derived classes in the metadata API calls.
+ * Represents a single metadata field. Use one of the derived classes in metadata API calls.
  *
  * @api
  */
@@ -52,7 +50,7 @@ abstract class MetadataField extends Metadata
     protected $validation;
 
     /**
-     * MetadataField constructor.
+     * The MetadataField constructor.
      *
      * @param string $label
      */
@@ -72,9 +70,9 @@ abstract class MetadataField extends Metadata
     }
 
     /**
-     * Return the type of this field.
+     * Returns the type of this field.
      *
-     * @return string The name of the type.
+     * @return string The type name.
      */
     public function getType()
     {
@@ -102,9 +100,9 @@ abstract class MetadataField extends Metadata
     }
 
     /**
-     * Gets the id of this field.
+     * Gets the ID of this field.
      *
-     * @return string The field id.
+     * @return string The field ID.
      */
     public function getExternalId()
     {
@@ -112,9 +110,9 @@ abstract class MetadataField extends Metadata
     }
 
     /**
-     * Sets the id of the string (auto-generated if this is left blank).
+     * Sets the ID of the string (auto-generated if this is left blank).
      *
-     * @param string $externalId The id to set.
+     * @param string $externalId The ID to set.
      */
     public function setExternalId($externalId)
     {
@@ -142,7 +140,7 @@ abstract class MetadataField extends Metadata
     }
 
     /**
-     * Gets a boolean indicating whether this fields is mandatory.
+     * Gets a boolean indicating whether this fields is currently mandatory.
      *
      * @return bool A boolean indicating whether the field is mandatory.
      */
@@ -152,9 +150,9 @@ abstract class MetadataField extends Metadata
     }
 
     /**
-     * Sets a boolean indicating whether this fields needs to be mandatory.
+     * Sets whether this field needs to be mandatory.
      *
-     * @param bool $mandatory The boolean to set.
+     * @param bool $mandatory A boolean indicating whether the field should be mandatory.
      */
     public function setMandatory($mandatory)
     {
@@ -172,7 +170,7 @@ abstract class MetadataField extends Metadata
     }
 
     /**
-     * Set the validation rules of this field.
+     * Sets the validation rules of this field.
      *
      * @param MetadataValidation $validation The rules to set.
      */

@@ -16,7 +16,10 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\ArrayUtils;
 
 /**
- * Trait UploadMappingsTrait
+ * Enables you to manage the upload mappings.
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api#upload_mappings target="_blank">
+ * Upload Mappings method - Admin API</a>
  *
  * @property ApiClient $apiClient Defined in AdminApi class
  *
@@ -25,11 +28,12 @@ use Cloudinary\ArrayUtils;
 trait UploadMappingsTrait
 {
     /**
-     * Lists upload mappings.
+     * Lists upload mappings by folder and its mapped template (URL)..
      *
-     * List all upload mappings by folder and its mapped template (URL).
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_upload_mapping target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -44,11 +48,11 @@ trait UploadMappingsTrait
     }
 
     /**
-     * Details of a single upload mapping.
+     * Returns the details of the specified upload mapping.
      *
-     * Retrieve the mapped template (URL) of a given upload mapping folder.
+     * Retrieve the mapped template (URL) of a specified upload mapping folder.
      *
-     * @param string $name The name of the folder.
+     * @param string $name The name of the upload mapping folder.
      *
      * @return ApiResponse
      *
@@ -65,9 +69,8 @@ trait UploadMappingsTrait
     /**
      * Deletes an upload mapping.
      *
-     * Delete an upload mapping by folder name.
      *
-     * @param string $name The name of the folder.
+     * @param string $name The name of the upload mapping folder to delete.
      *
      * @return ApiResponse
      *
@@ -84,12 +87,13 @@ trait UploadMappingsTrait
     }
 
     /**
-     * Updates an upload mapping.
+     * Updates an existing upload mapping with a new template (URL).
      *
-     * Update an existing upload mapping folder with a new template (URL).
      *
-     * @param string $name    The name of the folder to map.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param string $name    The name of the upload mapping folder to remap.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#update_an_upload_mapping target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -106,12 +110,13 @@ trait UploadMappingsTrait
     }
 
     /**
-     * Creates an upload mapping.
+     * Creates a new upload mapping.
      *
-     * Create a new upload mapping folder and its template (URL).
      *
      * @param string $name    The name of the folder to map.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#create_an_upload_mapping target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *

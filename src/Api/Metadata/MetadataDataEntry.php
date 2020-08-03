@@ -13,7 +13,7 @@ namespace Cloudinary\Api\Metadata;
 use InvalidArgumentException;
 
 /**
- * Class MetadataDataEntry
+ * Controls structured metadata data entry.
  *
  * @api
  */
@@ -75,7 +75,7 @@ class MetadataDataEntry extends Metadata
     }
 
     /**
-     * Gets the id of the entry.
+     * Gets the ID of the entry.
      *
      * @return string
      */
@@ -85,7 +85,7 @@ class MetadataDataEntry extends Metadata
     }
 
     /**
-     * Sets the id of the entry. Will be auto-generated if left blank.
+     * Sets the ID of the entry. Will be auto-generated if left blank.
      *
      * @param string $externalId
      */

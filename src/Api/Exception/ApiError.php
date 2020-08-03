@@ -13,7 +13,7 @@ namespace Cloudinary\Api\Exception;
 use Exception;
 
 /**
- * Class ApiError
+ * General API error class.
  *
  * @api
  */

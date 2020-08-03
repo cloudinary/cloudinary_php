@@ -17,7 +17,11 @@ use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\ArrayUtils;
 
 /**
- * Trait UploadPresetsTrait
+ * Enables you to manage upload presets.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api#upload_presets target="_blank">
+ * Upload Presets method - Admin API</a>
  *
  * @property ApiClient $apiClient Defined in AdminApi class
  *
@@ -26,9 +30,11 @@ use Cloudinary\ArrayUtils;
 trait UploadPresetsTrait
 {
     /**
-     * Lists upload presets.
+     * Lists existing upload presets.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_upload_presets target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -43,10 +49,12 @@ trait UploadPresetsTrait
     }
 
     /**
-     * Retrieves the details of a single upload preset.
+     * Retrieves the details of the specified upload preset.
      *
      * @param string $name    The name of the upload preset.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_upload_preset
+     * target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -60,9 +68,9 @@ trait UploadPresetsTrait
     }
 
     /**
-     * Deletes an upload preset.
+     * Deletes the specified upload preset.
      *
-     * @param string $name The name of the upload preset.
+     * @param string $name The name of the upload preset to delete.
      *
      * @return ApiResponse
      *
@@ -78,11 +86,13 @@ trait UploadPresetsTrait
     }
 
     /**
-     * Updates an upload preset.
+     * Updates the specified upload preset.
      *
      * @param string $name    The name of the upload preset.
      *
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#update_an_upload_preset target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -102,7 +112,9 @@ trait UploadPresetsTrait
     /**
      * Creates a new upload preset.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#create_an_upload_preset target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *

@@ -11,8 +11,6 @@
 namespace Cloudinary\Api\Metadata\Validators;
 
 /**
- * Class ComparisonRule
- *
  * Base class for all comparison (greater than/less than) validation rules.
  *
  * @api

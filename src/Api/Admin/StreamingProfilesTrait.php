@@ -17,7 +17,11 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\ArrayUtils;
 
 /**
- * Trait StreamingProfilesTrait
+ * Enables you to manage streaming profiles for use with adaptive bitrate streaming.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api#adaptive_streaming_profiles target="_blank">
+ * Streaming Profiles method - Admin API</a>
  *
  * @property ApiClient $apiClient Defined in AdminApi class
  *
@@ -26,9 +30,7 @@ use Cloudinary\ArrayUtils;
 trait StreamingProfilesTrait
 {
     /**
-     * Lists streaming profiles.
-     *
-     * List streaming profiles associated with the current customer, including built-in and custom profiles.
+     * Lists streaming profiles including built-in and custom profiles.
      *
      * @return ApiResponse An array with a "data" key for results.
      *
@@ -42,9 +44,7 @@ trait StreamingProfilesTrait
     }
 
     /**
-     * Gets details of a single streaming profile.
-     *
-     * Retrieve the details of a single streaming profile by name.
+     * Gets details of a single streaming profile by name.
      *
      * @param string $name The identification name of the streaming profile
      *
@@ -64,12 +64,12 @@ trait StreamingProfilesTrait
     /**
      * Deletes or reverts the specified streaming profile.
      *
-     * For custom streaming profiles, delete the specified profile.
-     * For built-in streaming profiles, if the built-in profile was modified, revert the profile to the original
+     * For custom streaming profiles, deletes the specified profile.
+     * For built-in streaming profiles, if the built-in profile was modified, reverts the profile to the original
      * settings.
      * For built-in streaming profiles that have not been modified, the Delete method returns an error.
      *
-     * @param string $name The identification name of the streaming profile.
+     * @param string $name The name of the streaming profile to delete or revert.
      *
      * @return ApiResponse
      *
@@ -87,11 +87,13 @@ trait StreamingProfilesTrait
     /**
      * Updates an existing streaming profile.
      *
-     * Update the specified existing streaming profile. You can update both custom and built-in profiles.
-     * The specified list of representations replaces the previous list.
+     * You can update both custom and built-in profiles. The specified list of representations replaces the previous
+     * list.
      *
-     * @param string $name    The identification name of the streaming profile.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param string $name    The name of the streaming profile to update.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#create_a_streaming_profile target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -110,10 +112,12 @@ trait StreamingProfilesTrait
     /**
      * Creates a new, custom streaming profile.
      *
-     * @param string $name    The identification name to assign to the new streaming profile.
+     * @param string $name    The name to assign to the new streaming profile.
      *                        The name is case-insensitive and can contain alphanumeric characters, underscores (_) and
      *                        hyphens (-). If the name is of a predefined profile, the profile will be modified.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#create_a_streaming_profile target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -137,7 +141,7 @@ trait StreamingProfilesTrait
      *
      * @param array $options The optional parameters. See the admin API documentation.
      *
-     * @return array A single profile parameters.
+     * @return array The parameters for a single profile.
      *
      * @internal
      */

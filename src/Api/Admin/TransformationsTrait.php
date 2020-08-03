@@ -18,7 +18,11 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Transformation\Transformation;
 
 /**
- * Trait TransformationsTrait
+ * Enables you to manage stored transformations.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api#transformations target="_blank">
+ * Transformations method - Admin API</a>
  *
  * @property ApiClient $apiClient Defined in AdminApi class.
  *
@@ -27,9 +31,11 @@ use Cloudinary\Transformation\Transformation;
 trait TransformationsTrait
 {
     /**
-     * Lists transformations.
+     * Lists stored transformations.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_transformations target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -43,7 +49,7 @@ trait TransformationsTrait
     }
 
     /**
-     * Returns details of a single transformation.
+     * Returns the details of a single transformation.
      *
      * @param string|array $transformation The transformation. Can be either a string or an array of parameters.
      *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
@@ -63,15 +69,17 @@ trait TransformationsTrait
     }
 
     /**
-     * Deletes a single transformation.
+     * Deletes the specified stored transformation.
      *
-     * Note: Deleting a transformation also deletes all the derived images based on this transformation (up to 1000)
-     * The method returns an error if there are more than 1000 derived images based on this transformation.
+     * Deleting a transformation also deletes all the stored derived resources based on this transformation (up to 1000).
+     * The method returns an error if there are more than 1000 derived resources based on this transformation.
      *
-     * @param string|array $transformation The transformation. Can be either a string or an array of parameters.
+     * @param string|array $transformation The transformation to delete. Can be either a string or an array of parameters.
      *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
      *                                     100,"crop" => "fill").
-     * @param array        $options        The optional parameters. See the admin API documentation.
+     * @param array        $options        The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#delete_transformation target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -90,12 +98,14 @@ trait TransformationsTrait
     }
 
     /**
-     * Updates a single transformation.
+     * Updates the specified transformation.
      *
      * @param string|array $transformation The transformation. Can be either a string or an array of parameters.
      *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
      *                                     100,"crop" => "fill").
-     * @param array        $updates        The update parameters. See the admin API documentation.
+     * @param array        $updates        The update parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#update_transformation target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -120,9 +130,10 @@ trait TransformationsTrait
      * @see https://cloudinary.com/documentation/admin_api#create_named_transformation
      *
      * @param string                      $name       The name of the transformation.
-     * @param Transformation|string|array $definition The transformation. Can be either a Transformation, a string or
-     *                                                an array of parameters. For example: "w_150,h_100,c_fill" or
-     *                                                ["width" => 150, "height" => 100,"crop" => "fill"].
+     * @param Transformation|string|array $definition The transformation. Can be either a defined Transformation,
+     *                                                a string or an array of parameters. For example:
+     *                                                "w_150,h_100,c_fill" or ["width" => 150, "height" => 100,
+     *                                                "crop" => "fill"].
      *
      * @return ApiResponse
      */

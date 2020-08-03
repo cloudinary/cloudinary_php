@@ -11,16 +11,14 @@
 namespace Cloudinary\Api\Metadata;
 
 /**
- * Class EnumMetadataField
- *
- * Represents a metadata field with 'Enum' type.
+ * Represents a structured metadata field with 'Enum' (single-selection list) type.
  *
  * @api
  */
 class EnumMetadataField extends MetadataFieldList
 {
     /**
-     * EnumMetadataField constructor.
+     * The EnumMetadataField constructor.
      *
      * @param string                   $label
      * @param array|MetadataDataSource $dataSource

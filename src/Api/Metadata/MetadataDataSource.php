@@ -13,10 +13,8 @@ namespace Cloudinary\Api\Metadata;
 use InvalidArgumentException;
 
 /**
- * Class MetadataDataSource
- *
- * Represent a data source for a given field. This is used in both 'Set' and 'Enum' field types.
- * The datasource holds a list of the valid values to be used with the corresponding metadata field.
+ * Represents the data source (list values) of a structured metadata list field. This is used in both 'set' and 'enum'
+ * field types. The datasource holds a list of the valid values to be used with the corresponding metadata field.
  *
  * @api
  */
@@ -28,7 +26,7 @@ class MetadataDataSource extends Metadata
     protected $values;
 
     /**
-     * MetadataDataSource constructor.
+     * The MetadataDataSource constructor.
      *
      * @param array $values
      *
@@ -68,7 +66,7 @@ class MetadataDataSource extends Metadata
                     isset($value['external_id']) ? $value['external_id'] : null
                 );
             } else {
-                throw new InvalidArgumentException('Metadata datasource values are not valid');
+                throw new InvalidArgumentException('The specified metadata datasource values are not valid.');
             }
         }
     }

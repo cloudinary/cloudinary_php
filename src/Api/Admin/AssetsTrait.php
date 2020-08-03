@@ -20,7 +20,11 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
 
 /**
- * Trait AssetsTrait
+ * Enables you to manage the assets in your account or cloud.
+ *
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api#resources target="_blank">
+ * Resources method - Admin API</a>
  *
  * @property ApiClient $apiClient Defined in AdminApi class.
  *
@@ -29,7 +33,7 @@ use Cloudinary\Asset\ModerationStatus;
 trait AssetsTrait
 {
     /**
-     * Lists available resource types.
+     * Lists available asset types.
      *
      * @return ApiResponse
      */
@@ -39,9 +43,10 @@ trait AssetsTrait
     }
 
     /**
-     * Lists all uploaded resources optionally filtered by the specified options.
+     * Lists all uploaded assets filtered by any specified options.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -71,13 +76,13 @@ trait AssetsTrait
     }
 
     /**
-     * Lists resources by tag.
+     * Lists assets with the specified tag.
      *
-     * Retrieve a list of resources with a specified tag.
-     * This method does not return deleted resources even if they have been backed up.
+     * This method does not return matching deleted assets, even if they have been backed up.
      *
-     * @param string $tag     The tag name of the resources.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param string $tag     The tag value.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources_by_tag target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -96,16 +101,16 @@ trait AssetsTrait
     }
 
     /**
-     * Lists resources by context.
+     * Lists assets with the specified contextual metadata.
      *
-     * Retrieve a list of resources with a specified context key.
-     * This method does not return deleted resources even if they have been backed up.
+     * This method does not return matching deleted assets, even if they have been backed up.
      *
-     * @param string $key     Only resources with this context key are returned.
-     * @param string $value   Only resources with this value for the context key are returned.
-     *                        If this parameter is not provided, all resources with the given context key are returned,
-     *                        regardless of the actual value of the key.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param string $key     Only assets with this context key are returned.
+     * @param string $value   Only assets with this context value for the specified context key are returned.
+     *                        If this parameter is not provided, all assets with the specified context key are returned,
+     *                        regardless of the key value.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources_by_context target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -126,13 +131,14 @@ trait AssetsTrait
     }
 
     /**
-     * Lists resources in moderation queues.
+     * Lists assets currently in the specified moderation queue and status.
      *
      * @param string $kind    Type of image moderation queue to list.
      *                        Valid values:  "manual", "webpurify", "aws_rek", or "metascan".
-     * @param string $status  Moderation status of resources.
+     * @param string $status  Only assets with this moderation status will be returned.
      *                        Valid values: "pending", "approved", "rejected".
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources_in_moderation_queues target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -152,10 +158,11 @@ trait AssetsTrait
     }
 
     /**
-     * Lists resources by public IDs.
+     * Lists assets with the specified public IDs.
      *
-     * @param string|array $publicIds List resources with the given public IDs (up to 100).
-     * @param array        $options   The optional parameters. See the admin API documentation.
+     * @param string|array $publicIds The requested public_ids (up to 100).
+     * @param array        $options   The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -174,14 +181,16 @@ trait AssetsTrait
     }
 
     /**
-     * Details of a single resource.
+     * Returns the details of the specified asset and all its derived resources.
      *
-     * Return details of the requested resource as well as all its derived resources.
+     *
      * Note that if you only need details about the original resource,
-     * you can also use the Uploader::upload or Uploader::explicit methods, which are not rate limited.
+     * you can also use the Uploader::upload or Uploader::explicit methods, which return the same information and
+     * are not rate limited.
      *
-     * @param string $publicId The public ID of the resource.
-     * @param array  $options  The optional parameters. See the admin API documentation.
+     * @param string $publicId The public ID of the asset.
+     * @param array  $options  The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -213,12 +222,13 @@ trait AssetsTrait
     }
 
     /**
-     * Restores a deleted resource.
+     * Reverts to the latest backed up version of the specified deleted assets.
      *
-     * Reverts to the latest backed up version of the resource.
      *
-     * @param string|array $publicIds The public IDs of (deleted or existing) backed up resources to restore.
-     * @param array        $options   The optional parameters. See the admin API documentation.
+     * @param string|array $publicIds The public IDs of the backed up assets to restore. They can be existing or
+     * deleted assets.
+     * @param array        $options   The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#restore_resources target="f_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -236,13 +246,14 @@ trait AssetsTrait
     }
 
     /**
-     * Updates details of an existing resource.
+     * Updates details of an existing asset.
      *
-     * Update one or more of the attributes associated with a specified resource. Note that you can also update
-     * many attributes of an existing resource using the Uploader::explicit method, which is not rate limited.
+     * Update one or more of the attributes associated with a specified asset. Note that you can also update
+     * most attributes of an existing asset using the Uploader::explicit method, which is not rate limited.
      *
-     * @param string|array $publicId The public ID of the resource to update.
-     * @param array        $options  The optional parameters. See the admin API documentation.
+     * @param string|array $publicId The public ID of the asset to update.
+     * @param array        $options  The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#update_details_of_an_existing_resource target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -284,12 +295,11 @@ trait AssetsTrait
     }
 
     /**
-     * Deletes resources by public IDs.
+     * Deletes the specified assets.
      *
-     * Delete all resources with the given public IDs (up to 100).
-     *
-     * @param string|array $publicIds The public IDs of the resources.
-     * @param array        $options   The optional parameters. See the admin API documentation.
+     * @param string|array $publicIds The public IDs of the assets to delete (up to 100).
+     * @param array        $options   The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#sdelete_resources target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -309,13 +319,14 @@ trait AssetsTrait
     }
 
     /**
-     * Deletes resources by prefix.
+     * Deletes assets by prefix.
      *
-     * Delete all resources, including derived resources, where the public ID starts with the given prefix
-     * (up to a maximum of 1000 original resources).
+     * Delete up to 1000 original assets, along with their derived resources, where the public ID starts with the
+     * specified prefix.
      *
-     * @param string $prefix  The prefix of the public IDs.
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param string $prefix  The Public ID prefix.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#delete_resources target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -335,12 +346,12 @@ trait AssetsTrait
     }
 
     /**
-     * Deletes all resources.
+     * Deletes all assets of the specified asset and delivery type, including their derived resources.
      *
-     * Delete all resources (of the relevant resource type and type), including derived resources
-     * (up to a maximum of 1000 original resources).
+     * Supports deleting up to a maximum of 1000 original assets in a single call.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#delete_resources target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -359,13 +370,13 @@ trait AssetsTrait
     }
 
     /**
-     * Deletes resources by tag.
+     * Deletes assets with the specified tag, including their derived resources.
      *
-     * Delete all resources (and their derivatives) with the given tag name
-     * (up to a maximum of 1000 original resources).
+     * Supports deleting up to a maximum of 1000 original assets in a single call.
      *
-     * @param string $tag     The tag name of the resources to delete
-     * @param array  $options The optional parameters. See the admin API documentation.
+     * @param string $tag     The tag value of the assets to delete.
+     * @param array  $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#delete_resources_by_tags target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -383,18 +394,18 @@ trait AssetsTrait
     }
 
     /**
-     * Deletes derived resources.
+     * Deletes the specified derived resources by derived resource ID.
      *
-     * Delete all derived resources with the given IDs (an array of up to 100 derived_resource_ids).
-     * The derived resource IDs are returned when calling the Details of a single resource method.
+     * The derived resource IDs for a particular original asset are returned when calling the `resource` method to
+     * return the details of a single asset.
      *
-     * @param string|array $derived_resource_ids The derived resource IDs.
+     * @param string|array $derived_resource_ids The derived resource IDs (up to 100 ids).
      *
      * @return ApiResponse
      *
      * @throws ApiError
      *
-     * @see https://cloudinary.com/documentation/admin_api#delete_derived_resources
+     * @see https://cloudinary.com/documentation/admin_api##delete_resources
      */
     public function deleteDerivedResources($derived_resource_ids)
     {
@@ -405,11 +416,12 @@ trait AssetsTrait
     }
 
     /**
-     * Deletes derived resources identified by transformation for the provided public_ids.
+     * Deletes derived resources identified by transformation and public_ids.
      *
-     * @param string|array $publicIds       The resources the derived resources belong to.
-     * @param string|array $transformations The transformation(s) associated with the derived resources.
-     * @param array        $options         The optional parameters. See the admin API documentation.
+     * @param string|array $publicIds       The public IDs for which you want to delete derived resources.
+     * @param string|array $transformations The transformation(s) associated with the derived resources to delete.
+     * @param array        $options         The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#resources target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -432,7 +444,7 @@ trait AssetsTrait
     }
 
     /**
-     * Prepares delete resource parameters for API calls.
+     * Prepares optional parameters for delete asset API calls.
      *
      * @param array $options Additional options.
      * @param array $params  The parameters passed to the API.

@@ -11,7 +11,7 @@
 namespace Cloudinary\Api\Exception;
 
 /**
- * Class NotAllowed
+ * NotAllowed error.
  *
  * @api
  */

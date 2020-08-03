@@ -15,16 +15,14 @@ use DateTime;
 use Exception;
 
 /**
- * Class DateMetadataField
- *
- * Represents a metadata field with 'Date' type.
+ * Represents a structured metadata field with 'Date' type.
  *
  * @api
  */
 class DateMetadataField extends MetadataField
 {
     /**
-     * DateMetadataField constructor.
+     * The DateMetadataField constructor.
      *
      * @param string $label
      */

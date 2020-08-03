@@ -13,9 +13,11 @@ namespace Cloudinary\Api\Admin;
 use Cloudinary\Api\ApiClient;
 
 /**
- * Class AdminApi for accessing Cloudinary admin API functionality
+ * Enables Cloudinary Admin API functionality.
  *
- * @see     https://cloudinary.com/documentation/admin_api
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api target="_blank">
+ * Admin API Reference</a>
  *
  * @api
  */

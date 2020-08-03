@@ -11,7 +11,7 @@
 namespace Cloudinary\Api\Metadata;
 
 /**
- * Class MetadataFieldType
+ * Defines the structured metadata field type.
  *
  * @api
  */

@@ -14,9 +14,7 @@ use Cloudinary\Utils;
 use DateTime;
 
 /**
- * Class DateGreaterThan
- *
- * Great-than rule for dates.
+ * Greater-than rule for dates.
  *
  * @api
  */

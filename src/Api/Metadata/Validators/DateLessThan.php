@@ -14,8 +14,6 @@ use Cloudinary\Utils;
 use DateTime;
 
 /**
- * Class DateLessThan
- *
  * Less-than rule for dates.
  *
  * @api

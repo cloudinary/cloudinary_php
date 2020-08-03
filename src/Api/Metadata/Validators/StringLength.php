@@ -11,8 +11,6 @@
 namespace Cloudinary\Api\Metadata\Validators;
 
 /**
- * Class StringLength
- *
  * A validator to validate string lengths.
  *
  * @api

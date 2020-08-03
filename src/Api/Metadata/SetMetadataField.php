@@ -11,16 +11,14 @@
 namespace Cloudinary\Api\Metadata;
 
 /**
- * Class SetMetadataField
- *
- * Represents a metadata field with 'Set' type.
+ * Represents a metadata field with 'Set' (multi-selection list) type.
  *
  * @api
  */
 class SetMetadataField extends MetadataFieldList
 {
     /**
-     * SetMetadataField constructor.
+     * The SetMetadataField constructor.
      *
      * @param string                   $label
      * @param array|MetadataDataSource $dataSource

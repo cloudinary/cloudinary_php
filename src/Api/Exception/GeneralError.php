@@ -11,7 +11,7 @@
 namespace Cloudinary\Api\Exception;
 
 /**
- * Class GeneralError
+ * General error.
  *
  * @api
  */

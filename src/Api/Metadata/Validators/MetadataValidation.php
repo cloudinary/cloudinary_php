@@ -13,8 +13,6 @@ namespace Cloudinary\Api\Metadata\Validators;
 use Cloudinary\Api\Metadata\Metadata;
 
 /**
- * Class MetadataValidation
- *
  * Represents the base class for metadata fields validation mechanisms.
  *
  * @api

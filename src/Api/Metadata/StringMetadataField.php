@@ -11,8 +11,6 @@
 namespace Cloudinary\Api\Metadata;
 
 /**
- * Class StringMetadataField
- *
  * Represents a metadata field with 'String' type.
  *
  * @api
@@ -20,7 +18,7 @@ namespace Cloudinary\Api\Metadata;
 class StringMetadataField extends MetadataField
 {
     /**
-     * StringMetadataField constructor.
+     * The StringMetadataField constructor.
      *
      * @param string $label
      */

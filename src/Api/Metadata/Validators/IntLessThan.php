@@ -11,8 +11,6 @@
 namespace Cloudinary\Api\Metadata\Validators;
 
 /**
- * Class IntLessThan
- *
  * Less-than rule for integers.
  *
  * @api

@@ -11,9 +11,7 @@
 namespace Cloudinary\Api\Metadata\Validators;
 
 /**
- * Class IntGreaterThan
- *
- * Great-than rule for integers.
+ * Greater-than rule for integers.
  *
  * @api
  */

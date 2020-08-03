@@ -16,9 +16,11 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\ArrayUtils;
 
 /**
- * Trait FoldersTrait
+ * Enables you to manage the folders in your account or cloud.
  *
- * Enables you to manage folders for your account.
+ * **Learn more**: <a
+ * href=https://cloudinary.com/documentation/admin_api#folders target="_blank">
+ * Folders method - Admin API</a>
  *
  * @property ApiClient $apiClient Defined in AdminApi class.
  *
@@ -29,7 +31,9 @@ trait FoldersTrait
     /**
      * Lists all root folders.
      *
-     * @param array $options The optional parameters. See the admin API documentation.
+     * @param array $options The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_root_folders target="_blank"> Admin API</a>
+     * documentation.
      *
      * @return ApiResponse
      *
@@ -45,10 +49,11 @@ trait FoldersTrait
     /**
      * Lists sub-folders.
      *
-     * Lists the name and path of all the sub-folders of a given root folder. Limited to 2000 results.
+     * Returns the name and path of all the sub-folders of a specified parent folder. Limited to 2000 results.
      *
-     * @param string $ofFolderPath The root folder
-     * @param array  $options      The optional parameters. See the admin API documentation.
+     * @param string $ofFolderPath The parent folder
+     * @param array  $options      The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_subfolders target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -85,7 +90,7 @@ trait FoldersTrait
     /**
      * Deletes an empty folder.
      *
-     * Deleted folder must be empty, but can have descendant empty sub folders.
+     * The specified folder cannot contain any assets, but can have empty descendant sub-folders.
      *
      * @param string $path The full path of the empty folder to delete.
      *

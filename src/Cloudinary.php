@@ -21,21 +21,21 @@ use Cloudinary\Tag\ImageTag;
 use Cloudinary\Tag\VideoTag;
 
 /**
- * Class Cloudinary
+ * Defines the Cloudinary instance. 
  *
  * @api
  */
 class Cloudinary
 {
     /**
-     * The version of the SDK.
+     * The current version of the SDK.
      *
      * @var string VERSION
      */
     const VERSION = '2.0.0-beta6';
 
     /**
-     * The configuration instance.
+     * Defines the Cloudinary account details and other global configuration options.
      *
      * @var Configuration $configuration
      */
@@ -52,7 +52,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new Image with current instance configuration.
+     * Creates a new Image instance using the current configuration instance.
      *
      * @param string $publicId The public ID of the image.
      *
@@ -64,7 +64,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new Video with current instance configuration.
+     * Creates a new Video instance using the current configuration instance.
      *
      * @param string|mixed $publicId The public ID of the video.
      *
@@ -76,7 +76,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new Raw with current instance configuration.
+     * Creates a new Raw instance using the current configuration instance.
      *
      * @param string|mixed $publicId The public ID of the file.
      *
@@ -88,7 +88,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new ImageTag with current instance configuration.
+     * Creates a new ImageTag instance using the current configuration instance.
      *
      * @param string|mixed $publicId The public ID of the image.
      *
@@ -100,10 +100,10 @@ class Cloudinary
     }
 
     /**
-     * Creates a new VideoTag with current instance configuration.
+     * Creates a new VideoTag instance using the current configuration instance.
      *
      * @param string|mixed $publicId The public ID of the video.
-     * @param array|null   $sources  The tag sources definition.
+     * @param array|null   $sources  The tag src definition.
      *
      * @return VideoTag
      */
@@ -113,7 +113,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new AdminApi with current instance configuration.
+     * Creates a new AdminApi instance using the current configuration instance.
      *
      * @return AdminApi
      */
@@ -123,7 +123,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new UploadApi with current instance configuration.
+     * Creates a new UploadApi instance using the current configuration instance.
      *
      * @return UploadApi
      */
@@ -133,7 +133,7 @@ class Cloudinary
     }
 
     /**
-     * Creates a new SearchApi with current instance configuration.
+     * Creates a new SearchApi instance using the current configuration instance.
      *
      * @return SearchApi
      */
