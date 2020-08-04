@@ -142,7 +142,7 @@ class ApiUtils
         $array = array_map('self::serializeSimpleApiParam', $array);
 
 
-        return self::serializeParameter(self::ARRAY_OF_ARRAYS_DELIMITER, $array);
+        return self::serializeParameter($array, self::ARRAY_OF_ARRAYS_DELIMITER);
     }
 
     /**

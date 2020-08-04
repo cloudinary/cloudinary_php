@@ -13,8 +13,45 @@ namespace Cloudinary\Test\Unit\Utils;
 use Cloudinary\Api\ApiUtils;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ApiUtilsTest
+ */
 final class ApiUtilsTest extends TestCase
 {
+    public function dataProviderSerializeArrayOfArrays()
+    {
+        return [
+            [
+                'value'  => '',
+                'result' => '',
+            ],
+            [
+                'value'  => null,
+                'result' => '',
+            ],
+            [
+                'value'  => 0,
+                'result' => '0',
+            ],
+            [
+                'value'  => [],
+                'result' => '',
+            ],
+            [
+                'value'  => [[], []],
+                'result' => '',
+            ],
+            [
+                'value'  => [['1', 0], [1, '0'], ['value']],
+                'result' => '1,0|1,0|value',
+            ],
+            [
+                'value'  => [[0]],
+                'result' => '0',
+            ],
+        ];
+    }
+
     public function dataProviderSerializeHeaders()
     {
         return [
@@ -58,6 +95,22 @@ final class ApiUtilsTest extends TestCase
         self::assertEquals(
             $result,
             ApiUtils::serializeHeaders($value)
+        );
+    }
+
+    /**
+     * Test serialization of an array with nested arrays.
+     *
+     * @param $value
+     * @param $result
+     *
+     * @dataProvider dataProviderSerializeArrayOfArrays
+     */
+    public function testSerializeArrayOfArrays($value, $result)
+    {
+        self::assertEquals(
+            $result,
+            ApiUtils::serializeArrayOfArrays($value)
         );
     }
 }
