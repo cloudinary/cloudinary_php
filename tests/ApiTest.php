@@ -43,8 +43,6 @@ namespace Cloudinary {
         protected static $streaming_profile_1;
         protected static $streaming_profile_2;
 
-
-
         const URL_QUERY_REGEX = "\??(\w+=\w*&?)*";
 
         /** @var  \Cloudinary\Api $api */
@@ -102,7 +100,6 @@ namespace Cloudinary {
             self::delete_transformations($api);
             self::delete_streaming_profiles($api);
         }
-
 
         /**
          * Delete all test related resources
@@ -1450,6 +1447,34 @@ namespace Cloudinary {
             $resource = $this->api->resource(self::$api_test, ["accessibility_analysis" => true]);
 
             $this->assertArrayHasKey('accessibility_analysis', $resource);
+        }
+
+        /**
+         * Should allow the user to pass accessibility_analysis in the create_upload_preset function.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_create_upload_preset_with_accessibility_analysis()
+        {
+            Curl::mockApi($this);
+
+            $this->api->create_upload_preset(array('accessibility_analysis' => true));
+
+            assertParam($this, 'accessibility_analysis', 1);
+        }
+
+        /**
+         * Should allow the user to pass accessibility_analysis in the resource function.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_accessibility_analysis_resource()
+        {
+            Curl::mockApi($this);
+
+            $this->api->resource(self::$api_test, ['accessibility_analysis' => true]);
+
+            assertParam($this, 'accessibility_analysis', 1);
         }
 
         /**
