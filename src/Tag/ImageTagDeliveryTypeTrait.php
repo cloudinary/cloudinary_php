@@ -99,19 +99,6 @@ trait ImageTagDeliveryTypeTrait
     }
 
     /**
-     * Static builder for instagram profile picture by name.
-     *
-     * @param string                          $username
-     * @param Configuration|string|array|null $configuration The Configuration source.
-     *
-     * @return static
-     */
-    public static function instagramName($username, $configuration = null)
-    {
-        return new static(Image::instagramName($username, $configuration));
-    }
-
-    /**
      * Static builder for the thumbnail of the YouTube video.
      *
      * @param string                          $videoId

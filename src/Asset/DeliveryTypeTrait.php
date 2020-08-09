@@ -122,19 +122,6 @@ trait DeliveryTypeTrait
     }
 
     /**
-     * Static builder for instagram profile picture by name
-     *
-     * @param string                          $username      The username.
-     * @param Configuration|string|array|null $configuration Configuration source.
-     *
-     * @return static
-     */
-    public static function instagramName($username, $configuration = null)
-    {
-        return self::deliveryTypeBuilder($username, $configuration, DeliveryType::INSTAGRAM_NAME);
-    }
-
-    /**
      * Static builder for YouTube video thumbnail
      *
      * @param string                          $videoId       The video ID

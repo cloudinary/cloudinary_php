@@ -184,14 +184,6 @@ final class ImageTagTest extends ImageTagTestCase
         );
     }
 
-    public function testInstagramNameImageTag()
-    {
-        self::assertImageTag(
-            [Image::instagramName(self::TEST_SOCIAL_PROFILE_NAME)],
-            ImageTag::instagramName(self::TEST_SOCIAL_PROFILE_NAME)
-        );
-    }
-
     public function testYouTubeThumbnailImageTag()
     {
         self::assertImageTag(

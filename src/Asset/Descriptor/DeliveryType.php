@@ -58,7 +58,6 @@ class DeliveryType
     const FACEBOOK        = 'facebook';
     const TWITTER         = 'twitter';
     const TWITTER_NAME    = 'twitter_name';
-    const INSTAGRAM_NAME  = 'instagram_name';
     const GRAVATAR        = 'gravatar';
     const YOUTUBE         = 'youtube';
     const HULU            = 'hulu';
