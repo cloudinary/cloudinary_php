@@ -2,6 +2,8 @@
 
 namespace Cloudinary {
 
+    require_once('TestHelper.php');
+
     use Cloudinary;
     use Cloudinary\Api\GeneralError;
     use Cloudinary\Api\NotFound;
@@ -24,6 +26,7 @@ namespace Cloudinary {
         protected static $rbp_format = "png";
         protected static $rbp_values = [206, 50];
         protected static $rbp_params;
+        protected static $test_eval_tags_result = ['a', 'b'];
 
         private static $metadata_field_unique_external_id;
         private static $metadata_field_value;
@@ -968,8 +971,6 @@ TAG
 
         /**
          * Get the accessibility analysis of an uploaded image
-         *
-         * @throws Error
          */
         public function test_accessibility_analysis()
         {
@@ -980,6 +981,17 @@ TAG
             $explicitRes = Uploader::explicit($result["public_id"], ["accessibility_analysis" => true, "type" => "upload"]);
 
             $this->assertArrayHasKey("accessibility_analysis", $explicitRes);
+        }
+
+        /**
+         * Add eval parameter to an uploaded asset
+         */
+        public function test_eval_upload_parameter()
+        {
+            $result = Uploader::upload(TEST_IMG, ['eval' => TEST_EVAL_STR]);
+
+            $this->assertEquals(self::$test_eval_tags_result, $result['tags']);
+            $this->assertEquals(TEST_IMG_WIDTH, $result['context']['custom']['width']);
         }
     }
 }

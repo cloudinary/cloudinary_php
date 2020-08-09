@@ -999,12 +999,20 @@ namespace Cloudinary {
         public function test28_create_upload_presets()
         {
             Curl::mockApi($this);
-            $this->api->create_upload_preset(array("name" => TEST_PRESET_NAME, "folder" => "folder", "live" => true));
+            $this->api->create_upload_preset(
+                array(
+                    "name" => TEST_PRESET_NAME,
+                    "folder" => "folder",
+                    "live" => true,
+                    "eval" => TEST_EVAL_STR
+                )
+            );
             assertUrl($this, "/upload_presets");
             assertPost($this);
             assertParam($this, "name", TEST_PRESET_NAME);
             assertParam($this, "folder", "folder");
             assertParam($this, "live", 1);
+            assertParam($this, "eval", TEST_EVAL_STR);
         }
 
         /**
@@ -1056,7 +1064,13 @@ namespace Cloudinary {
             Curl::mockApi($this);
             $this->api->update_upload_preset(
                 TEST_PRESET_NAME,
-                array("colors" => true, "unsigned" => true, "disallow_public_id" => true, "live" => true)
+                array(
+                    "colors" => true,
+                    "unsigned" => true,
+                    "disallow_public_id" => true,
+                    "live" => true,
+                    "eval" => TEST_EVAL_STR
+                )
             );
             assertPut($this);
             assertUrl($this, "/upload_presets/" . TEST_PRESET_NAME);
@@ -1064,6 +1078,7 @@ namespace Cloudinary {
             assertParam($this, "unsigned", 1);
             assertParam($this, "disallow_public_id", 1);
             assertParam($this, "live", 1);
+            assertParam($this, "eval", TEST_EVAL_STR);
         }
 
         /**
