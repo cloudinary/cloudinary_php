@@ -605,7 +605,7 @@ TAG
 
         /**
          * @expectedException \Cloudinary\Error
-         * @expectedExceptionMessage Detection is invalid
+         * @expectedExceptionMessage Detection invalid model 'illegal'
          */
         public function test_detection()
         {
