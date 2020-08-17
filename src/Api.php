@@ -1520,7 +1520,7 @@ namespace Cloudinary {
         )
         {
             $uri = [$field_external_id, 'datasource_restore'];
-            $params['external_ids'] = $entries_external_ids;
+            $params = ['external_ids' => $entries_external_ids];
 
             return $this->call_metadata_api('post', $uri, $params, $options);
         }
