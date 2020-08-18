@@ -184,7 +184,7 @@ trait ArchiveTrait
         $options['mode'] = 'download';
         $params          = self::buildArchiveParams($options);
 
-        ApiUtils::signRequest($params, $this->getCloud());
+        ApiUtils::signRequest($params, $this->getCloud(), $this->getUrl());
 
         $assetType = ArrayUtils::get($options, 'resource_type', AssetType::IMAGE);
 
@@ -226,7 +226,7 @@ trait ArchiveTrait
             "expires_at" => ArrayUtils::get($options, "expires_at"),
         ]);
 
-        ApiUtils::signRequest($params, $this->getCloud());
+        ApiUtils::signRequest($params, $this->getCloud(), $this->getUrl());
 
         return $this->getUploadUrl(AssetType::IMAGE, UploadEndPoint::DOWNLOAD, $params);
     }
@@ -262,7 +262,7 @@ trait ArchiveTrait
 
         $params = self::buildArchiveParams($options);
 
-        ApiUtils::signRequest($params, $this->getCloud());
+        ApiUtils::signRequest($params, $this->getCloud(), $this->getUrl());
 
         return $this->getUploadUrl(null, UploadEndPoint::DOWNLOAD_BACKUP, $params);
     }

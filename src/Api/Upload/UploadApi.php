@@ -96,6 +96,18 @@ class UploadApi
     }
 
     /**
+     * Gets url config of the current instance.
+     *
+     * @return CloudConfig
+     *
+     * @internal
+     */
+    public function getUrl()
+    {
+        return $this->apiClient->getUrl();
+    }
+
+    /**
      * Internal method for performing all Upload API calls.
      *
      * @param string $endPoint The relative endpoint.

@@ -21,10 +21,11 @@ use Psr\Http\Message\UriInterface;
  */
 class Utils
 {
-    const ALGO_SHA1                  = 'sha1';
-    const ALGO_SHA256                = 'sha256';
-    const SHORT_URL_SIGNATURE_LENGTH = 8;
-    const LONG_URL_SIGNATURE_LENGTH  = 32;
+    const ALGO_SHA1                      = 'sha1';
+    const ALGO_SHA256                    = 'sha256';
+    const SUPPORTED_SIGNATURE_ALGORITHMS = [self::ALGO_SHA1, self::ALGO_SHA256];
+    const SHORT_URL_SIGNATURE_LENGTH     = 8;
+    const LONG_URL_SIGNATURE_LENGTH      = 32;
 
     /**
      * Converts a float value to the string representation.

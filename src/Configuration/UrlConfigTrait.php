@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Configuration;
 
+use Cloudinary\Utils;
+
 /**
  * Trait UrlConfigTrait
  *
@@ -129,6 +131,16 @@ trait UrlConfigTrait
     }
 
     /**
+     * Choose signature algorithm depending on length of URL signature.
+     *
+     * @return String
+     */
+    public function signatureAlgorithm()
+    {
+        return $this->longUrlSignature ? Utils::ALGO_SHA256 : $this->getSignatureAlgorithm();
+    }
+
+    /**
      * Set to true to use shorten asset type.
      *
      * @param bool $shorten
@@ -177,6 +189,20 @@ trait UrlConfigTrait
     public function analytics($analytics = true)
     {
         return $this->setUrlConfig(UrlConfig::ANALYTICS, $analytics);
+    }
+
+    /**
+     * Check if passed signatureAlgorithm is supported otherwise return SHA1.
+     *
+     * @return string
+     */
+    private function getSignatureAlgorithm()
+    {
+        if (in_array($this->signatureAlgorithm, Utils::SUPPORTED_SIGNATURE_ALGORITHMS, true)) {
+            return $this->signatureAlgorithm;
+        } else {
+            return Utils::ALGO_SHA1;
+        }
     }
 
     /**

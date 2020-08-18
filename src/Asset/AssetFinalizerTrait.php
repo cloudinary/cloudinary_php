@@ -246,7 +246,7 @@ trait AssetFinalizerTrait
                 $toSign,
                 $this->cloud->apiSecret,
                 true,
-                $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
+                $this->urlConfig->signatureAlgorithm()
             )
         );
 

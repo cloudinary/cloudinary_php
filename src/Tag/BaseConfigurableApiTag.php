@@ -74,7 +74,7 @@ class BaseConfigurableApiTag extends BaseTag
         $params = $this->uploadApi->buildUploadParams($this->uploadParams);
 
         if (! $this->config->tag->unsignedUpload) {
-            ApiUtils::signRequest($params, $this->uploadApi->getCloud());
+            ApiUtils::signRequest($params, $this->uploadApi->getCloud(), $this->uploadApi->getUrl());
         }
 
         return $params;

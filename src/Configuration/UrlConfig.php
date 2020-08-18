@@ -77,12 +77,13 @@ class UrlConfig extends BaseConfigSection
     const SECURE_CNAME         = 'secure_cname';
     const PRIVATE_CDN          = 'private_cdn';
 
-    const SIGN_URL           = 'sign_url';
-    const LONG_URL_SIGNATURE = 'long_url_signature';
-    const SHORTEN            = 'shorten';
-    const USE_ROOT_PATH      = 'use_root_path';
-    const FORCE_VERSION      = 'force_version';
-    const ANALYTICS          = 'analytics';
+    const SIGN_URL            = 'sign_url';
+    const LONG_URL_SIGNATURE  = 'long_url_signature';
+    const SIGNATURE_ALGORITHM = 'signature_algorithm';
+    const SHORTEN             = 'shorten';
+    const USE_ROOT_PATH       = 'use_root_path';
+    const FORCE_VERSION       = 'force_version';
+    const ANALYTICS           = 'analytics';
 
     const RESPONSIVE_WIDTH                = 'responsive_width';
     const RESPONSIVE_WIDTH_TRANSFORMATION = 'responsive_width_transformation';
@@ -156,6 +157,13 @@ class UrlConfig extends BaseConfigSection
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      */
     public $longUrlSignature;
+
+    /**
+     * Set a signature algorithm (SHA1 by default) for URL config
+     *
+     * @var string
+     */
+    public $signatureAlgorithm;
 
     /**
      * Set to true to use shorten asset type.

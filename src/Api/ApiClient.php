@@ -39,6 +39,11 @@ class ApiClient extends BaseApiClient
     protected $cloud;
 
     /**
+     * @var CloudConfig $url The url configuration.
+     */
+    protected $url;
+
+    /**
      * ApiClient constructor.
      *
      * @param $configuration
@@ -76,6 +81,18 @@ class ApiClient extends BaseApiClient
     public function getCloud()
     {
         return $this->cloud;
+    }
+
+    /**
+     * Gets url configuration of the current client.
+     *
+     * @return CloudConfig
+     *
+     * @internal
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 
     /**
@@ -146,7 +163,7 @@ class ApiClient extends BaseApiClient
      */
     public function postAndSignFormAsync($endPoint, $formParams)
     {
-        ApiUtils::signRequest($formParams, $this->cloud);
+        ApiUtils::signRequest($formParams, $this->cloud, $this->url);
 
         return $this->postFormAsync($endPoint, $formParams);
     }
@@ -228,7 +245,7 @@ class ApiClient extends BaseApiClient
         $unsigned = ArrayUtils::get($options, 'unsigned');
 
         if (! $unsigned) {
-            ApiUtils::signRequest($parameters, $this->cloud);
+            ApiUtils::signRequest($parameters, $this->cloud, $this->url);
         }
 
         try {
