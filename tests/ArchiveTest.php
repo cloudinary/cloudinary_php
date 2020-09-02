@@ -85,6 +85,32 @@ namespace Cloudinary {
             unlink($file);
         }
 
+        /**
+         * Checks URLs for downloading a folder as an archive file.
+         */
+        public function test_download_folder()
+        {
+            // should return url with resource_type image.
+            $download_folder_url = \Cloudinary::download_folder('samples/', ['resource_type' => 'image']);
+            $this->assertContains('image', $download_folder_url);
+
+            // should return valid url.
+            $download_folder_url = \Cloudinary::download_folder('folder/');
+            $this->assertContains('generate_archive', $download_folder_url);
+
+            // should flatten folder.
+            $download_folder_url = \Cloudinary::download_folder('folder/', ['flatten_folders' => true]);
+            $this->assertContains('flatten_folders', $download_folder_url);
+
+            // should expire_at folder.
+            $download_folder_url = \Cloudinary::download_folder('folder/', ['expires_at' => time() + 60]);
+            $this->assertContains('expires_at', $download_folder_url);
+
+            // should use original file_name of folder.
+            $download_folder_url = \Cloudinary::download_folder('folder/', ['use_original_filename' => true]);
+            $this->assertContains('use_original_filename', $download_folder_url);
+        }
+
         public function test_create_archive_multiple_resource_types()
         {
             Curl::mockUpload($this);
