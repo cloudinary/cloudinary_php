@@ -46,7 +46,7 @@ namespace Cloudinary {
          * storage, bandwidth, requests, number of resources, and add-on usage.
          * Note that numbers are updated periodically.
          *
-         * @see https://cloudinary.com/documentation/admin_api#usage_report
+         * @see https://cloudinary.com/documentation/admin_api#get_account_usage_details
          *
          * @param array $options Additional options
          *
