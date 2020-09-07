@@ -14,7 +14,7 @@ class Cloudinary
     const SHORT_URL_SIGNATURE_LENGTH = 8;
     const LONG_URL_SIGNATURE_LENGTH = 32;
 
-    const VERSION = "1.17.0";
+    const VERSION = "1.18.0";
 
     /**
      * @internal
