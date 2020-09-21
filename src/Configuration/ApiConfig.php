@@ -11,7 +11,7 @@
 namespace Cloudinary\Configuration;
 
 /**
- * Class ApiConfig
+ * Defines the global configuration when making requests to the Cloudinary API.
  *
  * @property string    $uploadPrefix    Used for changing default API host.
  * @property int|float $timeout         Describing the timeout of the request in seconds.

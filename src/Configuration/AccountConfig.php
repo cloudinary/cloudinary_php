@@ -11,7 +11,8 @@
 namespace Cloudinary\Configuration;
 
 /**
- * Class AccountConfig
+ * Defines the account configuration required to connect your application to Cloudinary.
+ * **Learn more**: <a href="https://cloudinary.com/documentation/how_to_integrate_cloudinary#get_familiar_with_the_cloudinary_console" target="_blank">Get account details from the Cloudinary Console.</a>
  *
  * @api
  */

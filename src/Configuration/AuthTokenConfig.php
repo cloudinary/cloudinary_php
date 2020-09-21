@@ -11,7 +11,8 @@
 namespace Cloudinary\Configuration;
 
 /**
- * Class AuthTokenConfig
+ * Defines the configuration for delivering token-based authenticated media assets.
+ * **Learn more**: <a href=https://cloudinary.com/documentation/control_access_to_media#delivering_token_based_authenticated_media_assets target="_blank">Delivering token based authenticated media assets</a>
  *
  * @api
  */

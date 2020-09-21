@@ -13,7 +13,7 @@ namespace Cloudinary\Configuration;
 use Cloudinary\Tag\BaseTag;
 
 /**
- * Class TagConfig
+ * Defines the global configuration for html tags generated using the Cloudinary PHP SDK.
  *
  * @property string $videoPosterFormat Image format of the video poster.
  * @property string $quotesType        Sets the type of the quotes to use (single or double). Default:

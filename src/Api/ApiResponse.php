@@ -14,7 +14,7 @@ use ArrayObject;
 use Cloudinary\ArrayUtils;
 
 /**
- * Class ApiResponse
+ * Defines the response returned by the API.
  *
  * @api
  */

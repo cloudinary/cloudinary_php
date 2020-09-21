@@ -11,7 +11,7 @@
 namespace Cloudinary\Configuration;
 
 /**
- * Class UrlConfig
+ * Defines the global configuration applied when generating Cloudinary URLs.
  *
  * @property bool $secure  Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
  * @property bool $forceVersion By default set to self::DEFAULT_FORCE_VERSION.

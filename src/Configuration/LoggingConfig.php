@@ -3,7 +3,7 @@
 namespace Cloudinary\Configuration;
 
 /**
- * Class LoggingConfig
+ * Defines the global configuration for logging messages when using the SDK.
  *
  * @property array  $file     Settings for logging messages to a file.
  * @property array  $errorLog Settings for logging messages to PHP error_log() handler.

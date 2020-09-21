@@ -16,7 +16,7 @@ use Cloudinary\StringUtils;
 use Psr\Http\Message\UriInterface;
 
 /**
- * Class Configuration
+ * Defines the available global configurations.
  *
  * @api
  */
