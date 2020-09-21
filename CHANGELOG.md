@@ -4,13 +4,13 @@
 New functionality and features
 ------------------------------
 
-  * Add support for Mon Sep  7 12:16:42 UTC 2020 in  Admin API
-  * Add support for  API parameter
+  * Add support for `date` in `usage` Admin API
+  * Add support for `eval` API parameter
   
 Other Changes
 -------------
 
-  * Fix  link for  Admin API
+  * Fix `@see` link for `usage` Admin API
   * Fix assignment of value into previously undefined array
   * Fix detection integration test
   * Add pull request template
