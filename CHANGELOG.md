@@ -1,4 +1,20 @@
 
+2.0.0-beta7 / 2020-09-21
+========================
+
+New functionality and features
+------------------------------
+
+  * Add guzzle 7 support
+  * Add doc strings for classes
+  
+Other Changes
+-------------
+
+  * Remove support for instagram profile picture
+  * Fix bug in `ApiUtils::serializeArrayOfArrays`
+  * Fix headers serialisation in Upload API
+
 2.0.0-beta6 / 2020-07-14
 ========================
 

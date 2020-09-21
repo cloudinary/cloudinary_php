@@ -32,7 +32,7 @@ class Cloudinary
      *
      * @var string VERSION
      */
-    const VERSION = '2.0.0-beta6';
+    const VERSION = '2.0.0-beta7';
 
     /**
      * Defines the Cloudinary account details and other global configuration options.
