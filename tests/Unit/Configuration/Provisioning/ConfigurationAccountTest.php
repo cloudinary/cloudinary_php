@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cloudinary\Test\Cloudinary\Configuration\Provisioning;
+namespace Cloudinary\Test\Unit\Configuration\Provisioning;
 
 
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
