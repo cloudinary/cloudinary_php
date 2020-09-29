@@ -81,7 +81,7 @@ namespace Cloudinary {
             ];
         }
 
-        public function setUp()
+        protected function setUp()
         {
             \Cloudinary::reset_config();
             if (!Cloudinary::config_get("api_secret")) {
@@ -90,7 +90,7 @@ namespace Cloudinary {
             $this->url_prefix = Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com");
         }
 
-        public function tearDown()
+        protected function tearDown()
         {
             Curl::$instance = new Curl();
         }

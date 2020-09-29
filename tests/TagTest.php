@@ -56,7 +56,7 @@ class TagTest extends TestCase
         Curl::$instance = new Curl();
     }
 
-    public function setUp()
+    protected function setUp()
     {
         Cloudinary::reset_config();
         Cloudinary::config(

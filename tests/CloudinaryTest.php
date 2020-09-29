@@ -48,7 +48,7 @@ class CloudinaryTest extends TestCase
 
     private $original_user_platform;
 
-    public function setUp()
+    protected function setUp()
     {
         Cloudinary::reset_config();
         Cloudinary::config(
@@ -65,7 +65,7 @@ class CloudinaryTest extends TestCase
         $this->original_user_platform = \Cloudinary::$USER_PLATFORM;
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         parent::TearDown();
         \Cloudinary::$USER_PLATFORM = $this->original_user_platform;

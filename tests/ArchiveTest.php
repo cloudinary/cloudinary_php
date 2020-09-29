@@ -16,7 +16,7 @@ namespace Cloudinary {
             Curl::$instance = new Curl();
         }
 
-        public function setUp()
+        protected function setUp()
         {
             $this->tag = "archive_test_" . SUFFIX;
             $this->tags = array($this->tag, TEST_TAG, UNIQUE_TEST_TAG);
@@ -29,7 +29,7 @@ namespace Cloudinary {
             Uploader::upload("tests/logo.png", array("tags" => $this->tags, "width" => 10, "crop" => "scale"));
         }
 
-        public function tearDown()
+        protected function tearDown()
         {
             Curl::$instance = new Curl();
             $api = new \Cloudinary\Api();

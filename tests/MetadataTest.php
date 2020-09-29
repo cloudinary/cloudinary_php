@@ -136,7 +136,7 @@ class MetadataTest extends TestCase
         $this->api = new Api();
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         Curl::$instance = new Curl();
     }

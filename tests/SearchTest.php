@@ -40,7 +40,7 @@ namespace Cloudinary {
             sleep(3);
         }
 
-        public function setUp()
+        protected function setUp()
         {
             \Cloudinary::reset_config();
             if (!\Cloudinary::config_get("api_secret")) {
@@ -49,7 +49,7 @@ namespace Cloudinary {
             $this->search = new Search();
         }
 
-        public function tearDown()
+        protected function tearDown()
         {
             Curl::$instance = new Curl();
         }

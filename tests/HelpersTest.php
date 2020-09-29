@@ -48,7 +48,7 @@ class HelpersTest extends TestCase
         }
     }
 
-    public function setUp()
+    protected function setUp()
     {
         Curl::$instance = new Curl();
     }
