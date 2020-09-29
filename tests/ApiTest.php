@@ -85,7 +85,7 @@ namespace Cloudinary {
             self::$streaming_profile_2 = self::$api_test . "_streaming_profile_2";
         }
 
-        public function tearDown()
+        protected function tearDown()
         {
             Curl::$instance = new Curl();
         }
