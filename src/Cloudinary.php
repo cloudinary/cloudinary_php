@@ -1552,6 +1552,22 @@ class Cloudinary
     }
 
     /**
+     * Creates and returns a URL that when invoked creates an archive of a folder.
+     *
+     * @param string $folder_path Full path (from the root) of the folder to download.
+     * @param array  $options     Additional options.
+     *
+     * @return string Url for downloading an archive of a folder
+     */
+    public static function download_folder($folder_path, $options = array())
+    {
+        $options['prefixes']      = $folder_path;
+        $options['resource_type'] = Cloudinary::option_get($options, 'resource_type', 'all');
+
+        return self::download_archive_url($options);
+    }
+
+    /**
      *  Generate an authorization token.
      *  Options:
      *      string key - the secret key required to sign the token
