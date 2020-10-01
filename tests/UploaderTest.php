@@ -993,5 +993,29 @@ TAG
             $this->assertEquals(self::$test_eval_tags_result, $result['tags']);
             $this->assertEquals(TEST_IMG_WIDTH, $result['context']['custom']['width']);
         }
+
+        /**
+         * Should support accessibility analysis in upload.
+         */
+        public function test_accessibility_analysis_upload()
+        {
+            Curl::mockUpload($this);
+
+            Uploader::upload(TEST_IMG, ['accessibility_analysis' => true]);
+
+            assertParam($this, 'accessibility_analysis', 1);
+        }
+
+        /**
+         * Should support accessibility analysis in explicit.
+         */
+        public function test_accessibility_analysis_explicit()
+        {
+            Curl::mockUpload($this);
+
+            Uploader::explicit('cloudinary', ['accessibility_analysis' => true]);
+
+            assertParam($this, 'accessibility_analysis', 1);
+        }
     }
 }
