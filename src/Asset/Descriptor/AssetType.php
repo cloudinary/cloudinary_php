@@ -23,4 +23,5 @@ abstract class AssetType
     const VIDEO = 'video';
     const RAW   = 'raw';
     const AUTO  = 'auto';
+    const ALL   = 'all';
 }

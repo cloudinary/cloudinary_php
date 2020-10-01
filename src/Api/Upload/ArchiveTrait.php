@@ -201,4 +201,20 @@ trait ArchiveTrait
 
         return $this->downloadArchiveUrl($options);
     }
+
+    /**
+     * Creates and returns a URL that when invoked creates an archive of a folder.
+     *
+     * @param string $folderPath Full path (from the root) of the folder to download.
+     * @param array  $options    Additional options.
+     *
+     * @return string Url for downloading an archive of a folder
+     */
+    public function downloadFolder($folderPath, $options = [])
+    {
+        $options['prefixes']     = $folderPath;
+        $options[AssetType::KEY] = ArrayUtils::get($options, AssetType::KEY, AssetType::ALL);
+
+        return $this->downloadArchiveUrl($options);
+    }
 }
