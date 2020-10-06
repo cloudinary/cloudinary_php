@@ -22,8 +22,8 @@ trait LayerFlagTrait
     /**
      * Trims pixels according to the transparency levels of a given overlay image.
      *
-     * Whenever the overlay image is opaque, the original is shown, and wherever the overlay is transparent,
-     * the result will be transparent as well.
+     * Wherever the overlay image is transparent, the original is shown, and wherever the overlay is opaque, the
+     * resulting image is transparent.
      *
      * @return FlagParameter
      */

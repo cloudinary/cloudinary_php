@@ -65,8 +65,8 @@ trait ImageSpecificTransformationTrait
     /**
      * Trims pixels according to the transparency levels of a given overlay image.
      *
-     * Wherever the overlay image is opaque, the original is shown, and wherever the overlay is transparent,
-     * the result is transparent as well.
+     * Wherever the overlay image is transparent, the original is shown, and wherever the overlay is opaque, the
+     * resulting image is transparent.
      *
      * @param string                    $layer    The public ID of the image overlay.
      * @param Position|AbsolutePosition $position The position of the overlay with respect to the base image.
