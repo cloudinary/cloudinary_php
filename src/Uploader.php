@@ -174,7 +174,7 @@ namespace Cloudinary {
             $params = Uploader::build_upload_params($options);
             $full_options = array_merge(array("resource_type" => "raw"), $options);
 
-            return Uploader::call_cacheable_api("upload_chunked", $params, $full_options, $file);
+            return Uploader::call_cacheable_api("upload", $params, $full_options, $file);
         }
 
         public static function destroy($public_id, $options = array())
