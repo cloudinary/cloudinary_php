@@ -12,6 +12,7 @@ namespace Cloudinary {
     use Cloudinary\Test\Cache\Storage\DummyCacheStorage;
     use Exception;
     use PHPUnit\Framework\TestCase;
+    use PHPUnit_Framework_Constraint_IsType as IsType;
 
     /**
      * Class UploaderTest
@@ -26,7 +27,6 @@ namespace Cloudinary {
         protected static $rbp_format = "png";
         protected static $rbp_values = [206, 50];
         protected static $rbp_params;
-        protected static $test_eval_tags_result = ['a', 'b'];
 
         private static $metadata_field_unique_external_id;
         private static $metadata_field_value;
@@ -988,10 +988,11 @@ TAG
          */
         public function test_eval_upload_parameter()
         {
-            $result = Uploader::upload(TEST_IMG, ['eval' => TEST_EVAL_STR]);
+            $result = Uploader::upload(TEST_IMG, ['eval' => TEST_EVAL_STR, 'tags' => [TEST_TAG, UNIQUE_TEST_TAG]]);
 
-            $this->assertEquals(self::$test_eval_tags_result, $result['tags']);
             $this->assertEquals(TEST_IMG_WIDTH, $result['context']['custom']['width']);
+            $this->assertInternalType(IsType::TYPE_ARRAY, $result['quality_analysis']);
+            $this->assertInternalType(IsType::TYPE_NUMERIC, $result['quality_analysis']['focus']);
         }
     }
 }

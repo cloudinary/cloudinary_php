@@ -10,7 +10,7 @@ namespace Cloudinary {
     const TEST_ICO = "tests/favicon.ico";
     const TEST_PRESET_NAME = 'test_preset';
     define("SUFFIX", getenv("TRAVIS_JOB_ID") ?: rand(11111, 99999));
-    define('TEST_EVAL_STR', 'if (resource_info["width"] < 450) { upload_options["tags"] = "a,b" }; ' .
+    define('TEST_EVAL_STR', 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
         'upload_options["context"] = "width=" + resource_info["width"]');
     define('TEST_TAG', 'cloudinary_php');
     define('UNIQUE_TEST_TAG', TEST_TAG . "_" . SUFFIX);
