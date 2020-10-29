@@ -1,3 +1,17 @@
+1.19.0 / 2020-10-29
+==================
+
+New functionality and features
+------------------------------
+  * Add method `Cloudinary::download_folder`
+  
+Other Changes
+-------------
+
+  * Fix `upload_large` endpoint
+  * Improve PHPUnit fixtures
+  * Add accessibility analysis tests
+
 1.18.0 / 2020-09-07
 ==================
 
