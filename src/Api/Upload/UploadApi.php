@@ -36,7 +36,7 @@ class UploadApi
     /**
      * @var ApiClient $apiClient The HTTP API client instance.
      */
-    private $apiClient;
+    protected $apiClient;
 
     /**
      * Admin Api constructor.

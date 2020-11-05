@@ -26,6 +26,8 @@ use ReflectionMethod;
  */
 abstract class CloudinaryTestCase extends TestCase
 {
+    const TEST_BASE64_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
     protected static $SUFFIX;
     protected static $TEST_TAG;
     protected static $UNIQUE_TEST_TAG;
