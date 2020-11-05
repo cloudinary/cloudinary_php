@@ -212,6 +212,7 @@ trait AssetsTrait
                 'image_metadata',
                 'phash',
                 'pages',
+                'cinemagraph_analysis',
                 'coordinates',
                 'max_results',
                 'accessibility_analysis',

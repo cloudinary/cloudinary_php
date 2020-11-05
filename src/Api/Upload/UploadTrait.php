@@ -46,6 +46,7 @@ trait UploadTrait
             'backup',
             'callback',
             'categorization',
+            'cinemagraph_analysis',
             'colors',
             'context',
             'detection',
