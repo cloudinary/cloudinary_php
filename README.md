@@ -16,7 +16,7 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 You can install through composer with:
 
 ```
-composer require cloudinary/cloudinary_php:2.0.0-beta
+composer require "cloudinary/cloudinary_php:>2.0.0-beta"
 ```
 
 Or download cloudinary_php v2 from [here](https://github.com/cloudinary/cloudinary_php/tree/2.0.0-beta)
