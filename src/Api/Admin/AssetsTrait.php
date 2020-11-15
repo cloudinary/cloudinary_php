@@ -215,6 +215,7 @@ trait AssetsTrait
                 'cinemagraph_analysis',
                 'coordinates',
                 'max_results',
+                'derived_next_cursor',
                 'accessibility_analysis',
             ]
         );
@@ -224,7 +225,6 @@ trait AssetsTrait
 
     /**
      * Reverts to the latest backed up version of the specified deleted assets.
-     *
      *
      * @param string|array $publicIds The public IDs of the backed up assets to restore. They can be existing or
      * deleted assets.
