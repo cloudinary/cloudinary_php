@@ -39,9 +39,8 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     const TEST_IMAGE_PATH = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME;
     const TEST_IMAGE_GIF_PATH = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME_GIF;
     const TEST_LOGGING = ['logging' => ['test' => ['level' => 'debug']]];
-    const TEST_EVAL_STR = 'if (resource_info["width"] < 450) { upload_options["tags"] = "a,b" }; ' .
+    const TEST_EVAL_STR = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
                           'upload_options["context"] = "width=" + resource_info["width"]';
-    const TEST_EVAL_TAGS_RESULT = ['a', 'b'];
 
     private static $RESOURCES_STACK = [];
 

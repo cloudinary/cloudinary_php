@@ -21,6 +21,7 @@ use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Resize;
 use GuzzleHttp\Psr7\Uri;
+use PHPUnit_Framework_Constraint_IsType as IsType;
 use Psr\Http\Message\StreamInterface;
 
 use function GuzzleHttp\Psr7\stream_for;
@@ -424,15 +425,19 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testEvalUploadParameter()
     {
-        $result = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['eval' => self::TEST_EVAL_STR]);
+        $result = self::$uploadApi->upload(
+            self::TEST_IMAGE_PATH,
+            ['eval' => self::TEST_EVAL_STR, 'tags' => self::$ASSET_TAGS]
+        );
 
         self::assertValidResource(
             $result,
             [
-                'tags'    => self::TEST_EVAL_TAGS_RESULT,
                 'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
             ]
         );
+        self::assertInternalType(IsType::TYPE_ARRAY, $result['quality_analysis']);
+        self::assertInternalType(IsType::TYPE_NUMERIC, $result['quality_analysis']['focus']);
     }
 
     /**
