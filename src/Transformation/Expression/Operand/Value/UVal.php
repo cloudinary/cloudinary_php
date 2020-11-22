@@ -72,15 +72,7 @@ class UVal extends Expression
      */
     public static function string($value)
     {
-        if (! StringUtils::startsWith($value, self::STRING_MARKER)) {
-            $value = self::STRING_MARKER . $value;
-        }
-
-        if (! StringUtils::endsWith($value, self::STRING_MARKER)) {
-            $value .= self::STRING_MARKER;
-        }
-
-        return self::uVal($value);
+        return self::uVal(StringUtils::ensureWrappedWith($value, self::STRING_MARKER));
     }
 
     /**
@@ -93,6 +85,20 @@ class UVal extends Expression
     public static function stringArray($array)
     {
         return self::string(implode(self::STRING_ARR_DELIM, $array));
+    }
+
+    /**
+     * The file reference expression component.
+     *
+     * @param string $publicId The public ID of the file.
+     *
+     * @return self
+     */
+    public static function fileReference($publicId)
+    {
+        $publicId = StringUtils::ensureWrappedWith($publicId, self::STRING_MARKER);
+
+        return self::uVal("ref:$publicId");
     }
 
     /**

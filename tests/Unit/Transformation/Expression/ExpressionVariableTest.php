@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Unit\Transformation\Expression;
 
 use Cloudinary\Transformation\Expression\PVar;
+use Cloudinary\Transformation\Expression\UVal;
 use Cloudinary\Transformation\Expression\UVar;
 use Cloudinary\Transformation\Variable\Variable;
 use PHPUnit\Framework\TestCase;
@@ -37,5 +38,13 @@ final class ExpressionVariableTest extends TestCase
         self::assertEquals('iw', (string)PVar::initialWidth());
         self::assertEquals('du', (string)PVar::duration());
         self::assertEquals('idu', (string)PVar::initialDuration());
+    }
+
+    public function testUserValues()
+    {
+        self::assertEquals(3.1415, (string)UVal::numeric(3.1415));
+        self::assertEquals('!hello!', (string)UVal::string('hello'));
+        self::assertEquals('!apple:peach:orange!', (string)UVal::stringArray(['apple', 'peach', 'orange']));
+        self::assertEquals('ref:!blur.wasm!', (string)UVal::fileReference('blur.wasm'));
     }
 }

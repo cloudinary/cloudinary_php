@@ -76,4 +76,16 @@ trait ValueBuilderTrait
     {
         return $this->setRightOperand(UVal::stringArray($value));
     }
+
+    /**
+     * Sets the file reference value.
+     *
+     * @param string $publicId The public ID of the file.
+     *
+     * @return Expression
+     */
+    public function fileReference($publicId)
+    {
+        return $this->setRightOperand(UVal::fileReference($publicId));
+    }
 }

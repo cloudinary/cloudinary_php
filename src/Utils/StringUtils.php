@@ -99,6 +99,27 @@ class StringUtils
     }
 
     /**
+     * Ensures that the string is wrapped with specified character(s).
+     *
+     * @param string $string The input string.
+     * @param string $char   The wrapping character(s).
+     *
+     * @return string
+     */
+    public static function ensureWrappedWith($string, $char)
+    {
+        if (! self::startsWith($string, $char)) {
+            $string = $char . $string;
+        }
+
+        if (! self::endsWith($string, $char)) {
+            $string .= $char;
+        }
+
+        return $string;
+    }
+
+    /**
      * Determines whether $haystack contains $needle.
      *
      * @param string $haystack The string to search in.

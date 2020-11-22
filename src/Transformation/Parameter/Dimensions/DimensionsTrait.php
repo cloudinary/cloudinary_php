@@ -12,6 +12,7 @@ namespace Cloudinary\Transformation\Parameter\Dimensions;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
+use Cloudinary\Transformation\Expression\Expression;
 
 /**
  * Trait DimensionsTrait
@@ -23,7 +24,7 @@ trait DimensionsTrait
     /**
      * Sets the width of the asset.
      *
-     * @param int $width The width in pixels.
+     * @param int|string|Expression $width The width in pixels.
      *
      * @return static
      */
@@ -37,7 +38,7 @@ trait DimensionsTrait
     /**
      * Sets the height of the asset.
      *
-     * @param int $height The height in pixels.
+     * @param int|string|Expression $height The height in pixels.
      *
      * @return static
      */
