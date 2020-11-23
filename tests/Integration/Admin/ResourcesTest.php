@@ -16,6 +16,7 @@ use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
 use Cloudinary\Asset\ModerationType;
+use Cloudinary\Test\Integration\Addon;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
@@ -339,7 +340,7 @@ final class ResourcesTest extends IntegrationTestCase
      */
     public function testListImagesApprovedByWebPurify()
     {
-        if (! self::shouldTestAddOn('webpurify')) {
+        if (! self::shouldTestAddOn(Addon::WEBPURIFY)) {
             $this->markTestSkipped('Skipping WebPurify test');
         }
 
