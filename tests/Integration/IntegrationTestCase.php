@@ -102,7 +102,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     protected static function shouldTestAddOn($addOn)
     {
         $cldTestAddOns = strtolower(getenv('CLD_TEST_ADDONS'));
-        if ($cldTestAddOns === 'all') {
+        if ($cldTestAddOns === Addon::ALL) {
             return true;
         }
         return ArrayUtils::inArrayI($addOn, explode(',', $cldTestAddOns));
