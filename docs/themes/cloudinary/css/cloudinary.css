@@ -1,16 +1,16 @@
 html, body, #content {
     height: 100%;
-    font-family: "Montserrat", Helvetica, Arial, sans-serif;
+    font-family: "sofia-pro", Helvetica, Arial, sans-serif;
 }
 
 /* Cloudinary overrides of bootstrap styles*/
 a {
-    color: #F96726;
+    color: #3448C5;
     text-decoration: none;
 }
 
 a:hover, a:focus {
-    color: #F96726;
+    color: #FF5050;
     text-decoration: underline;
 }
 
@@ -23,28 +23,28 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .btn-link:hover, .btn-link:focus {
-    color: #5bc7ef;
+    color: #3448C5;
 }
 
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-    color: #d44e12;
+    color: #D92B2B;
 }
 
 .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-    color: #F96726;
+    color: #FF5050;
 }
 
 .pagination > li > a, .pagination > li > span {
-    color: #F96726;
+    color: #FF5050;
 }
 
 .pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
-    color: #d44e12;
+    color: #FFF;
 }
 
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-    background-color: #F96726;
-    border-color: #F96726;
+    background-color: #FF5050;
+    border-color: #FF5050;
 }
 
 /* Site menu */
@@ -53,17 +53,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin: 0;
     border-radius: 0;
     border-bottom: 1px solid #ccc;
-    background-color: #5bc7ef;
+    background-color: #FFF;
     background-image: none;
 }
 
 #site-nav.navbar-default .navbar-brand,
 #site-nav.navbar-default .navbar-nav > li > a {
-    color: #000;
+    color: #3448C5;
 }
 
 .navbar-brand {
-    background-image: url("https://res.cloudinary.com/cloudinary/image/upload/c_scale,w_30/v1/logo/for_blue_bg/cloudinary_icon_for_blue_bg.png");
+    background-image: url("https://res.cloudinary.com/cloudinary-marketing/image/upload/c_scale,w_30/creative_source/Logo/Cloud%20Glyph/cloudinary_cloud_glyph_regular.png");
     background-repeat: no-repeat;
     background-position: left center;
     padding-left: 40px;
@@ -71,7 +71,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 #site-nav.navbar-default .navbar-nav > li > a:hover {
     text-decoration: underline;
-    color: #F96726;
+    color: #FF5050;
 }
 
 #navbar-elements {
@@ -92,12 +92,24 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     padding-left: 35px;
 }
 
+.breadcrumb {
+    background-color: #3448C5;
+}
+
+.breadcrumb > li > a {
+    color: #FFF;
+}
+
+.breadcrumb > li {
+    color: #FFF;
+}
+
 .namespace-breadcrumbs .breadcrumb > li + li:before {
     content: "";
 }
 
 .namespace-breadcrumbs .breadcrumb > .backslash {
-    color: #ccc;
+    color: #fff;
 }
 
 /* Site columns */
@@ -193,7 +205,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #api-tree li.active > .hd {
-    background-color: #5bc7ef;
+    background-color: #3448C5;
 }
 
 #api-tree li.active > .hd a {
@@ -295,7 +307,10 @@ abbr[title], abbr[data-original-title], abbr {
 
 a abbr {
     cursor: pointer;
+    color: #3448C5;
 }
+
+
 
 .method-description table, .description table {
     border: solid 1px #ccc;
@@ -310,7 +325,7 @@ a abbr {
 
 .method-description tbody tr:nth-child(even),
 .description tbody tr:nth-child(even) {
-    background: #F4F4F4;
+    background: #F1F2F9;
 }
 
 .method-description tbody tr:nth-child(odd),
@@ -380,6 +395,7 @@ a abbr {
     padding: 3px 8px;
     margin: 0 5px 5px 0;
     border: 1px solid #ddd;
+    color: #3448C5;
     background-color: #f9f9f9;
     display: inline-block;
     border-radius: 4px;
