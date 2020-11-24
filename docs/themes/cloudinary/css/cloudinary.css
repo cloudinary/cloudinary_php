@@ -1,11 +1,12 @@
 html, body, #content {
     height: 100%;
-    font-family: "sofia-pro", Helvetica, Arial, sans-serif;
+    font-family: "Inter", Helvetica, Arial, sans-serif;
+    color: #0C163B;
 }
 
 /* Cloudinary overrides of bootstrap styles*/
 a {
-    color: #3448C5;
+    color: #FF5050;
     text-decoration: none;
 }
 
@@ -14,12 +15,19 @@ a:hover, a:focus {
     text-decoration: underline;
 }
 
+a:visited {
+    color: #D92B2B;
+    text-decoration: none;
+}
+
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     line-height: 1.5;
+    font-family: "sofia-pro", Helvetica, Arial, sans-serif;
+    color: #0C163B;
 }
 
 .form-control {
-    border: 1px solid #000;
+    border: 1px solid #3448C5;
 }
 
 .btn-link:hover, .btn-link:focus {
@@ -57,16 +65,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     background-image: none;
 }
 
-#site-nav.navbar-default .navbar-brand,
 #site-nav.navbar-default .navbar-nav > li > a {
+    color: #0c163b;
+}
+
+#site-nav.navbar-default .navbar-brand {
     color: #3448C5;
 }
 
 .navbar-brand {
-    background-image: url("https://res.cloudinary.com/cloudinary-marketing/image/upload/c_scale,w_30/creative_source/Logo/Cloud%20Glyph/cloudinary_cloud_glyph_regular.png");
+    background-image: url("https://cloudinary-res.cloudinary.com/image/upload/docsite/brand-assets/cloudinary_cloud_glyph_4ref.svg");
     background-repeat: no-repeat;
     background-position: left center;
-    padding-left: 40px;
+    padding-left: 60px;
 }
 
 #site-nav.navbar-default .navbar-nav > li > a:hover {
@@ -201,7 +212,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #api-tree li .hd:hover {
-    background-color: #d1e4ed;
+    background-color: #b6d2ff;
 }
 
 #api-tree li.active > .hd {
@@ -230,8 +241,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 /* Control panel, search form, version drop-down */
 
 #control-panel {
-    background: #000;
-    border-bottom: 1px solid #000;
+    background: #F1F2F9;
+    border-bottom: 1px solid #F1F2F9;
     padding: 4px;
 }
 
@@ -307,7 +318,7 @@ abbr[title], abbr[data-original-title], abbr {
 
 a abbr {
     cursor: pointer;
-    color: #3448C5;
+    color: #FF5050;
 }
 
 
@@ -354,7 +365,7 @@ a abbr {
 .description {
     margin: 10px 0;
     padding: 10px;
-    background-color: #efefef;
+    background-color: #F1F2F9;
 }
 
 .description p {
