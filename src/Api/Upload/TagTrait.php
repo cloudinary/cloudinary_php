@@ -177,7 +177,7 @@ trait TagTrait
     {
         $params = [
             'tag'        => $tag,
-            'public_ids' => ApiUtils::serializeSimpleApiParam($publicIds),
+            'public_ids' => $publicIds,
             'type'       => ArrayUtils::get($options, 'type'),
             'command'    => $command,
         ];
