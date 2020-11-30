@@ -1,3 +1,28 @@
+2.0.0-beta8 / 2020-11-30
+==================
+
+New functionality and features
+------------------------------
+
+  * Add method `UploadApi::downloadFolder`
+  * Add support for `cinemagraph_analysis` in `UploadApi` and `AdminApi`
+  * Add support for `accessibility_analysis` 
+  * Add `fileReference` user value to expressions
+  * Add missing `derived_next_cursor` parameter
+  * Add support for `teapot 2.x`
+
+Other Changes
+-------------
+
+  * Reference docs branding changes
+  * Fix `removeAllTags` with multiple public ids
+  * Fix bugs in responsive breakpoints formatting in UploadAPI
+  * Fix installation command in README
+  * Fix `cutter` description
+  * Fix test for `eval` upload parameter
+  * Move files from `unit` and `integration` directories to `Unit` and `Integration`
+  * Introduce constants for external add-on names in tests
+
 
 2.0.0-beta7 / 2020-09-21
 ========================
