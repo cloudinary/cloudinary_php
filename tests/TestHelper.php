@@ -15,10 +15,13 @@ namespace Cloudinary {
     define('TEST_EVAL_STR', 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
         'upload_options["context"] = "width=" + resource_info["width"]');
     define('TEST_TAG', 'cloudinary_php');
+    define('TEST_METADATA_FIELD','metadata_test_field');
     define('UNIQUE_TEST_TAG', TEST_TAG . "_" . SUFFIX);
     define('UNIQUE_TEST_ID', UNIQUE_TEST_TAG);
     define('UNIQUE_TEST_SPRITE_TAG', UNIQUE_TEST_TAG . "_sprite");
     define('UNIQUE_TEST_FOLDER', UNIQUE_TEST_TAG . "_folder");
+    define('UNIQUE_TEST_METADATA_FIELD', TEST_METADATA_FIELD . "_" . SUFFIX);
+    define('UNIQUE_TEST_METADATA_FIELD_DEFAULT_VALUE', TEST_METADATA_FIELD . "_" . SUFFIX . "_default_value");
 
     /**
      * Class Curl

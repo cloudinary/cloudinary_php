@@ -29,6 +29,8 @@ namespace Cloudinary {
         protected static $api_test_transformation_2 = "api_test_transformation2";
         protected static $api_test_transformation_3 = "api_test_transformation3";
 
+        protected static $api_test_metadata_field = UNIQUE_TEST_METADATA_FIELD;
+
         protected static $crop_transformation = array('crop' => 'crop', 'width' => 100);
         protected static $crop_transformation_str = 'c_crop,w_100';
         protected static $encoded_crop_transformation_str = 'c_crop%2Cw_100';
@@ -56,6 +58,8 @@ namespace Cloudinary {
 
             Curl::$instance = new Curl();
 
+            $api = new Cloudinary\Api();
+
             self::$api_test_tag = UNIQUE_TEST_TAG;
 
             self::$api_test = API_TEST_PREFIX . SUFFIX;
@@ -68,6 +72,7 @@ namespace Cloudinary {
             self::$api_test_transformation_2 = API_TEST_PREFIX . "_transformation2" . SUFFIX;
             self::$api_test_transformation_3 = API_TEST_PREFIX . "_transformation3" . SUFFIX;
 
+            self::create_metadata_field($api);
             self::upload_sample_resources();
 
             self::$transformations = array(self::$crop_transformation, self::$scale_transformation);
@@ -99,6 +104,7 @@ namespace Cloudinary {
             self::delete_resources($api);
             self::delete_transformations($api);
             self::delete_streaming_profiles($api);
+            self::delete_metadata_field($api);
         }
 
         /**
@@ -155,6 +161,44 @@ namespace Cloudinary {
                 }
             }
         }
+
+        /**
+         * Delete the metadata field created for test purposes
+         *
+         * @param \Cloudinary\Api $api
+         */
+        protected static function delete_metadata_field($api)
+        {
+            $metadata_field = self::$api_test_metadata_field;
+            try {
+                $api->delete_metadata_field($metadata_field);
+            } catch (Exception $e) {
+            }
+
+        }
+
+        /**
+         * Create a single mandatory metadata field with a default value.
+         * It should run before upload_sample_resources() and is required for some metadata tests.
+         *
+         * @param \Cloudinary\Api $api
+         */
+        protected static function create_metadata_field($api)
+        {
+            try {
+                $api->add_metadata_field(
+                    array(
+                        "external_id" => self::$api_test_metadata_field,
+                        "label" => self::$api_test_metadata_field,
+                        "type" => "string",
+                        "mandatory" => "true",
+                        "default_value" => UNIQUE_TEST_METADATA_FIELD_DEFAULT_VALUE
+                    )
+                );
+            } catch (Exception $e) {
+            }
+        }
+
         /**
          * Upload sample resources. These resources need to be present for some of the tests to work.
          */
