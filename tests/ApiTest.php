@@ -173,8 +173,8 @@ namespace Cloudinary {
             try {
                 $api->delete_metadata_field($metadata_field);
             } catch (Exception $e) {
+                error_log("Failed to delete the metadata field. Reason for failure: " . $e->getMessage());
             }
-
         }
 
         /**
@@ -182,21 +182,20 @@ namespace Cloudinary {
          * It should run before upload_sample_resources() and is required for some metadata tests.
          *
          * @param \Cloudinary\Api $api
+         *
+         * @throws Api\GeneralError
          */
         protected static function create_metadata_field($api)
         {
-            try {
-                $api->add_metadata_field(
-                    array(
-                        "external_id" => self::$api_test_metadata_field,
-                        "label" => self::$api_test_metadata_field,
-                        "type" => "string",
-                        "mandatory" => "true",
-                        "default_value" => UNIQUE_TEST_METADATA_FIELD_DEFAULT_VALUE
-                    )
-                );
-            } catch (Exception $e) {
-            }
+            $api->add_metadata_field(
+                array(
+                    "external_id" => self::$api_test_metadata_field,
+                    "label" => self::$api_test_metadata_field,
+                    "type" => "string",
+                    "mandatory" => "true",
+                    "default_value" => UNIQUE_TEST_METADATA_FIELD_DEFAULT_VALUE
+                )
+            );
         }
 
         /**
