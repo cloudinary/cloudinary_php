@@ -129,6 +129,7 @@ namespace Cloudinary {
                     "moderations",
                     "direction",
                     "start_at",
+                    "metadata",
                 )
             );
 
@@ -173,7 +174,7 @@ namespace Cloudinary {
             $uri = array("resources", $resource_type, "tags", $tag);
             $params = $this->only(
                 $options,
-                array("next_cursor", "max_results", "tags", "context", "moderations", "direction")
+                array("next_cursor", "max_results", "tags", "context", "moderations", "direction", "metadata")
             );
 
             return $this->call_api("get", $uri, $params, $options);
@@ -220,7 +221,7 @@ namespace Cloudinary {
             $uri = array("resources", $resource_type, "context");
             $params = $this->only(
                 $options,
-                array("next_cursor", "max_results", "tags", "context", "moderations", "direction")
+                array("next_cursor", "max_results", "tags", "context", "moderations", "direction", "metadata")
             );
             $params["key"] = $key;
             $params["value"] = $value;
@@ -266,7 +267,7 @@ namespace Cloudinary {
             $uri = array("resources", $resource_type, "moderations", $kind, $status);
             $params = $this->only(
                 $options,
-                array("next_cursor", "max_results", "tags", "context", "moderations", "direction")
+                array("next_cursor", "max_results", "tags", "context", "moderations", "direction", "metadata")
             );
 
             return $this->call_api("get", $uri, $params, $options);

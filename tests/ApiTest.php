@@ -29,6 +29,8 @@ namespace Cloudinary {
         protected static $api_test_transformation_2 = "api_test_transformation2";
         protected static $api_test_transformation_3 = "api_test_transformation3";
 
+        protected static $api_test_metadata_field = UNIQUE_TEST_METADATA_FIELD;
+
         protected static $crop_transformation = array('crop' => 'crop', 'width' => 100);
         protected static $crop_transformation_str = 'c_crop,w_100';
         protected static $encoded_crop_transformation_str = 'c_crop%2Cw_100';
@@ -56,18 +58,21 @@ namespace Cloudinary {
 
             Curl::$instance = new Curl();
 
+            $api = new Cloudinary\Api();
+
             self::$api_test_tag = UNIQUE_TEST_TAG;
 
-            self::$api_test = "api_test" . SUFFIX;
-            self::$api_test_2 = "api_test2" . SUFFIX;
-            self::$api_test_3 = "api_test,3" . SUFFIX;
-            self::$api_test_4 = "api_test4" . SUFFIX;
-            self::$api_test_5 = "api_test5" . SUFFIX;
+            self::$api_test = API_TEST_PREFIX . SUFFIX;
+            self::$api_test_2 = API_TEST_PREFIX . "2" . SUFFIX;
+            self::$api_test_3 = API_TEST_PREFIX . ",3" . SUFFIX;
+            self::$api_test_4 = API_TEST_PREFIX . "4" . SUFFIX;
+            self::$api_test_5 = API_TEST_PREFIX . "5" . SUFFIX;
 
-            self::$api_test_transformation = "api_test_transformation" . SUFFIX;
-            self::$api_test_transformation_2 = "api_test_transformation2" . SUFFIX;
-            self::$api_test_transformation_3 = "api_test_transformation3" . SUFFIX;
+            self::$api_test_transformation = API_TEST_PREFIX . "_transformation" . SUFFIX;
+            self::$api_test_transformation_2 = API_TEST_PREFIX . "_transformation2" . SUFFIX;
+            self::$api_test_transformation_3 = API_TEST_PREFIX . "_transformation3" . SUFFIX;
 
+            self::create_metadata_field($api);
             self::upload_sample_resources();
 
             self::$transformations = array(self::$crop_transformation, self::$scale_transformation);
@@ -99,6 +104,7 @@ namespace Cloudinary {
             self::delete_resources($api);
             self::delete_transformations($api);
             self::delete_streaming_profiles($api);
+            self::delete_metadata_field($api);
         }
 
         /**
@@ -155,6 +161,43 @@ namespace Cloudinary {
                 }
             }
         }
+
+        /**
+         * Delete the metadata field created for test purposes
+         *
+         * @param \Cloudinary\Api $api
+         */
+        protected static function delete_metadata_field($api)
+        {
+            $metadata_field = self::$api_test_metadata_field;
+            try {
+                $api->delete_metadata_field($metadata_field);
+            } catch (Exception $e) {
+                error_log("Failed to delete the metadata field. Reason for failure: " . $e->getMessage());
+            }
+        }
+
+        /**
+         * Create a single mandatory metadata field with a default value.
+         * It should run before upload_sample_resources() and is required for some metadata tests.
+         *
+         * @param \Cloudinary\Api $api
+         *
+         * @throws Api\GeneralError
+         */
+        protected static function create_metadata_field($api)
+        {
+            $api->add_metadata_field(
+                array(
+                    "external_id" => self::$api_test_metadata_field,
+                    "label" => self::$api_test_metadata_field,
+                    "type" => "string",
+                    "mandatory" => "true",
+                    "default_value" => UNIQUE_TEST_METADATA_FIELD_DEFAULT_VALUE
+                )
+            );
+        }
+
         /**
          * Upload sample resources. These resources need to be present for some of the tests to work.
          */
@@ -165,7 +208,7 @@ namespace Cloudinary {
                 array(
                     "public_id" => self::$api_test,
                     "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
-                    "context" => "key=value",
+                    "context" => TEST_CONTEXT,
                     "eager" => array("transformation" => self::$crop_transformation),
                 )
             );
@@ -174,7 +217,7 @@ namespace Cloudinary {
                 array(
                     "public_id" => self::$api_test_2,
                     "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
-                    "context" => "key=value",
+                    "context" => TEST_CONTEXT,
                     "eager" => array("transformation" => self::$scale_transformation),
                 )
             );
@@ -1475,6 +1518,86 @@ namespace Cloudinary {
             $this->api->resource(self::$api_test, ['accessibility_analysis' => true]);
 
             assertParam($this, 'accessibility_analysis', 1);
+        }
+
+        /**
+         * Should allow the user to pass metadata in the resources API.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_structured_metadata_in_resources()
+        {
+            $result = $this->api->resources(["prefix" => API_TEST_PREFIX, "type" => "upload", "metadata" => true]);
+
+            foreach($result['resources'] as $resource) {
+                $this->assertArrayHasKey('metadata', $resource);
+            }
+
+            $result = $this->api->resources(["prefix" => API_TEST_PREFIX, "type" => "upload", "metadata" => false]);
+
+            foreach($result['resources'] as $resource) {
+                $this->assertArrayNotHasKey('metadata', $resource);
+            }
+        }
+
+        /**
+         * Should allow the user to pass metadata in the resources_by_tag API.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_structured_metadata_in_resources_by_tag()
+        {
+            $result = $this->api->resources_by_tag(self::$api_test_tag, ["metadata" => true]);
+
+            foreach($result['resources'] as $resource){
+                $this->assertArrayHasKey('metadata', $resource);
+            }
+
+            $result = $this->api->resources_by_tag(self::$api_test_tag, ["metadata" => false]);
+
+            foreach($result['resources'] as $resource){
+                $this->assertArrayNotHasKey('metadata', $resource);
+            }
+        }
+
+        /**
+         * Should allow the user to pass metadata in the resources_by_context API.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_structured_metadata_in_resources_by_context()
+        {
+            $result = $this->api->resources_by_context(TEST_CONTEXT, ["metadata" => true]);
+
+            foreach($result['resources'] as $resource){
+                $this->assertArrayHasKey('metadata', $resource);
+            }
+
+            $result = $this->api->resources_by_context(TEST_CONTEXT, ["metadata" => false]);
+
+            foreach($result['resources'] as $resource){
+                $this->assertArrayNotHasKey('metadata', $resource);
+            }
+        }
+
+        /**
+         * Should allow the user to pass metadata in the resources_by_moderation API.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_structured_metadata_in_resources_by_moderation()
+        {
+            $result = $this->api->resources_by_moderation("manual", "approved", ["metadata" => true]);
+
+            foreach($result['resources'] as $resource){
+                $this->assertArrayHasKey('metadata', $resource);
+            }
+
+            $result = $this->api->resources_by_moderation("manual", "approved", ["metadata" => false]);
+
+            foreach($result['resources'] as $resource){
+                $this->assertArrayNotHasKey('metadata', $resource);
+            }
         }
 
         /**

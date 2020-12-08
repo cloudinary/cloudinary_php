@@ -8,15 +8,20 @@ namespace Cloudinary {
     const TEST_IMG = "tests/logo.png";
     const TEST_IMG_WIDTH = 241;
     const TEST_ICO = "tests/favicon.ico";
-    const TEST_PRESET_NAME = 'test_preset';
+    const TEST_PRESET_NAME = "test_preset";
+    const TEST_CONTEXT = "key=value";
+    const API_TEST_PREFIX = "api_test";
     define("SUFFIX", getenv("TRAVIS_JOB_ID") ?: rand(11111, 99999));
     define('TEST_EVAL_STR', 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
         'upload_options["context"] = "width=" + resource_info["width"]');
     define('TEST_TAG', 'cloudinary_php');
+    define('TEST_METADATA_FIELD','metadata_test_field');
     define('UNIQUE_TEST_TAG', TEST_TAG . "_" . SUFFIX);
     define('UNIQUE_TEST_ID', UNIQUE_TEST_TAG);
     define('UNIQUE_TEST_SPRITE_TAG', UNIQUE_TEST_TAG . "_sprite");
     define('UNIQUE_TEST_FOLDER', UNIQUE_TEST_TAG . "_folder");
+    define('UNIQUE_TEST_METADATA_FIELD', TEST_METADATA_FIELD . "_" . SUFFIX);
+    define('UNIQUE_TEST_METADATA_FIELD_DEFAULT_VALUE', TEST_METADATA_FIELD . "_" . SUFFIX . "_default_value");
 
     /**
      * Class Curl
