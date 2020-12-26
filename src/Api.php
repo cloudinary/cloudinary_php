@@ -1565,7 +1565,7 @@ namespace Cloudinary {
             $prefix = \Cloudinary::option_get(
                 $options,
                 "upload_prefix",
-                \Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com")
+                \Cloudinary::config_get("upload_prefix", \Cloudinary::DEFAULT_UPLOAD_PREFIX)
             );
             $cloud_name = \Cloudinary::option_get($options, "cloud_name", \Cloudinary::config_get("cloud_name"));
             if (!$cloud_name) {
