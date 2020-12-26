@@ -14,6 +14,8 @@ class Cloudinary
     const SHORT_URL_SIGNATURE_LENGTH = 8;
     const LONG_URL_SIGNATURE_LENGTH = 32;
 
+    const DEFAULT_UPLOAD_PREFIX = 'https://api.cloudinary.com';
+
     const VERSION = "1.19.0";
 
     /**
@@ -1437,7 +1439,7 @@ class Cloudinary
         $cloudinary = Cloudinary::option_get(
             $options,
             "upload_prefix",
-            Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com")
+            Cloudinary::config_get("upload_prefix", self::DEFAULT_UPLOAD_PREFIX)
         );
         $cloud_name = Cloudinary::option_get($options, "cloud_name", Cloudinary::config_get("cloud_name"));
         if (!$cloud_name) {

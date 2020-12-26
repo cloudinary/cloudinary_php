@@ -87,7 +87,7 @@ namespace Cloudinary {
             if (!Cloudinary::config_get("api_secret")) {
                 $this->markTestSkipped('Please setup environment for Upload test to run');
             }
-            $this->url_prefix = Cloudinary::config_get("upload_prefix", "https://api.cloudinary.com");
+            $this->url_prefix = Cloudinary::config_get("upload_prefix", Cloudinary::DEFAULT_UPLOAD_PREFIX);
         }
 
         protected function tearDown()
