@@ -25,6 +25,14 @@ namespace Cloudinary {
         protected static $api_test_4;
         protected static $api_test_5;
 
+        private static $backup_1_public_id;
+        private static $backup_2_public_id;
+        private static $backup_3_public_id;
+        private static $backup_1_resource_first;
+        private static $backup_1_resource_second;
+        private static $backup_2_resource;
+        private static $backup_3_resource;
+
         protected static $api_test_transformation = "api_test_transformation";
         protected static $api_test_transformation_2 = "api_test_transformation2";
         protected static $api_test_transformation_3 = "api_test_transformation3";
@@ -71,6 +79,10 @@ namespace Cloudinary {
             self::$api_test_transformation = API_TEST_PREFIX . "_transformation" . SUFFIX;
             self::$api_test_transformation_2 = API_TEST_PREFIX . "_transformation2" . SUFFIX;
             self::$api_test_transformation_3 = API_TEST_PREFIX . "_transformation3" . SUFFIX;
+
+            self::$backup_1_public_id = API_TEST_PREFIX . "_resources_backup_public_id_1_" . SUFFIX;
+            self::$backup_2_public_id = API_TEST_PREFIX . "_resources_backup_public_id_2_" . SUFFIX;
+            self::$backup_3_public_id = API_TEST_PREFIX . "_resources_backup_public_id_3_" . SUFFIX;
 
             self::create_metadata_field($api);
             self::upload_sample_resources();
@@ -219,6 +231,40 @@ namespace Cloudinary {
                     "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
                     "context" => TEST_CONTEXT,
                     "eager" => array("transformation" => self::$scale_transformation),
+                )
+            );
+            self::$backup_1_resource_first = Uploader::upload(
+                TEST_IMG,
+                array(
+                    "public_id" => self::$backup_1_public_id,
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
+                    "backup" => true
+                )
+            );
+            self::$backup_1_resource_second = Uploader::upload(
+                TEST_IMG,
+                array(
+                    "public_id" => self::$backup_1_public_id,
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
+                    "backup" => true,
+                    "transformation" => array('angle' => 0),
+                )
+            );
+            self::$backup_2_resource = Uploader::upload(
+                TEST_IMG,
+                array(
+                    "public_id" => self::$backup_2_public_id,
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
+                    "backup" => true,
+                )
+            );
+            self::$backup_3_resource = Uploader::upload(
+                TEST_IMG,
+                array(
+                    "public_id" => self::$backup_3_public_id,
+                    "tags" => array(TEST_TAG, UNIQUE_TEST_TAG),
+                    "backup" => true,
+                    "transformation" => array('angle' => 0),
                 )
             );
         }
@@ -427,6 +473,16 @@ namespace Cloudinary {
             $resource = $this->api->resource(self::$api_test, ["quality_analysis" => true]);
             $this->assertArrayHasKey("quality_analysis", $resource);
             $this->assertInternalType("double", $resource["quality_analysis"]["focus"]);
+        }
+
+        /**
+         * Gets resource backups
+         */
+        public function test_resource_backup()
+        {
+            $resource = $this->api->resource(self::$api_test, ['versions' => true]);
+
+            $this->assertGreaterThanOrEqual(1, $resource['versions']);
         }
 
         /**
@@ -1239,7 +1295,12 @@ namespace Cloudinary {
             $this->api->restore(array("api_test_restore"));
             assertPost($this);
             assertUrl($this, "/resources/image/upload/restore");
-            assertParam($this, "public_ids[0]", "api_test_restore");
+            assertEncodedRequestFields(
+                $this,
+                [
+                    'public_ids' => ['api_test_restore']
+                ]
+            );
         }
 
         /**
@@ -1589,15 +1650,89 @@ namespace Cloudinary {
         {
             $result = $this->api->resources_by_moderation("manual", "approved", ["metadata" => true]);
 
-            foreach($result['resources'] as $resource){
+            foreach ($result['resources'] as $resource) {
                 $this->assertArrayHasKey('metadata', $resource);
             }
 
             $result = $this->api->resources_by_moderation("manual", "approved", ["metadata" => false]);
 
-            foreach($result['resources'] as $resource){
+            foreach ($result['resources'] as $resource) {
                 $this->assertArrayNotHasKey('metadata', $resource);
             }
+        }
+
+        /**
+         * Restore different versions of a deleted asset.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_restore_deleted_resource_different_versions()
+        {
+            $delete_result = $this->api->delete_resources([self::$backup_1_public_id]);
+
+            self::assertEquals('deleted', $delete_result['deleted'][self::$backup_1_public_id]);
+            self::assertEquals('deleted', $delete_result['deleted'][self::$backup_1_public_id]);
+            self::assertNotEquals(self::$backup_1_resource_first['bytes'], self::$backup_1_resource_second['bytes']);
+
+            $resource = $this->api->resource(self::$backup_1_public_id, ['versions' => true]);
+
+            $restore_first_result = $this->api->restore(
+                [
+                    self::$backup_1_public_id
+                ],
+                [
+                    'versions' => [$resource['versions'][0]['version_id']]
+                ]
+            );
+            $restore_second_result = $this->api->restore(
+                [
+                    self::$backup_1_public_id
+                ],
+                [
+                    'versions' => [$resource['versions'][1]['version_id']]
+                ]
+            );
+
+            $this->assertEquals(
+                $restore_first_result[self::$backup_1_public_id]['bytes'],
+                self::$backup_1_resource_first['bytes']
+            );
+            $this->assertEquals(
+                $restore_second_result[self::$backup_1_public_id]['bytes'],
+                self::$backup_1_resource_second['bytes']
+            );
+        }
+
+        /**
+         * Restore two different deleted assets.
+         *
+         * @throws Api\GeneralError
+         */
+        public function test_restore_different_deleted_resources()
+        {
+            $delete_result = $this->api->delete_resources([self::$backup_2_public_id, self::$backup_3_public_id]);
+
+            self::assertEquals('deleted', $delete_result['deleted'][self::$backup_2_public_id]);
+            self::assertEquals('deleted', $delete_result['deleted'][self::$backup_3_public_id]);
+
+            $second_resource = $this->api->resource(self::$backup_2_public_id, ['versions' => true]);
+            $third_resource = $this->api->resource(self::$backup_3_public_id, ['versions' => true]);
+
+            $restoreResult = $this->api->restore(
+                [
+                    self::$backup_2_public_id,
+                    self::$backup_3_public_id
+                ],
+                [
+                    'versions' => [
+                        $second_resource['versions'][0]['version_id'],
+                        $third_resource['versions'][0]['version_id']
+                    ]
+                ]
+            );
+
+            $this->assertEquals($restoreResult[self::$backup_2_public_id]['bytes'], self::$backup_2_resource['bytes']);
+            $this->assertEquals($restoreResult[self::$backup_3_public_id]['bytes'], self::$backup_3_resource['bytes']);
         }
 
         /**

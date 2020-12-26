@@ -1568,6 +1568,26 @@ class Cloudinary
     }
 
     /**
+     * The returned url allows downloading the backedup asset based on the the asset ID and the version ID.
+     *
+     * @param string $asset_id   The asset ID of the asset.
+     * @param string $version_id The version ID of the asset.
+     *
+     * @return string The signed URL for downloading backup version of the asset.
+     */
+    public static function download_backedup_asset($asset_id, $version_id)
+    {
+        $options['asset_id']      = $asset_id;
+        $options['version_id']    = $version_id;
+        $options['resource_type'] = 'download_backup';
+
+        $params = self::build_archive_params($options);
+        $params = self::sign_request($params, $options);
+
+        return self::cloudinary_api_url(null, $options) . '?' . http_build_query($params);
+    }
+
+    /**
      *  Generate an authorization token.
      *  Options:
      *      string key - the secret key required to sign the token
@@ -1602,6 +1622,7 @@ class Cloudinary
     {
         $params = array(
             "allow_missing" => \Cloudinary::option_get($options, "allow_missing"),
+            "asset_id" => \Cloudinary::option_get($options, "asset_id"),
             "async" => \Cloudinary::option_get($options, "async"),
             "expires_at" => \Cloudinary::option_get($options, "expires_at"),
             "flatten_folders" => \Cloudinary::option_get($options, "flatten_folders"),
@@ -1624,6 +1645,7 @@ class Cloudinary
             "transformations" => \Cloudinary::build_eager(\Cloudinary::option_get($options, "transformations")),
             "type" => \Cloudinary::option_get($options, "type"),
             "use_original_filename" => \Cloudinary::option_get($options, "use_original_filename"),
+            "version_id" => \Cloudinary::option_get($options, "version_id"),
         );
         array_walk(
             $params,
