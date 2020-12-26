@@ -111,6 +111,20 @@ namespace Cloudinary {
             $this->assertContains('use_original_filename', $download_folder_url);
         }
 
+        /**
+         * Generate a url with asset and version id
+         */
+        public function test_download_backedup_asset()
+        {
+            $url = \Cloudinary::download_backedup_asset(
+                'b71b23d9c89a81a254b88a91a9dad8cd',
+                '0e493356d8a40b856c4863c026891a4e'
+            );
+
+            self::assertContains('asset_id', $url);
+            self::assertContains('version_id', $url);
+        }
+
         public function test_create_archive_multiple_resource_types()
         {
             Curl::mockUpload($this);

@@ -367,7 +367,8 @@ namespace Cloudinary {
                     "coordinates",
                     "max_results",
                     "derived_next_cursor",
-                    "accessibility_analysis"
+                    "accessibility_analysis",
+                    "versions",
                 )
             );
 
@@ -398,6 +399,7 @@ namespace Cloudinary {
             $type = \Cloudinary::option_get($options, "type", "upload");
             $uri = array("resources", $resource_type, $type, "restore");
             $params = array_merge($options, array("public_ids" => $public_ids));
+            $options['content_type'] = 'application/json';
 
             return $this->call_api("post", $uri, $params, $options);
         }
