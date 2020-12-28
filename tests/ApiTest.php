@@ -870,7 +870,7 @@ namespace Cloudinary {
         {
             $result = $this->api->usage(array('date' => date('d-m-Y', strtotime("-1 days"))));
             self::assertUsageResult($result);
-            //verify the the structure of the response is that of a single day.
+            //verify the structure of the response is that of a single day.
             $this->assertArrayNotHasKey('limit', $result['bandwidth']);
             $this->assertArrayNotHasKey('used_percent', $result['bandwidth']);
         }
