@@ -91,7 +91,7 @@ class ExpressionUtils
         }
 
         if (empty(self::$IF_REPLACE_RE)) {
-            self::$IF_REPLACE_RE = '/((\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*|\^)(?=[ _])|(?<![\$\:])(' .
+            self::$IF_REPLACE_RE = '/((\$_*[^_]+)|(\|\||>=|<=|&&|!=|>|=|<|\/|\-|\+|\*|\^)(?=[ _])|(?<![\$\:])(' .
                                    implode('|', array_keys(self::$PREDEFINED_VARIABLES)) .
                                    '))/';
         }

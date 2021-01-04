@@ -31,6 +31,7 @@ use Cloudinary\Transformation\Flag;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\FocusOn;
 use Cloudinary\Transformation\Format;
+use Cloudinary\Transformation\GenericResize;
 use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\ImageTransformation;
 use Cloudinary\Transformation\Overlay;
@@ -581,5 +582,27 @@ final class TransformationTest extends UnitTestCase
                 ->resize(Resize::crop()->width(300)->height(250)->x(30))
                 ->roundCorners(RoundCorners::byRadius(60))
         );
+    }
+
+    /**
+     * Tests that user variable names containing predefined names are not affected by normalization
+     */
+    public function testUserVariableNamesContainingPredefinedNamesAreNotAffected()
+    {
+        $transformation = (new Transformation())
+            ->addVariable('$mywidth', 100)
+            ->addVariable('$aheight', 300)
+            ->resize(
+                GenericResize::generic(
+                    '',
+                    '3 + $mywidth * 3 + 4 / 2 * initialWidth * $mywidth',
+                    '3 * initialHeight + $aheight'
+                )
+            );
+
+         self::assertEquals(
+             '$mywidth_100/$aheight_300/h_3_mul_ih_add_$aheight,w_3_add_$mywidth_mul_3_add_4_div_2_mul_iw_mul_$mywidth',
+             (string)$transformation
+         );
     }
 }
