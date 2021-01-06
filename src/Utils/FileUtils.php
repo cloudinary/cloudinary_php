@@ -131,6 +131,10 @@ class FileUtils
      */
     public static function safeFileOpen($filename, $mode, $useIncludePath = null)
     {
+        if (empty($filename)) {
+            throw new GeneralError('Filename cannot be empty');
+        }
+
         $fp = @fopen($filename, $mode, $useIncludePath);
 
         if (! $fp) {
