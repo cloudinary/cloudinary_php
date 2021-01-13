@@ -11,13 +11,14 @@
 namespace Cloudinary\Test\Helpers;
 
 use Cloudinary\Api\Upload\UploadApi;
-use GuzzleHttp\Handler\MockHandler;
 
 /**
  * Class MockUploadApi
  */
 class MockUploadApi extends UploadApi
 {
+    use MockApiTrait;
+
     /**
      * MockUploadApi constructor.
      *
@@ -28,15 +29,5 @@ class MockUploadApi extends UploadApi
         parent::__construct($configuration);
 
         $this->apiClient = new MockApiClient($configuration);
-    }
-
-    /**
-     * Returns mock handler.
-     *
-     * @return MockHandler
-     */
-    public function getMockHandler()
-    {
-        return $this->apiClient->mockHandler;
     }
 }
