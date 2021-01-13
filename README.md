@@ -26,7 +26,7 @@ You can install through composer with:
 
 `composer require cloudinary/cloudinary_php`
 
-Or download cloudinary_php from [here](https://github.com/cloudinary/cloudinary_php/tarball/master)
+Or download cloudinary_php from [here](https://github.com/cloudinary/cloudinary_php/tree/support/1.x)
 
 *Note: cloudinary_php require PHP 5.4*
 
@@ -65,7 +65,7 @@ Generating a 120x90 thumbnail based on automatic face detection of the Facebook 
 For more details, see our documentation for embedding [Facebook](http://cloudinary.com/documentation/facebook_profile_pictures) and [Twitter](http://cloudinary.com/documentation/twitter_profile_pictures) profile pictures. 
 
 ### Samples
-You can find our simple and ready-to-use samples projects, along with documentations in the [samples folder](https://github.com/cloudinary/cloudinary_php/tree/master/samples). Please consult with the [README file](https://github.com/cloudinary/cloudinary_php/blob/master/samples/README.md), for usage and explanations.
+You can find our simple and ready-to-use samples projects, along with documentations in the [samples folder](https://github.com/cloudinary/cloudinary_php/tree/support/1.x/samples). Please consult with the [README file](https://github.com/cloudinary/cloudinary_php/blob/support/1.x/samples/README.md), for usage and explanations.
 
 ## Usage
 
