@@ -1,3 +1,20 @@
+1.20.0 / 2021-01-13
+==================
+
+New functionality and features
+------------------------------
+
+  * Add `download_backedup_asset` helper method
+  * Add support for `metadata` parameter in `resources` Admin API
+
+Other Changes
+-------------
+
+  * Add test helper to determine whether to test an addon
+  * Update bug_report.md
+  * Extract default upload prefix to a constant
+  * Change test for `eval` upload parameter
+
 1.19.0 / 2020-10-29
 ==================
 
