@@ -11,6 +11,7 @@
 namespace Cloudinary;
 
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\Api\Exception\ValueError;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -125,14 +126,14 @@ class FileUtils
      *
      * @return resource
      *
-     * @throws GeneralError
+     * @throws GeneralError|ValueError
      *
      * @see fopen
      */
     public static function safeFileOpen($filename, $mode, $useIncludePath = null)
     {
         if (empty($filename)) {
-            throw new GeneralError('Filename cannot be empty');
+            throw new ValueError('Filename cannot be empty');
         }
 
         $fp = @fopen($filename, $mode, $useIncludePath);
@@ -152,7 +153,7 @@ class FileUtils
      *
      * @return UriInterface|StreamInterface
      *
-     * @throws GeneralError
+     * @throws GeneralError|ValueError
      *
      * @internal
      */

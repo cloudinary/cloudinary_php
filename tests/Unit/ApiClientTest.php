@@ -27,7 +27,6 @@ final class ApiClientTest extends UnitTestCase
      * Test that attempting to upload a non-existent file logs an error and throws an exception
      *
      * @throws ReflectionException
-     * @throws ApiError
      */
     public function testLoggingPostFileAsyncEmptyFilename()
     {

@@ -210,7 +210,6 @@ class ApiClient extends BaseApiClient
      * @return PromiseInterface
      *
      * @throws ApiError
-     * @throws Exception
      *
      * @internal
      */
@@ -224,7 +223,7 @@ class ApiClient extends BaseApiClient
 
         try {
             $fileHandle = FileUtils::handleFile($file);
-        } catch (GeneralError $e) {
+        } catch (ApiError $e) {
             $this->getLogger()->critical(
                 'Error while attempting to upload a file',
                 [
