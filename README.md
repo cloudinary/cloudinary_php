@@ -20,7 +20,7 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 You can install through composer with:
 
 ```
-composer require "cloudinary/cloudinary_php"
+composer require "cloudinary/cloudinary_php:^2"
 ```
 
 Or download cloudinary_php from [here](https://github.com/cloudinary/cloudinary_php)
