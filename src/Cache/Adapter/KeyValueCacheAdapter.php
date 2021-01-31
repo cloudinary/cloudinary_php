@@ -1,24 +1,38 @@
-<?php namespace Cloudinary\Cache\Adapter;
+<?php
+/**
+ * This file is part of the Cloudinary PHP package.
+ *
+ * (c) Cloudinary
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Cloudinary\Cache\Adapter;
+
+use Cloudinary\ArrayUtils;
 use Cloudinary\Cache\Storage\KeyValueStorage;
 use InvalidArgumentException;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * A cache adapter for a key-value storage type
- * @package Cloudinary\Cache\Adapter
+ *
+ * @api
  */
 class KeyValueCacheAdapter implements CacheAdapter
 {
     /**
-     * The storage interface
+     * The storage interface.
+     *
      * @var KeyValueStorage
      */
-    private $keyValueStorage = null;
+    private $keyValueStorage;
 
     /**
-     * Create a new adapter for the provided storage interface
+     * Create a new adapter for the provided storage interface.
      *
-     * @param KeyValueStorage $storage a key-value storage interface
+     * @param KeyValueStorage $storage A key-value storage interface.
      */
     public function __construct($storage)
     {
@@ -26,24 +40,25 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
-     * Set the storage interface
-     * @param object $storage KeyValueStorage or PSR-16 compliant cache
+     * Set the storage interface.
      *
-     * @return bool true if successful
+     * @param object $storage \Cloudinary\Cache\Storage\KeyValueStorage or PSR-16 compliant cache.
+     *
+     * @return bool true if successful.
      */
     private function setKeyValueStorage($storage)
     {
-        if (!is_object($storage)) {
-            throw new InvalidArgumentException("An instance of valid storage must be provided");
+        if (! is_object($storage)) {
+            throw new InvalidArgumentException('An instance of valid storage must be provided');
         }
 
         $storageClasses = class_implements($storage);
-        $validStorages = ['Cloudinary\Cache\Storage\KeyValueStorage', 'Psr\SimpleCache\CacheInterface'];
+        $validStorages  = [KeyValueStorage::class, CacheInterface::class];
 
-        $found = count(\Cloudinary::array_subset($storageClasses, $validStorages)) > 0;
+        $found = count(ArrayUtils::whitelist($storageClasses, $validStorages)) > 0;
 
-        if (!$found) {
-            throw new InvalidArgumentException("An instance of valid storage must be provided");
+        if (! $found) {
+            throw new InvalidArgumentException('An instance of valid storage must be provided');
         }
 
         $this->keyValueStorage = $storage;
@@ -52,19 +67,37 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * Gets value specified by parameters.
+     *
+     * @param string $publicId       The public ID of the resource.
+     * @param string $type           The delivery type.
+     * @param string $resourceType   The type of the resource.
+     * @param string $transformation The transformation string.
+     * @param string $format         The format of the resource.
+     *
+     * @return mixed|null value, null if not found.
      */
     public function get($publicId, $type, $resourceType, $transformation, $format)
     {
         return json_decode(
             $this->keyValueStorage->get(
                 self::generateCacheKey($publicId, $type, $resourceType, $transformation, $format)
-            )
+            ),
+            false
         );
     }
 
     /**
-     * {@inheritdoc}
+     * Sets the value specified by parameters.
+     *
+     * @param string $publicId       The public ID of the resource.
+     * @param string $type           The delivery type.
+     * @param string $resourceType   The type of the resource.
+     * @param string $transformation The transformation string.
+     * @param string $format         The format of the resource.
+     * @param mixed  $value          The value to set.
+     *
+     * @return bool true on success or false on failure.
      */
     public function set($publicId, $type, $resourceType, $transformation, $format, $value)
     {
@@ -75,7 +108,15 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * Deletes the entry specified by parameters.
+     *
+     * @param string $publicId       The public ID of the resource.
+     * @param string $type           The delivery type.
+     * @param string $resourceType   The type of the resource.
+     * @param string $transformation The transformation string.
+     * @param string $format         The format of the resource.
+     *
+     * @return bool true on success or false on failure.
      */
     public function delete($publicId, $type, $resourceType, $transformation, $format)
     {
@@ -85,7 +126,9 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * Flushes all entries from cache.
+     *
+     * @return bool true on success or false on failure.
      */
     public function flushAll()
     {
@@ -93,18 +136,18 @@ class KeyValueCacheAdapter implements CacheAdapter
     }
 
     /**
-     * Generates key-value storage key from parameters
+     * Generates key-value storage key from parameters.
      *
-     * @param string $publicId          The public ID of the resource
-     * @param string $type              The storage type
-     * @param string $resourceType      The type of the resource
-     * @param string $transformation    The transformation string
-     * @param string $format            The format of the resource
+     * @param string $publicId       The public ID of the resource.
+     * @param string $type           The delivery type.
+     * @param string $resourceType   The type of the resource.
+     * @param string $transformation The transformation string.
+     * @param string $format         The format of the resource.
      *
-     * @return string Resulting cache key
+     * @return string Resulting cache key.
      */
     public static function generateCacheKey($publicId, $type, $resourceType, $transformation, $format)
     {
-        return sha1(implode("/", array_filter([$publicId, $type, $resourceType, $transformation, $format])));
+        return sha1(ArrayUtils::implodeUrl([$publicId, $type, $resourceType, $transformation, $format]));
     }
 }

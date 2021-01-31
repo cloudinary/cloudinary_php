@@ -32,7 +32,7 @@ function usage
 
 function process_arguments
 {
-    while [ "$1" != "" ]; do
+    while [[ "$1" != "" ]]; do
         case $1 in
             -v | --version )
                 shift
@@ -85,7 +85,7 @@ function popd
 # ver_lte 1.2.4 1.2.3 && echo "yes" || echo "no" # no
 function ver_lte
 {
-    [ "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
+    [[ "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]]
 }
 
 # Extract the last entry or entry for a given version
@@ -111,7 +111,7 @@ function verify_dependencies
         return 1
     fi
 
-    if [ "${UPDATE_ONLY}" = true ]; then
+    if [[ "${UPDATE_ONLY}" = true ]]; then
       return 0;
     fi
 
@@ -139,16 +139,16 @@ function safe_replace
 
 function update_version
 {
-    if [ -z "${NEW_VERSION}" ]; then
+    if [[ -z "${NEW_VERSION}" ]]; then
         usage; return 1
     fi
 
     # Enter git root
     pushd $(git rev-parse --show-toplevel)
 
-    local current_version=`grep -oiP '(?<="version": ")([0-9.]+)(?=")' composer.json`
+    local current_version=`grep -oiP '(?<="version": ")([a-zA-Z0-9\-.]+)(?=")' composer.json`
 
-    if [ -z "${current_version}" ]; then
+    if [[ -z "${current_version}" ]]; then
         echo_err "Failed getting current version, please check directory structure and/or contact developer"
         return 1
     fi
@@ -168,12 +168,17 @@ function update_version
                  "\"version\": \"${NEW_VERSION}\""\
                   composer.json\
                   || return 1
-    safe_replace "const VERSION = \"${current_version_re}\""\
-                 "const VERSION = \"${NEW_VERSION}\""\
+    safe_replace "const VERSION = '${current_version_re}'"\
+                 "const VERSION = '${NEW_VERSION}'"\
                   src/Cloudinary.php\
                   || return 1
 
-    if [ "${UPDATE_ONLY}" = true ]; then
+    safe_replace "'version'              => '${current_version_re}'"\
+                 "'version'              => '${NEW_VERSION}'"\
+                  docs/sami_config.php\
+                  || return 1
+
+    if [[ "${UPDATE_ONLY}" = true ]]; then
       popd;
       return 0;
     fi
@@ -182,7 +187,7 @@ function update_version
 
     echo ""
     echo "# After editing CHANGELOG.md, optionally review changes and issue these commands:"
-    echo git add composer.json src/Cloudinary.php CHANGELOG.md
+    echo git add composer.json src/Cloudinary.php CHANGELOG.md docs/sami_config.php
     echo git commit -m "\"Version ${NEW_VERSION}\""
     echo sed -e "'1,/^${NEW_VERSION//./\\.}/d'" \
              -e "'/^=/d'" \
@@ -192,12 +197,12 @@ function update_version
          \| git tag -a "'${NEW_VERSION}'" --file=-
 
     # Don't run those commands on dry run
-    [ -n "${CMD_PREFIX}" ] && { popd; return 0; }
+    [[ -n "${CMD_PREFIX}" ]] && { popd; return 0; }
 
     echo ""
     read -p "Run the above commands automatically? (y/N): " confirm && [[ ${confirm} == [yY] || ${confirm} == [yY][eE][sS] ]] || { popd; return 0; }
 
-    git add composer.json src/Cloudinary.php CHANGELOG.md
+    git add composer.json src/Cloudinary.php CHANGELOG.md docs/sami_config.php
     git commit -m "Version ${NEW_VERSION}"
     sed -e "1,/^${NEW_VERSION//./\\.}/d" \
         -e "/^=/d" \
