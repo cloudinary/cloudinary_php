@@ -15,7 +15,7 @@ namespace Cloudinary\Transformation;
  *
  * @see \Cloudinary\Transformation\MiscEffectTrait::cartoonify()
  */
-class Cartoonify extends LimitedEffectParam
+class Cartoonify extends LimitedEffectQualifier
 {
     /**
      * @var array $valueOrder The order of the values.
@@ -39,7 +39,7 @@ class Cartoonify extends LimitedEffectParam
         parent::__construct(MiscEffect::CARTOONIFY, EffectRange::PERCENT, ...$args);
 
         $this->lineStrength($lineStrength);
-        $this->colorReduction($colorReduction);
+        $this->colorReductionLevel($colorReduction);
     }
 
     /**
@@ -66,7 +66,7 @@ class Cartoonify extends LimitedEffectParam
      *
      * @return Cartoonify
      */
-    public function colorReduction($colorReduction)
+    public function colorReductionLevel($colorReduction)
     {
         $this->value->setSimpleValue('color_reduction', $colorReduction);
 
@@ -80,6 +80,6 @@ class Cartoonify extends LimitedEffectParam
      */
     public function blackWhite()
     {
-        return $this->colorReduction(self::BLACK_WHITE);
+        return $this->colorReductionLevel(self::BLACK_WHITE);
     }
 }

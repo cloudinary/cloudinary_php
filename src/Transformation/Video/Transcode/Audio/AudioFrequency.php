@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Controls audio sample frequency.
@@ -21,7 +21,7 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class AudioFrequency extends BaseParameter
+class AudioFrequency extends BaseQualifier
 {
     const FREQ8000   = 8000;
     const FREQ11025  = 11025;
@@ -197,12 +197,12 @@ class AudioFrequency extends BaseParameter
     /**
      * Creates a new instance of the AudioFrequency class.
      *
-     * @param int|string $param The audio frequency.
+     * @param int|string $qualifier The audio frequency.
      *
      * @return AudioFrequency
      */
-    protected static function createAudioFrequency($param)
+    protected static function createAudioFrequency($qualifier)
     {
-        return new self($param);
+        return new self($qualifier);
     }
 }

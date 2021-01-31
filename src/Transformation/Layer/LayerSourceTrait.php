@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Trait LayerSourceTrait
@@ -20,7 +20,7 @@ trait LayerSourceTrait
     /**
      * Sets the source of the layer.
      *
-     * @param string|LayerSource|BaseLayerParam $source The source.
+     * @param string|SourceValue|BaseSourceQualifier $source The source.
      *
      * @return static
      */
@@ -32,7 +32,7 @@ trait LayerSourceTrait
     /**
      * Sets the source of the layer.
      *
-     * @param string|ParameterMultiValue|BaseLayerParam $source The source.
+     * @param string|QualifierMultiValue|BaseSourceQualifier $source The source.
      *
      * @return static
      *
@@ -41,7 +41,7 @@ trait LayerSourceTrait
      */
     public function setSource($source)
     {
-        if ($source instanceof BaseParameter) {
+        if ($source instanceof BaseQualifier) {
             $source = $source->getValue();
         }
 

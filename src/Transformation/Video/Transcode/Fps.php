@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Controls the range of acceptable FPS (Frames Per Second) to ensure that video (even when optimized) is delivered with
@@ -25,7 +25,7 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class Fps extends BaseParameter
+class Fps extends BaseQualifier
 {
     const VALUE_CLASS = MinMaxRange::class;
 
@@ -74,16 +74,16 @@ class Fps extends BaseParameter
     }
 
     /**
-     * Creates a new instance using provided parameters array.
+     * Creates a new instance using provided qualifiers array.
      *
-     * @param string|array $params The parameters.
+     * @param string|array $qualifiers The qualifiers.
      *
      * @return Fps
      */
-    public static function fromParams($params)
+    public static function fromParams($qualifiers)
     {
-        $params = ArrayUtils::build($params);
+        $qualifiers = ArrayUtils::build($qualifiers);
 
-        return (new static(...$params));
+        return (new static(...$qualifiers));
     }
 }

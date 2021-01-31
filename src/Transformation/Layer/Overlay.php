@@ -10,52 +10,43 @@
 
 namespace Cloudinary\Transformation;
 
+
 use Cloudinary\ClassUtils;
 
 /**
  * Class Overlay
+ *
+ * @package Cloudinary\Transformation
  */
-class Overlay extends BaseLayerContainer
+abstract class Overlay
 {
-    use ImageLayerTrait;
-
     /**
-     * Sets the layer.
+     * @param $source
      *
-     * @param BaseLayer|string $layer The layer.
-     *
-     * @return static
+     * @return ImageOverlay
      */
-    public function layer($layer)
+    public static function source($source)
     {
-        $this->layer = ClassUtils::verifyInstance($layer, BaseLayer::class, ImageLayer::class);
-
-        return $this;
+        return ClassUtils::verifyInstance($source, BaseLayerContainer::class, MediaOverlay::class);
     }
 
     /**
-     * Sets the position of the layer.
+     * @param $source
      *
-     * @param BasePosition $position The position.
-     *
-     * @return static
+     * @return ImageOverlay
      */
-    public function position($position = null)
+    public static function imageSource($source)
     {
-        $this->position = ClassUtils::verifyInstance($position, BasePosition::class, AbsolutePosition::class);
-
-        return $this;
+        return ClassUtils::verifyInstance($source, BaseLayerContainer::class, ImageOverlay::class);
     }
 
     /**
-     * Trim pixels according to the transparency levels of a given overlay image.
+     * @param $source
      *
-     * @return $this
+     * @return ImageOverlay
      */
-    public function cutter()
+    public static function videoSource($source)
     {
-        $this->layer->setFlag(LayerFlag::cutter());
-
-        return $this;
+        return ClassUtils::verifyInstance($source, BaseLayerContainer::class, VideoOverlay::class);
     }
 }

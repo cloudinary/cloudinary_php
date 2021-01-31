@@ -94,8 +94,8 @@ final class UploadMappingsTest extends IntegrationTestCase
             ['template' => self::TEMPLATE]
         );
 
-        $this->assertNotEmpty($result);
-        $this->assertEquals('created', $result['message']);
+        self::assertNotEmpty($result);
+        self::assertEquals('created', $result['message']);
 
         $uploadMapping = self::$adminApi->uploadMapping(self::$FOLDER_NAME_CREATE);
 
@@ -122,7 +122,7 @@ final class UploadMappingsTest extends IntegrationTestCase
             ['template' => self::TEMPLATE_2]
         );
 
-        $this->assertEquals('updated', $result['message']);
+        self::assertEquals('updated', $result['message']);
 
         $uploadMapping = self::$adminApi->uploadMapping(self::$FOLDER_NAME_UPDATE);
 
@@ -146,7 +146,7 @@ final class UploadMappingsTest extends IntegrationTestCase
 
         $result = self::$adminApi->deleteUploadMapping(self::$FOLDER_NAME_DELETE);
 
-        $this->assertEquals('deleted', $result['message']);
+        self::assertEquals('deleted', $result['message']);
 
         $this->expectException(NotFound::class);
         self::$adminApi->uploadMapping(self::$FOLDER_NAME_DELETE);

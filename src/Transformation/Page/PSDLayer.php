@@ -19,38 +19,10 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-abstract class PSDLayer
+class PsdLayer extends BasePageAction
 {
     use PageNameTrait;
     use PageNamesTrait;
     use PageIndexTrait;
     use PageRangeTrait;
-
-    /**
-     * Internal named constructor.
-     *
-     * @param $value
-     *
-     * @return PageParam
-     *
-     * @internal
-     */
-    public static function createWithPageParam(...$value)
-    {
-        return new PageParam(...$value);
-    }
-
-    /**
-     * Internal named constructor.
-     *
-     * @param $value
-     *
-     * @return PageParam
-     *
-     * @internal
-     */
-    public static function createWithNamedPageParam(...$value)
-    {
-        return static::createWithPageParam(new LayerName(...$value));
-    }
 }

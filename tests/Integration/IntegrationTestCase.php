@@ -22,6 +22,7 @@ use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\Test\CloudinaryTestCase;
+use Cloudinary\Test\Helpers\Addon;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
@@ -42,7 +43,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     const TEST_EVAL_STR = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
                           'upload_options["context"] = "width=" + resource_info["width"]';
 
-    private static $RESOURCES_STACK = [];
+    private static $ASSETS_STACK = [];
 
     protected static $UNIQUE_UPLOAD_PRESET;
 
@@ -71,24 +72,24 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Adds details of a resource to a list for later deletion using `cleanupResources()`
+     * Adds details of an asset to a list for later deletion using `cleanupAssets()`
      *
      * @param string $public_id
      * @param array  $options
      */
-    protected static function addResourceToCleanupList($public_id, $options = [])
+    protected static function addAssetToCleanupList($public_id, $options = [])
     {
-        self::$RESOURCES_STACK[] = ['public_id' => $public_id, 'options' => $options];
+        self::$ASSETS_STACK[] = ['public_id' => $public_id, 'options' => $options];
     }
 
     /**
-     * Cleanup all resources in a stack
+     * Cleanup all assets in a stack
      */
-    protected static function cleanupResources()
+    protected static function cleanupAssets()
     {
-        foreach (self::$RESOURCES_STACK as $key => $resource) {
-            self::cleanupResource($resource['public_id'], $resource['options']);
-            unset(self::$RESOURCES_STACK[$key]);
+        foreach (self::$ASSETS_STACK as $key => $asset) {
+            self::cleanupAsset($asset['public_id'], $asset['options']);
+            unset(self::$ASSETS_STACK[$key]);
         }
     }
 
@@ -119,7 +120,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Upload a test resource
+     * Upload a test asset
      *
      * @param string $file
      * @param array  $options
@@ -127,15 +128,15 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      * @return ApiResponse
      * @throws ApiError
      */
-    private static function uploadTestResource($file, $options = [])
+    private static function uploadTestAsset($file, $options = [])
     {
         $options['tags'] = isset($options['tags']) && is_array($options['tags'])
             ? array_merge(self::$ASSET_TAGS, $options['tags'])
             : self::$ASSET_TAGS;
-        $resource = self::$uploadApi->upload($file, $options);
+        $asset = self::$uploadApi->upload($file, $options);
 
-        self::assertValidResource(
-            $resource,
+        self::assertValidAsset(
+            $asset,
             [
                 DeliveryType::KEY => isset($options[DeliveryType::KEY])
                     ? $options[DeliveryType::KEY]
@@ -145,7 +146,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             ]
         );
 
-        return $resource;
+        return $asset;
     }
 
     /**
@@ -157,12 +158,12 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      * @return ApiResponse
      * @throws ApiError
      */
-    protected static function uploadTestResourceImage($options = [], $file = null)
+    protected static function uploadTestAssetImage($options = [], $file = null)
     {
         $options[AssetType::KEY] = AssetType::IMAGE;
         $file = $file !== null ? $file : self::TEST_BASE64_IMAGE;
 
-        return self::uploadTestResource($file, $options);
+        return self::uploadTestAsset($file, $options);
     }
 
     /**
@@ -173,11 +174,11 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      * @return ApiResponse
      * @throws ApiError
      */
-    protected static function uploadTestResourceFile($options = [])
+    protected static function uploadTestAssetFile($options = [])
     {
         $options[AssetType::KEY] = AssetType::RAW;
 
-        return self::uploadTestResource(self::TEST_ASSETS_DIR . 'sample.docx', $options);
+        return self::uploadTestAsset(self::TEST_ASSETS_DIR . 'sample.docx', $options);
     }
 
     /**
@@ -188,11 +189,11 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      * @return ApiResponse
      * @throws ApiError
      */
-    protected static function uploadTestResourceVideo($options = [])
+    protected static function uploadTestAssetVideo($options = [])
     {
         $options[AssetType::KEY] = AssetType::VIDEO;
 
-        return self::uploadTestResource(self::TEST_ASSETS_DIR . 'sample.mp4', $options);
+        return self::uploadTestAsset(self::TEST_ASSETS_DIR . 'sample.mp4', $options);
     }
 
     /**
@@ -213,21 +214,21 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Assert that a given object is a valid resource detail object.
+     * Assert that a given object is a valid asset detail object.
      * Optionally checks it against given values.
      *
-     * @param array|object $resource
+     * @param array|object $asset
      * @param array        $values
      */
-    protected static function assertValidResource($resource, $values = [])
+    protected static function assertValidAsset($asset, $values = [])
     {
         $deliveryType = ArrayUtils::get($values, DeliveryType::KEY, DeliveryType::UPLOAD);
         $assetType = ArrayUtils::get($values, AssetType::KEY, AssetType::IMAGE);
 
-        self::assertEquals($deliveryType, $resource[DeliveryType::KEY]);
-        self::assertEquals($assetType, $resource[AssetType::KEY]);
+        self::assertEquals($deliveryType, $asset[DeliveryType::KEY]);
+        self::assertEquals($assetType, $asset[AssetType::KEY]);
         self::assertObjectStructure(
-            $resource,
+            $asset,
             [
                 'public_id' => IsType::TYPE_STRING,
                 'created_at' => IsType::TYPE_STRING,
@@ -238,11 +239,11 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         );
 
         if ($deliveryType === DeliveryType::FACEBOOK || $assetType === AssetType::RAW) {
-            self::assertArrayNotHasKey('height', $resource);
-            self::assertArrayNotHasKey('width', $resource);
+            self::assertArrayNotHasKey('height', $asset);
+            self::assertArrayNotHasKey('width', $asset);
         } elseif (in_array($assetType, [AssetType::IMAGE, AssetType::VIDEO], true)) {
             self::assertObjectStructure(
-                $resource,
+                $asset,
                 [
                     'width' => IsType::TYPE_INT,
                     'height' => IsType::TYPE_INT,
@@ -250,10 +251,10 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 ]
             );
         } elseif ($assetType === AssetType::IMAGE) {
-            self::assertObjectStructure($resource, ['placeholder' => IsType::TYPE_BOOL]);
+            self::assertObjectStructure($asset, ['placeholder' => IsType::TYPE_BOOL]);
         } elseif ($assetType === AssetType::VIDEO) {
             self::assertObjectStructure(
-                $resource,
+                $asset,
                 [
                     'audio' => IsType::TYPE_ARRAY,
                     'video' => IsType::TYPE_ARRAY,
@@ -267,19 +268,19 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         }
 
         if ($deliveryType !== DeliveryType::PRIVATE_DELIVERY) {
-            $format = !empty($resource['format']) ? $resource['format'] : '';
+            $format = !empty($asset['format']) ? $asset['format'] : '';
 
-            self::assertResourceUrl($resource, 'url', $format, $deliveryType, $assetType);
-            self::assertResourceUrl($resource, 'secure_url', $format, $deliveryType, $assetType);
+            self::assertAssetUrl($asset, 'url', $format, $deliveryType, $assetType);
+            self::assertAssetUrl($asset, 'secure_url', $format, $deliveryType, $assetType);
         }
 
         foreach ($values as $key => $value) {
-            self::assertEquals($value, $resource[$key]);
+            self::assertEquals($value, $asset[$key]);
         }
     }
 
     /**
-     * Assert that a given object is a valid resource detail archive
+     * Assert that a given object is a valid asset detail archive
      * Optionally checks it against given values.
      *
      * @param array|object $archive
@@ -288,7 +289,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      */
     protected static function assertValidArchive($archive, $format = 'zip', $values = [])
     {
-        self::assertValidResource(
+        self::assertValidAsset(
             $archive,
             array_merge(
                 [
@@ -314,13 +315,13 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      * Assert that a given array is a valid transformation representation
      * Optionally checks it against given values.
      *
-     * @param array|object $resource
+     * @param array|object $asset
      * @param array        $values
      */
-    protected static function assertValidTransformationRepresentation($resource, $values = [])
+    protected static function assertValidTransformationRepresentation($asset, $values = [])
     {
         self::assertObjectStructure(
-            $resource,
+            $asset,
             [
                 'transformation' => IsType::TYPE_STRING,
                 'width' => IsType::TYPE_INT,
@@ -333,24 +334,24 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         );
 
         foreach ($values as $key => $value) {
-            self::assertEquals($value, $resource[$key]);
+            self::assertEquals($value, $asset[$key]);
         }
 
-        self::assertNotEmpty($resource['url']);
-        self::assertNotEmpty($resource['secure_url']);
+        self::assertNotEmpty($asset['url']);
+        self::assertNotEmpty($asset['secure_url']);
     }
 
     /**
-     * Assert that a given array is a valid derived resource.
+     * Assert that a given array is a valid derived asset.
      * Optionally checks it against given values.
      *
-     * @param array|object $resource
+     * @param array|object $asset
      * @param array        $values
      */
-    protected static function assertValidDerivedResource($resource, $values = [])
+    protected static function assertValidDerivedAsset($asset, $values = [])
     {
         self::assertObjectStructure(
-            $resource,
+            $asset,
             [
                 'transformation' => IsType::TYPE_STRING,
                 'id' => IsType::TYPE_STRING,
@@ -362,56 +363,56 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         );
 
         foreach ($values as $key => $value) {
-            self::assertEquals($value, $resource[$key]);
+            self::assertEquals($value, $asset[$key]);
         }
 
-        self::assertNotEmpty($resource['url']);
-        self::assertNotEmpty($resource['secure_url']);
+        self::assertNotEmpty($asset['url']);
+        self::assertNotEmpty($asset['secure_url']);
     }
 
     /**
-     * Assert that a given object contains a valid resource url
+     * Assert that a given object contains a valid asset url
      *
-     * @param array|object $resource
+     * @param array|object $asset
      * @param string       $field
      * @param string       $format
      * @param string       $deliveryType
      * @param string       $assetType
      */
-    protected static function assertResourceUrl(
-        $resource,
+    protected static function assertAssetUrl(
+        $asset,
         $field,
         $format = '',
         $deliveryType = DeliveryType::UPLOAD,
         $assetType = AssetType::IMAGE
     ) {
-        $media = new Media($resource['public_id']);
+        $media = new Media($asset['public_id']);
         $media->secure(strpos($field, 'secure_') === 0)->assetType($assetType)->deliveryType($deliveryType);
-        if (!empty($resource['version'])) {
-            $media->version($resource['version']);
+        if (!empty($asset['version'])) {
+            $media->version($asset['version']);
         }
         if (!empty($format)) {
             $media->extension($format);
         }
 
-        $resourceUrl = parse_url($resource[$field]);
+        $assetUrl = parse_url($asset[$field]);
         $expectedUrl = parse_url($media->toUrl());
 
         self::assertEquals(
             $expectedUrl['scheme'],
-            $resourceUrl['scheme'],
+            $assetUrl['scheme'],
             "The object's \"$field\" field contains a URL with a scheme that is different than expected."
         );
 
         self::assertEquals(
             $expectedUrl['path'],
-            $resourceUrl['path'],
+            $assetUrl['path'],
             "The object's \"$field\" field contains a URL with a path that is different than expected."
         );
     }
 
     /**
-     * Assert that a given resource was deleted based on a given ApiResponse for a deletion action
+     * Assert that a given asset was deleted based on a given ApiResponse for a deletion action
      *
      * @param ApiResponse $result
      * @param string      $publicId
@@ -420,7 +421,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      * @param int         $derivedCount
      * @param int         $notFoundCount
      */
-    protected static function assertResourceDeleted(
+    protected static function assertAssetDeleted(
         $result,
         $publicId,
         $deletedCount = 1,
@@ -596,7 +597,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $config = Configuration::instance();
 
         self::assertEquals(
-            '/' . ApiClient::apiVersion() . '/' . $config->account->cloudName . $path,
+            '/' . ApiClient::apiVersion() . '/' . $config->cloud->cloudName . $path,
             $request->getUri()->getPath(),
             $message
         );
@@ -668,18 +669,18 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Delete a resource by tag
+     * Delete an asset by tag
      *
-     * Try to delete a resource if deletion fails log the error
+     * Try to delete an asset if deletion fails log the error
      *
      * @param string $tag
      * @param array  $options
      */
-    protected static function cleanupResourcesByTag($tag, $options = [])
+    protected static function cleanupAssetsByTag($tag, $options = [])
     {
         self::cleanupSoftly(
-            'deleteResourcesByTag',
-            'Resource with a tag ' . $tag . ' deletion failed during teardown',
+            'deleteAssetsByTag',
+            'Asset with a tag ' . $tag . ' deletion failed during teardown',
             static function ($result) use ($tag) {
                 return !isset($result['deleted'][$tag]) || $result['deleted'][$tag] !== 'deleted';
             },
@@ -689,18 +690,18 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Delete resource
+     * Delete asset
      *
-     * Try to delete resource if deletion fails log the error
+     * Try to delete asset if deletion fails log the error
      *
      * @param string $publicId
      * @param array  $options
      */
-    protected static function cleanupResource($publicId, $options = [])
+    protected static function cleanupAsset($publicId, $options = [])
     {
         self::cleanupSoftly(
-            'deleteResources',
-            'Resource ' . $publicId . ' deletion failed during teardown',
+            'deleteAssets',
+            'Asset ' . $publicId . ' deletion failed during teardown',
             static function ($result) use ($publicId) {
                 return !isset($result['deleted'][$publicId]) || $result['deleted'][$publicId] !== 'deleted';
             },
@@ -710,15 +711,15 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Delete resource with UNIQUE_TEST_TAG
+     * Delete asset with UNIQUE_TEST_TAG
      *
-     * Try to delete resource if deletion fails log the error
+     * Try to delete asset if deletion fails log the error
      *
      * @param string $assetType
      */
-    protected static function cleanupTestResources($assetType = AssetType::IMAGE)
+    protected static function cleanupTestAssets($assetType = AssetType::IMAGE)
     {
-        self::cleanupResourcesByTag(self::$UNIQUE_TEST_TAG, [AssetType::KEY => $assetType]);
+        self::cleanupAssetsByTag(self::$UNIQUE_TEST_TAG, [AssetType::KEY => $assetType]);
     }
 
     /**

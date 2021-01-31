@@ -41,11 +41,11 @@ class CompassPosition extends BasePosition
      */
     public function setOffsetValue($value)
     {
-        if (! isset($this->parameters[Offset::getName()])) {
-            $this->addParameter(new Offset());
+        if (! isset($this->qualifiers[Offset::getName()])) {
+            $this->addQualifier(new Offset());
         }
 
-        $this->parameters[Offset::getName()]->addParameter($value);
+        $this->qualifiers[Offset::getName()]->addQualifier($value);
 
         return $this;
     }

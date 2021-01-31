@@ -11,8 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class CommonTransformation
@@ -42,7 +41,7 @@ class CommonTransformation extends BaseComponent implements CommonTransformation
         if (is_string($transformation)) {
             $this->actions [] = $transformation; // TODO: wrap with some GenericTransformation class
         } elseif (is_array($transformation)) {
-            $this->addActionFromParams($transformation);
+            $this->addActionFromQualifiers($transformation);
         } elseif ($transformation instanceof self) {
             $this->addTransformation($transformation);
         } else {
@@ -63,28 +62,28 @@ class CommonTransformation extends BaseComponent implements CommonTransformation
     }
 
     /**
-     * Creates a new Transformation instance from an array of transformation parameters.
+     * Creates a new Transformation instance from an array of transformation qualifiers.
      *
-     * @param array $params An array of transformation parameters.
+     * @param array $qualifiers An array of transformation qualifiers.
      *
      * @return static
      */
-    public static function fromParams($params)
+    public static function fromParams($qualifiers)
     {
-        return (new static())->addActionFromParams($params);
+        return (new static())->addActionFromQualifiers($qualifiers);
     }
 
     /**
      * Adds (chains) a transformation action.
      *
-     * @param BaseAction|BaseParameter|mixed $action The transformation action to add.
-     *                                               If BaseParameter is provided, it is wrapped with action.
+     * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
+     *                                               If BaseQualifier is provided, it is wrapped with action.
      *
      * @return static
      */
     public function addAction($action)
     {
-        if ($action instanceof BaseParameter) {
+        if ($action instanceof BaseQualifier) {
             $action = new Action($action);
         }
 
@@ -98,7 +97,7 @@ class CommonTransformation extends BaseComponent implements CommonTransformation
      *
      * Appended transformation is nested.
      *
-     * @param CommonTransformation $transformation The transformation to add.
+     * @param CommonTransformation|string $transformation The transformation to add.
      *
      * @return static
      */

@@ -10,18 +10,21 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\Transformation\Argument\AngleTrait;
 use Cloudinary\Transformation\Argument\Degree;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Argument\RotationModeTrait;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class Angle
  */
-class Angle extends BaseParameter
+class Angle extends BaseQualifier
 {
     const VALUE_CLASS = Degree::class;
 
     use AngleTrait;
+    use RotationModeTrait;
 
     /**
      * Sets the angle in degrees.
@@ -30,6 +33,16 @@ class Angle extends BaseParameter
      */
     public function setAngle(...$degree)
     {
-        $this->setParamValue(Degree::angle(...$degree));
+        $this->setQualifierValue(Degree::byAngle(...$degree));
+    }
+
+    /**
+     * @param $value
+     *
+     * @return Angle
+     */
+    public static function fromParams($value)
+    {
+        return new self(...ArrayUtils::build($value));
     }
 }

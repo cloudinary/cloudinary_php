@@ -15,12 +15,13 @@ use Cloudinary\Asset\AssetDescriptorTrait;
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\AssetConfigTrait;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\StringUtils;
 use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\ImageTransformation;
 use Cloudinary\Transformation\ImageTransformationInterface;
 use Cloudinary\Transformation\ImageTransformationTrait;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class BaseImageTag
@@ -54,15 +55,15 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     /**
      * BaseImageTag constructor.
      *
-     * @param string|Image                    $image                    The Public ID or Image instance
+     * @param string|Image                    $source                   The Public ID or Image instance
      * @param Configuration|string|array|null $configuration            The Configuration source.
      * @param ImageTransformation             $additionalTransformation The additional transformation.
      */
-    public function __construct($image, $configuration = null, $additionalTransformation = null)
+    public function __construct($source, $configuration = null, $additionalTransformation = null)
     {
         parent::__construct($configuration);
 
-        $this->image($image, $this->config);
+        $this->image($source, $this->config);
 
         $this->srcset = new SrcSet($this->image, $this->config);
 
@@ -79,24 +80,67 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      */
     public static function fromParams($source, $params = [])
     {
-        $image = Image::fromParams($source, $params);
+        $configuration = self::fromParamsDefaultConfig();
 
-        $configuration = (new Configuration(Configuration::instance()));
-        # set v1 defaults
-        $configuration->tag->quotesType       = BaseTag::SINGLE_QUOTES;
-        $configuration->tag->sortAttributes   = true;
-        $configuration->tag->voidClosingSlash = true;
+        $configuration->tag->prependSrcAttribute = true;
 
-        ArrayUtils::addNonEmpty($params, 'responsive_breakpoints', ArrayUtils::pop($params, 'srcset'));
+        if (array_key_exists('srcset', $params) && is_array($params['srcset'])) {
+            if (array_key_exists('sizes', $params['srcset']) && $params['srcset']['sizes']) {
+                $configuration->tag->sizes = $params['srcset']['sizes'];
+            }
+            ArrayUtils::addNonEmpty($params, 'responsive_breakpoints', ArrayUtils::pop($params, 'srcset'));
+        }
 
         $configuration->importJson($params);
 
+        self::handleResponsive($params, $configuration);
+
+        $image = Image::fromParams($source, $params);
+
         $tagAttributes = self::collectAttributesFromParams($params);
 
-        ArrayUtils::addNonEmptyFromOther($tagAttributes, 'width', $params);
-        ArrayUtils::addNonEmptyFromOther($tagAttributes, 'height', $params);
+        TagUtils::handleSpecialAttributes($tagAttributes, $params, $configuration);
 
         return (new static($image, $configuration))->setAttributes($tagAttributes);
+    }
+
+    /**
+     * @param array         $params
+     * @param Configuration $configuration
+     */
+    public static function handleResponsive(&$params, $configuration)
+    {
+        if ($configuration->url->responsiveWidth) {
+            $configuration->tag->responsive = true;
+        }
+
+        $width = ArrayUtils::get($params, 'width');
+        if (! empty($width) && StringUtils::startsWith($width, 'auto')) {
+            $configuration->tag->responsive = true;
+        }
+
+        $dpr = ArrayUtils::get($params, 'dpr');
+        if (! empty($dpr) && StringUtils::startsWith($dpr, 'auto')) {
+            $configuration->tag->hidpi = true;
+        }
+
+        $configuration->tag->clientHints = ArrayUtils::pop($params, 'client_hints', $configuration->tag->clientHints);
+    }
+
+    /**
+     * Imports (merges) the configuration.
+     *
+     * @param Configuration|string|array|null $configuration The Configuration source.
+     *
+     * @return static
+     */
+    public function importConfiguration($configuration)
+    {
+        parent::importConfiguration($configuration);
+
+        $this->image->importConfiguration($configuration);
+
+        return $this;
     }
 
     /**
@@ -109,6 +153,10 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      */
     public function image($image, $configuration = null)
     {
+        if ($configuration === null) {
+            $configuration = $this->config;
+        }
+
         $this->image = new Image($image, $configuration);
 
         return $this;
@@ -143,8 +191,8 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     /**
      * Adds (chains) a transformation action.
      *
-     * @param BaseAction|BaseParameter|mixed $action The transformation action to add.
-     *                                               If BaseParameter is provided, it is wrapped with action.
+     * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
+     *                                               If BaseQualifier is provided, it is wrapped with action.
      *
      * @return static
      */
@@ -187,7 +235,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     }
 
     /**
-     * Sets the Account configuration key with the specified value.
+     * Sets the Cloud configuration key with the specified value.
      *
      * @param string $configKey   The configuration key.
      * @param mixed  $configValue THe configuration value.
@@ -196,9 +244,9 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @internal
      */
-    public function setAccountConfig($configKey, $configValue)
+    public function setCloudConfig($configKey, $configValue)
     {
-        $this->image->setAccountConfig($configKey, $configValue);
+        $this->image->setCloudConfig($configKey, $configValue);
 
         return $this;
     }

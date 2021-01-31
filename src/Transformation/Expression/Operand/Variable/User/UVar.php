@@ -28,7 +28,7 @@ class UVar extends Expression
     /**
      * UVar constructor.
      *
-     * @param string $userVariableName The user variable name.
+     * @param string|Variable $userVariableName The user variable name.
      */
     public function __construct($userVariableName)
     {

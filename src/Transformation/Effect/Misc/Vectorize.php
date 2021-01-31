@@ -15,7 +15,7 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-class Vectorize extends EffectParam
+class Vectorize extends EffectQualifier
 {
     const VALUE_CLASS = VectorizeValue::class;
 
@@ -36,12 +36,12 @@ class Vectorize extends EffectParam
      */
     public function __construct($colors = null, $detail = null, $despeckle = null, $corners = null, $paths = null)
     {
-        parent::__construct(MiscEffect::VECTORIZE);
+        parent::__construct(null);
 
-        $this->colors($colors);
-        $this->detail($detail);
-        $this->despeckle($despeckle);
-        $this->corners($corners);
+        $this->numOfColors($colors);
+        $this->detailsLevel($detail);
+        $this->despeckleLevel($despeckle);
+        $this->cornersLevel($corners);
         $this->paths($paths);
     }
 

@@ -22,11 +22,11 @@ trait PixelEffectTrait
      *
      * @param int $strength The strength of the blur. (Range: 1 to 2000, Server default: 100)
      *
-     * @return EffectAction
+     * @return Blur
      */
     public static function blur($strength = null)
     {
-        return EffectAction::limited(PixelEffect::BLUR, EffectRange::PIXEL, $strength);
+        return new Blur($strength);
     }
 
     /**
@@ -34,10 +34,10 @@ trait PixelEffectTrait
      *
      * @param int $strength The strength of the vignette. (Range: 0 to 100, Server default: 20)
      *
-     * @return EffectAction
+     * @return StrengthEffectAction
      */
     public static function vignette($strength = null)
     {
-        return EffectAction::limited(PixelEffect::VIGNETTE, EffectRange::PERCENT, $strength);
+        return EffectAction::withStrength(PixelEffect::VIGNETTE, EffectRange::PERCENT, $strength);
     }
 }

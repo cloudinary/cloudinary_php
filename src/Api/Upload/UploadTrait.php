@@ -105,7 +105,7 @@ trait UploadTrait
     }
 
     /**
-     * Uploads an asset to a Cloudinary account.
+     * Uploads an asset to a Cloudinary cloud.
      *
      * The asset can be:
      * * a local file path
@@ -134,7 +134,7 @@ trait UploadTrait
     }
 
     /**
-     * Uploads an asset to a Cloudinary account.
+     * Uploads an asset to a Cloudinary cloud.
      *
      * The asset can be:
      * * a local file path
@@ -158,7 +158,7 @@ trait UploadTrait
     }
 
     /**
-     * Uploads an asset to a Cloudinary account.
+     * Uploads an asset to a Cloudinary cloud.
      *
      * The upload is not signed so an upload preset is required.
      *
@@ -182,7 +182,7 @@ trait UploadTrait
     }
 
     /**
-     * Uploads an asset to a Cloudinary account.
+     * Uploads an asset to a Cloudinary cloud.
      *
      * The upload is not signed so an upload preset is required.
      *

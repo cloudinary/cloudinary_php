@@ -34,7 +34,7 @@ class Expression extends BaseExpression
      *
      * @return static
      */
-    public static function raw($expression)
+    public static function expression($expression)
     {
         return new static($expression);
     }

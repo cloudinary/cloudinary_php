@@ -22,7 +22,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function mp3()
+    public static function audioMp3()
     {
         return static::createFormat(Format::MP3);
     }
@@ -32,7 +32,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function aac()
+    public static function audioAac()
     {
         return static::createFormat(Format::AAC);
     }
@@ -42,7 +42,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function m4a()
+    public static function audioM4a()
     {
         return static::createFormat(Format::M4A);
     }
@@ -52,7 +52,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function ogg()
+    public static function audioOgg()
     {
         return static::createFormat(Format::OGG);
     }
@@ -62,7 +62,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function wav()
+    public static function audioWav()
     {
         return static::createFormat(Format::WAV);
     }
@@ -72,7 +72,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function aiff()
+    public static function audioAiff()
     {
         return static::createFormat(Format::AIFF);
     }
@@ -82,7 +82,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function flac()
+    public static function audioFlac()
     {
         return static::createFormat(Format::FLAC);
     }
@@ -92,7 +92,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function amr()
+    public static function audioAmr()
     {
         return static::createFormat(Format::AMR);
     }
@@ -102,7 +102,7 @@ trait AudioFormatTrait
      *
      * @return static
      */
-    public static function midi()
+    public static function audioMidi()
     {
         return static::createFormat(Format::MIDI);
     }

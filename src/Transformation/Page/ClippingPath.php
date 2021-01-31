@@ -15,10 +15,9 @@ use Cloudinary\ClassUtils;
 /**
  * Defines the clipping path to use when trimming pixels.
  *
- *
  * @api
  */
-class ClippingPath extends Action
+class ClippingPath extends BasePageAction
 {
     use PageIndexTrait;
     use PageNameTrait;
@@ -27,13 +26,28 @@ class ClippingPath extends Action
      * ClippingPath constructor.
      *
      * @param string        $clippingPath The clipping path name.
-     * @param FlagParameter $method       The clipping method. Can be Flag::clip() or Flag::clipEvenOdd().
+     * @param FlagQualifier $method       The clipping method. Can be Flag::clip() or Flag::clipEvenOdd().
      *
      * @see Flag::clip
      * @see Flag::clipEvenOdd
      */
-    public function __construct($clippingPath, FlagParameter $method)
+    public function __construct($clippingPath, FlagQualifier $method = null)
     {
-        parent::__construct($method, ClassUtils::verifyInstance($clippingPath, PageParam::class));
+        parent::__construct(ClassUtils::verifyInstance($clippingPath, PageQualifier::class));
+
+        if (! $method) {
+            $method = Flag::clip();
+        }
+        $this->setFlag($method);
+    }
+
+    /**
+     * Trims pixels according to a clipping path included in the original image using an evenodd clipping rule.
+     *
+     * @return static
+     */
+    public function evenOdd()
+    {
+        return $this->unsetFlag(Flag::clip())->setFlag(Flag::clipEvenOdd());
     }
 }

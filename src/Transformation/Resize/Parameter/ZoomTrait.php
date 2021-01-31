@@ -27,6 +27,6 @@ trait ZoomTrait
      */
     public function zoom($zoom)
     {
-        return $this->addParameter(ClassUtils::verifyInstance($zoom, Zoom::class));
+        return $this->addQualifier(ClassUtils::verifyInstance($zoom, Zoom::class));
     }
 }

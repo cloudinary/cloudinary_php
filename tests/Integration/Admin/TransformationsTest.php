@@ -76,7 +76,7 @@ final class TransformationsTest extends IntegrationTestCase
     {
         $result = self::$adminApi->transformations();
 
-        $this->assertNotEmpty($result['transformations']);
+        self::assertNotEmpty($result['transformations']);
         self::assertValidTransformation($result['transformations'][0]);
     }
 
@@ -162,23 +162,23 @@ final class TransformationsTest extends IntegrationTestCase
     {
         $result = self::$adminApi->transformation(self::$TRANSFORMATION_NAME);
 
-        $this->assertTrue($result['allowed_for_strict']);
+        self::assertTrue($result['allowed_for_strict']);
 
         $result = self::$adminApi->updateTransformation(self::$TRANSFORMATION_NAME, ['allowed_for_strict' => 0]);
 
-        $this->assertEquals('updated', $result['message']);
+        self::assertEquals('updated', $result['message']);
 
         $result = self::$adminApi->transformation(self::$TRANSFORMATION_NAME);
 
-        $this->assertFalse($result['allowed_for_strict']);
+        self::assertFalse($result['allowed_for_strict']);
 
         $result = self::$adminApi->updateTransformation(self::$TRANSFORMATION_NAME, ['allowed_for_strict' => 1]);
 
-        $this->assertEquals('updated', $result['message']);
+        self::assertEquals('updated', $result['message']);
 
         $result = self::$adminApi->transformation(self::$TRANSFORMATION_NAME);
 
-        $this->assertTrue($result['allowed_for_strict']);
+        self::assertTrue($result['allowed_for_strict']);
     }
 
     /**
@@ -201,7 +201,7 @@ final class TransformationsTest extends IntegrationTestCase
             ['unsafe_update' => self::TRANSFORMATION_PARAMETER_UPDATE]
         );
 
-        $this->assertEquals('updated', $result['message']);
+        self::assertEquals('updated', $result['message']);
 
         $result = self::$adminApi->transformation(self::$TRANSFORMATION_NAME);
 
@@ -234,7 +234,7 @@ final class TransformationsTest extends IntegrationTestCase
 
         $result = self::$adminApi->deleteTransformation(self::$TRANSFORMATION_NAME_DELETE);
 
-        $this->assertEquals('deleted', $result['message']);
+        self::assertEquals('deleted', $result['message']);
 
         $this->expectException(NotFound::class);
         self::$adminApi->transformation(self::$TRANSFORMATION_NAME_DELETE);
@@ -266,7 +266,7 @@ final class TransformationsTest extends IntegrationTestCase
 
         $result = self::$adminApi->deleteTransformation(self::$TRANSFORMATION_PARAMETER_AS_ARRAY);
 
-        $this->assertEquals('deleted', $result['message']);
+        self::assertEquals('deleted', $result['message']);
 
         $this->expectException(NotFound::class);
         self::$adminApi->transformation(self::$TRANSFORMATION_PARAMETER_AS_STRING);

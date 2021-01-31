@@ -18,14 +18,16 @@ namespace Cloudinary\Transformation;
 trait PageNumberTrait
 {
     /**
-     * Creates a new instance using the specified number.
+     * Gets the page using the specified number.
      *
-     * @param int $value The number.
+     * @param int $number The number.
      *
      * @return static
      */
-    public static function number($value)
+    public function byNumber($number)
     {
-        return static::createWithPageParam($value);
+        $this->add($number);
+
+        return $this;
     }
 }

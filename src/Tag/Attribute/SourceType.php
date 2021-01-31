@@ -11,6 +11,7 @@
 namespace Cloudinary\Tag;
 
 use Cloudinary\ArrayUtils;
+use Cloudinary\Transformation\Format;
 
 /**
  * Class SourceType
@@ -39,6 +40,8 @@ class SourceType
      */
     public $codecs = [];
 
+    public static $typeOverrides = [Format::OGV => VideoSourceType::OGG];
+
     /**
      * SourceType constructor.
      *
@@ -64,8 +67,10 @@ class SourceType
             return '';
         }
 
-        $codecsStr = ! empty($this->codecs) ? 'codecs=' . ArrayUtils::implodeFiltered(',', $this->codecs) : '';
+        $codecsStr = ! empty($this->codecs) ? 'codecs=' . ArrayUtils::implodeFiltered(', ', $this->codecs) : '';
 
-        return ArrayUtils::implodeFiltered('; ', ["{$this->mediaType}/{$this->type}", $codecsStr]);
+        $typeStr = ArrayUtils::get(self::$typeOverrides, $this->type, $this->type);
+
+        return ArrayUtils::implodeFiltered('; ', ["{$this->mediaType}/{$typeStr}", $codecsStr]);
     }
 }

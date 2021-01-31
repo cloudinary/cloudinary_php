@@ -91,7 +91,7 @@ class AssetAuthTokenTest extends AuthTokenTestCase
 
         $this->image->authToken->config->key = null;
 
-        $this->image->account->apiSecret = 'b';
+        $this->image->cloud->apiSecret = 'b';
 
         self::assertImageUrl(
             's--v2fTPYTu--/'.self::EXPECTED_VERSIONED_PATH,

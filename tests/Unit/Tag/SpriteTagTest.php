@@ -21,7 +21,7 @@ final class SpriteTagTest extends TagTestCase
     public function testSpriteTag()
     {
         $tag = (new SpriteTag(self::IMAGE_NAME));
-        $this->assertEquals(
+        self::assertEquals(
             '<link type="text/css" rel="stylesheet" href="https://res.cloudinary.com/test123/image/sprite/'
             . self::ASSET_ID . '.css">',
             (string)$tag

@@ -10,14 +10,14 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class AutoGravityObject
  *
  * @internal
  */
-class AutoGravityObject extends ParameterMultiValue
+class AutoGravityObject extends QualifierMultiValue
 {
     const VALUE_DELIMITER = '_';
 
@@ -47,7 +47,7 @@ class AutoGravityObject extends ParameterMultiValue
      */
     public function gravity($gravity)
     {
-        if ($gravity instanceof BaseParameter) {
+        if ($gravity instanceof BaseQualifier) {
             $gravity = $gravity->getValue();
         }
 

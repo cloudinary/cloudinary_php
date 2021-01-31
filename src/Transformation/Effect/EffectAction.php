@@ -17,6 +17,8 @@ use Cloudinary\ClassUtils;
  */
 class EffectAction extends Action
 {
+    const MAIN_QUALIFIER = EffectQualifier::class;
+
     use EffectActionTrait;
 
     /**
@@ -27,12 +29,6 @@ class EffectAction extends Action
      */
     public function __construct($effect, ...$args)
     {
-        $effect = ClassUtils::verifyInstance($effect, EffectParam::class);
-
-        if (! empty($args)) {
-            $effect->add(...$args);
-        }
-
-        parent::__construct($effect);
+        parent::__construct(ClassUtils::verifyInstance($effect, EffectQualifier::class, null, ...$args));
     }
 }

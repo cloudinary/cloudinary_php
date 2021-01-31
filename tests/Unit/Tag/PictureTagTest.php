@@ -98,7 +98,7 @@ final class PictureTagTest extends ImageTagTestCase
             ['<picture>', $expectedSource1, $expectedSource2, $expectedSource3, $expectedImage, '</picture>']
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             (string)$expected,
             (string)$tag
         );

@@ -123,17 +123,38 @@ class ArrayUtils
      * @return string The resulting string
      *
      * @internal
-     * @noinspection PhpOptionalBeforeRequiredParametersInspection
      *
      * @see          implode
      */
     public static function implodeFiltered(
-        $glue = '',
-        array $pieces, // phpcs:ignore
+        $glue,
+        array $pieces,
         $filterCallback = __NAMESPACE__ . '\ArrayUtils::safeFilterFunc',
         $flag = 0
     ) {
-        return implode($glue, self::safeFilter($pieces, $filterCallback, $flag));
+        return self::safeImplode($glue, self::safeFilter($pieces, $filterCallback, $flag));
+    }
+
+    /**
+     * Safe version of implode.
+     *
+     * In addition fixes serialisation of float values.
+     *
+     * @param       $glue
+     * @param array $pieces
+     *
+     * @return string
+     */
+    public static function safeImplode($glue, array $pieces)
+    {
+        array_walk(
+            $pieces,
+            static function (&$value) {
+                $value = Utils::floatToString($value);
+            }
+        );
+
+        return implode($glue, $pieces);
     }
 
     /**
@@ -143,9 +164,8 @@ class ArrayUtils
      * @param array  $pieces
      *
      * @return string
-     * @noinspection PhpOptionalBeforeRequiredParametersInspection
      */
-    public static function escapedImplode($glue = '', array $pieces) // phpcs:ignore
+    public static function escapedImplode($glue, array $pieces)
     {
         return implode(
             $glue,
@@ -245,29 +265,29 @@ class ArrayUtils
     /**
      * Commonly used util for building transformation URL
      *
-     * @param array $parameters
+     * @param array $qualifiers
      *
      * @return string The resulting string
      *
      * @internal
      */
-    public static function implodeActionParams(...$parameters)
+    public static function implodeActionQualifiers(...$qualifiers)
     {
-        return self::implodeFiltered(',', $parameters);
+        return self::implodeFiltered(',', $qualifiers);
     }
 
     /**
      * Commonly used util for building transformation URL
      *
-     * @param array $parameterValues
+     * @param array $qualifierValues
      *
      * @return string The resulting string
      *
      * @internal
      */
-    public static function implodeParamValues(...$parameterValues)
+    public static function implodeQualifierValues(...$qualifierValues)
     {
-        return self::implodeFiltered(':', $parameterValues);
+        return self::implodeFiltered(':', $qualifierValues);
     }
 
     /**
@@ -479,7 +499,7 @@ class ArrayUtils
      */
     public static function addNonEmpty(&$arr, $key, $val)
     {
-        if (! empty($val)) {
+        if (! empty($val) || is_int($val) || is_float($val) || is_bool($val)) {
             $arr[$key] = $val;
         }
 

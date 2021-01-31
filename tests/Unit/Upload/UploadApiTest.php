@@ -11,8 +11,8 @@
 namespace Cloudinary\Test\Unit\Upload;
 
 use Cloudinary\Api\Exception\ApiError;
-use Cloudinary\Test\Integration\TestHelpers\MockUploadApi;
-use Cloudinary\Test\Traits\RequestAssertionsTrait;
+use Cloudinary\Test\Helpers\MockUploadApi;
+use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 
 /**
@@ -46,5 +46,19 @@ final class UploadApiTest extends AssetTestCase
         $lastRequest = $mockUploadApi->getMockHandler()->getLastRequest();
 
         self::assertRequestBodySubset($lastRequest, ['accessibility_analysis' => '1']);
+    }
+
+    /**
+     * Generate a url with asset and version id
+     */
+    public function testDownloadBackedupAsset()
+    {
+        $url = (new MockUploadApi())->downloadBackedupAsset(
+            'b71b23d9c89a81a254b88a91a9dad8cd',
+            '0e493356d8a40b856c4863c026891a4e'
+        );
+
+        self::assertContains('asset_id', $url);
+        self::assertContains('version_id', $url);
     }
 }

@@ -109,7 +109,7 @@ final class ExpressionTest extends TestCase
     {
         $expr = 'width = 0 && height != 0 || aspect_ratio < 0 && page_count > 0 and face_count <= 0 and width >= 0';
 
-        $rawExpr = Expression::raw($expr);
+        $rawExpr = Expression::expression($expr);
 
         $expectedExpr = 'w_eq_0_and_h_ne_0_or_ar_lt_0_and_pc_gt_0_and_fc_lte_0_and_w_gte_0';
 

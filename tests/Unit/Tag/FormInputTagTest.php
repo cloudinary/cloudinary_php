@@ -23,7 +23,7 @@ final class FormInputTagTest extends TagTestCase
         $value = self::IMAGE_NAME;
 
         $tag = new FormInputTag($name, $value);
-        $this->assertEquals(
+        self::assertEquals(
             "<input type=\"hidden\" name=\"$name\" value=\"$value\">",
             (string)$tag
         );

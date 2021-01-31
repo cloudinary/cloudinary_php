@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\StringUtils;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Calls a custom function.
@@ -20,8 +20,10 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class CustomFunction extends BaseParameter
+class CustomFunction extends BaseQualifier
 {
+    const VALUE_CLASS = CustomFunctionValue::class;
+
     use CustomFunctionTrait;
 
     /**
@@ -50,18 +52,38 @@ class CustomFunction extends BaseParameter
     /**
      * CustomFunction constructor.
      *
-     * @param string $source Source of this custom function
-     * @param string $type   The type of custom function (CustomFunction::REMOTE or CustomFunction::WASM).
-     * @param bool   $isPre  Preprocess custom function. Only remote functions are supported for preprocess
+     * @param string $source     Source of this custom function
+     * @param string $type       The type of custom function (CustomFunction::REMOTE or CustomFunction::WASM).
+     * @param bool   $preprocess Preprocess custom function. Only remote functions are supported for preprocess
      *
      * @see CustomFunction::REMOTE
      * @see CustomFunction::WASM
      */
-    public function __construct($source, $type = null, $isPre = false)
+    public function __construct($source, $type = null, $preprocess = false)
     {
         parent::__construct(
-            $isPre ? "pre:{$type}" : $type,
-            $type === self::WASM ? $source : StringUtils::base64UrlEncode($source)
+            $type === self::REMOTE ? StringUtils::base64UrlEncode($source) : $source,
+            $type
         );
+        $this->preprocess($preprocess);
+    }
+
+    /**
+     * Defines the function as the remote preprocessing custom function.
+     *
+     * For more information about preprocessing custom functions see the documentation.
+     *
+     * @param bool $preprocess Whether to defines the function as the remote preprocessing custom function.
+     *
+     * @return CustomFunction
+     *
+     * @see \Cloudinary\Transformation\CustomFunction
+     * @see https://cloudinary.com/documentation/custom_functions#preprocessing_custom_functions
+     */
+    public function preprocess($preprocess = true)
+    {
+        $this->getValue()->setSimpleValue('preprocess', $preprocess ? 'pre' : null);
+
+        return $this;
     }
 }

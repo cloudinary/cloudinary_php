@@ -11,9 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Expression\BaseExpressionComponent;
-use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
-use Cloudinary\Transformation\Parameter\GenericParameter;
+use Cloudinary\Transformation\Qualifier\GenericQualifier;
 use Cloudinary\Transformation\Variable\Variable;
 
 /**
@@ -31,7 +29,7 @@ trait CommonTransformationTrait
     /**
      * Applies a filter or an effect on an asset.
      *
-     * @param EffectParam|EffectAction $effect
+     * @param EffectQualifier|EffectAction $effect
      *
      * @return static
      */
@@ -43,7 +41,7 @@ trait CommonTransformationTrait
     /**
      * Applies adjustment effect on an asset.
      *
-     * @param EffectParam|EffectAction|Opacity $adjustment
+     * @param EffectQualifier|EffectAction|AdjustmentInterface $adjustment
      *
      * @return static
      */
@@ -55,7 +53,7 @@ trait CommonTransformationTrait
     /**
      * Applies a pre-defined named transformation of the given name.
      *
-     * @param string $transformationName
+     * @param string|NamedTransformation $transformationName
      *
      * @return static
      */
@@ -65,55 +63,55 @@ trait CommonTransformationTrait
     }
 
     /**
-     * Adds a generic parameter as a separate action.
+     * Adds a generic qualifier as a separate action.
      *
-     * @param string      $shortName The generic parameter name.
-     * @param array|mixed $value     The generic parameter value.
+     * @param string      $shortName The generic qualifier name.
+     * @param array|mixed $value     The generic qualifier value.
      *
      * @return static
      */
-    public function addGenericParam($shortName, ...$value)
+    public function addGenericQualifier($shortName, ...$value)
     {
-        return $this->addAction(new GenericParameter($shortName, ...$value));
+        return $this->addAction(new GenericQualifier($shortName, ...$value));
     }
 
     /**
-     * Adds action defined as an array of parameters.
+     * Adds action defined as an array of qualifiers.
      *
-     * @param array $parameters An associative array of parameters
+     * @param array $qualifiers An associative array of qualifiers
      *
      * @return static
      *
-     * @see ParametersAction
+     * @see QualifiersAction
      */
-    public function addActionFromParams($parameters)
+    public function addActionFromQualifiers($qualifiers)
     {
-        return $this->addAction(new ParametersAction($parameters));
+        return $this->addAction(new QualifiersAction($qualifiers));
     }
 
     /**
      * Adds a flag as a separate action.
      *
-     * @param FlagParameter|string $flag The flag to add.
+     * @param FlagQualifier|string $flag The flag to add.
      *
      * @return static
      */
     public function addFlag($flag)
     {
-        return $this->addAction(ClassUtils::verifyInstance($flag, FlagParameter::class));
+        return $this->addAction(ClassUtils::verifyInstance($flag, FlagQualifier::class));
     }
 
     /**
      * Defines an new user variable.
      *
-     * @param string $name  The variable name
-     * @param mixed  $value The variable value
+     * @param string|Variable $name  The variable name or the Variable instance.
+     * @param mixed           $value The variable value.
      *
      * @return static
      */
-    public function variable($name, $value)
+    public function addVariable($name, $value = null)
     {
-        return $this->addAction(new Variable($name, $value));
+        return $this->addAction(ClassUtils::verifyInstance($name, Variable::class, null, $value));
     }
 
     /**
@@ -125,58 +123,20 @@ trait CommonTransformationTrait
      */
     public function rotate($angle)
     {
-        return $this->addAction(Rotate::angle($angle));
+        return $this->addAction(ClassUtils::verifyInstance($angle, Rotate::class));
     }
 
     /**
-     * Specifies a condition to be met before applying a transformation.
+     * Specifies a conditional transformation whose condition should be met before applying a transformation.
+     *
+     * @param Conditional $conditionalTransformation The conditional transformation.
+     *
+     * @return static
      *
      * @see https://cloudinary.com/documentation/conditional_transformations
-     *
-     * @param BaseExpressionComponent|string $expression The conditional expression
-     *
-     * @return static
      */
-    public function ifCondition($expression)
+    public function conditional($conditionalTransformation)
     {
-        return $this->addAction(new IfCondition($expression));
-    }
-
-    /**
-     * Specifies a transformation that is applied in the case that the initial condition is evaluated as false.
-     *
-     * @see https://cloudinary.com/documentation/conditional_transformations
-     *
-     * @return static
-     */
-    public function ifElse()
-    {
-        return $this->addAction(new IfElse());
-    }
-
-    /**
-     * Finishes the conditional transformation.
-     *
-     * @see https://cloudinary.com/documentation/conditional_transformations
-     *
-     * @return static
-     */
-    public function endIfCondition()
-    {
-        return $this->addAction(new EndIfCondition());
-    }
-
-    /**
-     * Applies the 3D LUT file to the asset.
-     *
-     * @see https://cloudinary.com/documentation/image_transformations#applying_3d_luts_to_images
-     *
-     * @param string $lutId The 3D LUT file id
-     *
-     * @return static
-     */
-    public function add3DLut($lutId)
-    {
-        return $this->addAction(ClassUtils::verifyInstance($lutId, LutLayer::class));
+        return $this->addTransformation(ClassUtils::verifyInstance($conditionalTransformation, Conditional::class));
     }
 }

@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class Shear
  */
-class Shear extends EffectParam
+class Shear extends EffectQualifier
 {
     /**
      * @var array $valueOrder The order of the values.
@@ -28,7 +28,7 @@ class Shear extends EffectParam
      */
     public function __construct($skewX = null, $skewY = null)
     {
-        parent::__construct(ReshapeParam::SHEAR);
+        parent::__construct(ReshapeQualifier::SHEAR);
 
         $this->skewX($skewX);
         $this->skewY($skewY);

@@ -138,7 +138,7 @@ class StringUtils
      * @param string $string The input string.
      * @param string $prefix Prefix to truncate.
      *
-     * @return bool|string The resulting string.
+     * @return string The resulting string.
      */
     public static function truncatePrefix($string, $prefix)
     {
@@ -176,6 +176,23 @@ class StringUtils
         $numLeftChars -= strlen($glue);
 
         return sprintf('%s%s%s', substr($string, 0, $numLeftChars), $glue, substr($string, 0 - $numRightChars));
+    }
+
+    /**
+     * Ensures that string starts with prefix.
+     *
+     * @param string $string The string to search in.
+     * @param string $prefix The string to search for.
+     *
+     * @return string
+     */
+    public static function ensureStartsWith($string, $prefix)
+    {
+        if (! self::startsWith($string, $prefix)) {
+            return $prefix . $string;
+        }
+
+        return $string;
     }
 
     /**

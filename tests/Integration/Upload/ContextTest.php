@@ -19,12 +19,12 @@ final class ContextTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::uploadTestResourceImage(['public_id' => self::$UNIQUE_TEST_ID]);
+        self::uploadTestAssetImage(['public_id' => self::$UNIQUE_TEST_ID]);
     }
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
+        self::cleanupTestAssets();
 
         parent::tearDownAfterClass();
     }
@@ -36,11 +36,11 @@ final class ContextTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID]);
 
-        $this->assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
 
-        $this->assertEquals(self::CONTEXT_DATA, $resource['context']['custom']);
+        self::assertEquals(self::CONTEXT_DATA, $asset['context']['custom']);
     }
 
     /**
@@ -52,11 +52,11 @@ final class ContextTest extends IntegrationTestCase
 
         $result = self::$uploadApi->removeAllContext([self::$UNIQUE_TEST_ID]);
 
-        $this->assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$UNIQUE_TEST_ID);
+        $resource = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
 
-        $this->assertArrayNotHasKey('context', $resource);
+        self::assertArrayNotHasKey('context', $resource);
     }
 
     /**
@@ -68,10 +68,10 @@ final class ContextTest extends IntegrationTestCase
 
         $result = self::$uploadApi->removeAllContext(self::$UNIQUE_TEST_ID);
 
-        $this->assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
 
-        $this->assertArrayNotHasKey('context', $resource);
+        self::assertArrayNotHasKey('context', $asset);
     }
 }

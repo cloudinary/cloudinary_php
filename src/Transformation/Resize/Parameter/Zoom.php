@@ -10,13 +10,13 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class Zoom
  *
  * @internal
  */
-class Zoom extends BaseParameter
+class Zoom extends BaseQualifier
 {
 }

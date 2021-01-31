@@ -25,39 +25,52 @@ final class ArrayUtilsTest extends TestCase
         $sortedArray = ['a' => 'a', 'b' => 'b', 'y' => 'y', 'z' => 'z'];
 
         $testOrder = ['z', 'b', 'y', 'a'];
-        $this->assertSame(
+        self::assertSame(
             ['z' => 'z', 'b' => 'b', 'y' => 'y', 'a' => 'a'],
             ArrayUtils::sortByArray($array, $testOrder)
         );
 
         $testOrderExtra = ['z', 'b', 'y', 'a', 'c', 'x'];
-        $this->assertSame(
+        self::assertSame(
             ['z' => 'z', 'b' => 'b', 'y' => 'y', 'a' => 'a'],
             ArrayUtils::sortByArray($array, $testOrderExtra)
         );
 
         $testOrderMissing = ['z', 'b'];
-        $this->assertSame(
+        self::assertSame(
             ['z' => 'z', 'b' => 'b', 'a' => 'a', 'y' => 'y'],
             ArrayUtils::sortByArray($array, $testOrderMissing)
         );
 
         $testOrderMissingWithExtra = ['z', 'b', 'c', 'x'];
-        $this->assertSame(
+        self::assertSame(
             ['z' => 'z', 'b' => 'b', 'a' => 'a', 'y' => 'y'],
             ArrayUtils::sortByArray($array, $testOrderMissingWithExtra)
         );
 
         $testEmptyOrder = [];
-        $this->assertSame(
+        self::assertSame(
             $sortedArray,
             ArrayUtils::sortByArray($array, $testEmptyOrder)
         );
 
         $testIrrelevantOrder = ['i', 'j', 'k'];
-        $this->assertSame(
+        self::assertSame(
             $sortedArray,
             ArrayUtils::sortByArray($array, $testIrrelevantOrder)
+        );
+    }
+
+    public function testSafeImplode()
+    {
+        self::assertEquals(
+            's,1,1.0,1.1,1.0',
+            ArrayUtils::safeImplode(',', ['s', 1, 1.0, 1.1, '1.0'])
+        );
+
+        self::assertEquals(
+            's,1,1.0,1.1,1.0',
+            ArrayUtils::implodeFiltered(',', ['s', 1, 1.0, 1.1, '1.0', null])
         );
     }
 }

@@ -25,7 +25,7 @@ trait ToAnimatedActionTrait
      * Relevant when converting videos to animated GIF or WebP format. If not specified, the resulting GIF or WebP
      * samples the whole video (up to 400 frames, at up to 10 frames per second). By default the duration of the
      * animated image is the same as the duration of the video, no matter how many frames are sampled from the original
-     * video (use the delay parameter to adjust the amount of time between frames).
+     * video (use the delay qualifier to adjust the amount of time between frames).
      *
      * @param int|string $value Integer - The total number of frames to sample from the original video. The frames are
      *                          spread out over the length of the video, e.g. 20 takes one frame every 5%.
@@ -34,9 +34,9 @@ trait ToAnimatedActionTrait
      *
      * @return static
      */
-    public function videoSampling($value)
+    public function sampling($value)
     {
-        return $this->addParameter(ClassUtils::verifyInstance($value, VideoSampling::class));
+        return $this->addQualifier(ClassUtils::verifyInstance($value, VideoSampling::class));
     }
 
     /**
@@ -48,6 +48,18 @@ trait ToAnimatedActionTrait
      */
     public function delay($delay)
     {
-        return $this->addParameter(ClassUtils::verifyInstance($delay, Delay::class));
+        return $this->addQualifier(ClassUtils::verifyInstance($delay, Delay::class));
+    }
+
+    /**
+     * Sets the animated image format.
+     *
+     * @param AnimatedFormat|string $format The format.
+     *
+     * @return static
+     */
+    public function format($format)
+    {
+        return $this->importAction(ClassUtils::verifyInstance($format, AnimatedFormat::class));
     }
 }

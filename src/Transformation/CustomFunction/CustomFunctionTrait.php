@@ -56,23 +56,6 @@ trait CustomFunctionTrait
     }
 
     /**
-     * Specifies the URL of the remote preprocessing custom function.
-     *
-     * For more information about preprocessing custom functions see the documentation.
-     *
-     * @param string $source The URL of the remote preprocessing function.
-     *
-     * @return CustomFunction
-     *
-     * @see \Cloudinary\Transformation\CustomFunction
-     * @see https://cloudinary.com/documentation/custom_functions#preprocessing_custom_functions
-     */
-    public static function preprocessRemote($source)
-    {
-        return static::create($source, CustomFunction::REMOTE, true);
-    }
-
-    /**
      * Named constructor.
      *
      * @param array $values
@@ -88,23 +71,23 @@ trait CustomFunctionTrait
     }
 
     /**
-     * Creates a new instance from an array of parameters.
+     * Creates a new instance from an array of qualifiers.
      *
-     * @param array $params The parameters.
+     * @param array $qualifiers The qualifiers.
      * @param bool  $isPre  Indicates whether the function is a pre-processing function. Default: false.
      *
      * @return CustomFunction
      * @see \Cloudinary\Transformation\CustomFunction
      *
      */
-    public static function fromParams($params, $isPre = false)
+    public static function fromParams($qualifiers, $isPre = false)
     {
-        if (! is_array($params)) {
-            return static::create($params);
+        if (! is_array($qualifiers)) {
+            return static::create($qualifiers, null, $isPre);
         }
 
-        $functionType = ArrayUtils::get($params, 'function_type');
-        $source       = ArrayUtils::get($params, 'source');
+        $functionType = ArrayUtils::get($qualifiers, 'function_type');
+        $source       = ArrayUtils::get($qualifiers, 'source');
 
         return static::create($source, $functionType, $isPre);
     }

@@ -25,7 +25,7 @@ abstract class UnitTestCase extends CloudinaryTestCase
     const API_KEY    = 'key';
     const API_SECRET = 'secret';
 
-    const SECURE_DIST = 'secure-dist';
+    const SECURE_CNAME = 'secure-dist';
 
     const TEST_LOGGING = ['logging' => ['test' => ['level' => 'debug']]];
 
@@ -48,6 +48,8 @@ abstract class UnitTestCase extends CloudinaryTestCase
         $config = ConfigUtils::parseCloudinaryUrl(getenv(Configuration::CLOUDINARY_URL_ENV_VAR));
         $config = array_merge($config, self::TEST_LOGGING);
         Configuration::instance()->init($config);
+
+        Configuration::instance()->url->analytics(false); // disable analytics for all unit tests
     }
 
     public function tearDown()

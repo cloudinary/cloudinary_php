@@ -10,12 +10,12 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class KeyframeInterval
  */
-class KeyframeInterval extends BaseParameter
+class KeyframeInterval extends BaseQualifier
 {
     const VALUE_CLASS = PositiveFloatValue::class;
 }

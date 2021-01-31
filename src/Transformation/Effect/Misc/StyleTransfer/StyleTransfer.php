@@ -22,7 +22,7 @@ use Cloudinary\Asset\Media;
  *
  * @api
  */
-class StyleTransfer extends EffectAction
+class StyleTransfer extends SourceBasedEffectAction
 {
     /**
      * StyleTransfer constructor.
@@ -33,9 +33,9 @@ class StyleTransfer extends EffectAction
      */
     public function __construct($source, $strength = null, $preserveColor = null)
     {
-        parent::__construct(new StyleTransferParam($strength, $preserveColor));
+        parent::__construct(new StyleTransferQualifier($strength, $preserveColor));
 
-        $this->addParameter(Source::image($source));
+        $this->source($source);
     }
 
     /**
@@ -50,7 +50,7 @@ class StyleTransfer extends EffectAction
      */
     public function preserveColor($preserveColor = true)
     {
-        $this->parameters[StyleTransferParam::getName()]->preserveColor($preserveColor);
+        $this->qualifiers[StyleTransferQualifier::getName()]->preserveColor($preserveColor);
 
         return $this;
     }
@@ -66,7 +66,7 @@ class StyleTransfer extends EffectAction
      */
     public function strength($strength)
     {
-        $this->parameters[StyleTransferParam::getName()]->strength($strength);
+        $this->qualifiers[StyleTransferQualifier::getName()]->strength($strength);
 
         return $this;
     }

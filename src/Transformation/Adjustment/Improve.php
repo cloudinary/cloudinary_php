@@ -19,19 +19,9 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-class Improve extends LimitedEffectParam
+class Improve extends BlendEffectQualifier
 {
     use EffectModeTrait;
-
-    /**
-     * INDOOR mode. Use this mode to get better results on images with indoor lighting and shadows.
-     */
-    const INDOOR = 'indoor';
-
-    /**
-     * OUTDOOR mode (Server default).
-     */
-    const OUTDOOR = 'outdoor';
 
     /**
      * @var array $valueOrder The order of the values.
@@ -41,12 +31,12 @@ class Improve extends LimitedEffectParam
     /**
      * Improve constructor.
      *
-     * @param      $strength
+     * @param      $blend
      * @param null $mode
      */
-    public function __construct($strength = null, $mode = null)
+    public function __construct($blend = null, $mode = null)
     {
-        parent::__construct(Adjust::IMPROVE, EffectRange::PERCENT, $strength);
+        parent::__construct(Adjust::IMPROVE, EffectRange::PERCENT, $blend);
 
         $this->mode($mode);
     }
@@ -56,26 +46,26 @@ class Improve extends LimitedEffectParam
      *
      * Use this mode to get better results on images with indoor lighting and shadows.
      *
-     * @param int $strength           How much to blend the improved result with the original image,
-     *                                where 0 means only use the original and 100 means only use the improved result.
+     * @param int $blend How much to blend the improved result with the original image, where 0 means only use the
+     *                   original and 100 means only use the improved result.
      *
      * @return Improve
      */
-    public static function indoor($strength = null)
+    public static function indoor($blend = null)
     {
-        return new static($strength, self::INDOOR);
+        return new static($blend, ImproveMode::INDOOR);
     }
 
     /**
      * Sets the improve effect to OUTDOOR mode.
      *
-     * @param int $strength           How much to blend the improved result with the original image,
-     *                                where 0 means only use the original and 100 means only use the improved result.
+     * @param int $blend How much to blend the improved result with the original image, where 0 means only use the
+     *                   original and 100 means only use the improved result.
      *
      * @return Improve
      */
-    public static function outdoor($strength = null)
+    public static function outdoor($blend = null)
     {
-        return new static($strength, self::OUTDOOR);
+        return new static($blend, ImproveMode::OUTDOOR);
     }
 }

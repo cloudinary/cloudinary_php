@@ -15,10 +15,13 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-abstract class Position
+class Position extends BasePosition
 {
+    use OffsetTrait;
+    use PointTrait;
     use CompassGravityBuilderTrait;
     use FocalGravityBuilderTrait;
+    use GravityTrait;
 
     /**
      * Absolute position on the canvas.
@@ -62,5 +65,43 @@ abstract class Position
     protected static function createWithFocalGravity($gravity, ...$fallback)
     {
         return new FocalPosition($gravity);
+    }
+
+    /**
+     * @param $value
+     *
+     * @return static
+     * @internal
+     *
+     */
+    public function setOffsetValue($value)
+    {
+        if (! isset($this->qualifiers[Offset::getName()])) {
+            $this->addQualifier(new Offset());
+        }
+
+        $this->qualifiers[Offset::getName()]->addQualifier($value);
+
+        return $this;
+    }
+
+    /**
+     * Internal setter for the point value.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     *
+     * @internal
+     */
+    public function setPointValue($value)
+    {
+        if (! isset($this->qualifiers[AbsolutePosition::getName()])) {
+            $this->addQualifier(self::absolute());
+        }
+
+        $this->qualifiers[AbsolutePosition::getName()]->setPointValue($value);
+
+        return $this;
     }
 }

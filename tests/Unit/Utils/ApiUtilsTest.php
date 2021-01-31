@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
  */
 final class ApiUtilsTest extends TestCase
 {
+    /**
+     * @return array
+     */
     public function dataProviderSerializeArrayOfArrays()
     {
         return [
@@ -52,6 +55,9 @@ final class ApiUtilsTest extends TestCase
         ];
     }
 
+    /**
+     * @return array[]
+     */
     public function dataProviderSerializeHeaders()
     {
         return [

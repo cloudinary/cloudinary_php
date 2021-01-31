@@ -64,7 +64,7 @@ class CloudinaryAssetTest extends AssetTestCase
     public function testCloudinaryImageWithCustomCloudinaryConfig()
     {
 
-        $this->c->configuration->url->secureDistribution(self::TEST_HOSTNAME);
+        $this->c->configuration->url->secureCname(self::TEST_HOSTNAME);
 
         $image = $this->c->image(self::IMAGE_NAME);
 
@@ -81,7 +81,7 @@ class CloudinaryAssetTest extends AssetTestCase
     {
         $image = $this->c->image(self::IMAGE_NAME);
 
-        $image->secureDistribution(self::TEST_HOSTNAME);
+        $image->secureCname(self::TEST_HOSTNAME);
 
         self::assertImageUrl(
             self::IMAGE_NAME,

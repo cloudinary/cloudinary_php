@@ -50,11 +50,11 @@ class Crop extends BaseResizeAction
      */
     public function setPointValue($value)
     {
-        if (! isset($this->parameters[AbsolutePosition::getName()])) {
-            $this->addParameter(Position::absolute());
+        if (! isset($this->qualifiers[AbsolutePosition::getName()])) {
+            $this->addQualifier(Position::absolute());
         }
 
-        $this->parameters[AbsolutePosition::getName()]->setPointValue($value);
+        $this->qualifiers[AbsolutePosition::getName()]->setPointValue($value);
 
         return $this;
     }

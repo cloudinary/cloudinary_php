@@ -20,110 +20,110 @@ trait FoodObjectGravityBuilderTrait
     /**
      * Gravity food.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function food()
+    public static function food()
     {
-        return $this->add(ObjectGravity::FOOD);
+        return ObjectGravity::FOOD;
     }
 
     /**
      * Gravity banana.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function banana()
+    public static function banana()
     {
-        return $this->add(ObjectGravity::BANANA);
+        return ObjectGravity::BANANA;
     }
 
     /**
      * Gravity apple.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function apple()
+    public static function apple()
     {
-        return $this->add(ObjectGravity::APPLE);
+        return ObjectGravity::APPLE;
     }
 
     /**
      * Gravity sandwich.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function sandwich()
+    public static function sandwich()
     {
-        return $this->add(ObjectGravity::SANDWICH);
+        return ObjectGravity::SANDWICH;
     }
 
     /**
      * Gravity orange.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function orange()
+    public static function orange()
     {
-        return $this->add(ObjectGravity::ORANGE);
+        return ObjectGravity::ORANGE;
     }
 
     /**
      * Gravity broccoli.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function broccoli()
+    public static function broccoli()
     {
-        return $this->add(ObjectGravity::BROCCOLI);
+        return ObjectGravity::BROCCOLI;
     }
 
     /**
      * Gravity carrot.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function carrot()
+    public static function carrot()
     {
-        return $this->add(ObjectGravity::CARROT);
+        return ObjectGravity::CARROT;
     }
 
     /**
      * Gravity hotdog.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function hotdog()
+    public static function hotdog()
     {
-        return $this->add(ObjectGravity::HOTDOG);
+        return ObjectGravity::HOTDOG;
     }
 
     /**
      * Gravity pizza.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function pizza()
+    public static function pizza()
     {
-        return $this->add(ObjectGravity::PIZZA);
+        return ObjectGravity::PIZZA;
     }
 
     /**
      * Gravity donut.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function donut()
+    public static function donut()
     {
-        return $this->add(ObjectGravity::DONUT);
+        return ObjectGravity::DONUT;
     }
 
     /**
      * Gravity cake.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function cake()
+    public static function cake()
     {
-        return $this->add(ObjectGravity::CAKE);
+        return ObjectGravity::CAKE;
     }
 }

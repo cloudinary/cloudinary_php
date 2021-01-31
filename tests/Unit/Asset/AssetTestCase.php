@@ -18,6 +18,8 @@ use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Test\Unit\UnitTestCase;
+use Exception;
+use Throwable;
 
 /**
  * Class AssetTestCase
@@ -212,18 +214,27 @@ abstract class AssetTestCase extends UnitTestCase
         self::assertAssetFromParamsUrl($source, $actualUrl, $assetType, $expectationOptions);
     }
 
-    protected function assertErrorThrowing(callable $function)
+    /**
+     * @param callable $function
+     */
+    protected static function assertErrorThrowing(callable $function)
     {
         $errorsThrown = 0;
         set_error_handler(
-            function () use (&$errorsThrown) {
+            static function () use (&$errorsThrown) {
                 $errorsThrown++;
 
                 return true;
             }
         );
-        $function();
+
+        try {
+            $function();
+        } catch (Exception $e) {
+            $errorsThrown++;
+        }
+
         restore_error_handler();
-        $this->assertEquals(1, $errorsThrown, 'Failed assert that error was thrown');
+        self::assertEquals(1, $errorsThrown, 'Failed assert that error was thrown');
     }
 }

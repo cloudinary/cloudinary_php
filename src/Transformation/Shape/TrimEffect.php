@@ -20,7 +20,7 @@ use Cloudinary\Transformation\Argument\ColorValue;
  *
  * @see \Cloudinary\Transformation\ReshapeTrait::trim()
  */
-class TrimEffect extends LimitedEffectParam
+class TrimEffect extends LimitedEffectQualifier
 {
     /**
      * @var array $valueOrder The order of the values.
@@ -34,7 +34,7 @@ class TrimEffect extends LimitedEffectParam
      */
     public function __construct($colorSimilarity = null)
     {
-        parent::__construct(ReshapeParam::TRIM, EffectRange::PERCENT);
+        parent::__construct(ReshapeQualifier::TRIM, EffectRange::PERCENT);
 
         $this->colorSimilarity($colorSimilarity);
     }

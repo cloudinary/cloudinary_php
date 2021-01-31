@@ -75,16 +75,16 @@ trait UrlConfigTrait
      * The domain name of the CDN distribution to use for building HTTPS URLs.
      * Relevant only for Advanced plan users that have a private CDN distribution.
      *
-     * @param string $secureDistribution
+     * @param string $secureCname The CNAME for secure (https) URLs.
      *
      * @return $this
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      *
      */
-    public function secureDistribution($secureDistribution)
+    public function secureCname($secureCname)
     {
-        return $this->setUrlConfig(UrlConfig::SECURE_DISTRIBUTION, $secureDistribution);
+        return $this->setUrlConfig(UrlConfig::SECURE_CNAME, $secureCname);
     }
 
     /**
@@ -165,6 +165,18 @@ trait UrlConfigTrait
     public function forceVersion($forceVersion = true)
     {
         return $this->setUrlConfig(UrlConfig::FORCE_VERSION, $forceVersion);
+    }
+
+    /**
+     * Set to false to omit analytics.
+     *
+     * @param bool $analytics Whether to include analytics.
+     *
+     * @return $this
+     */
+    public function analytics($analytics = true)
+    {
+        return $this->setUrlConfig(UrlConfig::ANALYTICS, $analytics);
     }
 
     /**

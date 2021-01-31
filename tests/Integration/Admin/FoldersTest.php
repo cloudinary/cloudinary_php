@@ -50,7 +50,7 @@ final class FoldersTest extends IntegrationTestCase
         self::$SUB_FOLDER_DELETE_FULL_PATH = self::$FOLDER_NAME . '/' . self::$SUB_FOLDER_DELETE_NAME;
         self::$SUB_FOLDER_SINGLE_FULL_PATH = self::$SUB_FOLDER_FULL_PATH . '/' . self::$SUB_FOLDER_NAME;
 
-        self::uploadTestResourceImage(['folder' => self::$SUB_FOLDER_FULL_PATH]);
+        self::uploadTestAssetImage(['folder' => self::$SUB_FOLDER_FULL_PATH]);
         self::createTestFolder(self::$SUB_FOLDER_DELETE_FULL_PATH);
         self::createTestFolder(self::$SUB_FOLDER_SINGLE_FULL_PATH);
         self::createTestFolder(self::$FOLDER2_NAME);
@@ -58,7 +58,7 @@ final class FoldersTest extends IntegrationTestCase
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
+        self::cleanupTestAssets();
         self::cleanupFolder(self::$FOLDER_NAME);
 
         parent::tearDownAfterClass();
@@ -72,12 +72,12 @@ final class FoldersTest extends IntegrationTestCase
         $result = self::$adminApi->rootFolders();
 
         self::assertObjectStructure($result, ['total_count' => IsType::TYPE_INT]);
-        $this->assertNotEmpty($result['folders']);
+        self::assertNotEmpty($result['folders']);
         self::assertValidFolder($result['folders'][0]);
 
         $result = self::$adminApi->rootFolders(['max_results' => 1]);
 
-        $this->assertCount(1, $result['folders']);
+        self::assertCount(1, $result['folders']);
         self::assertObjectStructure(
             $result,
             ['total_count' => IsType::TYPE_INT, 'next_cursor' => IsType::TYPE_STRING]
@@ -95,7 +95,7 @@ final class FoldersTest extends IntegrationTestCase
         $result = self::$adminApi->subfolders(self::$SUB_FOLDER_FULL_PATH);
 
         self::assertObjectStructure($result, ['total_count' => IsType::TYPE_INT]);
-        $this->assertNotEmpty($result['folders']);
+        self::assertNotEmpty($result['folders']);
         self::assertValidFolder(
             $result['folders'][0],
             [
@@ -106,7 +106,7 @@ final class FoldersTest extends IntegrationTestCase
 
         $result = self::$adminApi->subfolders(self::$FOLDER_NAME, ['max_results' => 1]);
 
-        $this->assertCount(1, $result['folders']);
+        self::assertCount(1, $result['folders']);
         self::assertObjectStructure(
             $result,
             ['total_count' => IsType::TYPE_INT, 'next_cursor' => IsType::TYPE_STRING]
@@ -133,7 +133,7 @@ final class FoldersTest extends IntegrationTestCase
     {
         $result = self::$adminApi->deleteFolder(self::$SUB_FOLDER_DELETE_FULL_PATH);
 
-        $this->assertContains(self::$SUB_FOLDER_DELETE_FULL_PATH, $result['deleted']);
+        self::assertContains(self::$SUB_FOLDER_DELETE_FULL_PATH, $result['deleted']);
     }
 
     /**

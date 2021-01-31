@@ -41,11 +41,11 @@ class AbsolutePosition extends BasePosition
      */
     public function setPointValue($value)
     {
-        if (! isset($this->parameters[Point::getName()])) {
-            $this->addParameter(new Point());
+        if (! isset($this->qualifiers[Point::getName()])) {
+            $this->addQualifier(new Point());
         }
 
-        $this->parameters[Point::getName()]->setPointValue($value);
+        $this->qualifiers[Point::getName()]->setPointValue($value);
 
         return $this;
     }

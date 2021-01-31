@@ -12,7 +12,7 @@ namespace Cloudinary\Test\Unit\Transformation\Common;
 
 use Cloudinary\Transformation\Flag;
 use Cloudinary\Transformation\ImageFlag;
-use Cloudinary\Transformation\JpegScanMode;
+use Cloudinary\Transformation\Progressive;
 use Cloudinary\Transformation\VideoFlag;
 use PHPUnit\Framework\TestCase;
 
@@ -23,22 +23,22 @@ final class FlagTest extends TestCase
 {
     public function testVariousFlags()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'fl_attachment:dummy',
             (string)Flag::attachment('dummy')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_truncate_ts',
             (string)VideoFlag::truncateTS()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_progressive:steep',
-            (string)ImageFlag::progressive(JpegScanMode::STEEP)
+            (string)ImageFlag::progressive(Progressive::steep())
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_my_flag:17',
             (string)Flag::generic('my_flag', 17)
         );

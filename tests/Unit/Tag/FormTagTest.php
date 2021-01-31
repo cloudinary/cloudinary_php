@@ -41,6 +41,6 @@ final class FormTagTest extends TagTestCase
         $tag = new FormTag($this->configuration, $this->uploadParams);
         $tag->addClass('uploader');
 
-        $this->assertRegExp(FormTagPatterns::getFormTagPattern(), (string)$tag);
+        self::assertRegExp(FormTagPatterns::getFormTagPattern(), (string)$tag);
     }
 }

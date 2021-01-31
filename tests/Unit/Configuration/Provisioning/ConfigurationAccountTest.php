@@ -23,9 +23,9 @@ class ConfigurationAccountTest extends ProvisioningUnitTestCase
     {
         $config = new ProvisioningConfiguration($this->accountUrl);
 
-        $this->assertEquals(self::ACCOUNT_ID, $config->provisioningAccount->accountId);
-        $this->assertEquals(self::ACCOUNT_API_KEY, $config->provisioningAccount->provisioningApiKey);
-        $this->assertEquals(self::ACCOUNT_API_SECRET, $config->provisioningAccount->provisioningApiSecret);
+        self::assertEquals(self::ACCOUNT_ID, $config->provisioningAccount->accountId);
+        self::assertEquals(self::ACCOUNT_API_KEY, $config->provisioningAccount->provisioningApiKey);
+        self::assertEquals(self::ACCOUNT_API_SECRET, $config->provisioningAccount->provisioningApiSecret);
     }
 
     public function testAccountConfigFromArray()
@@ -38,9 +38,9 @@ class ConfigurationAccountTest extends ProvisioningUnitTestCase
             ]
         );
 
-        $this->assertEquals(self::ACCOUNT_ID, $config->provisioningAccount->accountId);
-        $this->assertEquals(self::ACCOUNT_API_KEY, $config->provisioningAccount->provisioningApiKey);
-        $this->assertEquals(self::ACCOUNT_API_SECRET, $config->provisioningAccount->provisioningApiSecret);
+        self::assertEquals(self::ACCOUNT_ID, $config->provisioningAccount->accountId);
+        self::assertEquals(self::ACCOUNT_API_KEY, $config->provisioningAccount->provisioningApiKey);
+        self::assertEquals(self::ACCOUNT_API_SECRET, $config->provisioningAccount->provisioningApiSecret);
     }
 
     public function testAccountConfigFromObject()
@@ -48,9 +48,9 @@ class ConfigurationAccountTest extends ProvisioningUnitTestCase
         $config = new ProvisioningConfiguration($this->accountUrl);
         $config = new ProvisioningConfiguration($config);
 
-        $this->assertEquals(self::ACCOUNT_ID, $config->provisioningAccount->accountId);
-        $this->assertEquals(self::ACCOUNT_API_KEY, $config->provisioningAccount->provisioningApiKey);
-        $this->assertEquals(self::ACCOUNT_API_SECRET, $config->provisioningAccount->provisioningApiSecret);
+        self::assertEquals(self::ACCOUNT_ID, $config->provisioningAccount->accountId);
+        self::assertEquals(self::ACCOUNT_API_KEY, $config->provisioningAccount->provisioningApiKey);
+        self::assertEquals(self::ACCOUNT_API_SECRET, $config->provisioningAccount->provisioningApiSecret);
     }
 
     public function testAccountConfigJsonSerialize()
@@ -62,6 +62,6 @@ class ConfigurationAccountTest extends ProvisioningUnitTestCase
                               '","provisioning_api_key":"' . self::ACCOUNT_API_KEY . '","provisioning_api_secret":"' .
                               self::ACCOUNT_API_SECRET . '"}}';
 
-        $this->assertEquals($expectedJsonConfig, $jsonConfig);
+        self::assertEquals($expectedJsonConfig, $jsonConfig);
     }
 }

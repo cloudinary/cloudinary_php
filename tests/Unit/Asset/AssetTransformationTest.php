@@ -34,7 +34,7 @@ final class AssetTransformationTest extends TestCase
 
     public function testAssetTransformation()
     {
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr,
             (string)(new AssetTransformation(self::$t))
         );
@@ -42,7 +42,7 @@ final class AssetTransformationTest extends TestCase
 
     public function testAssetTransformationWithExt()
     {
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr . '/' . Format::JPG,
             (string)(new AssetTransformation(self::$t, Format::JPG))
         );
@@ -50,7 +50,7 @@ final class AssetTransformationTest extends TestCase
 
     public function testAssetTransformationWithEmptyExt()
     {
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr . '/',
             (string)(new AssetTransformation(self::$t, ''))
         );
@@ -64,26 +64,26 @@ final class AssetTransformationTest extends TestCase
             'height' => 400,
         ];
 
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr,
             (string)(new AssetTransformation($params))
         );
 
         $params['format'] = Format::JPG;
 
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr . '/' . Format::JPG,
             (string)(new AssetTransformation($params))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr . '/' . Format::JPG,
             (string)AssetTransformation::fromParams($params)
         );
 
         $params['format'] = '';
 
-        $this->assertEquals(
+        self::assertEquals(
             self::$expectedTStr . '/',
             (string)(new AssetTransformation($params))
         );

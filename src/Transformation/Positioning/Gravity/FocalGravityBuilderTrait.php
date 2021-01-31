@@ -18,20 +18,6 @@ namespace Cloudinary\Transformation;
 trait FocalGravityBuilderTrait
 {
     /**
-     * Sets automatic gravity.
-     *
-     * An intelligent algorithm analyzes and prioritizes the most prominent elements of the asset to include.
-     *
-     * @param mixed ...$fallback Fallback gravities.
-     *
-     * @return FocalGravity
-     */
-    public static function auto(...$fallback)
-    {
-        return self::createWithFocalGravity(FocalGravity::AUTO, ...$fallback);
-    }
-
-    /**
      * Detects the largest face in an image with the Advanced Facial Attribute Detection add-on and makes it the focus
      * of the transformation.
      *
@@ -173,6 +159,20 @@ trait FocalGravityBuilderTrait
     public static function ocrText(...$fallback)
     {
         return self::createWithFocalGravity(FocalGravity::OCR_TEXT, ...$fallback);
+    }
+
+    /**
+     * Alias for Gravity::ocrText()
+     *
+     * @param mixed ...$fallback
+     *
+     * @return FocalGravity
+     *
+     * @see FocalGravity::ocrText
+     */
+    public static function ocr(...$fallback)
+    {
+        return self::ocrText(...$fallback);
     }
 
     /**

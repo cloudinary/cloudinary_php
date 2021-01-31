@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class VectorizeValue
  */
-class VectorizeValue extends ParameterMultiValue
+class VectorizeValue extends QualifierMultiValue
 {
     use VectorizeTrait;
 
@@ -43,10 +43,10 @@ class VectorizeValue extends ParameterMultiValue
     {
         parent::__construct(MiscEffect::VECTORIZE);
 
-        $this->colors($colors);
-        $this->detail($detail);
-        $this->despeckle($despeckle);
+        $this->numOfColors($colors);
+        $this->detailsLevel($detail);
+        $this->despeckleLevel($despeckle);
         $this->paths($paths);
-        $this->corners($corners);
+        $this->cornersLevel($corners);
     }
 }

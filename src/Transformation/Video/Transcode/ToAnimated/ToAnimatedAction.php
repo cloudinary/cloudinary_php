@@ -10,16 +10,22 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\ArrayUtils;
-use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\Dimensions\Dimensions;
-use Cloudinary\Transformation\Parameter\Dimensions\DimensionsTrait;
-use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
-
 /**
  * Class ToAnimatedAction
  */
 class ToAnimatedAction extends BaseAction
 {
     use ToAnimatedActionTrait;
+
+    /**
+     * ToAnimatedAction constructor.
+     *
+     * @param AnimatedFormat|string $format
+     */
+    public function __construct($format = null)
+    {
+        parent::__construct();
+
+        $this->format($format);
+    }
 }

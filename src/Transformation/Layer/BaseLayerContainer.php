@@ -23,9 +23,9 @@ use Cloudinary\ClassUtils;
 abstract class BaseLayerContainer extends BaseAction
 {
     /**
-     * @var BaseLayer $layer The layer
+     * @var BaseSource $source The source of the layer.
      */
-    protected $layer;
+    protected $source;
 
     /**
      * @var Position $position Layer position.
@@ -33,34 +33,27 @@ abstract class BaseLayerContainer extends BaseAction
     protected $position;
 
     /**
-     * @var BlendMode $blendMode Layer blend mode.
-     */
-    protected $blendMode;
-
-    /**
      * BaseLayerContainer constructor.
      *
-     * @param BaseLayer|string $layer     The layer
-     * @param Position         $position  Layer position.
-     * @param string|BlendMode $blendMode Layer blend mode.
+     * @param BaseSource|string $source    The source.
+     * @param Position          $position  Layer position.
      */
-    public function __construct($layer = null, $position = null, $blendMode = null)
+    public function __construct($source = null, $position = null)
     {
         parent::__construct();
 
-        $this->layer($layer);
+        $this->source($source);
         $this->position($position);
-        $this->blendMode($blendMode);
     }
 
     /**
-     * Sets the layer.
+     * Sets the source.
      *
-     * @param BaseLayer $layer The layer.
+     * @param BaseSource $source The source.
      *
      * @return static
      */
-    abstract public function layer($layer);
+    abstract public function source($source);
 
     /**
      * Sets the layer position.
@@ -72,15 +65,15 @@ abstract class BaseLayerContainer extends BaseAction
     abstract public function position($position = null);
 
     /**
-     * Sets layer blend mode.
+     * Sets stack position of the layer.
      *
-     * @param BlendMode $blendMode The blend mode.
+     * @param string $stackPosition The stack position.
      *
-     * @return static
+     * @return $this
      */
-    public function blendMode($blendMode = null)
+    public function setStackPosition($stackPosition)
     {
-        $this->blendMode = ClassUtils::verifyInstance($blendMode, EffectParam::class, BlendMode::class);
+        $this->source->setStackPosition($stackPosition);
 
         return $this;
     }
@@ -93,7 +86,7 @@ abstract class BaseLayerContainer extends BaseAction
     public function __toString()
     {
         // We actually combine components...
-        return ArrayUtils::implodeActionParams($this->layer, $this->position, $this->blendMode);
+        return ArrayUtils::implodeActionQualifiers($this->source, $this->position, parent::__toString());
     }
 
     /**
@@ -104,9 +97,8 @@ abstract class BaseLayerContainer extends BaseAction
     public function jsonSerialize()
     {
         return [
-            'layer'      => $this->layer,
+            'source'     => $this->source,
             'position'   => $this->position,
-            'blend_mode' => $this->blendMode,
         ];
     }
 }

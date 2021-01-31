@@ -11,6 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
+use Cloudinary\StringUtils;
 use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
@@ -25,39 +26,42 @@ use Cloudinary\Transformation\Argument\ColorValue;
  *
  * @api
  */
-class ReplaceColor extends EffectParam
+class ReplaceColor extends EffectQualifier
 {
     /**
      * @var array $valueOrder The order of the values.
      */
-    protected $valueOrder = [0, 'to', 'tolerance', 'from'];
+    protected $valueOrder = [0, 'to_color', 'tolerance', 'from_color'];
 
     /**
      * ReplaceColor constructor.
      *
-     * @param      $to
-     * @param      $tolerance
-     * @param null $from
+     * @param string|ColorValue $toColor   The HTML name or RGB/A hex code of the target output color.
+     * @param int               $tolerance The tolerance threshold (a radius in the LAB color space) from the input
+     *                                     color.
+     * @param string|ColorValue $fromColor The HTML name or RGB/A hex code of the base input color to map.
      */
-    public function __construct($to, $tolerance = null, $from = null)
+    public function __construct($toColor, $tolerance = null, $fromColor = null)
     {
         parent::__construct(Adjust::REPLACE_COLOR);
 
-        $this->to($to);
+        $this->toColor($toColor);
         $this->tolerance($tolerance);
-        $this->from($from);
+        $this->fromColor($fromColor);
     }
 
     /**
      * Sets the target output color.
      *
-     * @param string $to The HTML name or RGB/A hex code of the target output color.
+     * @param string|ColorValue $to The HTML name or RGB/A hex code of the target output color.
      *
      * @return ReplaceColor
      */
-    public function to($to)
+    public function toColor($to)
     {
-        $this->value->setSimpleValue('to', ClassUtils::verifyInstance($to, ColorValue::class));
+        // dirty hack to omit rgb: from hex colors
+        $to = StringUtils::truncatePrefix((string)$to, '#');
+        $this->value->setSimpleValue('to_color', ClassUtils::verifyInstance($to, ColorValue::class));
 
         return $this;
     }
@@ -83,13 +87,15 @@ class ReplaceColor extends EffectParam
     /**
      * Sets the base input color to map.
      *
-     * @param string $from The HTML name or RGB/A hex code of the base input color to map
+     * @param string|ColorValue $fromColor The HTML name or RGB/A hex code of the base input color to map.
      *
      * @return ReplaceColor
      */
-    public function from($from)
+    public function fromColor($fromColor)
     {
-        $this->value->setSimpleValue('from', ClassUtils::verifyInstance($from, ColorValue::class));
+        // dirty hack to omit rgb: from hex colors
+        $fromColor = StringUtils::truncatePrefix((string)$fromColor, '#');
+        $this->value->setSimpleValue('from_color', ClassUtils::verifyInstance($fromColor, ColorValue::class));
 
         return $this;
     }

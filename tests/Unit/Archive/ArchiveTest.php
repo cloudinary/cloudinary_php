@@ -33,22 +33,22 @@ class ArchiveTest extends UnitTestCase
     {
         // should return url with resource_type image.
         $url = self::$uploadApi->downloadFolder('samples/', ['resource_type' => AssetType::IMAGE]);
-        $this->assertContains('image', $url);
+        self::assertContains('image', $url);
 
         // should return valid url.
         $url = self::$uploadApi->downloadFolder('folder/');
-        $this->assertContains('generate_archive', $url);
+        self::assertContains('generate_archive', $url);
 
         // should flatten folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['flatten_folders' => true]);
-        $this->assertContains('flatten_folders', $url);
+        self::assertContains('flatten_folders', $url);
 
         // should expire_at folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['expires_at' => time() + 60]);
-        $this->assertContains('expires_at', $url);
+        self::assertContains('expires_at', $url);
 
         // should use original file_name of folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['use_original_filename' => true]);
-        $this->assertContains('use_original_filename', $url);
+        self::assertContains('use_original_filename', $url);
     }
 }

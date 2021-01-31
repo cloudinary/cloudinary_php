@@ -22,7 +22,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function mp4()
+    public static function videoMp4()
     {
         return static::createFormat(Format::MP4);
     }
@@ -32,7 +32,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function ts()
+    public static function videoTs()
     {
         return static::createFormat(Format::TS);
     }
@@ -42,7 +42,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function mov()
+    public static function videoMov()
     {
         return static::createFormat(Format::MOV);
     }
@@ -52,7 +52,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function flv()
+    public static function videoFlv()
     {
         return static::createFormat(Format::FLV);
     }
@@ -62,7 +62,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function webm()
+    public static function videoWebm()
     {
         return static::createFormat(Format::WEBM);
     }
@@ -72,7 +72,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function ogv()
+    public static function videoOgv()
     {
         return static::createFormat(Format::OGV);
     }
@@ -82,7 +82,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function m3u8()
+    public static function videoM3u8()
     {
         return static::createFormat(Format::M3U8);
     }
@@ -92,7 +92,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function mpd()
+    public static function videoMpd()
     {
         return static::createFormat(Format::MPD);
     }
@@ -102,7 +102,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function mkv()
+    public static function videoMkv()
     {
         return static::createFormat(Format::MKV);
     }
@@ -112,7 +112,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function avi()
+    public static function videoAvi()
     {
         return static::createFormat(Format::AVI);
     }
@@ -122,7 +122,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function f3gp()
+    public static function video3gp()
     {
         return static::createFormat(Format::F_3GP);
     }
@@ -132,7 +132,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function f3g2()
+    public static function video3g2()
     {
         return static::createFormat(Format::F_3G2);
     }
@@ -142,7 +142,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function wmv()
+    public static function videoWmv()
     {
         return static::createFormat(Format::WMV);
     }
@@ -152,7 +152,7 @@ trait VideoFormatTrait
      *
      * @return static
      */
-    public static function mpeg()
+    public static function videoMpeg()
     {
         return static::createFormat(Format::MPEG);
     }

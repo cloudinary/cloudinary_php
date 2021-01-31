@@ -28,6 +28,7 @@ abstract class PixelEffect
     const ORDERED_DITHER   = 'ordered_dither';
     const GRADIENT_FADE    = 'gradient_fade';
     const MAKE_TRANSPARENT = 'make_transparent';
+    const CUT_OUT          = 'cut_out';
 
     use PixelEffectTrait;
     use ImagePixelEffectTrait;

@@ -27,31 +27,31 @@ final class StringUtilsTest extends TestCase
     public function testTruncateMiddle()
     {
         // Simple truncate
-        $this->assertEquals(
+        self::assertEquals(
             'Lorem...ing elit',
             StringUtils::truncateMiddle(self::TEST_STRING, self::SHORT_STRING_LENGTH)
         );
 
         // Custom glue
-        $this->assertEquals(
+        self::assertEquals(
             'Lorem **ing elit',
             StringUtils::truncateMiddle(self::TEST_STRING, self::SHORT_STRING_LENGTH, '**')
         );
 
         // Glue eats left half
-        $this->assertEquals(
+        self::assertEquals(
             '...lit',
             StringUtils::truncateMiddle(self::TEST_STRING, self::TINY_STRING_LENGTH)
         );
 
         // Glue overflow, glue is truncated
-        $this->assertEquals(
+        self::assertEquals(
             '!@#lit',
             StringUtils::truncateMiddle(self::TEST_STRING, self::TINY_STRING_LENGTH, '!@#$')
         );
 
         // No truncation
-        $this->assertEquals(
+        self::assertEquals(
             self::TEST_STRING,
             StringUtils::truncateMiddle(self::TEST_STRING)
         );
@@ -60,22 +60,22 @@ final class StringUtilsTest extends TestCase
     public function testEscapeUnsafeChars()
     {
         $expectedEscaped = '\L\o\r\e\m ipsu\m d\ol\o\r sit a\m\et, c\ons\ect\etu\r adipiscing \elit';
-        $this->assertEquals(
+        self::assertEquals(
             $expectedEscaped,
             StringUtils::escapeUnsafeChars(self::TEST_STRING, 'Lorem')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedEscaped,
             StringUtils::escapeUnsafeChars(self::TEST_STRING, ['L', 'o', 'r', 'e', 'm'])
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             "$expectedEscaped\/",
             StringUtils::escapeUnsafeChars(self::TEST_STRING.'/', 'Lorem/')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             self::TEST_STRING,
             StringUtils::escapeUnsafeChars(self::TEST_STRING, '')
         );
@@ -83,17 +83,17 @@ final class StringUtilsTest extends TestCase
 
     public function testCamelCaseToSnakeCase()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'test_string',
             StringUtils::camelCaseToSnakeCase('testString')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             't_e_s_t_s_t_r_i_n_g',
             StringUtils::camelCaseToSnakeCase('TESTSTRING')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'test@string',
             StringUtils::camelCaseToSnakeCase('testString', '@')
         );
@@ -101,27 +101,27 @@ final class StringUtilsTest extends TestCase
 
     public function testToAcronym()
     {
-        $this->assertEquals(
+        self::assertEquals(
             '',
             StringUtils::toAcronym('')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             't',
             StringUtils::toAcronym('test')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'ta',
             StringUtils::toAcronym('test_acronym')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'ta',
             StringUtils::toAcronym('test_acronym_exclude_me', ['exclude', 'me'])
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'tacd',
             StringUtils::toAcronym('test@acronym@custom@delimiter', [], '@')
         );

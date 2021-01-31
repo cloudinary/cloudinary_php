@@ -14,7 +14,8 @@ use Cloudinary\Cache\Adapter\CacheAdapter;
 
 /**
  * Defines the global responsive breakpoints configuration.
- * **Learn more**: <a href="https://cloudinary.com/documentation/image_upload_api_reference#responsive_breakpoints_parameter_request_settings" target="_blank">Responsive breakpoints</a>
+ * **Learn more**:
+ * <a href="https://cloudinary.com/documentation/image_upload_api_reference#responsive_breakpoints_parameter_request_settings" target="_blank">Responsive breakpoints</a>
  *
  * @api
  */

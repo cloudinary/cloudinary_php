@@ -13,7 +13,7 @@ namespace Cloudinary\Test\Integration\Admin;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\NotFound;
 use Cloudinary\Test\Integration\IntegrationTestCase;
-use Cloudinary\Transformation\Parameter;
+use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Transformation;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 
@@ -66,7 +66,7 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
 
         self::$STREAMING_PROFILE_DISPLAY_NAME = 'streaming_profile_display_name_' . $id;
 
-        self::$TRANSFORMATION_AS_OBJECT = (new Transformation())->addAction(Parameter::height(1));
+        self::$TRANSFORMATION_AS_OBJECT = (new Transformation())->addAction(Qualifier::height(1));
 
         self::$adminApi->createStreamingProfile(
             self::$STREAMING_PROFILE_STATIC,
@@ -97,7 +97,7 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
     {
         $result = self::$adminApi->listStreamingProfiles();
 
-        $this->assertNotEmpty($result['data']);
+        self::assertNotEmpty($result['data']);
         self::assertObjectStructure(
             $result['data'][0],
             [
@@ -118,7 +118,7 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
         $result = self::$adminApi->getStreamingProfile(self::$STREAMING_PROFILE_STATIC);
 
         self::assertValidStreamingProfile($result, ['name' => self::$STREAMING_PROFILE_STATIC]);
-        $this->assertCount(2, $result['data']['representations']);
+        self::assertCount(2, $result['data']['representations']);
         self::assertArrayContainsArray(
             $result['data']['representations'],
             ['transformation' => [self::$BIG_IMAGE_REPRESENTATION_ARRAY]]
@@ -157,8 +157,8 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
                 'display_name' => self::$STREAMING_PROFILE_DISPLAY_NAME
             ]
         );
-        $this->assertCount(1, $result['data']['representations']);
-        $this->assertCount(1, $result['data']['representations'][0]['transformation']);
+        self::assertCount(1, $result['data']['representations']);
+        self::assertCount(1, $result['data']['representations'][0]['transformation']);
         self::assertArrayContainsArray(
             $result['data']['representations'],
             ['transformation' => [self::$SMALL_IMAGE_FILL_REPRESENTATION_ARRAY]]
@@ -201,8 +201,8 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
                 'display_name' => self::$STREAMING_PROFILE_DISPLAY_NAME
             ]
         );
-        $this->assertCount(1, $result['data']['representations']);
-        $this->assertCount(1, $result['data']['representations'][0]['transformation']);
+        self::assertCount(1, $result['data']['representations']);
+        self::assertCount(1, $result['data']['representations'][0]['transformation']);
         self::assertArrayContainsArray(
             $result['data']['representations'],
             ['transformation' => [self::$SMALL_IMAGE_FILL_REPRESENTATION_ARRAY]]
@@ -232,9 +232,9 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
         $result = self::$adminApi->getStreamingProfile(self::$STREAMING_PROFILE_AS_TRANSFORMATION);
 
         self::assertValidStreamingProfile($result, ['name' => self::$STREAMING_PROFILE_AS_TRANSFORMATION]);
-        $this->assertCount(1, $result['data']['representations']);
-        $this->assertCount(1, $result['data']['representations'][0]['transformation']);
-        $this->assertEquals(1, $result['data']['representations'][0]['transformation'][0]['height']);
+        self::assertCount(1, $result['data']['representations']);
+        self::assertCount(1, $result['data']['representations'][0]['transformation']);
+        self::assertEquals(1, $result['data']['representations'][0]['transformation'][0]['height']);
     }
 
     /**
@@ -261,11 +261,11 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
                 ]
             ]
         );
-        $this->assertEquals('updated', $result['message']);
+        self::assertEquals('updated', $result['message']);
 
         $result = self::$adminApi->getStreamingProfile(self::$STREAMING_PROFILE_UPDATE);
 
-        $this->assertCount(1, $result['data']['representations'][0]['transformation']);
+        self::assertCount(1, $result['data']['representations'][0]['transformation']);
         self::assertArrayContainsArray(
             $result['data']['representations'],
             ['transformation' => [self::$BIG_IMAGE_REPRESENTATION_ARRAY]]
@@ -293,7 +293,7 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
 
         $result = self::$adminApi->deleteStreamingProfile(self::$STREAMING_PROFILE_DELETE);
 
-        $this->assertEquals('deleted', $result['message']);
+        self::assertEquals('deleted', $result['message']);
 
         $this->expectException(NotFound::class);
         self::$adminApi->getStreamingProfile(self::$STREAMING_PROFILE_DELETE);

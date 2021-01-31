@@ -10,12 +10,12 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class CornerRadius
  */
-class CornerRadius extends BaseParameter
+class CornerRadius extends BaseQualifier
 {
     const VALUE_CLASS = Corners::class;
 

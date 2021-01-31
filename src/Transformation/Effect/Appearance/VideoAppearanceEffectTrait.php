@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ClassUtils;
+
 /**
  * Trait VideoAppearanceEffectTrait
  *
@@ -18,18 +20,17 @@ namespace Cloudinary\Transformation;
 trait VideoAppearanceEffectTrait
 {
     /**
-     *
      * Removes small motion shifts from the video. with a maximum extent of movement in the horizontal and vertical
      * direction of 32 pixels
      *
-     * @param int $maxShift The maximum number of pixels in the horizontal and vertical direction that will be
-     *                      addressed. (Possible values: 16, 32, 48, 64. Server default: 16)
+     * @param int $shakeStrength The maximum number of pixels in the horizontal and vertical direction that will be
+     *                           addressed. (Possible values: 16, 32, 48, 64. Server default: 16)
      *
-     * @return EffectAction
+     * @return Deshake
      */
-    public static function deshake($maxShift)
+    public static function deshake($shakeStrength = null)
     {
-        return EffectAction::limited(AppearanceEffect::DESHAKE, EffectRange::DESHAKE, $maxShift);
+        return ClassUtils::forceInstance($shakeStrength, Deshake::class);
     }
 
     /**
@@ -37,15 +38,15 @@ trait VideoAppearanceEffectTrait
      *
      * For details and examples, see 'Fade in and out' in the Video Transformations guide.
      *
-     * @param int $duration The time in ms for the fade to occur. (Server default: 2000)
+     * @param int $duration The time in ms for the fade to occur. (Server default: 1000)
      *
-     * @return EffectAction
+     * @return DurationEffectAction
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#fade_in_and_out
      */
-    public static function fadeIn($duration)
+    public static function fadeIn($duration = null)
     {
-        return EffectAction::valued(AppearanceEffect::FADE, $duration);
+        return EffectAction::withDuration(AppearanceEffect::FADE, $duration);
     }
 
     /**
@@ -53,15 +54,15 @@ trait VideoAppearanceEffectTrait
      *
      * For details and examples, see 'Fade in and out' in the Video Transformations guide.
      *
-     * @param int $duration The time in ms for the fade to occur. (Server default: 2000)
+     * @param int $duration The time in ms for the fade to occur.
      *
-     * @return EffectAction
+     * @return DurationEffectAction
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#fade_in_and_out
      */
-    public static function fadeOut($duration)
+    public static function fadeOut($duration = null)
     {
-        return EffectAction::valued(AppearanceEffect::FADE, -$duration);
+        return EffectAction::withDuration(AppearanceEffect::FADE, $duration, true);
     }
 
     /**
@@ -71,8 +72,8 @@ trait VideoAppearanceEffectTrait
      *
      * @return EffectAction
      */
-    public static function noise($percentage)
+    public static function noise($percentage = null)
     {
-        return EffectAction::limited(AppearanceEffect::NOISE, EffectRange::PERCENT, $percentage);
+        return EffectAction::withLevel(AppearanceEffect::NOISE, EffectRange::PERCENT, $percentage);
     }
 }

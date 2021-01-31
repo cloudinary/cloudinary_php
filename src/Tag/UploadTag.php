@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Tag;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\JsonUtils;
@@ -29,6 +30,7 @@ use Cloudinary\JsonUtils;
  *    type="file"
  * >
  *```
+ *
  * @api
  */
 class UploadTag extends BaseConfigurableApiTag
@@ -63,6 +65,25 @@ class UploadTag extends BaseConfigurableApiTag
         parent::__construct($configuration, $uploadParams, $assetType);
 
         $this->setAttribute('data-cloudinary-field', $field);
+    }
+
+    /**
+     * Creates a new UploadTag the provided source and an array of parameters.
+     *
+     * @param string $field                The name of an input field in the same form that will be updated post-upload
+     *                                     with the asset's metadata.
+     * @param array  $params               The upload parameters.
+     *
+     * @return mixed
+     */
+
+    public static function fromParams($field, $params = [])
+    {
+        $configuration = self::fromParamsDefaultConfig();
+
+        $configuration->importJson($params);
+
+        return (new self($field, $configuration, $params))->addClass(ArrayUtils::get($params, ['html', 'class']));
     }
 
     /**

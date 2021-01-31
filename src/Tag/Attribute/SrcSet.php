@@ -12,10 +12,13 @@ namespace Cloudinary\Tag;
 
 use Cloudinary\Asset\Image;
 use Cloudinary\Cache\ResponsiveBreakpointsCache;
+use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\ResponsiveBreakpointsConfig;
 use Cloudinary\Log\LoggerTrait;
-use Cloudinary\Transformation\Scale;
+use Cloudinary\StringUtils;
+use Cloudinary\Transformation\Resize;
+use Cloudinary\Transformation\Transformation;
 use InvalidArgumentException;
 
 /**
@@ -45,6 +48,11 @@ class SrcSet
     protected $responsiveBreakpointsConfig;
 
     /**
+     * @var Transformation $transformation The srcset transformation.
+     */
+    protected $transformation;
+
+    /**
      * SrcSet constructor.
      *
      * @param               $image
@@ -52,11 +60,13 @@ class SrcSet
      */
     public function __construct($image, $configuration = null)
     {
-        $this->image = $image;
-        $this->logging = $configuration->logging;
+        $this->image                       = $image;
+        $this->logging                     = $configuration->logging;
         $this->responsiveBreakpointsConfig = $configuration->responsiveBreakpoints;
 
         $this->breakpoints($configuration->responsiveBreakpoints->breakpoints); // take configuration breakpoints
+
+        $this->transformation($configuration->responsiveBreakpoints->transformation);
     }
 
     /**
@@ -69,6 +79,20 @@ class SrcSet
     public function breakpoints(array $breakpoints = null)
     {
         $this->breakpoints = $breakpoints;
+
+        return $this;
+    }
+
+    /**
+     * Sets the custom transformation for the srcset.
+     *
+     * @param array|null $transformation The breakpoints to set.
+     *
+     * @return $this
+     */
+    public function transformation($transformation = null)
+    {
+        $this->transformation = ClassUtils::forceInstance($transformation, Transformation::class);
 
         return $this;
     }
@@ -92,7 +116,7 @@ class SrcSet
         foreach ([$minWidth, $maxWidth, $maxImages] as $arg) {
             if (empty($arg) || ! is_numeric($arg) || is_string($arg)) {
                 $message = 'Either valid (minWidth, maxWidth, maxImages) or breakpoints' .
-                    'must be provided to the image srcset attribute';
+                           'must be provided to the image srcset attribute';
                 $this->getLogger()->critical($message);
                 throw new InvalidArgumentException($message);
             }
@@ -163,7 +187,10 @@ class SrcSet
             ', ',
             array_map(
                 function ($b) {
-                    return $this->image->toUrl(Scale::scale($b)) . " {$b}w";
+                    $transformationStr    = (string)$this->transformation->toUrl(Resize::scale($b));
+                    $appendTransformation = ! StringUtils::contains($transformationStr, '/');
+
+                    return $this->image->toUrl($transformationStr, $appendTransformation) . " {$b}w";
                 },
                 $breakpoints
             )
@@ -177,8 +204,10 @@ class SrcSet
      * calculation.
      *
      * @return array
+     *
+     * @internal
      */
-    protected function getBreakpoints()
+    public function getBreakpoints()
     {
         if (! empty($this->breakpoints)) {
             return $this->breakpoints;

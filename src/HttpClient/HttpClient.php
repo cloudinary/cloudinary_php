@@ -54,6 +54,7 @@ class HttpClient
      * @return mixed
      *
      * @throws Error
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getJson($url)
     {

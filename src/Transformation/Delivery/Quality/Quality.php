@@ -34,7 +34,7 @@ class Quality extends BaseAction
      */
     public function __construct($level, ...$values)
     {
-        parent::__construct(new QualityParam($level, ...$values));
+        parent::__construct(new QualityQualifier($level, ...$values));
     }
 
     /**
@@ -75,13 +75,13 @@ class Quality extends BaseAction
      */
     protected function setSimpleValue($name, $value = null)
     {
-        $this->parameters[QualityParam::getName()]->setSimpleValue($name, $value);
+        $this->qualifiers[QualityQualifier::getName()]->setSimpleValue($name, $value);
 
         return $this;
     }
 
     /**
-     * Sets the simple named value of the quality parameter.
+     * Sets the simple named value of the quality qualifier.
      *
      * @param string             $name  The named argument name
      * @param BaseComponent|null $value The value
@@ -92,7 +92,7 @@ class Quality extends BaseAction
      */
     protected function setSimpleNamedValue($name, $value = null)
     {
-        $this->parameters[QualityParam::getName()]->setSimpleNamedValue($name, $value);
+        $this->qualifiers[QualityQualifier::getName()]->setSimpleNamedValue($name, $value);
 
         return $this;
     }

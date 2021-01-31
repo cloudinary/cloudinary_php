@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * The predefined streaming profiles.
@@ -21,7 +21,7 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class StreamingProfile extends BaseParameter
+class StreamingProfile extends BaseQualifier
 {
     const SP_4K        = '4k';
     const FULL_HD      = 'full_hd';
@@ -30,4 +30,74 @@ class StreamingProfile extends BaseParameter
     const FULL_HD_WIFI = 'full_hd_wifi';
     const FULL_HD_LEAN = 'full_hd_lean';
     const HD_LEAN      = 'hd_lean';
+
+    /**
+     * Streaming profile 4k.
+     *
+     * @return string
+     */
+    public static function sp4k()
+    {
+        return self::SP_4K;
+    }
+
+    /**
+     * Streaming profile full hd.
+     *
+     * @return string
+     */
+    public static function fullHd()
+    {
+        return self::FULL_HD;
+    }
+
+    /**
+     * Streaming profile hd.
+     *
+     * @return string
+     */
+    public static function hd()
+    {
+        return self::HD;
+    }
+
+    /**
+     * Streaming profile sd.
+     *
+     * @return string
+     */
+    public static function sd()
+    {
+        return self::SD;
+    }
+
+    /**
+     * Streaming profile full hd wifi.
+     *
+     * @return string
+     */
+    public static function fullHdWifi()
+    {
+        return self::FULL_HD_WIFI;
+    }
+
+    /**
+     * Streaming profile full hd lean.
+     *
+     * @return string
+     */
+    public static function fullHdLean()
+    {
+        return self::FULL_HD_LEAN;
+    }
+
+    /**
+     * Streaming profile hd lean.
+     *
+     * @return string
+     */
+    public static function hdLean()
+    {
+        return self::HD_LEAN;
+    }
 }

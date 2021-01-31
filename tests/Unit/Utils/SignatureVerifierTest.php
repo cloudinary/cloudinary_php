@@ -62,7 +62,7 @@ class SignatureVerifierTest extends AssetTestCase
 
         self::$timestamp = Utils::unixTimeNow() - self::$validFor;
 
-        Configuration::instance()->account->apiSecret = self::API_SECRET;
+        Configuration::instance()->cloud->apiSecret = self::API_SECRET;
     }
 
     public function testSuccessfulNotificationSignatureVerification()
@@ -146,7 +146,7 @@ class SignatureVerifierTest extends AssetTestCase
      */
     public function testNotificationMissingApiSecret()
     {
-        Configuration::instance()->account->apiSecret = null;
+        Configuration::instance()->cloud->apiSecret = null;
 
         SignatureVerifier::verifyNotificationSignature(
             self::$notificationBody,
@@ -257,7 +257,7 @@ class SignatureVerifierTest extends AssetTestCase
      */
     public function testApiResponseMissingApiSecret()
     {
-        Configuration::instance()->account->apiSecret = null;
+        Configuration::instance()->cloud->apiSecret = null;
 
         SignatureVerifier::verifyApiResponseSignature(
             self::$publicId,

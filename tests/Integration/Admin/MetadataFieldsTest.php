@@ -23,7 +23,7 @@ use Cloudinary\Api\Metadata\Validators\AndValidator;
 use Cloudinary\Api\Metadata\Validators\DateGreaterThan;
 use Cloudinary\Api\Metadata\Validators\DateLessThan;
 use Cloudinary\Api\Metadata\Validators\IntLessThan;
-use Cloudinary\Test\Integration\TestHelpers\MockAdminApi;
+use Cloudinary\Test\Helpers\MockAdminApi;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use DateInterval;
 use DateTime;
@@ -120,7 +120,7 @@ class MetadataFieldsTest extends IntegrationTestCase
 
     public static function tearDownAfterClass()
     {
-        self::cleanupResourcesByTag(self::$UNIQUE_TEST_TAG);
+        self::cleanupAssetsByTag(self::$UNIQUE_TEST_TAG);
         foreach (self::$METADATA_FIELDS as $externalId) {
             self::cleanupMetadataField($externalId);
         }
@@ -411,8 +411,8 @@ class MetadataFieldsTest extends IntegrationTestCase
 
         self::assertMetadataFieldDataSource($result);
         self::assertArrayContainsArray($result['values'], self::$DATASOURCE_SINGLE[0]);
-        $this->assertCount(count(self::$DATASOURCE_MULTIPLE), $result['values']);
-        $this->assertEquals(self::$DATASOURCE_SINGLE[0]['value'], $result['values'][0]['value']);
+        self::assertCount(count(self::$DATASOURCE_MULTIPLE), $result['values']);
+        self::assertEquals(self::$DATASOURCE_SINGLE[0]['value'], $result['values'][0]['value']);
     }
 
     /**
@@ -475,12 +475,12 @@ class MetadataFieldsTest extends IntegrationTestCase
         );
 
         self::assertMetadataFieldDataSource($result);
-        $this->assertCount(count(self::$DATASOURCE_MULTIPLE) - 1, $result['values']);
+        self::assertCount(count(self::$DATASOURCE_MULTIPLE) - 1, $result['values']);
 
         $values = array_column($result['values'], 'value');
 
-        $this->assertContains(self::$DATASOURCE_MULTIPLE[1]['value'], $values);
-        $this->assertContains(self::$DATASOURCE_MULTIPLE[2]['value'], $values);
+        self::assertContains(self::$DATASOURCE_MULTIPLE[1]['value'], $values);
+        self::assertContains(self::$DATASOURCE_MULTIPLE[2]['value'], $values);
     }
 
     /**
@@ -590,6 +590,6 @@ class MetadataFieldsTest extends IntegrationTestCase
             ]
         );
         self::assertMetadataFieldDataSource($result);
-        $this->assertCount(3, $result['values']);
+        self::assertCount(3, $result['values']);
     }
 }

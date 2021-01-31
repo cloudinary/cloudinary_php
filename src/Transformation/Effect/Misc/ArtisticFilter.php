@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class ArtisticFilter
  */
-class ArtisticFilter extends ValueEffectParam
+class ArtisticFilter extends ValueEffectQualifier
 {
     const AL_DENTE   = 'al_dente';
     const ATHENA     = 'athena';

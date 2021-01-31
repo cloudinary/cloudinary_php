@@ -74,7 +74,7 @@ class Range implements ComponentInterface
      */
     public function __toString()
     {
-        return ArrayUtils::implodeActionParams($this->startOffset, $this->endOffset);
+        return ArrayUtils::implodeActionQualifiers($this->startOffset, $this->endOffset);
     }
 
     /**

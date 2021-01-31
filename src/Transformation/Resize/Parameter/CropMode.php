@@ -10,26 +10,26 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class CropMode
  *
- * Represents a crop mode parameter (c_ in the URL).
+ * Represents a crop mode qualifier (c_ in the URL).
  *
  * @internal
  */
-class CropMode extends BaseParameter
+class CropMode extends BaseQualifier
 {
     use CropModeTrait;
 
     /**
-     * @var string $name The name of the CropMode parameter.
+     * @var string $name The name of the CropMode qualifier.
      */
     protected static $name = 'crop_mode';
 
     /**
-     * @var string $key The key of the CropMode parameter.
+     * @var string $key The key of the CropMode qualifier.
      */
     protected static $key = 'c';
 
@@ -41,14 +41,14 @@ class CropMode extends BaseParameter
 
     /**
      * The FIT crop mode resizes the asset so that it takes up as much space as possible within a bounding box defined
-     * by the given width and height parameters. The original aspect ratio is retained and all of the original asset
+     * by the given width and height qualifiers. The original aspect ratio is retained and all of the original asset
      * is visible.
      */
     const FIT = 'fit';
 
     /**
      * The LIMIT_FIT crop mode resizes the asset so that it takes up as much space as possible within a bounding box
-     * defined by the given width and height parameters, but only if the original asset is larger than the given limit
+     * defined by the given width and height qualifiers, but only if the original asset is larger than the given limit
      * (width and height). The asset is scaled down, the original aspect ratio is retained and all of the original
      * asset is visible.
      */
@@ -56,7 +56,7 @@ class CropMode extends BaseParameter
 
     /**
      * The MINIMUM_FIT crop mode resizes the asset so that it takes up as much space as possible within a bounding box
-     * defined by the given width and height parameters, but only if the original asset is smaller than the given
+     * defined by the given width and height qualifiers, but only if the original asset is smaller than the given
      * minimum (width and height). The asset is scaled up, the original aspect ratio is retained and all of the
      * original asset is visible.
      */

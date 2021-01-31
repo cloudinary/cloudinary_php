@@ -23,12 +23,12 @@ class SamplePage
     public $description;
     public $htmlContent = '<h2>Overview</h2>
         <p>
-        Cloudinary PHP V2 SDK is the first SDK2.0 release. <br>
+        Cloudinary PHP SDK v2 is the first SDK v2 release. <br>
         Designed to change the way developers interact with our service,
         it brings a more language oriented approach and improved developer experience.
         There\'s increased discoverability to help developers figure out what can be done
         and to keep mistakes to a minimum.<br>
-        This page is part of the PHP V2 beta. You can install the new SDK,
+        This page is part of the Cloudinary PHP SDK v2. You can install the new SDK,
         play around with the syntax and see the results in live view.
         </p>
         <p>

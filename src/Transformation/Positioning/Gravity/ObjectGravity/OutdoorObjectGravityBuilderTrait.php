@@ -20,60 +20,60 @@ trait OutdoorObjectGravityBuilderTrait
     /**
      * Gravity outdoor.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function outdoor()
+    public static function outdoor()
     {
-        return $this->add(ObjectGravity::OUTDOOR);
+        return ObjectGravity::OUTDOOR;
     }
 
     /**
      * Gravity trafficLight.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function trafficLight()
+    public static function trafficLight()
     {
-        return $this->add(ObjectGravity::TRAFFIC_LIGHT);
+        return ObjectGravity::TRAFFIC_LIGHT;
     }
 
     /**
      * Gravity stopSign.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function stopSign()
+    public static function stopSign()
     {
-        return $this->add(ObjectGravity::STOP_SIGN);
+        return ObjectGravity::STOP_SIGN;
     }
 
     /**
      * Gravity parkingMeter.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function parkingMeter()
+    public static function parkingMeter()
     {
-        return $this->add(ObjectGravity::PARKING_METER);
+        return ObjectGravity::PARKING_METER;
     }
 
     /**
      * Gravity fireHydrant.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function fireHydrant()
+    public static function fireHydrant()
     {
-        return $this->add(ObjectGravity::FIRE_HYDRANT);
+        return ObjectGravity::FIRE_HYDRANT;
     }
 
     /**
      * Gravity bench.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bench()
+    public static function bench()
     {
-        return $this->add(ObjectGravity::BENCH);
+        return ObjectGravity::BENCH;
     }
 }

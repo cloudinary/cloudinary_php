@@ -21,8 +21,9 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-abstract class AutoGravity
+class AutoGravity extends GravityQualifier
 {
+    const AUTO    = 'auto';
     const CLASSIC = 'classic';
     const SUBJECT = 'subject';
 
@@ -50,5 +51,17 @@ abstract class AutoGravity
     public static function object($gravity)
     {
         return new AutoGravityObject($gravity);
+    }
+
+    /**
+     * Adds fallback gravities (usually AutoGravity).
+     *
+     * @param array|AutoGravity|ObjectGravity|string|mixed $fallbackGravities The fallback gravities.
+     *
+     * @return AutoGravity
+     */
+    public function autoFocus(...$fallbackGravities)
+    {
+        return $this->add(...$fallbackGravities);
     }
 }

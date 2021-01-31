@@ -85,8 +85,8 @@ final class ResponsiveBreakpointsCacheTest extends UnitTestCase
         self::markTestSkipped('Skip integration test');
         $actualBreakpoints = $this->cache->get(new Image(AssetTestCase::IMAGE_NAME), true);
 
-        $this->assertInternalType('array', $actualBreakpoints);
-        $this->assertGreaterThan(0, count($actualBreakpoints));
+        self::assertInternalType('array', $actualBreakpoints);
+        self::assertGreaterThan(0, count($actualBreakpoints));
     }
 
     /**

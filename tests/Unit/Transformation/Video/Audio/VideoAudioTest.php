@@ -13,10 +13,9 @@ namespace Cloudinary\Test\Unit\Transformation\Video\Audio;
 use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\AudioFrequency;
-use Cloudinary\Transformation\Background;
 use Cloudinary\Transformation\Fps;
 use Cloudinary\Transformation\KeyframeInterval;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
+use Cloudinary\Transformation\Timeline;
 
 /**
  * Class VideoAudioTest
@@ -25,7 +24,7 @@ final class VideoAudioTest extends UnitTestCase
 {
     public function testAudioFrequency()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'af_44100',
             (string)AudioFrequency::freq44100()
         );
@@ -35,20 +34,20 @@ final class VideoAudioTest extends UnitTestCase
     {
         $aac = AudioCodec::aac();
 
-        $this->assertEquals(
+        self::assertEquals(
             'ac_aac',
             (string)$aac
         );
 
         $acNone = AudioCodec::none();
 
-        $this->assertEquals(
+        self::assertEquals(
             'ac_none',
             (string)$acNone
         );
     }
 
-    public function testVideoRange()
+    public function testTimeline()
     {
         $ranges = [
             'so_2.67,eo_3.22'   => [2.67, 3.22],
@@ -60,15 +59,15 @@ final class VideoAudioTest extends UnitTestCase
         ];
 
         foreach ($ranges as $transformation => $range) {
-            $this->assertEquals(
+            self::assertEquals(
                 $transformation,
-                (string)VideoRange::range(...$range)
+                (string)Timeline::position(...$range)
             );
         }
 
-        $this->assertEquals(
+        self::assertEquals(
             'so_2.66,eo_3.21',
-            (string)VideoRange::range()->offset('2.66..3.21')
+            (string)Timeline::position()->offset('2.66..3.21')
         );
     }
 
@@ -86,7 +85,7 @@ final class VideoAudioTest extends UnitTestCase
         ];
 
         foreach ($fpsTestValues as $value) {
-            $this->assertEquals(
+            self::assertEquals(
                 $value[1],
                 (string)Fps::fromParams($value[0])
             );
@@ -105,18 +104,10 @@ final class VideoAudioTest extends UnitTestCase
         ];
 
         foreach ($testValues as $value) {
-            $this->assertEquals(
+            self::assertEquals(
                 $value[1],
                 (string)new KeyframeInterval($value[0])
             );
         }
-    }
-
-    public function testBlurredBackground()
-    {
-        $this->assertStrEquals(
-            'b_blurred:400:15',
-            Background::blurred()->intensity(400)->brightness(15)
-        );
     }
 }

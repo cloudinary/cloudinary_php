@@ -13,8 +13,8 @@ return new Sami(
     [
         'theme'                => 'cloudinary',
         'template_dirs'        => [$docsDir . 'themes'],
-        'title'                => 'Cloudinary PHP SDK v2',
-        'version'              => '2.0.0-beta8',
+        'title'                => 'Cloudinary PHP SDK',
+        'version'              => '2.0.0',
         'build_dir'            => $docsDir . 'build',
         'cache_dir'            => $docsDir . 'cache',
         'default_opened_level' => 1,

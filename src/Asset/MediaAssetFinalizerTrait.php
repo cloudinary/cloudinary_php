@@ -35,7 +35,7 @@ trait MediaAssetFinalizerTrait
      */
     protected function finalizeTransformation($withTransformation = null, $append = true)
     {
-        if ($withTransformation === null) {
+        if ($withTransformation === null && ! $this->urlConfig->responsiveWidth) {
             return (string)$this->transformation;
         }
 
@@ -44,6 +44,11 @@ trait MediaAssetFinalizerTrait
         }
 
         $resultingTransformation = clone $this->transformation;
+
+        if ($this->urlConfig->responsiveWidth) {
+            $resultingTransformation->addTransformation($this->urlConfig->responsiveWidthTransformation);
+        }
+
         $resultingTransformation->addTransformation($withTransformation);
 
         return (string)$resultingTransformation;
@@ -64,7 +69,7 @@ trait MediaAssetFinalizerTrait
         $signature = StringUtils::base64UrlEncode(
             Utils::sign(
                 $toSign,
-                $this->account->apiSecret,
+                $this->cloud->apiSecret,
                 true,
                 $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
             )

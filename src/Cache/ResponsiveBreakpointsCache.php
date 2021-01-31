@@ -11,6 +11,7 @@
 namespace Cloudinary\Cache;
 
 use Cloudinary\ArrayUtils;
+use Cloudinary\Asset\BaseMediaAsset;
 use Cloudinary\Asset\Image;
 use Cloudinary\Cache\Adapter\CacheAdapter;
 use Cloudinary\ClassUtils;
@@ -19,7 +20,7 @@ use Cloudinary\Configuration\ResponsiveBreakpointsConfig;
 use Cloudinary\Exception\Error;
 use Cloudinary\HttpClient;
 use Cloudinary\Log\LoggerTrait;
-use Cloudinary\Transformation\Parameter\Misc\BreakpointsJson;
+use Cloudinary\Transformation\Qualifier\Misc\BreakpointsJson;
 use Exception;
 use InvalidArgumentException;
 
@@ -133,7 +134,7 @@ class ResponsiveBreakpointsCache
     /**
      * Extracts the parameters required in order to calculate the key of the cache.
      *
-     * @param Image $asset
+     * @param BaseMediaAsset $asset
      *
      * @return array A list of values used to calculate the cache key.
      */
@@ -216,7 +217,7 @@ class ResponsiveBreakpointsCache
     /**
      * Sets responsive breakpoints identified by public ID and options
      *
-     * @param Image $asset The asset.
+     * @param BaseMediaAsset $asset The asset.
      * @param array $value Array of responsive breakpoints to set
      *
      * @return bool true on success or false on failure

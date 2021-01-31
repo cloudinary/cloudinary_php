@@ -86,13 +86,14 @@ class VideoSourceTag extends BaseTag
     /**
      * Sets the type.
      *
-     * @param SourceType|string $type The type of the source.
+     * @param SourceType|string $type   The type of the source.
+     * @param string|array      $codecs The codecs.
      *
      * @return static
      */
-    public function type($type)
+    public function type($type, $codecs = null)
     {
-        $this->sourceType = ClassUtils::verifyInstance($type, SourceType::class);
+        $this->sourceType = ClassUtils::verifyInstance($type, VideoSourceType::class, null, $codecs);
 
         $this->video->asset->extension = $this->sourceType->type;
 

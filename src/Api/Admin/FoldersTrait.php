@@ -16,7 +16,7 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\ArrayUtils;
 
 /**
- * Enables you to manage the folders in your account or cloud.
+ * Enables you to manage the folders in your cloud.
  *
  * **Learn more**: <a
  * href=https://cloudinary.com/documentation/admin_api#folders target="_blank">

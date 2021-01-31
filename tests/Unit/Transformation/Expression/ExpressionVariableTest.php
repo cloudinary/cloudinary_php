@@ -45,6 +45,6 @@ final class ExpressionVariableTest extends TestCase
         self::assertEquals(3.1415, (string)UVal::numeric(3.1415));
         self::assertEquals('!hello!', (string)UVal::string('hello'));
         self::assertEquals('!apple:peach:orange!', (string)UVal::stringArray(['apple', 'peach', 'orange']));
-        self::assertEquals('ref:!blur.wasm!', (string)UVal::fileReference('blur.wasm'));
+        self::assertEquals('ref:!blur.wasm!', (string)UVal::assetReference('blur.wasm'));
     }
 }

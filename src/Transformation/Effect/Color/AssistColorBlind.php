@@ -15,7 +15,7 @@ namespace Cloudinary\Transformation;
  *
  * @see ImageColorEffectTrait::assistColorBlind()
  */
-class AssistColorBlind extends LimitedEffectParam
+class AssistColorBlind extends LimitedEffectQualifier
 {
     const X_RAY = 'xray';
 
@@ -38,7 +38,7 @@ class AssistColorBlind extends LimitedEffectParam
      *
      * @return AssistColorBlind
      */
-    public function stripeStrength($strength)
+    public function stripesStrength($strength)
     {
         return $this->setAssistType($strength);
     }

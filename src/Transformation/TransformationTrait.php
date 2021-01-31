@@ -24,8 +24,5 @@ trait TransformationTrait
 
         ImageSpecificTransformationTrait::overlay insteadof VideoSpecificTransformationTrait;
         VideoSpecificTransformationTrait::overlay as videoOverlay;
-
-        ImageSpecificTransformationTrait::cutter insteadof VideoSpecificTransformationTrait;
-        VideoSpecificTransformationTrait::cutter as videoCutter;
     }
 }

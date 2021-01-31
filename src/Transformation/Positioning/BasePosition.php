@@ -15,4 +15,5 @@ namespace Cloudinary\Transformation;
  */
 abstract class BasePosition extends BaseAction
 {
+    use PositionFlagTrait;
 }

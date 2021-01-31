@@ -18,10 +18,11 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Asset\Video;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Tag\ImageTag;
+use Cloudinary\Tag\TagBuilder;
 use Cloudinary\Tag\VideoTag;
 
 /**
- * Defines the Cloudinary instance. 
+ * Defines the Cloudinary instance.
  *
  * @api
  */
@@ -32,14 +33,19 @@ class Cloudinary
      *
      * @var string VERSION
      */
-    const VERSION = '2.0.0-beta8';
+    const VERSION = '2.0.0';
 
     /**
-     * Defines the Cloudinary account details and other global configuration options.
+     * Defines the Cloudinary cloud details and other global configuration options.
      *
      * @var Configuration $configuration
      */
     public $configuration;
+
+    /**
+     * @var TagBuilder $tagBuilder The TagBuilder object that includes builders for all tags.
+     */
+    protected $tagBuilder;
 
     /**
      * Cloudinary constructor.
@@ -49,6 +55,7 @@ class Cloudinary
     public function __construct($config = null)
     {
         $this->configuration = new Configuration($config);
+        $this->tagBuilder    = new TagBuilder($this->configuration);
     }
 
     /**
@@ -60,7 +67,7 @@ class Cloudinary
      */
     public function image($publicId)
     {
-        return new Image($publicId, $this->configuration);
+        return $this->createWithConfiguration($publicId, Image::class);
     }
 
     /**
@@ -72,7 +79,7 @@ class Cloudinary
      */
     public function video($publicId)
     {
-        return new Video($publicId, $this->configuration);
+        return $this->createWithConfiguration($publicId, Video::class);
     }
 
     /**
@@ -84,7 +91,17 @@ class Cloudinary
      */
     public function raw($publicId)
     {
-        return new File($publicId, $this->configuration);
+        return $this->createWithConfiguration($publicId, File::class);
+    }
+
+    /**
+     * Returns an instance of the TagBuilder class that includes builders for all tags.
+     *
+     * @return TagBuilder
+     */
+    public function tag()
+    {
+        return $this->tagBuilder;
     }
 
     /**
@@ -96,7 +113,7 @@ class Cloudinary
      */
     public function imageTag($publicId)
     {
-        return new ImageTag($publicId, $this->configuration);
+        return $this->createWithConfiguration($publicId, ImageTag::class);
     }
 
     /**
@@ -109,7 +126,7 @@ class Cloudinary
      */
     public function videoTag($publicId, $sources = null)
     {
-        return new VideoTag($publicId, $sources, $this->configuration);
+        return $this->createWithConfiguration($publicId, VideoTag::class, $sources);
     }
 
     /**
@@ -140,5 +157,24 @@ class Cloudinary
     public function searchApi()
     {
         return new SearchApi($this->configuration);
+    }
+
+    /**
+     * Creates a new object and imports current instance configuration.
+     *
+     * @param mixed  $publicId  The public Id or the object.
+     * @param string $className The class name of the object to create.
+     * @param mixed  ...$args   Additional constructor arguments.
+     *
+     * @return mixed
+     *
+     * @internal
+     */
+    protected function createWithConfiguration($publicId, $className, ...$args)
+    {
+        $instance = ClassUtils::forceInstance($publicId, $className, null, ...$args);
+        $instance->importConfiguration($this->configuration);
+
+        return $instance;
     }
 }

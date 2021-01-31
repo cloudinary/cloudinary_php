@@ -89,7 +89,7 @@ final class UploadApiTest extends IntegrationTestCase
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
+        self::cleanupTestAssets();
         self::cleanupUploadPreset(self::$UNIQUE_UPLOAD_PRESET);
         self::cleanupMetadataField(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
 
@@ -103,7 +103,7 @@ final class UploadApiTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'width'  => self::TEST_IMAGE_WIDTH,
@@ -121,7 +121,7 @@ final class UploadApiTest extends IntegrationTestCase
 
         $result = $p->wait();
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'width'  => self::TEST_IMAGE_WIDTH,
@@ -149,7 +149,7 @@ final class UploadApiTest extends IntegrationTestCase
 
         $result = self::$uploadApi->upload($fd, ['tags' => self::$ASSET_TAGS]);
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'width'  => self::TEST_IMAGE_WIDTH,
@@ -168,7 +168,7 @@ final class UploadApiTest extends IntegrationTestCase
             ['filename' => self::$UNIQUE_TEST_ID, 'tags' => self::$ASSET_TAGS]
         );
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'width'  => self::SMALL_TEST_IMAGE_WIDTH,
@@ -185,11 +185,11 @@ final class UploadApiTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->upload(AssetTestCase::FETCH_IMAGE_URL, ['tags' => self::$ASSET_TAGS]);
 
-        self::assertValidResource($result, ['original_filename' => AssetTestCase::ASSET_ID]);
+        self::assertValidAsset($result, ['original_filename' => AssetTestCase::ASSET_ID]);
 
         $result = self::$uploadApi->upload(new Uri(AssetTestCase::FETCH_IMAGE_URL), ['tags' => self::$ASSET_TAGS]);
 
-        self::assertValidResource($result, ['original_filename' => AssetTestCase::ASSET_ID]);
+        self::assertValidAsset($result, ['original_filename' => AssetTestCase::ASSET_ID]);
     }
 
     /**
@@ -202,7 +202,7 @@ final class UploadApiTest extends IntegrationTestCase
         $gsImage = 'gs://gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_BQA.TIF';
         $result  = self::$uploadApi->upload($gsImage, ['tags' => self::$ASSET_TAGS]);
 
-        $this->assertEquals($gsImage, $result['original_filename']);
+        self::assertEquals($gsImage, $result['original_filename']);
     }
 
     /**
@@ -221,7 +221,7 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'original_filename' => self::$LARGE_TEST_IMAGE_ID,
@@ -248,7 +248,7 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
 
-        self::assertValidResource($result, ['original_filename' => self::$REMOTE_TEST_IMAGE_ID]);
+        self::assertValidAsset($result, ['original_filename' => self::$REMOTE_TEST_IMAGE_ID]);
     }
 
     /**
@@ -281,7 +281,7 @@ final class UploadApiTest extends IntegrationTestCase
             ['tags' => [self::$UNIQUE_TEST_TAG]]
         );
 
-        self::assertValidResource($result, ['format' => 'gif']);
+        self::assertValidAsset($result, ['format' => 'gif']);
     }
 
     /**
@@ -289,18 +289,18 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testUploadIncomingTransformation()
     {
-        $result = self::uploadTestResourceImage(['transformation' => self::$INCOMING_TRANSFORMATION_ARR]);
+        $result = self::uploadTestAssetImage(['transformation' => self::$INCOMING_TRANSFORMATION_ARR]);
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
             ]
         );
 
-        $result = self::uploadTestResourceImage(['transformation' => self::$INCOMING_TRANSFORMATION_OBJ]);
+        $result = self::uploadTestAssetImage(['transformation' => self::$INCOMING_TRANSFORMATION_OBJ]);
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
@@ -325,9 +325,9 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testAccessibilityAnalysis()
     {
-        $result = self::uploadTestResourceImage(['accessibility_analysis' => true], self::TEST_IMAGE_PATH);
+        $result = self::uploadTestAssetImage(['accessibility_analysis' => true], self::TEST_IMAGE_PATH);
 
-        $this->assertArrayHasKey('accessibility_analysis', $result);
+        self::assertArrayHasKey('accessibility_analysis', $result);
     }
 
     /**
@@ -337,7 +337,7 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testUploadWithMetadata()
     {
-        $resource = self::$uploadApi->upload(
+        $asset = self::$uploadApi->upload(
             self::TEST_IMAGE_PATH,
             [
                 'tags' => self::$ASSET_TAGS,
@@ -345,9 +345,9 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             self::$METADATA_FIELD_VALUE,
-            $resource['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
+            $asset['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
         );
     }
 
@@ -358,10 +358,10 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testExplicitWithMetadata()
     {
-        $resource = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
+        $asset = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
 
         $result = self::$uploadApi->explicit(
-            $resource['public_id'],
+            $asset['public_id'],
             [
                 'type' => DeliveryType::UPLOAD,
                 'resource_type' => AssetType::IMAGE,
@@ -369,7 +369,7 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             self::$METADATA_FIELDS[self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID],
             $result['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
         );
@@ -382,17 +382,17 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testUploaderUpdateMetadata()
     {
-        $resource = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
+        $asset = self::$uploadApi->upload(self::TEST_IMAGE_PATH, ['tags' => self::$ASSET_TAGS]);
 
         $result = self::$uploadApi->updateMetadata(
             self::$METADATA_FIELDS,
             [
-                $resource['public_id']
+                $asset['public_id']
             ]
         );
 
-        $this->assertCount(1, $result['public_ids']);
-        $this->assertContains($resource['public_id'], $result['public_ids']);
+        self::assertCount(1, $result['public_ids']);
+        self::assertContains($asset['public_id'], $result['public_ids']);
     }
 
     /**
@@ -413,9 +413,9 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertCount(2, $result['public_ids']);
-        $this->assertContains($resource1['public_id'], $result['public_ids']);
-        $this->assertContains($resource2['public_id'], $result['public_ids']);
+        self::assertCount(2, $result['public_ids']);
+        self::assertContains($resource1['public_id'], $result['public_ids']);
+        self::assertContains($resource2['public_id'], $result['public_ids']);
     }
 
     /**
@@ -430,7 +430,7 @@ final class UploadApiTest extends IntegrationTestCase
             ['eval' => self::TEST_EVAL_STR, 'tags' => self::$ASSET_TAGS]
         );
 
-        self::assertValidResource(
+        self::assertValidAsset(
             $result,
             [
                 'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
@@ -447,7 +447,7 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testResponsiveBreakpointsFormat()
     {
-        $resource = self::$uploadApi->upload(
+        $asset = self::$uploadApi->upload(
             self::TEST_IMAGE_PATH,
             [
                 'responsive_breakpoints' => [
@@ -463,10 +463,10 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
 
-        self::assertValidResource($resource);
-        self::assertArrayHasKey('responsive_breakpoints', $resource);
-        self::assertEquals('a_90', $resource['responsive_breakpoints'][0]['transformation']);
-        self::assertRegExp('/\.gif$/', $resource['responsive_breakpoints'][0]['breakpoints'][0]['url']);
-        self::assertRegExp('/\.gif$/', $resource['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
+        self::assertValidAsset($asset);
+        self::assertArrayHasKey('responsive_breakpoints', $asset);
+        self::assertEquals('a_90', $asset['responsive_breakpoints'][0]['transformation']);
+        self::assertRegExp('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['url']);
+        self::assertRegExp('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
     }
 }

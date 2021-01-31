@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Argument\Range\Duration;
 
 /**
  * Trait PlaybackEffectTrait
@@ -23,20 +22,20 @@ trait PlaybackEffectTrait
     /**
      * Changes the speed of the video playback.
      *
-     * @param int $speed The percentage change of speed. Positive numbers speed up the playback, negative numbers
+     * @param int $rate  The percentage change of speed. Positive numbers speed up the playback, negative numbers
      *                   slow down the playback (Range: -50 to 100, Server default: 0).
      *
-     * @return EffectAction
+     * @return Accelerate
      */
-    public static function accelerate($speed)
+    public static function accelerate($rate = null)
     {
-        return EffectAction::limited(PlaybackEffect::ACCELERATE, EffectRange::EXTENDED_PERCENT, $speed);
+        return new Accelerate($rate);
     }
 
     /**
      * Causes a video clip to play forwards and then backwards.
      *
-     * Use in conjunction with trimming parameters ('duration', 'start_offset', or 'end_offset') and the 'loop' effect
+     * Use in conjunction with trimming qualifiers ('duration', 'start_offset', or 'end_offset') and the 'loop' effect
      * to deliver a classic (short, repeating) boomerang clip.
      * For details and examples, see 'Create a boomerang video clip' in the Video Transformations guide.
      *
@@ -56,26 +55,13 @@ trait PlaybackEffectTrait
      * For animated GIFs only, you can also specify the loop effect without a numeric value to instruct it to loop
      * the GIF infinitely.
      *
-     * @param int $additionalLoops The additional number of times to play the video or animated GIF.
+     * @param int $additionalIterations The additional number of times to play the video or animated GIF.
      *
-     * @return EffectAction
+     * @return Loop
      */
-    public static function loop($additionalLoops = null)
+    public static function loop($additionalIterations = null)
     {
-        return EffectAction::valued(PlaybackEffect::LOOP, $additionalLoops);
-    }
-
-    /**
-     * Generates an excerpt of the video based on Cloudinary's AI-powered preview algorithm, which identifies the
-     * most interesting video chunks from a video and uses these to generate a video preview.
-     *
-     * @param int $duration The duration of the excerpt in seconds (Server default: 5 seconds).
-     *
-     * @return EffectAction
-     */
-    public static function preview($duration = null)
-    {
-        return EffectAction::valued(PlaybackEffect::PREVIEW, ClassUtils::verifyInstance($duration, Duration::class));
+        return new Loop($additionalIterations);
     }
 
     /**
@@ -101,6 +87,16 @@ trait PlaybackEffectTrait
      */
     public static function volume($level)
     {
-        return EffectAction::fromEffectParam(ClassUtils::verifyInstance($level, Volume::class));
+        return EffectAction::fromEffectQualifier(ClassUtils::verifyInstance($level, Volume::class));
+    }
+
+    /**
+     * Indicates that the video overlay is to be used as a transition between the base and second video.
+     *
+     * @return EffectAction
+     */
+    public static function transition()
+    {
+        return  EffectAction::named(PlaybackEffect::TRANSITION);
     }
 }

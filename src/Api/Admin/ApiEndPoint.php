@@ -17,8 +17,8 @@ class ApiEndPoint
 {
     const PING               = 'ping';
     const USAGE              = 'usage';
-    const RESOURCES          = 'resources';
-    const DERIVED_RESOURCES  = 'derived_resources';
+    const ASSETS             = 'resources';
+    const DERIVED_ASSETS     = 'derived_resources';
     const FOLDERS            = 'folders';
     const TAGS               = 'tags';
     const STREAMING_PROFILES = 'streaming_profiles';

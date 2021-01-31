@@ -12,7 +12,6 @@ namespace Cloudinary\Api\Upload;
 
 use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
-use Cloudinary\Api\ApiUtils;
 use Cloudinary\ArrayUtils;
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -162,13 +161,12 @@ trait TagTrait
     /**
      * Internal call to the tags API.
      *
-     * @param string       $command The command to perform. See TagCommand class for available commands.
+     * @param string       $command   The command to perform. See TagCommand class for available commands.
      * @param string       $tag       The tag.
      * @param array|string $publicIds The public IDs of the assets to apply tag to.
      * @param array        $options   The optional parameters.
      *
      * @return PromiseInterface
-
      * @see TagCommand
      *
      * @internal

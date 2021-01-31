@@ -37,7 +37,7 @@ class Configuration implements ConfigurableInterface
      * @var array
      */
     protected $sections = [
-        AccountConfig::CONFIG_NAME,
+        CloudConfig::CONFIG_NAME,
         ApiConfig::CONFIG_NAME,
         UrlConfig::CONFIG_NAME,
         TagConfig::CONFIG_NAME,
@@ -57,11 +57,11 @@ class Configuration implements ConfigurableInterface
     private static $instance;
 
     /**
-     * The configuration of the account.
+     * The configuration of the cloud.
      *
-     * @var AccountConfig $account
+     * @var CloudConfig $cloud
      */
-    public $account;
+    public $cloud;
 
     /**
      * The configuration of the API.
@@ -155,8 +155,8 @@ class Configuration implements ConfigurableInterface
      */
     protected function initSections()
     {
-        $this->account               = new AccountConfig();
-        $this->api                   = new ApiConfig();
+        $this->cloud = new CloudConfig();
+        $this->api   = new ApiConfig();
         $this->url                   = new UrlConfig();
         $this->tag                   = new TagConfig();
         $this->responsiveBreakpoints = new ResponsiveBreakpointsConfig();
@@ -232,7 +232,7 @@ class Configuration implements ConfigurableInterface
     {
         $json = JsonUtils::decode($json);
 
-        $this->account->importJson($json);
+        $this->cloud->importJson($json);
         $this->api->importJson($json);
         $this->url->importJson($json);
         $this->tag->importJson($json);

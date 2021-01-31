@@ -43,14 +43,14 @@ abstract class Effect
     }
 
     /**
-     * Creates effect from an array of parameters.
+     * Creates effect from an array of qualifiers.
      *
-     * @param string|array $params The effect parameters.
+     * @param string|array $qualifiers The effect qualifiers.
      *
      * @return EffectAction
      */
-    public static function fromParams($params)
+    public static function fromParams($qualifiers)
     {
-        return EffectAction::fromParams(ArrayUtils::build($params));
+        return EffectAction::fromParams(ArrayUtils::build($qualifiers));
     }
 }

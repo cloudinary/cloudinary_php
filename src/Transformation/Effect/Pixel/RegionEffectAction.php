@@ -10,8 +10,6 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\Dimensions\Dimensions;
-
 /**
  * Class RegionEffectAction
  */
@@ -31,7 +29,7 @@ class RegionEffectAction extends EffectAction
     public function __construct($effectName, $range, $strength = null, $region = null, ...$args)
     {
         parent::__construct(
-            new LimitedEffectParam($effectName, $range, $strength),
+            new LimitedEffectQualifier($effectName, $range, $strength),
             ...$args
         );
 
@@ -49,11 +47,11 @@ class RegionEffectAction extends EffectAction
      */
     public function setPointValue($value)
     {
-        if (! isset($this->parameters[Region::getName()])) {
-            $this->addParameter(new Region());
+        if (! isset($this->qualifiers[Region::getName()])) {
+            $this->addQualifier(new Region());
         }
 
-        $this->parameters[Region::getName()]->setPointValue($value);
+        $this->qualifiers[Region::getName()]->setPointValue($value);
 
         return $this;
     }
@@ -69,11 +67,11 @@ class RegionEffectAction extends EffectAction
      */
     protected function setDimension($value)
     {
-        if (! isset($this->parameters[Region::getName()])) {
-            $this->addParameter(new Region());
+        if (! isset($this->qualifiers[Region::getName()])) {
+            $this->addQualifier(new Region());
         }
 
-        $this->parameters[Region::getName()]->setDimension($value);
+        $this->qualifiers[Region::getName()]->setDimension($value);
 
         return $this;
     }

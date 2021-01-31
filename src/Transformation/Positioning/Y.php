@@ -10,11 +10,11 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class Y
  */
-class Y extends BaseParameter
+class Y extends BaseQualifier
 {
 }

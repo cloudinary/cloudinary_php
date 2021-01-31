@@ -39,7 +39,7 @@ trait CornerRadiusTrait
      *
      * @return static
      */
-    public static function radius(...$values)
+    public static function byRadius(...$values)
     {
         return static::createWithRadius(...$values);
     }

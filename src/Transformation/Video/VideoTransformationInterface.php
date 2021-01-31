@@ -10,8 +10,6 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
-
 /**
  * Interface VideoTransformationInterface
  *
@@ -22,13 +20,13 @@ interface VideoTransformationInterface extends CommonTransformationInterface
     /**
      * Shortens a video to the specified range.
      *
-     * @param VideoRange $range The part of the video to keep.
+     * @param Timeline $range The part of the video to keep.
      *
      * @return static
      *
-     * @see \Cloudinary\Transformation\Parameter\VideoRange\VideoRange
+     * @see \Cloudinary\Transformation\Timeline
      */
-    public function trim(VideoRange $range);
+    public function trim(Timeline $range);
 
     /**
      * Rounds the corners of a video.
@@ -42,34 +40,33 @@ interface VideoTransformationInterface extends CommonTransformationInterface
     /**
      * Adds another video, text or image as an overlay over the container video.
      *
-     * @param BaseLayer|string  $videoLayer       The overlay.
-     * @param BasePosition|null $position         The position of the overlay.
-     * @param VideoRange|null   $timelinePosition The timeline position of the overlay.
+     * @param BaseSource|string $videoLayer The overlay.
+     * @param BasePosition|null $position   The position of the overlay.
+     * @param Timeline|null     $timeline   The timeline position of the overlay.
      *
      * @return static
      */
-    public function overlay($videoLayer, $position = null, $timelinePosition = null);
+    public function overlay($videoLayer, $position = null, $timeline = null);
 
     /**
      * Concatenates another video or image.
      *
-     * @param VideoLayer|string $videoLayer       The layer to concatenate.
-     * @param VideoRange        $timelinePosition The position of the concatenated video.
+     * @param Concatenate|VideoSource|string $videoLayer The layer to concatenate.
      *
      * @return static
      */
-    public function concatenate($videoLayer, $timelinePosition = null);
+    public function concatenate($videoLayer);
 
     /**
      * Applies the video as a cutter for the main video.
      *
-     * @param VideoLayer|string $videoLayer       The cutter video layer.
-     * @param BasePosition|null $position         The position of the cutter.
-     * @param VideoRange|null   $timelinePosition The timeline position of the cutter.
+     * @param VideoSource|string $videoLayer The cutter video layer.
+     * @param BasePosition|null  $position   The position of the cutter.
+     * @param Timeline|null      $timeline   The timeline position of the cutter.
      *
      * @return static
      */
-    public function cutter($videoLayer, $position = null, $timelinePosition = null);
+    public function cutter($videoLayer, $position = null, $timeline = null);
 
     /**
      * Adds subtitles to the video.
@@ -83,7 +80,7 @@ interface VideoTransformationInterface extends CommonTransformationInterface
     /**
      * Transcodes the video (or audio) to another format.
      *
-     * @param AudioCodec|VideoCodec|AudioFrequency $transcode The new format.
+     * @param AudioCodec|VideoCodec|AudioFrequency|ToAnimatedAction $transcode The new format.
      *
      * @return static
      */

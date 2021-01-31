@@ -11,15 +11,19 @@
 namespace Cloudinary\Test\Unit\Transformation\Video;
 
 use Cloudinary\Test\Unit\UnitTestCase;
+use Cloudinary\Transformation\Adjust;
+use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Fps;
 use Cloudinary\Transformation\Pad;
-use Cloudinary\Transformation\Parameter\Dimensions\Width;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
+use Cloudinary\Transformation\Qualifier\Dimensions\Width;
 use Cloudinary\Transformation\Scale;
 use Cloudinary\Transformation\StreamingProfile;
-use Cloudinary\Transformation\SubtitlesLayer;
+use Cloudinary\Transformation\SubtitlesSource;
+use Cloudinary\Transformation\Timeline;
+use Cloudinary\Transformation\Transcode;
 use Cloudinary\Transformation\Transformation;
+use Cloudinary\Transformation\VideoEdit;
 use Cloudinary\Transformation\VideoEffect;
 use Cloudinary\Transformation\VideoTransformation;
 
@@ -32,7 +36,9 @@ final class VideoTransformationTest extends UnitTestCase
     {
         $t = new VideoTransformation();
 
-        $t->resize(Scale::scale(new Width(100), 200)->ignoreAspectRatio(true))->resize(Pad::limitPad(50))
+        $t->resize(Scale::scale(new Width(100), 200)->aspectRatio(AspectRatio::ignoreInitialAspectRatio()))->resize(
+            Pad::limitPad(50)
+        )
           ->rotate(17);
 
         $t_expected = 'c_scale,fl_ignore_aspect_ratio,h_200,w_100/c_lpad,w_50/a_17';
@@ -41,7 +47,7 @@ final class VideoTransformationTest extends UnitTestCase
             (string)$t
         );
 
-        $t->trim(VideoRange::range('auto', '90%', 10.1));
+        $t->trim(Timeline::position('auto', '90%', 10.1));
 
         $t2_expected = $t_expected . '/so_auto,eo_90p,du_10.1';
         self::assertEquals(
@@ -93,27 +99,52 @@ final class VideoTransformationTest extends UnitTestCase
         );
     }
 
+    public function testVideoTransformationVideoEdit()
+    {
+        $t = new VideoTransformation();
+
+        $t->videoEdit(VideoEdit::trim()->startOffset('auto')->endOffset('90%')->duration(10.1));
+
+        self::assertEquals(
+            'so_auto,eo_90p,du_10.1',
+            (string)$t
+        );
+    }
+
+    public function testPreview()
+    {
+        self::assertEquals(
+            'e_preview:duration_17',
+            (string)VideoEdit::preview(17)
+        );
+
+        self::assertEquals(
+            'e_preview:duration_17:max_seg_3:min_seg_dur_3',
+            (string)VideoEdit::preview()->duration(17)->maximumSegments(3)->minimumSegmentDuration(3)
+        );
+    }
+
     public function testVideoTransformationLayers()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'l_subtitles:sample_sub_en.srt/fl_layer_apply',
             (string)(new VideoTransformation())->addSubtitles('sample_sub_en.srt')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'l_subtitles:sample_sub_en.srt/fl_layer_apply',
-            (string)(new VideoTransformation())->overlay(new SubtitlesLayer('sample_sub_en.srt'))
+            (string)(new VideoTransformation())->overlay(new SubtitlesSource('sample_sub_en.srt'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'l_lut:iwltbap_aspen.3dl/fl_layer_apply',
-            (string)(new VideoTransformation())->add3DLut('iwltbap_aspen.3dl')
+            (string)(new VideoTransformation())->adjust(Adjust::by3dLut('iwltbap_aspen.3dl'))
         );
     }
 
     public function testVideoTransformationEffects()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'e_noise:17/e_fade:2000/e_fade:-2000/e_deshake:17',
             (string)(new VideoTransformation())
                 ->effect(VideoEffect::noise(17))
@@ -125,25 +156,25 @@ final class VideoTransformationTest extends UnitTestCase
 
     public function testVideoTransformationFps()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'fps_25',
             (string)(new VideoTransformation())
                 ->fps(25)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fps_25-30',
             (string)(new VideoTransformation())
-                ->fps(25, 30)
+                ->transcode(Transcode::fpsRange(25, 30))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fps_25-',
             (string)(new VideoTransformation())
-                ->fps('25-')
+                ->transcode(Transcode::fps('25-'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fps_25',
             (string)(new VideoTransformation())
                 ->fps(new Fps(25))
@@ -152,7 +183,7 @@ final class VideoTransformationTest extends UnitTestCase
 
     public function testVideoTransformationKeyframeInterval()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'ki_0.15',
             (string)(new VideoTransformation())
                 ->keyframeInterval(0.15)
@@ -161,28 +192,28 @@ final class VideoTransformationTest extends UnitTestCase
 
     public function testVideoTransformationStreamingProfile()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'sp_full_hd',
             (string)(new VideoTransformation())
-                ->streamingProfile(StreamingProfile::FULL_HD)
+                ->streamingProfile(StreamingProfile::fullHd())
         );
     }
 
     public function testVideoTransformationBitRate()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'br_120000',
             (string)(new VideoTransformation())
                 ->bitRate(120000)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'br_250k',
             (string)(new VideoTransformation())
                 ->bitRate('250k')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'br_2m',
             (string)(new VideoTransformation())
                 ->bitRate('2m')
@@ -191,7 +222,7 @@ final class VideoTransformationTest extends UnitTestCase
 
     public function testVideoTransformationVariousParams()
     {
-        $this->assertStrEquals(
+        self::assertStrEquals(
             'vs_2',
             (new VideoTransformation())
                 ->videoSampling(2)
@@ -200,13 +231,13 @@ final class VideoTransformationTest extends UnitTestCase
 
     public function testVideoTransformationFlags()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'fl_streaming_attachment:my_streaming_video.mp4',
             (string)(new VideoTransformation())
                 ->streamingAttachment('my_streaming_video.mp4')
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_hlsv3',
             (string)(new Transformation())
                 ->hlsv3()

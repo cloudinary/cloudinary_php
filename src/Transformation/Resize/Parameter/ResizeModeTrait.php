@@ -18,24 +18,24 @@ namespace Cloudinary\Transformation;
 trait ResizeModeTrait
 {
     /**
-     * Modifies percentage-based width & height parameters of overlays and underlays (e.g., 1.0) to be relative to the
+     * Modifies percentage-based width & height qualifiers of overlays and underlays (e.g., 1.0) to be relative to the
      * overlaid region. Currently regions are only defined when using gravity 'face', 'faces' or 'custom'.
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function regionRelative()
     {
-        return new FlagParameter(Flag::REGION_RELATIVE);
+        return new FlagQualifier(Flag::REGION_RELATIVE);
     }
 
     /**
-     * Modifies percentage-based width & height parameters of overlays and underlays (e.g., 1.0) to be relative to the
+     * Modifies percentage-based width & height qualifiers of overlays and underlays (e.g., 1.0) to be relative to the
      * containing image instead of the added layer.
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function relative()
     {
-        return new FlagParameter(Flag::RELATIVE);
+        return new FlagQualifier(Flag::RELATIVE);
     }
 }

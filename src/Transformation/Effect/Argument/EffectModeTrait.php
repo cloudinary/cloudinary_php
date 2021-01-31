@@ -15,7 +15,7 @@ use Cloudinary\ClassUtils;
 /**
  * Trait EffectModeTrait
  *
- * @property ParameterMultiValue $value
+ * @property QualifierMultiValue $value
  */
 trait EffectModeTrait
 {

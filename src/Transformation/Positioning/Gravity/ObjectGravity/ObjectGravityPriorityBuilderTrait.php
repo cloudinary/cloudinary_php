@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Trait ObjectGravityPriorityBuilderTrait
  *
- * @property ParameterMultiValue $value
+ * @property QualifierMultiValue $value
  *
  * @api
  */

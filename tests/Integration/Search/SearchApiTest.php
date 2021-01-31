@@ -55,7 +55,7 @@ class SearchApiTest extends IntegrationTestCase
         self::$PUBLIC_ID_3 = 'search_public_id_3_' . self::$UNIQUE_TEST_ID;
 
         foreach (range(1, 3) as $i) {
-            self::uploadTestResourceImage(
+            self::uploadTestAssetImage(
                 [
                     'public_id' => self::${'PUBLIC_ID_' . $i},
                     'context' => ['stage' => 'value'],
@@ -63,19 +63,19 @@ class SearchApiTest extends IntegrationTestCase
                 ]
             );
         }
-        self::uploadTestResourceImage(
+        self::uploadTestAssetImage(
             [
                 'tags' => [self::$STRING_WITH_UNDERSCORE, self::$STRING_1],
                 'public_id' => self::$STRING_1
             ]
         );
-        self::uploadTestResourceImage(
+        self::uploadTestAssetImage(
             [
                 'tags' => [self::$STRING_2],
                 'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
             ]
         );
-        self::uploadTestResourceImage(
+        self::uploadTestAssetImage(
             [
                 'tags' => [
                     self::$STRING_WITH_UNDERSCORE,
@@ -98,7 +98,7 @@ class SearchApiTest extends IntegrationTestCase
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
+        self::cleanupTestAssets();
     }
 
     /**
@@ -108,7 +108,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $result = $this->search->asArray();
 
-        $this->assertCount(0, $result, 'Should generate an empty query JSON');
+        self::assertCount(0, $result, 'Should generate an empty query JSON');
     }
 
     /**
@@ -118,7 +118,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $query = $this->search->expression('format:jpg')->asArray();
 
-        $this->assertEquals(['expression' => 'format:jpg'], $query);
+        self::assertEquals(['expression' => 'format:jpg'], $query);
     }
 
     /**
@@ -128,7 +128,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $query = $this->search->sortBy('created_at', 'asc')->sortBy('updated_at', 'desc')->asArray();
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'sort_by' => [
                     ['created_at' => 'asc'],
@@ -146,7 +146,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $query = $this->search->maxResults('10')->asArray();
 
-        $this->assertEquals(['max_results' => '10'], $query);
+        self::assertEquals(['max_results' => '10'], $query);
     }
 
     /**
@@ -161,7 +161,7 @@ class SearchApiTest extends IntegrationTestCase
             )
             ->asArray();
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'next_cursor' =>
                     'ec471a97ba510904ab57460b3ba3150ec29b6f8563eb1c10f6925ed0c6813f33cfa62ec6cf5ad96be6d6fa3ac3a76ccb',
@@ -177,7 +177,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $query = $this->search->aggregate('format')->aggregate('size_category')->asArray();
 
-        $this->assertEquals(['aggregate' => ['format', 'size_category']], $query);
+        self::assertEquals(['aggregate' => ['format', 'size_category']], $query);
     }
 
     /**
@@ -186,7 +186,7 @@ class SearchApiTest extends IntegrationTestCase
     public function testShouldAddWithFieldAsArray()
     {
         $query = $this->search->withField('context')->withField('tags')->asArray();
-        $this->assertEquals(['with_field' => ['context', 'tags']], $query);
+        self::assertEquals(['with_field' => ['context', 'tags']], $query);
     }
 
     /**
@@ -198,7 +198,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $results = $this->search->expression('tags:' . self::$UNIQUE_TEST_TAG)->execute();
 
-        $this->assertCount(6, $results['resources']);
+        self::assertCount(6, $results['resources']);
     }
 
     /**
@@ -210,7 +210,7 @@ class SearchApiTest extends IntegrationTestCase
     {
         $results = $this->search->expression('public_id:' . self::$PUBLIC_ID_1)->execute();
 
-        $this->assertCount(1, $results['resources']);
+        self::assertCount(1, $results['resources']);
     }
 
     /**
@@ -276,9 +276,9 @@ class SearchApiTest extends IntegrationTestCase
             ->maxResults(1)
             ->execute();
 
-        $this->assertEquals(2, $result['total_count']);
-        $this->assertCount(1, $result['resources']);
-        self::assertValidResource($result['resources'][0]);
+        self::assertEquals(2, $result['total_count']);
+        self::assertCount(1, $result['resources']);
+        self::assertValidAsset($result['resources'][0]);
     }
 
     /**
@@ -295,9 +295,9 @@ class SearchApiTest extends IntegrationTestCase
             ->maxResults(2)
             ->execute();
 
-        $this->assertEquals(2, $result['total_count']);
-        $this->assertCount(2, $result['resources']);
-        self::assertValidResource($result['resources'][0]);
+        self::assertEquals(2, $result['total_count']);
+        self::assertCount(2, $result['resources']);
+        self::assertValidAsset($result['resources'][0]);
     }
 
     /**
@@ -314,10 +314,10 @@ class SearchApiTest extends IntegrationTestCase
             ->maxResults(1)
             ->execute();
 
-        $this->assertEquals(2, $result['total_count']);
-        $this->assertCount(1, $result['resources']);
-        self::assertValidResource($result['resources'][0]);
-        $this->assertContains(self::$STRING_WITH_UNDERSCORE, $result['resources'][0]['tags']);
+        self::assertEquals(2, $result['total_count']);
+        self::assertCount(1, $result['resources']);
+        self::assertValidAsset($result['resources'][0]);
+        self::assertContains(self::$STRING_WITH_UNDERSCORE, $result['resources'][0]['tags']);
     }
 
     /**
@@ -335,7 +335,7 @@ class SearchApiTest extends IntegrationTestCase
             ->maxResults(2)
             ->execute();
 
-        $this->assertCount(2, $result['resources']);
+        self::assertCount(2, $result['resources']);
 
         // Verify that $result['resources'] is sorted by public_id in a descending order. We do this by sorting the
         // result ourselves and comparing the sorted results to the result returned from the Search API.
@@ -351,7 +351,7 @@ class SearchApiTest extends IntegrationTestCase
             }
         );
 
-        $this->assertEquals($resources, $result['resources']);
+        self::assertEquals($resources, $result['resources']);
     }
 
     /**
@@ -380,9 +380,9 @@ class SearchApiTest extends IntegrationTestCase
             }
         }
 
-        $this->assertEquals(1, $result['aggregations']['format']['gif']);
-        $this->assertEquals(1, $result['total_count']);
-        $this->assertCount(1, $result['resources']);
-        self::assertValidResource($result['resources'][0]);
+        self::assertEquals(1, $result['aggregations']['format']['gif']);
+        self::assertEquals(1, $result['total_count']);
+        self::assertCount(1, $result['resources']);
+        self::assertValidAsset($result['resources'][0]);
     }
 }

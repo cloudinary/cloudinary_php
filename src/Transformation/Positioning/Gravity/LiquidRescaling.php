@@ -31,7 +31,7 @@ namespace Cloudinary\Transformation;
  * - Example: w_1.0,ar_1.0,g_liquid/w_500,h_500 uses liquid scaling to change an image to a square (aspect ratio of
  * 1:1) based on the original image width, and then resizes the result to 500x500.
  */
-class LiquidRescaling extends GravityParam
+class LiquidRescaling extends GravityQualifier
 {
     const LIQUID = 'liquid';
 

@@ -17,6 +17,7 @@ class Fill extends BaseResizeAction
 {
     use FillTrait;
     use FocalGravityTrait;
+    use PointTrait;
 
     /**
      * Fill constructor.
@@ -31,5 +32,26 @@ class Fill extends BaseResizeAction
         parent::__construct($cropMode, $width, $height);
 
         $this->gravity($gravity);
+    }
+
+
+    /**
+     * Internal setter for offset.
+     *
+     * @param $value
+     *
+     * @return $this
+     *
+     * @internal
+     */
+    public function setPointValue($value)
+    {
+        if (! isset($this->qualifiers[Point::getName()])) {
+            $this->addQualifier(new Point());
+        }
+
+        $this->qualifiers[Point::getName()]->setPointValue($value);
+
+        return $this;
     }
 }

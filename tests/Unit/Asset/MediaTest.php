@@ -13,7 +13,7 @@ namespace Cloudinary\Test\Unit\Asset;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Media;
 use Cloudinary\Transformation\AudioCodec;
-use Cloudinary\Transformation\FocalGravity;
+use Cloudinary\Transformation\Gravity;
 use UnexpectedValueException;
 
 /**
@@ -76,7 +76,7 @@ final class MediaTest extends AssetTestCase
     {
         self::assertImageUrl(
             'c_fill,g_auto,h_160,w_80/ac_vorbis/' . self::IMAGE_NAME,
-            $this->media->fill(80, 160, FocalGravity::auto())->transcode(AudioCodec::vorbis())
+            $this->media->fill(80, 160, Gravity::auto())->transcode(AudioCodec::vorbis())
         );
     }
 }

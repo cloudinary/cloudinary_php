@@ -22,11 +22,11 @@ trait ImageColorEffectTrait
      *
      * @param int $threshold The balance between black (100) and white (0).  (Range: 0 to 100, Server default: 50)
      *
-     * @return EffectAction
+     * @return ThresholdEffectAction
      */
     public static function blackWhite($threshold = null)
     {
-        return EffectAction::limited(ColorEffect::BLACKWHITE, EffectRange::PERCENT, $threshold);
+        return EffectAction::withThreshold(ColorEffect::BLACKWHITE, EffectRange::PERCENT, $threshold);
     }
 
     /**
@@ -36,11 +36,11 @@ trait ImageColorEffectTrait
      * @param string $color The color to use for colorization.  Specify HTML name or RGB hex code.
      *                      (Server default: gray)
      *
-     * @return ColoredEffectAction
+     * @return Colorize
      */
     public static function colorize($level = null, $color = null)
     {
-        return (new ColoredEffectAction(new LimitedEffectParam(ColorEffect::COLORIZE, EffectRange::PERCENT, $level)))
+        return (new Colorize(new LevelEffectQualifier(ColorEffect::COLORIZE, EffectRange::PERCENT, $level)))
             ->color($color);
     }
 
@@ -69,11 +69,11 @@ trait ImageColorEffectTrait
      *
      * @param int $level The level of sepia to apply. (Range: 1 to 100, Server default: 80)
      *
-     * @return EffectAction
+     * @return LevelEffectAction
      */
     public static function sepia($level = null)
     {
-        return EffectAction::limited(ColorEffect::SEPIA, EffectRange::PERCENT, $level);
+        return EffectAction::withLevel(ColorEffect::SEPIA, EffectRange::PERCENT, $level);
     }
 
     /**

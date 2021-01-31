@@ -18,12 +18,12 @@ interface ImageTransformationInterface extends CommonTransformationInterface
     /**
      * Applies a filter or an effect on an image.
      *
-     * @param EffectParam|EffectAction $effect The effect to apply.
+     * @param EffectQualifier|EffectAction $effect The effect to apply.
      *
      * @return static
      *
      * @see \Cloudinary\Transformation\EffectAction
-     * @see \Cloudinary\Transformation\EffectParam
+     * @see \Cloudinary\Transformation\EffectQualifier
      */
     public function effect($effect);
 
@@ -36,7 +36,7 @@ interface ImageTransformationInterface extends CommonTransformationInterface
      *
      * @return static
      *
-     * @see \Cloudinary\Transformation\Overlay
+     * @see \Cloudinary\Transformation\ImageOverlay
      * @see \Cloudinary\Transformation\BlendMode
      */
     public function overlay($layer, $position = null, $blendMode = null);

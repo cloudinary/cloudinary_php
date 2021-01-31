@@ -11,7 +11,8 @@
 namespace Cloudinary\Test\Unit\Asset;
 
 use Cloudinary\Asset\Video;
-use Cloudinary\Transformation\Parameter\Dimensions\Width;
+use Cloudinary\Transformation\AspectRatio;
+use Cloudinary\Transformation\Qualifier\Dimensions\Width;
 use Cloudinary\Transformation\Scale;
 
 /**
@@ -23,7 +24,7 @@ final class VideoTest extends AssetTestCase
     {
         $v = new Video(self::VIDEO_NAME);
 
-        $v->resize(Scale::scale(new Width(100), 200)->ignoreAspectRatio(true));
+        $v->resize(Scale::scale(new Width(100), 200)->aspectRatio(AspectRatio::ignoreInitialAspectRatio()));
 
         $t_expected = 'c_scale,fl_ignore_aspect_ratio,h_200,w_100';
 

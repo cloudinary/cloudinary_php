@@ -30,7 +30,7 @@ final class LoggerTest extends UnitTestCase
         $testLogger = new TestLogger(['logging' => $config]);
 
         $testLogger->generateLog();
-        $this->assertCount($expectedCount, $testLogger->getHandlers());
+        self::assertCount($expectedCount, $testLogger->getHandlers());
 
         if (!empty($expectContainClasses)) {
             foreach ($expectContainClasses as $expectedClass) {
@@ -155,8 +155,8 @@ final class LoggerTest extends UnitTestCase
         }
 
         // Checking that we got an error triggered
-        $this->assertCount(1, $errorsCaught);
-        $this->assertEquals(1, $exceptionsCaught);
+        self::assertCount(1, $errorsCaught);
+        self::assertEquals(1, $exceptionsCaught);
 
         try {
             $logger->generateLog();
@@ -165,8 +165,8 @@ final class LoggerTest extends UnitTestCase
         }
 
         // Checking that exception's and error's count is still the same
-        $this->assertCount(1, $errorsCaught);
-        $this->assertEquals(1, $exceptionsCaught);
+        self::assertCount(1, $errorsCaught);
+        self::assertEquals(1, $exceptionsCaught);
 
         restore_error_handler();
     }

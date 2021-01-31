@@ -24,7 +24,7 @@ trait VectorizeTrait
      *
      * @return $this
      */
-    public function colors($numOfColors)
+    public function numOfColors($numOfColors = null)
     {
         $this->setSimpleNamedValue(VectorizeValue::COLORS, $numOfColors);
 
@@ -39,7 +39,7 @@ trait VectorizeTrait
      *
      * @return $this
      */
-    public function detail($level)
+    public function detailsLevel($level)
     {
         $this->setSimpleNamedValue(VectorizeValue::DETAIL, $level);
 
@@ -54,7 +54,7 @@ trait VectorizeTrait
      *
      * @return $this
      */
-    public function despeckle($size)
+    public function despeckleLevel($size)
     {
         $this->setSimpleNamedValue(VectorizeValue::DESPECKLE, $size);
 
@@ -84,7 +84,7 @@ trait VectorizeTrait
      *
      * @return $this
      */
-    public function corners($threshold)
+    public function cornersLevel($threshold)
     {
         $this->setSimpleNamedValue(VectorizeValue::CORNERS, $threshold);
 

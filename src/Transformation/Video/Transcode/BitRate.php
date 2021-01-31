@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Defines the video bitrate in bits per second.
@@ -21,7 +21,7 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class BitRate extends BaseParameter
+class BitRate extends BaseQualifier
 {
     const CONSTANT = 'constant';
 

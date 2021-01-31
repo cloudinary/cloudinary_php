@@ -20,80 +20,80 @@ trait KitchenObjectGravityBuilderTrait
     /**
      * Gravity kitchen.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function kitchen()
+    public static function kitchen()
     {
-        return $this->add(ObjectGravity::KITCHEN);
+        return ObjectGravity::KITCHEN;
     }
 
     /**
      * Gravity bottle.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bottle()
+    public static function bottle()
     {
-        return $this->add(ObjectGravity::BOTTLE);
+        return ObjectGravity::BOTTLE;
     }
 
     /**
      * Gravity wineGlass.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function wineGlass()
+    public static function wineGlass()
     {
-        return $this->add(ObjectGravity::WINE_GLASS);
+        return ObjectGravity::WINE_GLASS;
     }
 
     /**
      * Gravity cup.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function cup()
+    public static function cup()
     {
-        return $this->add(ObjectGravity::CUP);
+        return ObjectGravity::CUP;
     }
 
     /**
      * Gravity fork.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function fork()
+    public static function fork()
     {
-        return $this->add(ObjectGravity::FORK);
+        return ObjectGravity::FORK;
     }
 
     /**
      * Gravity knife.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function knife()
+    public static function knife()
     {
-        return $this->add(ObjectGravity::KNIFE);
+        return ObjectGravity::KNIFE;
     }
 
     /**
      * Gravity spoon.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function spoon()
+    public static function spoon()
     {
-        return $this->add(ObjectGravity::SPOON);
+        return ObjectGravity::SPOON;
     }
 
     /**
      * Gravity bowl.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bowl()
+    public static function bowl()
     {
-        return $this->add(ObjectGravity::BOWL);
+        return ObjectGravity::BOWL;
     }
 }

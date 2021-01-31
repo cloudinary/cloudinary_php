@@ -14,28 +14,37 @@ use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Action;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Argument\Color;
+use Cloudinary\Transformation\Argument\Text\FontWeight;
+use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\AudioCodec;
-use Cloudinary\Transformation\Chroma;
+use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\ColorSpace;
+use Cloudinary\Transformation\Compass;
 use Cloudinary\Transformation\CompassGravity;
+use Cloudinary\Transformation\Conditional;
 use Cloudinary\Transformation\Crop;
+use Cloudinary\Transformation\Delivery;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Expression\PVar;
+use Cloudinary\Transformation\Extract;
 use Cloudinary\Transformation\Flag;
 use Cloudinary\Transformation\FocalGravity;
+use Cloudinary\Transformation\FocusOn;
 use Cloudinary\Transformation\Format;
-use Cloudinary\Transformation\Frame;
 use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\ImageTransformation;
+use Cloudinary\Transformation\Overlay;
 use Cloudinary\Transformation\Pad;
-use Cloudinary\Transformation\Page;
-use Cloudinary\Transformation\Parameter;
-use Cloudinary\Transformation\PSDLayer;
+use Cloudinary\Transformation\Position;
+use Cloudinary\Transformation\PsdTools;
+use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Quality;
+use Cloudinary\Transformation\Resize;
 use Cloudinary\Transformation\Rotate;
 use Cloudinary\Transformation\RoundCorners;
 use Cloudinary\Transformation\Scale;
-use Cloudinary\Transformation\SmartObject;
+use Cloudinary\Transformation\Source;
+use Cloudinary\Transformation\TextStyle;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\Variable\Variable;
 use InvalidArgumentException;
@@ -56,7 +65,7 @@ final class TransformationTest extends UnitTestCase
           ->adjust(Adjust::replaceColor(Color::GREEN, 17, Color::RED));
 
         $t->resize(
-            Scale::scale(Parameter::width(100), 200)->ignoreAspectRatio(true)
+            Scale::scale(Qualifier::width(100), 200)->aspectRatio(AspectRatio::ignoreInitialAspectRatio())
                  ->setFlag(Flag::attachment('file.bin'))
         );
 
@@ -86,6 +95,14 @@ final class TransformationTest extends UnitTestCase
         self::assertEquals(
             "$t_expected/$t2_expected/$t2_expected",
             (string)$t
+        );
+    }
+
+    public function testFloatValue()
+    {
+        self::assertEquals(
+            'dpr_2.0',
+            (string)Delivery::dpr(2.0)
         );
     }
 
@@ -128,11 +145,12 @@ final class TransformationTest extends UnitTestCase
     {
         $t = new Transformation();
 
-        $t->ifCondition(PVar::width()->greaterThan()->int(997))
-          ->adjust(Adjust::red(99))
-          ->ifElse()
-          ->adjust(Adjust::green(99))
-          ->endIfCondition();
+        $t->conditional(
+            Conditional::ifCondition(
+                PVar::width()->greaterThan()->int(997),
+                Adjust::red(99)
+            )->otherwise(Adjust::green(99))
+        );
 
         self::assertEquals(
             'if_w_gt_997/e_red:99/if_else/e_green:99/if_end',
@@ -141,11 +159,7 @@ final class TransformationTest extends UnitTestCase
 
         $t = new Transformation();
 
-        $t->ifCondition('width > 997')
-          ->adjust(Adjust::red(99))
-          ->ifElse()
-          ->adjust(Adjust::green(99))
-          ->endIfCondition();
+        $t->conditional(Conditional::ifCondition('width > 997', Adjust::red(99))->otherwise(Adjust::green(99)));
 
         self::assertEquals(
             'if_w_gt_997/e_red:99/if_else/e_green:99/if_end',
@@ -157,10 +171,12 @@ final class TransformationTest extends UnitTestCase
     {
         $t = new Transformation();
 
-        $t->variable('var', 17)->addAction(Variable::define('otherVariable', 19));
+        $t->addVariable('var', 17)
+          ->addVariable(Variable::set('otherVariable', 19))
+          ->addVariable(Variable::set('strVariable', 'stringValue'));
 
         self::assertEquals(
-            '$var_17/$otherVariable_19',
+            '$var_17/$otherVariable_19/$strVariable_!stringValue!',
             (string)$t
         );
     }
@@ -188,14 +204,14 @@ final class TransformationTest extends UnitTestCase
     {
         $t = new Transformation();
 
-        $t->quality((new Quality(99))->chromaSubSampling(Chroma::C444));
+        $t->quality((new Quality(99))->chromaSubSampling(ChromaSubSampling::chroma444()));
 
         self::assertEquals(
             'q_99:444',
             (string)$t
         );
 
-        $t->quality(Quality::low()->chromaSubSampling(Chroma::C420));
+        $t->quality(Quality::autoLow()->chromaSubSampling(ChromaSubSampling::chroma420()));
 
         self::assertEquals(
             'q_99:444/q_auto:low:420',
@@ -242,7 +258,7 @@ final class TransformationTest extends UnitTestCase
             (string)$t
         );
 
-        $t->addAction(Action::generic($genericAction)->addParameter(RoundCorners::radius(17)));
+        $t->addAction(Action::generic($genericAction)->addQualifier(RoundCorners::byRadius(17)));
 
         self::assertEquals(
             "$genericAction/$genericAction,r_17",
@@ -269,15 +285,15 @@ final class TransformationTest extends UnitTestCase
 
     public function testImageTransformationLayers()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'l_lut:iwltbap_aspen.3dl/fl_layer_apply',
-            (string)(new ImageTransformation())->add3DLut('iwltbap_aspen.3dl')
+            (string)(new ImageTransformation())->adjust(Adjust::by3dLut('iwltbap_aspen.3dl'))
         );
     }
 
     public function testSetFlags()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'fl_animated.attachment:my_file%252Ebin.tiff8_lzw',
             (string)(new Transformation())
                 ->addAction(
@@ -292,7 +308,7 @@ final class TransformationTest extends UnitTestCase
 
     public function testSetFlagsWithBuilders()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'fl_attachment:my_file.bin/fl_sanitize/fl_mono',
             (string)(new Transformation())->attachment('my_file.bin')->sanitize()->mono()
         );
@@ -300,35 +316,35 @@ final class TransformationTest extends UnitTestCase
 
     public function testDefaultImage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'd_avatar',
-            (string)(new Transformation())->defaultImage('avatar')
+            (string)(new Transformation())->delivery(Delivery::defaultImage('avatar'))
         );
     }
 
     public function testColorSpace()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'cs_srgb',
             (string)(new Transformation())->colorSpace(ColorSpace::SRGB)
         );
-        $this->assertEquals(
+        self::assertEquals(
             'cs_tinysrgb',
-            (string)(new Transformation())->colorSpace(ColorSpace::TINY_SRGB)
+            (string)(new Transformation())->colorSpace(ColorSpace::tinysrgb())
         );
-        $this->assertEquals(
+        self::assertEquals(
             'cs_cmyk',
             (string)(new Transformation())->colorSpace(ColorSpace::CMYK)
         );
-        $this->assertEquals(
+        self::assertEquals(
             'cs_no_cmyk',
-            (string)(new Transformation())->colorSpace(ColorSpace::NO_CMYK)
+            (string)(new Transformation())->colorSpace(ColorSpace::noCmyk())
         );
-        $this->assertEquals(
+        self::assertEquals(
             'cs_keep_cmyk',
             (string)(new Transformation())->colorSpace(ColorSpace::KEEP_CMYK)
         );
-        $this->assertEquals(
+        self::assertEquals(
             'cs_icc:public_id',
             (string)(new Transformation())->colorSpace(ColorSpace::icc('public_id'))
         );
@@ -336,7 +352,7 @@ final class TransformationTest extends UnitTestCase
 
     public function testDelay()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'dl_20',
             (string)(new Transformation())->delay(20)
         );
@@ -344,7 +360,7 @@ final class TransformationTest extends UnitTestCase
 
     public function testPrefix()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'p_my_prefix',
             (string)(new Transformation())->prefix('my_prefix')
         );
@@ -352,7 +368,7 @@ final class TransformationTest extends UnitTestCase
 
     public function testDensity()
     {
-        $this->assertStrEquals(
+        self::assertStrEquals(
             'dn_20',
             (new Transformation())->density(20)
         );
@@ -361,138 +377,209 @@ final class TransformationTest extends UnitTestCase
 
     public function testPage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2',
-            (string)(new Transformation())->getPage(2)
+            (string)(new Transformation())->extract(Extract::getPage(2))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2',
-            (string)(new Transformation())->getPage(Page::number(2))
+            (string)(new Transformation())->extract(Extract::getPage()->byNumber(2))
         );
 
-        $this->assertEquals(
-            'pg_5-7',
-            (string)(new Transformation())->getPage(Page::range(5, 7))
+        self::assertEquals(
+            'pg_5;7',
+            (string)(new Transformation())->extract(Extract::getPage(5, 7))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_3;5-7;9-',
-            (string)(new Transformation())->getPage(Page::number(3), Page::range(5, 7), Page::range(9))
+            (string)(new Transformation())->extract(Extract::getPage()->byNumber(3)->byRange(5, 7)->byRange(9))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_3;5-7;9-',
-            (string)(new Transformation())->getPage(3, '5-7', Page::range(9))
+            (string)(new Transformation())->extract(Extract::getPage(3, '5-7')->byRange(9))
+        );
+
+        self::assertEquals(
+            'pg_all',
+            (string)(new Transformation())->extract(Extract::getPage()->all())
         );
     }
 
     public function testFrame()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2',
-            (string)(new Transformation())->getFrame(2)
+            (string)(new Transformation())->extract(2)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2',
-            (string)(new Transformation())->getFrame(Frame::number(2))
+            (string)(new Transformation())->extract(Extract::getFrame(2))
+        );
+
+        self::assertEquals(
+            'pg_2',
+            (string)(new Transformation())->extract(Extract::getFrame()->byNumber(2))
         );
     }
 
-    public function testLayer()
+    public function testPsdTools()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2',
-            (string)(new Transformation())->getLayer(2)
+            (string)(new Transformation())->psdTools(PsdTools::getLayer(2))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2;3;4;5',
-            (string)(new Transformation())->getLayer(2, 3, 4, 5)
+            (string)(new Transformation())->psdTools(PsdTools::getLayer(2, 3, 4, 5))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_2',
-            (string)(new Transformation())->getLayer(PSDLayer::index(2))
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byIndex(2))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_name:record_cover;Shadow',
-            (string)(new Transformation())->getLayer(PSDLayer::names('record_cover', 'Shadow'))
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byNames('record_cover', 'Shadow'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_name:record_cover-1',
-            (string)(new Transformation())->getLayer(PSDLayer::name('record_cover', 1))
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byName('record_cover', 1))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_5-7',
-            (string)(new Transformation())->getLayer(PSDLayer::range(5, 7))
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byRange(5, 7))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_3;5-7;9-',
-            (string)(new Transformation())->getLayer(
-                PSDLayer::index(3),
-                PSDLayer::range(5, 7),
-                PSDLayer::range(9)
-            )
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byIndex(3)->byRange(5, 7)->byRange(9))
         );
     }
 
 
     public function testClippingPath()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'fl_clip,pg_2',
-            (string)(new Transformation())->clip(2)
+            (string)(new Transformation())->psdTools(PsdTools::clip(2))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_clip,pg_name:myClippingPath',
-            (string)(new Transformation())->clip('name:myClippingPath')
+            (string)(new Transformation())->psdTools(PsdTools::clip('name:myClippingPath'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_clip,pg_name:myClippingPath',
-            (string)(new Transformation())->clip(PSDLayer::name('myClippingPath'))
+            (string)(new Transformation())->psdTools(PsdTools::clip()->byName('myClippingPath'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'fl_clip_evenodd,pg_name:myEvenOddClippingPath',
-            (string)(new Transformation())->clipEvenOdd(PSDLayer::name('myEvenOddClippingPath'))
+            (string)(new Transformation())->psdTools(PsdTools::clip()->byName('myEvenOddClippingPath')->evenOdd())
         );
     }
 
     public function testSmartObject()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'pg_embedded:2',
-            (string)(new Transformation())->getSmartObject(2)
+            (string)(new Transformation())->psdTools(PsdTools::smartObject(2))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'pg_embedded:2',
-            (string)(new Transformation())->getSmartObject(SmartObject::number(2))
+            (string)(new Transformation())->psdTools(PsdTools::smartObject()->byIndex(2))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
+            'pg_embedded:name:record_cover',
+            (string)(new Transformation())->psdTools(PsdTools::smartObject()->byLayerName('record_cover'))
+        );
+        self::assertEquals(
             'pg_embedded:name:record_cover;Shadow',
-            (string)(new Transformation())->getSmartObject(SmartObject::names('record_cover', 'Shadow'))
+            (string)(new Transformation())->psdTools(PsdTools::smartObject()->byLayerNames('record_cover', 'Shadow'))
         );
+    }
 
-        // uses value from PSDLayer parameter
-        $this->assertEquals(
-            'pg_embedded:name:record_cover;Shadow',
-            (string)(new Transformation())->getSmartObject(PSDLayer::names('record_cover', 'Shadow'))
-        );
-
-        // uses value from Page parameter
-        $this->assertEquals(
-            'pg_embedded:2',
-            (string)(new Transformation())->getSmartObject(Page::number(2))
+    public function testCoupleSample()
+    {
+        self::assertStrEquals(
+            'c_fill,g_south,h_250,w_400/'.
+            'l_nice_couple/c_crop,fl_region_relative,g_faces,h_1.3,w_1.3/e_saturation:50/'.
+            'e_vignette/c_scale,w_100/r_max/fl_layer_apply,g_center,x_-20,y_20/'.
+            'l_balloon/c_scale,h_55/e_hue:-20/a_5/fl_layer_apply,x_30,y_5/'.
+            'l_text:Cookie_40_bold:Love/co_rgb:F08,e_colorize/a_20/fl_layer_apply,x_-45,y_44/'.
+            'c_crop,h_250,w_300,x_30/r_60',
+            (new Transformation())
+                ->resize(
+                    Resize::fill()->width(400)->height(250)->gravity(Gravity::compass(Compass::south()))
+                )
+                ->overlay(
+                    Overlay::source(
+                        Source::image('nice_couple')
+                              ->transformation(
+                                  (new ImageTransformation())
+                                      ->resize(
+                                          Resize::crop()->width(1.3)->height(1.3)
+                                                ->gravity(Gravity::focusOn(FocusOn::faces()))
+                                                ->regionRelative()
+                                      )
+                                      ->adjust(Adjust::saturation()->level(50))
+                                      ->effect(Effect::vignette())
+                                      ->resize(Resize::scale()->width(100))
+                                      ->roundCorners(RoundCorners::max())
+                              )
+                    )
+                           ->position(
+                               (new Position())
+                                   ->gravity(Gravity::compass(Compass::center()))
+                                   ->offsetX(-20)->offsetY(20)
+                           )
+                )
+                ->overlay(
+                    Overlay::source(
+                        Source::image('balloon')
+                              ->transformation(
+                                  (new ImageTransformation())
+                                      ->resize(Resize::scale()->height(55))
+                                      ->adjust(Adjust::hue()->level(-20))
+                                      ->rotate(Rotate::byAngle(5))
+                              )
+                    )
+                           ->position(
+                               (new Position())
+                                   ->offsetX(30)->offsetY(5)
+                           )
+                )
+                ->overlay(
+                    Overlay::source(
+                        Source::text(
+                            'Love',
+                            (new TextStyle('Cookie', 40))
+                                ->fontWeight(FontWeight::bold())
+                        )
+                              ->transformation(
+                                  (new ImageTransformation())
+                                      ->effect(Effect::colorize()->color(Color::rgb('F08')))
+                                      ->rotate(Rotate::byAngle(20))
+                              )
+                    )
+                           ->position(
+                               (new Position())
+                                   ->offsetX(-45)->offsetY(44)
+                           )
+                )
+                ->resize(Resize::crop()->width(300)->height(250)->x(30))
+                ->roundCorners(RoundCorners::byRadius(60))
         );
     }
 }

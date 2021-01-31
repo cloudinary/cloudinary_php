@@ -11,12 +11,12 @@
 namespace Cloudinary\Configuration;
 
 /**
- * Class AccountConfig
+ * Trait AssetConfigTrait
  *
  * @api
  */
 trait AssetConfigTrait
 {
-    use AccountConfigTrait;
+    use CloudConfigTrait;
     use UrlConfigTrait;
 }

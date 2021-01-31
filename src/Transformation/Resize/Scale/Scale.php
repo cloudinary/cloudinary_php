@@ -27,13 +27,13 @@ class Scale extends BaseResizeAction
     public function liquidRescaling()
     {
         /** @noinspection TypeUnsafeComparisonInspection */
-        if ($this->parameters[CropMode::getName()]->getValue() != CropMode::SCALE) {
+        if ($this->qualifiers[CropMode::getName()]->getValue() != CropMode::SCALE) {
             throw new InvalidArgumentException(
-                "Liquid Rescaling is not supported for {$this->parameters[CropMode::getName()]->getValue()}"
+                "Liquid Rescaling is not supported for {$this->qualifiers[CropMode::getName()]->getValue()}"
             );
         }
 
-        $this->addParameter(new LiquidRescaling());
+        $this->addQualifier(new LiquidRescaling());
 
         return $this;
     }

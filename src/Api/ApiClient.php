@@ -13,7 +13,7 @@ namespace Cloudinary\Api;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\GeneralError;
 use Cloudinary\ArrayUtils;
-use Cloudinary\Configuration\AccountConfig;
+use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\ApiConfig;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\FileUtils;
@@ -34,9 +34,9 @@ use Psr\Http\Message\UriInterface;
 class ApiClient extends BaseApiClient
 {
     /**
-     * @var AccountConfig $account The account configuration.
+     * @var CloudConfig $cloud The cloud configuration.
      */
-    protected $account;
+    protected $cloud;
 
     /**
      * ApiClient constructor.
@@ -51,10 +51,10 @@ class ApiClient extends BaseApiClient
 
         $this->configuration($configuration);
 
-        $this->baseUri = "{$this->api->uploadPrefix}/" . self::apiVersion() . "/{$this->account->cloudName}/";
+        $this->baseUri = "{$this->api->uploadPrefix}/" . self::apiVersion() . "/{$this->cloud->cloudName}/";
 
         $clientConfig = [
-            'auth'            => [$this->account->apiKey, $this->account->apiSecret],
+            'auth'            => [$this->cloud->apiKey, $this->cloud->apiSecret],
             'base_uri'        => $this->baseUri,
             'connect_timeout' => $this->api->connectionTimeout,
             'timeout'         => $this->api->timeout,
@@ -67,15 +67,15 @@ class ApiClient extends BaseApiClient
     }
 
     /**
-     * Gets account configuration of the current client.
+     * Gets cloud configuration of the current client.
      *
-     * @return AccountConfig
+     * @return CloudConfig
      *
      * @internal
      */
-    public function getAccount()
+    public function getCloud()
     {
-        return $this->account;
+        return $this->cloud;
     }
 
     /**
@@ -91,10 +91,10 @@ class ApiClient extends BaseApiClient
     {
         $tempConfiguration = new Configuration($configuration); // TODO: improve performance here
 
-        $tempConfiguration->account->assertNotEmpty(['cloudName', 'apiKey', 'apiSecret']);
+        $tempConfiguration->cloud->assertNotEmpty(['cloudName', 'apiKey', 'apiSecret']);
 
-        $this->account = $tempConfiguration->account;
-        $this->api     = $tempConfiguration->api;
+        $this->cloud = $tempConfiguration->cloud;
+        $this->api   = $tempConfiguration->api;
         $this->logging = $tempConfiguration->logging;
 
         return $this;
@@ -131,7 +131,7 @@ class ApiClient extends BaseApiClient
     }
 
     /**
-     * Signs posted parameters using configured account credentials and posts to the endpoint.
+     * Signs posted parameters using configured cloud credentials and posts to the endpoint.
      *
      * @param string|array $endPoint   The API endpoint path.
      * @param array        $formParams The form parameters
@@ -142,7 +142,7 @@ class ApiClient extends BaseApiClient
      */
     public function postAndSignFormAsync($endPoint, $formParams)
     {
-        ApiUtils::signRequest($formParams, $this->account);
+        ApiUtils::signRequest($formParams, $this->cloud);
 
         return $this->postFormAsync($endPoint, $formParams);
     }
@@ -224,7 +224,7 @@ class ApiClient extends BaseApiClient
         $unsigned = ArrayUtils::get($options, 'unsigned');
 
         if (! $unsigned) {
-            ApiUtils::signRequest($parameters, $this->account);
+            ApiUtils::signRequest($parameters, $this->cloud);
         }
 
         try {
@@ -294,7 +294,7 @@ class ApiClient extends BaseApiClient
         $rangeHeaderTemplate = 'bytes %s-%s' . (! empty($fileSize) ? "/$fileSize" : '');
 
         $options['headers'] = [
-            'X-Unique-Upload-Id' => Utils::randomPublicId($this->account->apiSecret),
+            'X-Unique-Upload-Id' => Utils::randomPublicId($this->cloud->apiSecret),
         ];
 
         if ($fileHandle->isSeekable()) {

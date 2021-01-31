@@ -18,12 +18,12 @@ namespace Cloudinary\Transformation;
 trait PageAllTrait
 {
     /**
-     * Creates a new instance using a predefined `all` value.
+     * Gets all pages.
      *
      * @return mixed
      */
-    public static function all()
+    public function all()
     {
-        return static::createWithPageParam('all');
+        return $this->add('all');
     }
 }

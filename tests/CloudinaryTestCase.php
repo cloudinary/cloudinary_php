@@ -19,6 +19,12 @@ use PHPUnit_Framework_Constraint_Or;
 use ReflectionException;
 use ReflectionMethod;
 
+
+if (!defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+    //PHP < 7.2 Define it as 0 so it does nothing
+    define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
+}
+
 /**
  * Class CloudinaryTestCase
  *
@@ -146,7 +152,7 @@ abstract class CloudinaryTestCase extends TestCase
                 }
             }
         }
-        $this->fail($message);
+        self::fail($message);
 
         return $f();
     }
@@ -202,9 +208,9 @@ abstract class CloudinaryTestCase extends TestCase
      * @param mixed  $actual
      * @param string $message
      */
-    public function assertStrEquals($expected, $actual, $message = '')
+    public static function assertStrEquals($expected, $actual, $message = '')
     {
-        $this->assertEquals((string)$expected, (string)$actual, $message);
+        self::assertEquals((string)$expected, (string)$actual, $message);
     }
 
     /**
@@ -232,23 +238,23 @@ abstract class CloudinaryTestCase extends TestCase
     }
 
     /**
-     * Assert that a resource has certain keys of certain types
+     * Assert that an asset has certain keys of certain types
      *
-     * @param array|object $resource
+     * @param array|object $asset
      * @param array        $keys
      * @param string       $message
      */
-    protected static function assertObjectStructure($resource, array $keys, $message = '')
+    protected static function assertObjectStructure($asset, array $keys, $message = '')
     {
         foreach ($keys as $key => $type) {
-            if (is_object($resource) && property_exists($resource, $key) && is_array($type)) {
-                self::assertOneOfInternalTypes($type, $resource->{$key}, $message);
-            } elseif (is_object($resource) && property_exists($resource, $key)) {
-                self::assertInternalType($type, $resource->{$key}, $message);
+            if (is_object($asset) && property_exists($asset, $key) && is_array($type)) {
+                self::assertOneOfInternalTypes($type, $asset->{$key}, $message);
+            } elseif (is_object($asset) && property_exists($asset, $key)) {
+                self::assertInternalType($type, $asset->{$key}, $message);
             } elseif (is_array($type)) {
-                self::assertOneOfInternalTypes($type, $resource[$key], $message);
+                self::assertOneOfInternalTypes($type, $asset[$key], $message);
             } else {
-                self::assertInternalType($type, $resource[$key], $message);
+                self::assertInternalType($type, $asset[$key], $message);
             }
         }
     }

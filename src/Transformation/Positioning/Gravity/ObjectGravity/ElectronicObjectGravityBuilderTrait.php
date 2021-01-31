@@ -20,70 +20,70 @@ trait ElectronicObjectGravityBuilderTrait
     /**
      * Gravity electronic.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function electronic()
+    public static function electronic()
     {
-        return $this->add(ObjectGravity::ELECTRONIC);
+        return ObjectGravity::ELECTRONIC;
     }
 
     /**
      * Gravity tvMonitor.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function tvMonitor()
+    public static function tvMonitor()
     {
-        return $this->add(ObjectGravity::TV_MONITOR);
+        return ObjectGravity::TV_MONITOR;
     }
 
     /**
      * Gravity laptop.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function laptop()
+    public static function laptop()
     {
-        return $this->add(ObjectGravity::LAPTOP);
+        return ObjectGravity::LAPTOP;
     }
 
     /**
      * Gravity mouse.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function mouse()
+    public static function mouse()
     {
-        return $this->add(ObjectGravity::MOUSE);
+        return ObjectGravity::MOUSE;
     }
 
     /**
      * Gravity remote.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function remote()
+    public static function remote()
     {
-        return $this->add(ObjectGravity::REMOTE);
+        return ObjectGravity::REMOTE;
     }
 
     /**
      * Gravity keyboard.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function keyboard()
+    public static function keyboard()
     {
-        return $this->add(ObjectGravity::KEYBOARD);
+        return ObjectGravity::KEYBOARD;
     }
 
     /**
      * Gravity cellphone.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function cellphone()
+    public static function cellphone()
     {
-        return $this->add(ObjectGravity::CELLPHONE);
+        return ObjectGravity::CELLPHONE;
     }
 }

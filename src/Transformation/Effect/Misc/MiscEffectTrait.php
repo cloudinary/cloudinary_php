@@ -85,11 +85,11 @@ trait MiscEffectTrait
      *
      * @param int $strength The strength of the effect. (Range: 0 to 100, Server default: 30)
      *
-     * @return EffectAction
+     * @return StrengthEffectAction
      */
     public static function oilPaint($strength = null)
     {
-        return EffectAction::limited(MiscEffect::OIL_PAINT, EffectRange::PERCENT, $strength);
+        return EffectAction::withStrength(MiscEffect::OIL_PAINT, EffectRange::PERCENT, $strength);
     }
 
     /**
@@ -151,26 +151,27 @@ trait MiscEffectTrait
      *
      * For examples, see the Image Transformations guide.
      *
-     * @param string $mode  The type of outline effect. Use the constants defined in the Outline class.
-     *                      (Default: Outline::INNER and Outline::OUTER).
-     * @param int    $width The thickness of the outline in pixels. (Range: 1 to 100, Server default: 5)
-     * @param int    $blur  The level of blur of the outline. (Range: 0 to 2000, Server default: 0)
+     * @param string $mode      The type of outline effect. Use the constants defined in the Outline class.
+     *                          (Default: OutlineMode::INNER and OutlineMode::OUTER).
+     * @param int    $width     The thickness of the outline in pixels. (Range: 1 to 100, Server default: 5)
+     * @param int    $blurLevel The level of blur of the outline. (Range: 0 to 2000, Server default: 0)
      *
      * @return Outline
      *
      * @see \Cloudinary\Transformation\Outline
+     * @see \Cloudinary\Transformation\OutlineMode
      * @see https://cloudinary.com/documentation/image_transformations#outline_effects
      *
      */
-    public static function outline($mode = null, $width = null, $blur = null)
+    public static function outline($mode = null, $width = null, $blurLevel = null)
     {
-        return new Outline($mode, $width, $blur);
+        return new Outline($mode, $width, $blurLevel);
     }
 
     /**
      * Adds a shadow to the image.
      *
-     * The shadow is offset by the x and y values specified in the $position parameter.
+     * The shadow is offset by the x and y values specified in the $position qualifier.
      *
      * @param int        $strength The strength of the shadow. (Range: 0 to 100, Server default: 40)
      * @param PointValue $position The position of the shadow. (Server default: bottom right)

@@ -20,7 +20,7 @@ final class UtilsTest extends TestCase
 {
     public function testFloatToString()
     {
-        $this->assertEquals(
+        self::assertEquals(
             '1.4142135623731',
             Utils::floatToString(sqrt(2))
         );

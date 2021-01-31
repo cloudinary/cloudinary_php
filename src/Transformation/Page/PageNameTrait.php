@@ -22,13 +22,15 @@ trait PageNameTrait
     /**
      * Creates an instance using the name.
      *
-     * @param string $name The name
-     * @param int $index The optional index.
+     * @param string $name  The name
+     * @param int    $index The optional index.
      *
      * @return static
      */
-    public static function name($name, $index = null)
+    public function byName($name, $index = null)
     {
-        return static::createWithNamedPageParam(new IndexedArgument($name, $index));
+        $this->add(new LayerName(new IndexedArgument($name, $index)));
+
+        return $this;
     }
 }

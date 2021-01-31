@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation\Argument;
 
-use Cloudinary\Transformation\ParameterMultiValue;
+use Cloudinary\Transformation\QualifierMultiValue;
 
 /**
  * Defines how to rotate an image.
@@ -21,17 +21,11 @@ use Cloudinary\Transformation\ParameterMultiValue;
  *
  * @api
  */
-class Degree extends ParameterMultiValue
+class Degree extends QualifierMultiValue
 {
     const VALUE_DELIMITER = '.';
 
     use AngleTrait;
-
-    const AUTO_RIGHT      = 'auto_right';
-    const AUTO_LEFT       = 'auto_left';
-    const VERTICAL_FLIP   = 'vflip';
-    const HORIZONTAL_FLIP = 'hflip';
-    const IGNORE          = 'ignore';
 
     const DEG_90          = '90';
     const DEG_180         = '180';

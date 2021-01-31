@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Cloudinary\Transformation\Parameter\Dimensions;
+namespace Cloudinary\Transformation\Qualifier\Dimensions;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class Dpr
  *
  * @api
  */
-class Dpr extends BaseParameter
+class Dpr extends BaseQualifier
 {
     /**
      * @var string $key Serialization key.

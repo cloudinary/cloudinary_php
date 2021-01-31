@@ -21,7 +21,7 @@ namespace Cloudinary\Transformation;
  */
 abstract class Transcode
 {
-    use AudioParamTrait;
-    use VideoParamTrait;
+    use AudioQualifierTrait;
+    use VideoQualifierTrait;
     use TranscodeTrait;
 }

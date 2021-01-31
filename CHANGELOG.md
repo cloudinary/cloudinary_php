@@ -1,5 +1,27 @@
-2.0.0-beta8 / 2020-11-30
+
+2.0.0 / 2021-01-21
 ==================
+
+New functionality and features
+------------------------------
+
+  * Add builders for tags
+  * Add support for analytics
+  * Add support for download backup version api
+  * Add `Effect::lightroom`
+
+Other Changes
+ -------------
+
+  * Multiple alignments of transformations
+  * Rename `secure_distribution` to `secure_cname`
+  * Fix PHP8 compatibility
+  * Rename `AccountConfig` to `CloudConfig`
+  * Rename `Parameter` to `Qualifier`
+  * Finish `fromParams` for tags
+
+2.0.0-beta8 / 2020-11-30
+========================
 
 New functionality and features
 ------------------------------
@@ -22,7 +44,6 @@ Other Changes
   * Fix test for `eval` upload parameter
   * Move files from `unit` and `integration` directories to `Unit` and `Integration`
   * Introduce constants for external add-on names in tests
-
 
 2.0.0-beta7 / 2020-09-21
 ========================

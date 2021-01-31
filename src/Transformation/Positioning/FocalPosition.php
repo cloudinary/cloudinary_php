@@ -20,9 +20,9 @@ class FocalPosition extends BasePosition
     /**
      * FocalPosition constructor.
      *
-     * @param FocalGravity $gravity
+     * @param FocalGravity|AutoGravity $gravity
      */
-    public function __construct(FocalGravity $gravity = null)
+    public function __construct($gravity = null)
     {
         parent::__construct();
 

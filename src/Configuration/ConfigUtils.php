@@ -11,7 +11,6 @@
 namespace Cloudinary\Configuration;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\Configuration\Provisioning\ProvisioningAccountConfig;
 use Cloudinary\StringUtils;
 use Cloudinary\Utils;
 use InvalidArgumentException;
@@ -64,23 +63,23 @@ class ConfigUtils
 
         $qParams = Utils::tryParseValues(StringUtils::parseQueryString($uri->getQuery()));
 
-        $account = ['cloud_name' => $uri->getHost()];
+        $cloud = [CloudConfig::CLOUD_NAME => $uri->getHost()];
 
         $userPass = explode(':', $uri->getUserInfo(), 2);
 
-        ArrayUtils::addNonEmpty($account, 'api_key', ArrayUtils::get($userPass, 0));
-        ArrayUtils::addNonEmpty($account, 'api_secret', ArrayUtils::get($userPass, 1));
+        ArrayUtils::addNonEmpty($cloud, CloudConfig::API_KEY, ArrayUtils::get($userPass, 0));
+        ArrayUtils::addNonEmpty($cloud, CloudConfig::API_SECRET, ArrayUtils::get($userPass, 1));
 
-        $config = array_merge($qParams, ['account' => $account]);
+        $config = array_merge($qParams, [CloudConfig::CONFIG_NAME => $cloud]);
 
         $isPrivateCdn = ! empty($uri->getPath()) && $uri->getPath() !== '/';
         if ($isPrivateCdn) {
             $config = array_merge(
                 $config,
                 [
-                    'url' => [
-                        'secure_distribution' => substr($uri->getPath(), 1),
-                        'private_cdn'         => $isPrivateCdn,
+                    UrlConfig::CONFIG_NAME => [
+                        UrlConfig::SECURE_CNAME => substr($uri->getPath(), 1),
+                        UrlConfig::PRIVATE_CDN  => $isPrivateCdn,
                     ],
                 ]
             );
@@ -100,13 +99,17 @@ class ConfigUtils
     {
         $res = self::CLOUDINARY_URL_SCHEME . '://';
 
-        if (! empty($config['account'])) {
-            $res .= "{$config['account']['api_key']}:{$config['account']['api_secret']}@";
+        if (! empty($config[CloudConfig::CONFIG_NAME])) {
+            $res .= "{$config[CloudConfig::CONFIG_NAME][CloudConfig::API_KEY]}:" .
+                    "{$config[CloudConfig::CONFIG_NAME][CloudConfig::API_SECRET]}@";
         }
 
-        $res .= ArrayUtils::get($config, ['account', 'cloud_name']);
+        $res .= ArrayUtils::get($config, [CloudConfig::CONFIG_NAME, CloudConfig::CLOUD_NAME]);
 
-        $res = ArrayUtils::implodeFiltered('/', [$res, ArrayUtils::get($config, ['url', 'secure_distribution'])]);
+        $res = ArrayUtils::implodeFiltered(
+            '/',
+            [$res, ArrayUtils::get($config, [UrlConfig::CONFIG_NAME, UrlConfig::SECURE_CNAME])]
+        );
 
         return $res;
     }

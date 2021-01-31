@@ -20,60 +20,60 @@ trait ApplianceObjectGravityBuilderTrait
     /**
      * Gravity appliance.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function appliance()
+    public static function appliance()
     {
-        return $this->add(ObjectGravity::APPLIANCE);
+        return ObjectGravity::APPLIANCE;
     }
 
     /**
      * Gravity microwave.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function microwave()
+    public static function microwave()
     {
-        return $this->add(ObjectGravity::MICROWAVE);
+        return ObjectGravity::MICROWAVE;
     }
 
     /**
      * Gravity oven.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function oven()
+    public static function oven()
     {
-        return $this->add(ObjectGravity::OVEN);
+        return ObjectGravity::OVEN;
     }
 
     /**
      * Gravity toaster.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function toaster()
+    public static function toaster()
     {
-        return $this->add(ObjectGravity::TOASTER);
+        return ObjectGravity::TOASTER;
     }
 
     /**
      * Gravity sink.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function sink()
+    public static function sink()
     {
-        return $this->add(ObjectGravity::SINK);
+        return ObjectGravity::SINK;
     }
 
     /**
      * Gravity refrigerator.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function refrigerator()
+    public static function refrigerator()
     {
-        return $this->add(ObjectGravity::REFRIGERATOR);
+        return ObjectGravity::REFRIGERATOR;
     }
 }

@@ -27,15 +27,15 @@ final class ArchiveTest extends IntegrationTestCase
             self::$ARCHIVE_TEST_TAG,
         ];
 
-        self::uploadTestResourceImage(['tags' => $tags, 'public_id' => self::$UNIQUE_TEST_ID]);
-        self::uploadTestResourceImage(['tags' => $tags]);
-        self::uploadTestResourceFile(['tags' => $tags]);
+        self::uploadTestAssetImage(['tags' => $tags, 'public_id' => self::$UNIQUE_TEST_ID]);
+        self::uploadTestAssetImage(['tags' => $tags]);
+        self::uploadTestAssetFile(['tags' => $tags]);
     }
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
-        self::cleanupTestResources(AssetType::RAW);
+        self::cleanupTestAssets();
+        self::cleanupTestAssets(AssetType::RAW);
 
         parent::tearDownAfterClass();
     }
@@ -62,7 +62,7 @@ final class ArchiveTest extends IntegrationTestCase
                 'file_count' => 1,
             ]
         );
-        $this->assertContains(self::$UNIQUE_TEST_TAG, $archive['tags']);
+        self::assertContains(self::$UNIQUE_TEST_TAG, $archive['tags']);
     }
 
     /**
@@ -85,7 +85,7 @@ final class ArchiveTest extends IntegrationTestCase
                 'file_count' => 2,
             ]
         );
-        $this->assertContains(self::$UNIQUE_TEST_TAG, $archive['tags']);
+        self::assertContains(self::$UNIQUE_TEST_TAG, $archive['tags']);
     }
 
     /**
@@ -109,13 +109,13 @@ final class ArchiveTest extends IntegrationTestCase
                 'file_count' => 2,
             ]
         );
-        $this->assertContains(self::$UNIQUE_TEST_TAG, $zip['tags']);
+        self::assertContains(self::$UNIQUE_TEST_TAG, $zip['tags']);
     }
 
     /**
      * Create an archive file that contains resources of different types
      */
-    public function testCreateArchiveMultipleResourceTypes()
+    public function testCreateArchiveMultipleAssetTypes()
     {
         // FIXME: add video and raw files
         $testIds = [
@@ -139,7 +139,7 @@ final class ArchiveTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertContains(self::$UNIQUE_TEST_TAG, $archive['tags']);
+        self::assertContains(self::$UNIQUE_TEST_TAG, $archive['tags']);
     }
 
     /**
@@ -166,7 +166,7 @@ final class ArchiveTest extends IntegrationTestCase
             unlink($file);
         }
 
-        $this->assertEquals(2, $numFiles);
+        self::assertEquals(2, $numFiles);
     }
 
     /**
@@ -197,6 +197,6 @@ final class ArchiveTest extends IntegrationTestCase
             unlink($file);
         }
 
-        $this->assertEquals(2, $numFiles);
+        self::assertEquals(2, $numFiles);
     }
 }

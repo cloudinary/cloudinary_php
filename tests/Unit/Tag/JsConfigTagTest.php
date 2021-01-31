@@ -21,7 +21,7 @@ final class JsConfigTagTest extends TagTestCase
     {
         $tag = new JsConfigTag();
 
-        $this->assertEquals(
+        self::assertEquals(
             implode(
                 "\n",
                 [

@@ -12,6 +12,7 @@ namespace Cloudinary\Tag;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetDescriptorTrait;
+use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\Image;
 use Cloudinary\Asset\Video;
 use Cloudinary\Configuration\AssetConfigTrait;
@@ -19,7 +20,7 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\ImageTransformation;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 use Cloudinary\Transformation\VideoCodec;
 use Cloudinary\Transformation\VideoTransformationInterface;
 use Cloudinary\Transformation\VideoTransformationTrait;
@@ -136,9 +137,9 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
                 $sourceTag = new VideoSourceTag(
                     $this->video,
                     $this->config,
-                    ArrayUtils::get($source, 'transformation')
+                    ArrayUtils::get($source, 'transformation', ArrayUtils::get($source, 'transformations'))
                 );
-                $sourceTag->type(ArrayUtils::get($source, 'type'));
+                $sourceTag->type(ArrayUtils::get($source, 'type'), ArrayUtils::get($source, 'codecs'));
 
                 $source = $sourceTag;
             }
@@ -162,20 +163,98 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     {
         $video = Video::fromParams($source, $params);
 
-        $sources = ArrayUtils::pop($params, 'sources');
+        $tagAttributes = ArrayUtils::pop($params, 'attributes', []);
 
-        $configuration = (new Configuration(Configuration::instance()));
-        # set v1 defaults
-        $configuration->tag->quotesType       = BaseTag::SINGLE_QUOTES;
-        $configuration->tag->sortAttributes   = true;
-        $configuration->tag->contentDelimiter = '';
+        $fallback = ArrayUtils::pop($params, 'fallback_content', '');
+
+        $sources     = ArrayUtils::pop($params, 'sources');
+        $sourceTypes = ArrayUtils::pop($params, 'source_types', self::$defaultSourceTypes);
+        // fallback to (legacy) source types
+        if (empty($sources)) {
+            $sources = self::populateSourceTypesSources($sourceTypes, $params);
+        }
+
+        if (count($sources) === 1) {
+            $video->asset->setPublicId($video->asset->publicId(true) . '.' . $sources[0]['type']);
+            $sources = [];
+        }
+
+        $configuration                        = self::fromParamsDefaultConfig();
+        $configuration->tag->voidClosingSlash = false;
 
         $configuration->importJson($params);
 
-        $tagAttributes = self::collectAttributesFromParams($params);
+        $tagAttributes['poster'] = self::generateVideoPosterAttr($source, $params, $configuration);
+        if (empty($tagAttributes['poster'])) {
+            $tagAttributes['poster'] = false; // indicates that we want to omit poster attribute
+        }
 
-        return (new static($video, $sources, $configuration))->setAttributes($tagAttributes);
+        TagUtils::handleSpecialAttributes($tagAttributes, $params, $configuration);
+        $tagAttributes = array_merge($tagAttributes, self::collectAttributesFromParams($params));
+
+        return (new static($video, $sources, $configuration))->setAttributes($tagAttributes)->fallback($fallback);
     }
+
+    /**
+     * Helper function for cl_video_tag, generates video poster URL
+     *
+     * @param string $source      The public ID of the resource
+     * @param array  $videoParams Additional options
+     * @param        $configuration
+     *
+     * @return string Resulting video poster URL
+     *
+     *                     * @internal
+     */
+    protected static function generateVideoPosterAttr($source, &$videoParams, $configuration)
+    {
+        ArrayUtils::setDefaultValue($videoParams, 'resource_type', AssetType::VIDEO);
+        ArrayUtils::setDefaultValue($videoParams, 'format', $configuration->tag->videoPosterFormat);
+
+        if (! array_key_exists('poster', $videoParams)) {
+            // set default poster based on the video
+            return Image::fromParams($source, $videoParams);
+        }
+
+        // Custom poster
+        $poster = ArrayUtils::pop($videoParams, 'poster');
+
+        if (! is_array($poster)) {
+            // direct url
+            return $poster;
+        }
+
+        ArrayUtils::setDefaultValue($poster, 'format', $configuration->tag->videoPosterFormat);
+
+        if (! array_key_exists('public_id', $poster)) {
+            // build poster using the video source
+            ArrayUtils::setDefaultValue($poster, 'resource_type', AssetType::VIDEO);
+
+            return Image::fromParams($source, $poster);
+        }
+
+        return Image::fromParams($poster['public_id'], $poster);
+    }
+
+    /**
+     * @param $sourceTypes
+     * @param $params
+     *
+     * @return array
+     */
+    protected static function populateSourceTypesSources($sourceTypes, &$params)
+    {
+        $sourceTransformation = ArrayUtils::pop($params, 'source_transformation', []);
+        $sources              = [];
+        foreach (ArrayUtils::build($sourceTypes) as $sourceType) {
+            $sources[] = ['type'           => $sourceType,
+                          'transformation' => ArrayUtils::pop($sourceTransformation, $sourceType, []),
+            ];
+        }
+
+        return $sources;
+    }
+
 
     /**
      * Sets the fallback content.
@@ -233,13 +312,20 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     /**
      * Serializes the tag content.
      *
-     * @param array $additionalContent The additional content.
+     * @param array $additionalContent        The additional content.
+     * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append)
      *
      * @return string
      */
-    public function serializeContent($additionalContent = [])
+    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
     {
-        return parent::serializeContent(ArrayUtils::mergeNonEmpty($this->sources, $additionalContent));
+        $content = $prependAdditionalContent ? ArrayUtils::mergeNonEmpty($additionalContent, $this->sources) :
+            ArrayUtils::mergeNonEmpty($this->sources, $additionalContent);
+
+        return parent::serializeContent(
+            $content,
+            true
+        );
     }
 
     /**
@@ -269,8 +355,8 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     /**
      * Adds (chains) a transformation action.
      *
-     * @param BaseAction|BaseParameter|mixed $action The transformation action to add.
-     *                                               If BaseParameter is provided, it is wrapped with action.
+     * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
+     *                                               If BaseQualifier is provided, it is wrapped with action.
      *
      * @return static
      */
@@ -295,7 +381,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     }
 
     /**
-     * Sets the Account configuration key with the specified value.
+     * Sets the Cloud configuration key with the specified value.
      *
      * @param string $configKey   The configuration key.
      * @param mixed  $configValue THe configuration value.
@@ -304,9 +390,9 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      *
      * @internal
      */
-    public function setAccountConfig($configKey, $configValue)
+    public function setCloudConfig($configKey, $configValue)
     {
-        return $this->applyAssetModification('setAccountConfig', $configKey, $configValue);
+        return $this->applyAssetModification('setCloudConfig', $configKey, $configValue);
     }
 
     /**

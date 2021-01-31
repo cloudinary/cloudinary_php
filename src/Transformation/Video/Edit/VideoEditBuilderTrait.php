@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 
 /**
  * Trait VideoEditBuilderTrait
@@ -23,30 +22,44 @@ trait VideoEditBuilderTrait
     /**
      * Trims a video (and discards the rest).
      *
-     * @param VideoRange|mixed $range Specify the range of the video to keep.
+     * @param null $startOffset
+     * @param null $endOffset
+     * @param null $duration
      *
-     * @return VideoRange
+     * @return Timeline
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#trimming_videos
      */
-    public static function trim($range = null)
+    public static function trim($startOffset = null, $endOffset = null, $duration = null)
     {
-        return ClassUtils::verifyInstance($range, VideoRange::class);
+        return ClassUtils::forceVarArgsInstance([$startOffset, $endOffset, $duration], Timeline::class);
     }
 
     /**
      * Concatenates another video or image.
      *
-     * @param VideoLayer|string $videoSource      The source to concatenate.
-     * @param VideoRange        $timelinePosition The position of the concatenated video.
+     * @param VideoSource|string $videoSource The source to concatenate.
      *
-     * @return VideoOverlay
+     * @return Concatenate
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#concatenating_videos
      */
-    public static function concatenate($videoSource, $timelinePosition = null)
+    public static function concatenate($videoSource)
     {
-        return (new VideoOverlay($videoSource, null, $timelinePosition))->concatenate();
+        return ClassUtils::verifyInstance($videoSource, Concatenate::class);
+    }
+
+    /**
+     * Generates an excerpt of the video based on Cloudinary's AI-powered preview algorithm, which identifies the
+     * most interesting video chunks from a video and uses these to generate a video preview.
+     *
+     * @param int $duration The duration of the excerpt in seconds (Server default: 5 seconds).
+     *
+     * @return Preview
+     */
+    public static function preview($duration = null)
+    {
+        return ClassUtils::forceInstance($duration, Preview::class);
     }
 
     /**
@@ -62,6 +75,6 @@ trait VideoEditBuilderTrait
      */
     public static function volume($level)
     {
-        return EffectAction::fromEffectParam(ClassUtils::verifyInstance($level, Volume::class));
+        return EffectAction::fromEffectQualifier(ClassUtils::verifyInstance($level, Volume::class));
     }
 }

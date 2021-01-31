@@ -11,32 +11,16 @@
 namespace Cloudinary\Transformation;
 
 /**
- * Represents one or more pages of a paged document, such as a PDF or TIFF file.
- *
- * **Learn more**:
- * <a href=https://cloudinary.com/documentation/paged_and_layered_media#delivering_content_from_pdf_files
- * target="_blank">Delivering content from PDF files</a>
- *
- * @api
+ * Defines the page extraction action.
  */
-abstract class Page
+class Page extends BasePageAction
 {
+    /**
+     * @var string MAIN_PARAMETER Represents the main qualifier of the action. (some actions do not have main qualifier)
+     */
+    const MAIN_QUALIFIER = PageQualifier::class;
+
     use PageNumberTrait;
     use PageRangeTrait;
     use PageAllTrait;
-
-
-    /**
-     * Internal named constructor.
-     *
-     * @param $value
-     *
-     * @return PageParam
-     *
-     * @internal
-     */
-    public static function createWithPageParam(...$value)
-    {
-        return new PageParam(...$value);
-    }
 }

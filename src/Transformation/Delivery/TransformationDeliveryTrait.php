@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
+use Cloudinary\Transformation\Qualifier\Dimensions\Dpr;
 
 /**
  * Trait TransformationDeliveryTrait

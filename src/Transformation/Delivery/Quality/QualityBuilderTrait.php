@@ -34,7 +34,7 @@ trait QualityBuilderTrait
     }
 
     /**
-     * Adds an optional parameter to control chroma subsampling
+     * Adds an optional qualifier to control chroma subsampling
      *
      * Chroma sub-sampling is a method of encoding images by implementing less resolution for chroma information
      * (colors) than for luma information (luminance), taking advantage of the human visual system's lower acuity for

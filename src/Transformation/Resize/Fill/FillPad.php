@@ -20,6 +20,7 @@ use InvalidArgumentException;
 class FillPad extends Fill
 {
     use FillPadTrait;
+    use OffsetTrait;
     use BackgroundTrait;
 
     /**
@@ -51,11 +52,29 @@ class FillPad extends Fill
      */
     public function gravity($autoGravity)
     {
-        if (! $autoGravity instanceof FocalGravity) {
+        if (! $autoGravity instanceof AutoGravity) {
             throw new InvalidArgumentException('FillPad only supports Auto Gravity');
         }
 
-        $this->addParameter($autoGravity);
+        $this->addQualifier($autoGravity);
+
+        return $this;
+    }
+
+    /**
+     * @internal
+     *
+     * @param $value
+     *
+     * @return static
+     */
+    public function setOffsetValue($value)
+    {
+        if (! isset($this->qualifiers[Offset::getName()])) {
+            $this->addQualifier(new Offset());
+        }
+
+        $this->qualifiers[Offset::getName()]->addQualifier($value);
 
         return $this;
     }

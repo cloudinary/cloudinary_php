@@ -65,7 +65,7 @@ final class DistributionTest extends AssetTestCase
 
         self::assertImageUrl(
             self::IMAGE_NAME,
-            $this->image->secure()->secureDistribution($host),
+            $this->image->secure()->secureCname($host),
             ['protocol' => self::PROTOCOL_HTTPS, 'hostname' => $host]
         );
     }
@@ -77,7 +77,7 @@ final class DistributionTest extends AssetTestCase
     {
         $host = 'config.secure.distribution.com';
 
-        Configuration::instance()->url->secureDistribution($host);
+        Configuration::instance()->url->secureCname($host);
 
         self::assertImageUrl(
             self::IMAGE_NAME,
@@ -111,7 +111,7 @@ final class DistributionTest extends AssetTestCase
 
         self::assertImageUrl(
             self::IMAGE_NAME,
-            $this->image->secure()->privateCdn()->secureDistribution($host),
+            $this->image->secure()->privateCdn()->secureCname($host),
             [
                 'protocol'   => self::PROTOCOL_HTTPS,
                 'hostname'   => $host,

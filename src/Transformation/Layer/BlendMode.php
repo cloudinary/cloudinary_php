@@ -19,7 +19,7 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-class BlendMode extends EffectParam
+class BlendMode extends EffectQualifier
 {
     /**
      * @var string $name Serialization name.

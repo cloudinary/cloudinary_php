@@ -32,7 +32,7 @@ final class TagTest extends TestCase
 
     public function testSimpleTag()
     {
-        $this->assertEquals(
+        self::assertEquals(
             '<test></test>',
             (string)$this->tag
         );
@@ -43,14 +43,14 @@ final class TagTest extends TestCase
         $content1 = 'Test content';
         $this->tag->setContent($content1);
 
-        $this->assertEquals(
+        self::assertEquals(
             implode("\n", ['<test>', $content1, '</test>']),
             (string)$this->tag
         );
 
         $tag2 = (new TestTag())->setContent($this->tag);
 
-        $this->assertEquals(
+        self::assertEquals(
             implode("\n", ['<test>', $this->tag, '</test>']),
             (string)$tag2
         );
@@ -65,14 +65,14 @@ final class TagTest extends TestCase
 
         $this->tag->addClass($class1);
 
-        $this->assertEquals(
+        self::assertEquals(
             "<test class=\"$class1\"></test>",
             (string)$this->tag
         );
 
         $this->tag->addClass($class2);
 
-        $this->assertEquals(
+        self::assertEquals(
             "<test class=\"$classesStr\"></test>",
             (string)$this->tag
         );
@@ -80,7 +80,7 @@ final class TagTest extends TestCase
         // Add duplicate class
         $this->tag->addClass($class2);
 
-        $this->assertEquals(
+        self::assertEquals(
             "<test class=\"$classesStr\"></test>",
             (string)$this->tag
         );
@@ -88,7 +88,7 @@ final class TagTest extends TestCase
         // Clear class
         $this->tag->setClass([]);
 
-        $this->assertEquals(
+        self::assertEquals(
             '<test></test>',
             (string)$this->tag
         );
@@ -96,7 +96,7 @@ final class TagTest extends TestCase
         // Set class from array
         $this->tag->setClass($classes);
 
-        $this->assertEquals(
+        self::assertEquals(
             "<test class=\"$classesStr\"></test>",
             (string)$this->tag
         );
@@ -104,7 +104,7 @@ final class TagTest extends TestCase
         // Set multiple classes from string
         $this->tag->setClass($classesStr);
 
-        $this->assertEquals(
+        self::assertEquals(
             "<test class=\"$classesStr\"></test>",
             (string)$this->tag
         );

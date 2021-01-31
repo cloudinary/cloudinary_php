@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 
 /**
  * Trait VideoSpecificTransformationTrait
@@ -25,13 +24,13 @@ trait VideoSpecificTransformationTrait
     /**
      * Trims a video (and discards the rest).
      *
-     * @param VideoRange $range Specify the range of the video to leave.
+     * @param Timeline $range Specify the range of the video to leave.
      *
      * @return static
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#trimming_videos
      */
-    public function trim(VideoRange $range)
+    public function trim(Timeline $range)
     {
         return $this->addAction($range);
     }
@@ -47,55 +46,52 @@ trait VideoSpecificTransformationTrait
      */
     public function roundCorners($radius)
     {
-        return $this->addAction(RoundCorners::radius($radius));
+        return $this->addAction(ClassUtils::verifyInstance($radius, RoundCorners::class));
     }
 
     /**
      * Adds another video, text, image as an overlay over the container video.
      *
-     * @param BaseLayer|string  $videoLayer       The overlay.
-     * @param BasePosition|null $position         The position of the overlay.
-     * @param VideoRange|null   $timelinePosition The timeline position of the overlay.
+     * @param BaseSource|string $videoLayer The overlay.
+     * @param BasePosition|null $position   The position of the overlay.
+     * @param Timeline|null     $timeline   The timeline position of the overlay.
      *
      * @return static
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#adding_video_overlays
      */
-    public function overlay($videoLayer, $position = null, $timelinePosition = null)
+    public function overlay($videoLayer, $position = null, $timeline = null)
     {
-        return $this->addAction(new VideoOverlay($videoLayer, $position, $timelinePosition));
+        return $this->addAction(new VideoOverlay($videoLayer, $position, $timeline));
     }
 
     /**
      * Concatenates another video or image.
      *
-     * @param VideoLayer|string $videoLayer       The layer to concatenate.
-     * @param VideoRange        $timelinePosition The position of the concatenated video.
+     * @param VideoSource|string $videoSource The source of the video to concatenate.
      *
      * @return static
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#concatenating_videos
      */
-    public function concatenate($videoLayer, $timelinePosition = null)
+    public function concatenate($videoSource)
     {
-        return $this->addAction(
-            (new VideoOverlay($videoLayer, null, $timelinePosition))->concatenate()
-        );
+        return $this->addAction(ClassUtils::verifyInstance($videoSource, Concatenate::class));
     }
 
     /**
      * Applies the video as a cutter for the main video.
      *
-     * @param VideoLayer|string $videoLayer       The cutter video layer.
-     * @param BasePosition|null $position         The position of the cutter.
-     * @param VideoRange|null   $timelinePosition The timeline position of the cutter.
+     * @param VideoSource|string $videoLayer The cutter video layer.
+     * @param BasePosition|null  $position   The position of the cutter.
+     * @param Timeline|null      $timeline   The timeline position of the cutter.
      *
      * @return static
      */
-    public function cutter($videoLayer, $position = null, $timelinePosition = null)
+    public function cutter($videoLayer, $position = null, $timeline = null)
     {
         return $this->addAction(
-            (new VideoOverlay($videoLayer, $position, $timelinePosition))->cutter()
+            (new VideoOverlay($videoLayer, $position, $timeline))->cutter()
         );
     }
 
@@ -108,7 +104,7 @@ trait VideoSpecificTransformationTrait
      */
     public function addSubtitles($subtitlesId)
     {
-        return $this->overlay(VideoLayer::subtitles($subtitlesId));
+        return $this->overlay(VideoSource::subtitles($subtitlesId));
     }
 
     /**
@@ -192,7 +188,7 @@ trait VideoSpecificTransformationTrait
      * Relevant when converting videos to animated GIF or WebP format. If not specified, the resulting GIF or WebP
      * samples the whole video (up to 400 frames, at up to 10 frames per second). By default the duration of the
      * animated image is the same as the duration of the video, no matter how many frames are sampled from the original
-     * video (use the delay parameter to adjust the amount of time between frames).
+     * video (use the delay qualifier to adjust the amount of time between frames).
      *
      * @param int|string $value Integer - The total number of frames to sample from the original video. The frames are
      *                          spread out over the length of the video, e.g. 20 takes one frame every 5%.

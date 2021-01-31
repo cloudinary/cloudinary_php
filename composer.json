@@ -1,7 +1,7 @@
 {
   "name": "cloudinary/cloudinary_php",
-  "version": "2.0.0-beta8",
-  "description": "Cloudinary PHP SDK v2",
+  "version": "2.0.0",
+  "description": "Cloudinary PHP SDK",
   "keywords": [
     "cloudinary",
     "sdk",
@@ -10,7 +10,7 @@
     "cdn"
   ],
   "type": "library",
-  "homepage": "https://github.com/cloudinary/cloudinary_php/tree/2.0.0-beta",
+  "homepage": "https://github.com/cloudinary/cloudinary_php",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [

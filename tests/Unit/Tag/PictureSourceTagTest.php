@@ -54,7 +54,7 @@ final class PictureSourceTagTest extends ImageTagTestCase
 
     public function testPictureSourceTagCustomConfiguration()
     {
-        $configuration               = new Configuration();
+        $configuration               = Configuration::instance();
         $configuration->url->shorten = true;
 
         // Can reference this image, since its functionality it tested in another test
@@ -69,7 +69,7 @@ final class PictureSourceTagTest extends ImageTagTestCase
 
     public function testPictureSourceTagSrcSet()
     {
-        $configuration = new Configuration();
+        $configuration = Configuration::instance();
 
         $configuration->responsiveBreakpoints->minWidth  = self::MIN_WIDTH;
         $configuration->responsiveBreakpoints->maxWidth  = self::MAX_WIDTH;

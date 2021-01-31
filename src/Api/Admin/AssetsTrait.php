@@ -20,7 +20,7 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
 
 /**
- * Enables you to manage the assets in your account or cloud.
+ * Enables you to manage the assets in your cloud.
  *
  * **Learn more**: <a
  * href=https://cloudinary.com/documentation/admin_api#resources target="_blank">
@@ -37,9 +37,9 @@ trait AssetsTrait
      *
      * @return ApiResponse
      */
-    public function resourceTypes()
+    public function assetTypes()
     {
-        return $this->apiClient->get(ApiEndPoint::RESOURCES);
+        return $this->apiClient->get(ApiEndPoint::ASSETS);
     }
 
     /**
@@ -52,10 +52,10 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources
      */
-    public function resources($options = [])
+    public function assets($options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType];
+        $uri       = [ApiEndPoint::ASSETS, $assetType];
         ArrayUtils::appendNonEmpty($uri, ArrayUtils::get($options, DeliveryType::KEY));
 
         $params = ArrayUtils::whitelist(
@@ -69,6 +69,7 @@ trait AssetsTrait
                 'moderations',
                 'direction',
                 'start_at',
+                'metadata',
             ]
         );
 
@@ -88,13 +89,13 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources_by_tag
      */
-    public function resourcesByTag($tag, $options = [])
+    public function assetsByTag($tag, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, 'tags', $tag];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, 'tags', $tag];
         $params    = ArrayUtils::whitelist(
             $options,
-            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction']
+            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction', 'metadata']
         );
 
         return $this->apiClient->get($uri, $params);
@@ -116,13 +117,13 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources_by_context
      */
-    public function resourcesByContext($key, $value = null, $options = [])
+    public function assetsByContext($key, $value = null, $options = [])
     {
         $assetType       = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
-        $uri             = [ApiEndPoint::RESOURCES, $assetType, 'context'];
+        $uri             = [ApiEndPoint::ASSETS, $assetType, 'context'];
         $params          = ArrayUtils::whitelist(
             $options,
-            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction']
+            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction', 'metadata']
         );
         $params['key']   = $key;
         $params['value'] = $value;
@@ -144,14 +145,14 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources_in_moderation_queues
      */
-    public function resourcesByModeration($kind, $status, $options = [])
+    public function assetsByModeration($kind, $status, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, 'moderations', $kind, $status];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, 'moderations', $kind, $status];
 
         $params = ArrayUtils::whitelist(
             $options,
-            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction']
+            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction', 'metadata']
         );
 
         return $this->apiClient->get($uri, $params);
@@ -168,11 +169,11 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources
      */
-    public function resourcesByIds($publicIds, $options = [])
+    public function assetsByIds($publicIds, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
         $params               = ArrayUtils::whitelist($options, ['public_ids', 'tags', 'moderations', 'context']);
         $params['public_ids'] = $publicIds;
@@ -181,10 +182,10 @@ trait AssetsTrait
     }
 
     /**
-     * Returns the details of the specified asset and all its derived resources.
+     * Returns the details of the specified asset and all its derived assets.
      *
      *
-     * Note that if you only need details about the original resource,
+     * Note that if you only need details about the original asset,
      * you can also use the Uploader::upload or Uploader::explicit methods, which return the same information and
      * are not rate limited.
      *
@@ -196,11 +197,11 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource
      */
-    public function resource($publicId, $options = [])
+    public function asset($publicId, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type, $publicId];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type, $publicId];
 
         $params = ArrayUtils::whitelist(
             $options,
@@ -217,6 +218,7 @@ trait AssetsTrait
                 'max_results',
                 'derived_next_cursor',
                 'accessibility_analysis',
+                'versions',
             ]
         );
 
@@ -239,11 +241,11 @@ trait AssetsTrait
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type, 'restore'];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type, 'restore'];
 
         $params = array_merge($options, ['public_ids' => $publicIds]);
 
-        return $this->apiClient->postForm($uri, $params);
+        return $this->apiClient->postJson($uri, $params);
     }
 
     /**
@@ -264,7 +266,7 @@ trait AssetsTrait
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type, $publicId];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type, $publicId];
 
         $primitive_options = ArrayUtils::whitelist(
             $options,
@@ -308,13 +310,13 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources
      */
-    public function deleteResources($publicIds, $options = [])
+    public function deleteAssets($publicIds, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
-        $params = $this->prepareDeleteResourceParams($options, ['public_ids' => $publicIds]);
+        $params = $this->prepareDeleteAssetParams($options, ['public_ids' => $publicIds]);
 
         return $this->apiClient->delete($uri, $params);
     }
@@ -322,7 +324,7 @@ trait AssetsTrait
     /**
      * Deletes assets by prefix.
      *
-     * Delete up to 1000 original assets, along with their derived resources, where the public ID starts with the
+     * Delete up to 1000 original assets, along with their derived assets, where the public ID starts with the
      * specified prefix.
      *
      * @param string $prefix  The Public ID prefix.
@@ -335,19 +337,19 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources
      */
-    public function deleteResourcesByPrefix($prefix, $options = [])
+    public function deleteAssetsByPrefix($prefix, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
-        $params = $this->prepareDeleteResourceParams($options, ['prefix' => $prefix]);
+        $params = $this->prepareDeleteAssetParams($options, ['prefix' => $prefix]);
 
         return $this->apiClient->delete($uri, $params);
     }
 
     /**
-     * Deletes all assets of the specified asset and delivery type, including their derived resources.
+     * Deletes all assets of the specified asset and delivery type, including their derived assets.
      *
      * Supports deleting up to a maximum of 1000 original assets in a single call.
      *
@@ -360,18 +362,18 @@ trait AssetsTrait
      *
      * https://cloudinary.com/documentation/admin_api#delete_resources
      */
-    public function deleteAllResources($options = [])
+    public function deleteAllAssets($options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type];
-        $params    = $this->prepareDeleteResourceParams($options, ['all' => true]);
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
+        $params    = $this->prepareDeleteAssetParams($options, ['all' => true]);
 
         return $this->apiClient->delete($uri, $params);
     }
 
     /**
-     * Deletes assets with the specified tag, including their derived resources.
+     * Deletes assets with the specified tag, including their derived assets.
      *
      * Supports deleting up to a maximum of 1000 original assets in a single call.
      *
@@ -385,22 +387,22 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources_by_tags
      */
-    public function deleteResourcesByTag($tag, $options = [])
+    public function deleteAssetsByTag($tag, $options = [])
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, 'tags', $tag];
-        $params    = $this->prepareDeleteResourceParams($options);
+        $uri       = [ApiEndPoint::ASSETS, $assetType, 'tags', $tag];
+        $params    = $this->prepareDeleteAssetParams($options);
 
         return $this->apiClient->delete($uri, $params);
     }
 
     /**
-     * Deletes the specified derived resources by derived resource ID.
+     * Deletes the specified derived assets by derived asset ID.
      *
-     * The derived resource IDs for a particular original asset are returned when calling the `resource` method to
+     * The derived asset IDs for a particular original asset are returned when calling the `asset` method to
      * return the details of a single asset.
      *
-     * @param string|array $derived_resource_ids The derived resource IDs (up to 100 ids).
+     * @param string|array $derived_asset_ids The derived asset IDs (up to 100 ids).
      *
      * @return ApiResponse
      *
@@ -408,19 +410,19 @@ trait AssetsTrait
      *
      * @see https://cloudinary.com/documentation/admin_api##delete_resources
      */
-    public function deleteDerivedResources($derived_resource_ids)
+    public function deleteDerivedAssets($derived_asset_ids)
     {
-        $uri    = ApiEndPoint::DERIVED_RESOURCES;
-        $params = ['derived_resource_ids' => $derived_resource_ids];
+        $uri    = ApiEndPoint::DERIVED_ASSETS;
+        $params = ['derived_resource_ids' => $derived_asset_ids];
 
         return $this->apiClient->delete($uri, $params);
     }
 
     /**
-     * Deletes derived resources identified by transformation and public_ids.
+     * Deletes derived assets identified by transformation and public_ids.
      *
-     * @param string|array $publicIds       The public IDs for which you want to delete derived resources.
-     * @param string|array $transformations The transformation(s) associated with the derived resources to delete.
+     * @param string|array $publicIds       The public IDs for which you want to delete derived assets.
+     * @param string|array $transformations The transformation(s) associated with the derived assets to delete.
      * @param array        $options         The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#resources target="_blank"> Admin API</a> documentation.
      *
@@ -432,7 +434,7 @@ trait AssetsTrait
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $uri       = [ApiEndPoint::RESOURCES, $assetType, $type];
+        $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
         $params                    = [
             'public_ids'    => ArrayUtils::build($publicIds),
@@ -454,7 +456,7 @@ trait AssetsTrait
      *
      * @internal
      */
-    protected function prepareDeleteResourceParams($options, $params = [])
+    protected function prepareDeleteAssetParams($options, $params = [])
     {
         $filtered = ArrayUtils::whitelist($options, ['keep_original', 'next_cursor', 'invalidate']);
         if (isset($options['transformations'])) {

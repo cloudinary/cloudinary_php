@@ -15,24 +15,26 @@ use Cloudinary\Transformation\Argument\PointValue;
 /**
  * Class DistortArc
  */
-class Distort extends EffectParam
+class Distort extends EffectQualifier
 {
     /**
      * DistortArc constructor.
      *
-     * @param PointValue $topLeft
-     * @param PointValue $topRight
-     * @param PointValue $bottomRight
-     * @param PointValue $bottomLeft
+     * @param PointValue|array|int|string $topLeft
+     * @param PointValue|array|int|string $topRight
+     * @param PointValue|array|int|string $bottomRight
+     * @param PointValue|array|int|string $bottomLeft
+     * @param mixed                       ...$args Additional arguments
      */
     public function __construct(
-        PointValue $topLeft = null,
-        PointValue $topRight = null,
-        PointValue $bottomRight = null,
-        PointValue $bottomLeft = null
+        $topLeft = null,
+        $topRight = null,
+        $bottomRight = null,
+        $bottomLeft = null,
+        ...$args
     ) {
-        parent::__construct(ReshapeParam::DISTORT);
+        parent::__construct(ReshapeQualifier::DISTORT);
 
-        $this->add($topLeft, $topRight, $bottomRight, $bottomLeft);
+        $this->add($topLeft, $topRight, $bottomRight, $bottomLeft, ...$args);
     }
 }

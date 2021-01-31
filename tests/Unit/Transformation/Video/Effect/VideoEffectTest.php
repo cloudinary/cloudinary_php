@@ -11,6 +11,8 @@
 namespace Cloudinary\Test\Unit\Transformation\Video\Effect;
 
 use Cloudinary\Transformation\Effect;
+use Cloudinary\Transformation\ShakeStrength;
+use Cloudinary\Transformation\VideoEdit;
 use Cloudinary\Transformation\Volume;
 use PHPUnit\Framework\TestCase;
 
@@ -19,28 +21,49 @@ use PHPUnit\Framework\TestCase;
  */
 final class VideoEffectTest extends TestCase
 {
-    public function testPreview()
+    public function testDeshake()
     {
-        $preview = Effect::preview(17);
+        self::assertEquals(
+            'e_deshake',
+            (string)Effect::deshake()
+        );
+        self::assertEquals(
+            'e_deshake:32',
+            (string)Effect::deshake(32)
+        );
 
-        $this->assertEquals(
-            'e_preview:duration_17',
-            (string)$preview
+        self::assertEquals(
+            'e_deshake:32',
+            (string)Effect::deshake()->shakeStrength(ShakeStrength::pixels32())
         );
     }
 
     public function testFade()
     {
-        $fadeIn = Effect::fadeIn(2000);
+        $fadeIn = Effect::fadeIn();
 
-        $this->assertEquals(
+        self::assertEquals(
+            'e_fade',
+            (string)$fadeIn
+        );
+
+        $fadeIn = Effect::fadeIn()->duration(2000);
+
+        self::assertEquals(
             'e_fade:2000',
             (string)$fadeIn
         );
 
         $fadeOut = Effect::fadeOut(2000);
 
-        $this->assertEquals(
+        self::assertEquals(
+            'e_fade:-2000',
+            (string)$fadeOut
+        );
+
+        $fadeOut = Effect::fadeOut()->duration(2000);
+
+        self::assertEquals(
             'e_fade:-2000',
             (string)$fadeOut
         );
@@ -48,46 +71,44 @@ final class VideoEffectTest extends TestCase
 
     public function testVolume()
     {
-        $volume = new Volume(99);
-
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:99',
-            (string)$volume
+            (string)Volume::volume(99)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:mute',
-            (string)$volume->mute()
+            (string)Volume::mute()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:-10dB',
-            (string)$volume->offset(-10)
+            (string)Volume::byDecibels(-10)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:0dB',
-            (string)$volume->offset(0)
+            (string)Volume::byDecibels(0)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:+10dB',
-            (string)$volume->offset(10)
+            (string)Volume::byDecibels(10)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:400',
-            (string)$volume->relative(400)
+            (string)Volume::byPercent(400)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:99',
-            (string)Effect::volume(99)
+            (string)VideoEdit::volume(99)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'e_volume:400',
-            (string)Effect::volume($volume)
+            (string)VideoEdit::volume(new Volume(400))
         );
     }
 }

@@ -10,8 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Expression\BaseExpressionComponent;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Interface CommonTransformationInterface
@@ -45,24 +44,24 @@ interface CommonTransformationInterface extends ComponentInterface
     /**
      * Applies a filter or an effect on an asset.
      *
-     * @param EffectParam|EffectAction $effect The effect to apply.
+     * @param EffectQualifier|EffectAction $effect The effect to apply.
      *
      * @return static
      *
      * @see \Cloudinary\Transformation\EffectAction
-     * @see \Cloudinary\Transformation\EffectParam
+     * @see \Cloudinary\Transformation\EffectQualifier
      */
     public function effect($effect);
 
     /**
      * Applies an adjustment effect on an asset.
      *
-     * @param EffectParam|EffectAction $adjustment The adjustment effect to apply.
+     * @param EffectQualifier|EffectAction $adjustment The adjustment effect to apply.
      *
      * @return static
      *
      * @see \Cloudinary\Transformation\EffectAction
-     * @see \Cloudinary\Transformation\EffectParam
+     * @see \Cloudinary\Transformation\EffectQualifier
      */
     public function adjust($adjustment);
 
@@ -76,20 +75,20 @@ interface CommonTransformationInterface extends ComponentInterface
     public function namedTransformation($transformationName);
 
     /**
-     * Adds a generic parameter as a separate action.
+     * Adds a generic qualifier as a separate action.
      *
-     * @param string      $shortName The generic parameter name.
-     * @param array|mixed $value     The generic parameter value.
+     * @param string      $shortName The generic qualifier name.
+     * @param array|mixed $value     The generic qualifier value.
      *
      * @return static
      */
-    public function addGenericParam($shortName, ...$value);
+    public function addGenericQualifier($shortName, ...$value);
 
     /**
      * Adds (chains) a transformation action.
      *
-     * @param BaseAction|BaseParameter|mixed $action The transformation action to add.
-     *                                               If BaseParameter is provided, it is wrapped with action.
+     * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
+     *                                               If BaseQualifier is provided, it is wrapped with action.
      *
      * @return static
      */
@@ -107,15 +106,15 @@ interface CommonTransformationInterface extends ComponentInterface
     public function addTransformation($transformation);
 
     /**
-     * Adds action defined as an array of parameters.
+     * Adds action defined as an array of qualifiers.
      *
-     * @param array $parameters An associative array of parameters
+     * @param array $qualifiers An associative array of qualifiers
      *
      * @return static
      *
-     * @see ParametersAction
+     * @see QualifiersAction
      */
-    public function addActionFromParams($parameters);
+    public function addActionFromQualifiers($qualifiers);
 
     /**
      * Defines a new user variable.
@@ -125,7 +124,7 @@ interface CommonTransformationInterface extends ComponentInterface
      *
      * @return static
      */
-    public function variable($name, $value);
+    public function addVariable($name, $value);
 
     /**
      * Rotates the asset by the given angle.
@@ -137,42 +136,13 @@ interface CommonTransformationInterface extends ComponentInterface
     public function rotate($angle);
 
     /**
-     * Specifies a condition to be met before applying a transformation.
+     * Specifies a conditional transformation whose condition should be met before applying a transformation.
      *
-     * @param BaseExpressionComponent|string $expression The conditional expression
-     *
-     * @return static
-     *
-     * @see https://cloudinary.com/documentation/conditional_transformations
-     */
-    public function ifCondition($expression);
-
-    /**
-     * Specifies a transformation that is applied in the case that the initial condition is evaluated as false.
+     * @param Conditional $conditionalTransformation The conditional transformation.
      *
      * @return static
      *
      * @see https://cloudinary.com/documentation/conditional_transformations
      */
-    public function ifElse();
-
-    /**
-     * Finishes the conditional transformation.
-     *
-     * @return static
-     *
-     * @see https://cloudinary.com/documentation/conditional_transformations
-     */
-    public function endIfCondition();
-
-    /**
-     * Applies the 3D look-up table (LUT) file to the asset.
-     *
-     * @param string $lutId The 3D LUT file id
-     *
-     * @return static
-     *
-     * @see https://cloudinary.com/documentation/image_transformations#applying_3d_luts_to_images
-     */
-    public function add3DLut($lutId);
+    public function conditional($conditionalTransformation);
 }

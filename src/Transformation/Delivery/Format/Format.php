@@ -34,7 +34,7 @@ class Format extends BaseAction implements FormatInterface
      */
     public function __construct(...$value)
     {
-        parent::__construct(ClassUtils::verifyVarArgsInstance($value, FormatParam::class));
+        parent::__construct(ClassUtils::verifyVarArgsInstance($value, FormatQualifier::class));
     }
 
     /**
@@ -46,7 +46,7 @@ class Format extends BaseAction implements FormatInterface
      */
     public function format($format)
     {
-        $this->parameters[FormatParam::getName()]->format($format);
+        $this->qualifiers[FormatQualifier::getName()]->format($format);
 
         return $this;
     }

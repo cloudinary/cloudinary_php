@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Argument\PointValue;
 
 /**
  * Trait ReshapeTrait
@@ -44,8 +43,8 @@ trait ReshapeTrait
      *
      * For examples, see the Image Transformations guide.
      *
-     * @param float $degree The angle of distortion.  Positive values curve the image upwards (like a frown).
-     *                      Negative values curve the image downwards (like a smile).
+     * @param float|string|mixed $degree The angle of distortion.  Positive values curve the image upwards (like a
+     *                                   frown). Negative values curve the image downwards (like a smile).
      *
      *
      * @return EffectAction
@@ -58,7 +57,7 @@ trait ReshapeTrait
             return $degree;
         }
 
-        return EffectAction::limited(ReshapeParam::DISTORT_ARC, EffectRange::ANGLE, $degree);
+        return EffectAction::limited(ReshapeQualifier::DISTORT_ARC, EffectRange::ANGLE, $degree);
     }
 
     /**
@@ -76,7 +75,7 @@ trait ReshapeTrait
      */
     public static function trim($tolerance = null)
     {
-        return ClassUtils::verifyInstance($tolerance, TrimEffect::class);
+        return ClassUtils::forceInstance($tolerance, TrimEffect::class);
     }
 
     /**
@@ -92,5 +91,20 @@ trait ReshapeTrait
     public static function shear($skewX = null, $skewY = null)
     {
         return new Shear($skewX, $skewY);
+    }
+
+    /**
+     * Trims pixels according to the transparency levels of a given overlay image.
+     *
+     * @param string|BaseSource         $source   The public ID of the image overlay.
+     * @param Position|AbsolutePosition $position The position of the overlay with respect to the base image.
+     *
+     * @return CutByImage
+     *
+     * @see \Cloudinary\Transformation\CutByImage
+     */
+    public static function cutByImage($source, $position = null)
+    {
+        return new CutByImage($source, $position);
     }
 }

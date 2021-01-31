@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Tag;
 
+use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\ImageTransformation;
@@ -61,10 +62,28 @@ class SpriteTag extends BaseTag
      */
     public function __construct($tag, $configuration = null, $additionalTransformation = null)
     {
-        parent::__construct();
+        parent::__construct($configuration);
 
         $this->image($tag, $configuration);
         $this->additionalTransformation = $additionalTransformation;
+    }
+
+    /**
+     * Creates a new sprite tag from the provided public id and array of parameters.
+     *
+     * @param string $tag The public ID of the asset.
+     * @param array  $params The media asset parameters.
+     *
+     * @return SpriteTag
+     */
+    public static function fromParams($tag, $params = [])
+    {
+        $spriteTag = new static($tag, self::fromParamsDefaultConfig());
+
+        $spriteTag->image = Image::fromParams($tag, $params);
+        $spriteTag->image->deliveryType(DeliveryType::SPRITE)->extension('css');
+
+        return $spriteTag;
     }
 
     /**

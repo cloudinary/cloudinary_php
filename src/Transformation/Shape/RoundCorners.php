@@ -32,11 +32,11 @@ class RoundCorners extends BaseAction
     /**
      * RoundCorners constructor.
      *
-     * @param mixed ...$parameters
+     * @param mixed ...$qualifiers
      */
-    public function __construct(...$parameters)
+    public function __construct(...$qualifiers)
     {
-        parent::__construct(ClassUtils::verifyVarArgsInstance($parameters, CornerRadius::class));
+        parent::__construct(ClassUtils::verifyVarArgsInstance($qualifiers, CornerRadius::class));
     }
 
     /**
@@ -48,7 +48,7 @@ class RoundCorners extends BaseAction
      */
     public function setRadius(...$values)
     {
-        return $this->addParameter(ClassUtils::verifyVarArgsInstance($values, CornerRadius::class));
+        return $this->addQualifier(ClassUtils::verifyVarArgsInstance($values, CornerRadius::class));
     }
 
     /**
@@ -63,7 +63,7 @@ class RoundCorners extends BaseAction
      */
     public function setSimpleValue($name, $value = null)
     {
-        $this->parameters[CornerRadius::getName()]->setSimpleValue($name, $value);
+        $this->qualifiers[CornerRadius::getName()]->setSimpleValue($name, $value);
 
         return $this;
     }
@@ -79,6 +79,6 @@ class RoundCorners extends BaseAction
      */
     protected static function createWithRadius(...$radius)
     {
-        return new static(CornerRadius::radius(...$radius));
+        return new static(CornerRadius::byRadius(...$radius));
     }
 }

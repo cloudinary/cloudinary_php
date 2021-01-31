@@ -53,9 +53,9 @@ final class FileTest extends AssetTestCase
 
         $fNoFormat->deliveryType(DeliveryType::FETCH);
 
-        $this->assertErrorThrowing(
+        self::assertErrorThrowing(
             static function () use ($fNoFormat) {
-                return (string)$fNoFormat;
+                return $fNoFormat->toUrl();
             }
         );
     }

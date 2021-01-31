@@ -30,7 +30,7 @@ trait CropModeTrait
 
     /**
      * Resizes the asset so that it takes up as much space as possible within a bounding box defined by the given
-     * width and height parameters.
+     * width and height qualifiers.
      *
      * The original aspect ratio is retained and all of the original asset is visible.
      *
@@ -43,7 +43,7 @@ trait CropModeTrait
 
     /**
      * Resizes the asset so that it takes up as much space as possible within a bounding box defined by the given
-     * width and height parameters, but only if the original asset is larger than the given limit (width and height).
+     * width and height qualifiers, but only if the original asset is larger than the given limit (width and height).
      *
      * The asset is scaled down, the original aspect ratio is retained and all of the original asset is visible.
      *
@@ -56,7 +56,7 @@ trait CropModeTrait
 
     /**
      * Resizes the asset so that it takes up as much space as possible within a bounding box defined by the given
-     * width and height parameters, but only if the original asset is smaller than the given minimum (width and height).
+     * width and height qualifiers, but only if the original asset is smaller than the given minimum (width and height).
      *
      * The asset is scaled up, the original aspect ratio is retained and all of the original asset is visible.
      *

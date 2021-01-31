@@ -10,8 +10,6 @@
 
 namespace Cloudinary\Transformation;
 
-use InvalidArgumentException;
-
 /**
  * Enhances an image to its best visual quality with the Viesus Automatic Image Enhancement add-on.
  *
@@ -23,7 +21,7 @@ use InvalidArgumentException;
  *
  * @see https://cloudinary.com/documentation/viesus_automatic_image_enhancement_addon
  */
-class ViesusCorrect extends LimitedEffectParam
+class ViesusCorrect extends EffectQualifier
 {
     use EffectModeTrait;
 
@@ -39,18 +37,40 @@ class ViesusCorrect extends LimitedEffectParam
 
     /**
      * ViesusCorrect constructor.
-     *
-     * @param string $mode  The enhancement mode. Use the constants defined in this class.
-     * @param int    $level The enhancement level. (Range: -100 to 100, Server default: 50).
      */
-    public function __construct($mode = null, $level = null)
+    public function __construct()
     {
-        if ($level !== null && $mode !== self::SKIN_SATURATION) {
-            throw new InvalidArgumentException('Level can be set only for SKIN_SATURATION mode');
+        parent::__construct(Adjust::VIESUS_CORRECT);
+    }
+
+    /**
+     * Enhances the image without correcting for red eye.
+     *
+     * @return ViesusCorrect
+     */
+    public function noRedEye()
+    {
+        $this->getValue()->setSimpleNamedValue('no', 'redeye');
+
+        return $this;
+    }
+
+    /**
+     * Enhances the image and also applies saturation to the skin tones in the image.
+     *
+     * @param int $level    The enhancement level. A positive value boosts the saturation and a negative value
+     *                      reduces the saturation. (Range: -100 to 100, Server default: 50).
+     *
+     * @return ViesusCorrect
+     */
+    public function skinSaturation($level = null)
+    {
+        if ($level) {
+            $this->getValue()->setSimpleNamedValue(self::SKIN_SATURATION, $level);
+        } else {
+            $this->getValue()->addValues(self::SKIN_SATURATION);
         }
 
-        parent::__construct(Adjust::VIESUS_CORRECT, EffectRange::DEFAULT_RANGE, $level);
-
-        $this->mode($mode);
+        return $this;
     }
 }

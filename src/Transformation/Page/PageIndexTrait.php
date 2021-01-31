@@ -24,8 +24,10 @@ trait PageIndexTrait
      *
      * @return static
      */
-    public static function index($index)
+    public function byIndex($index)
     {
-        return static::createWithPageParam($index);
+        $this->add($index);
+
+        return $this;
     }
 }

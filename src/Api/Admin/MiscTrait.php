@@ -54,10 +54,10 @@ trait MiscTrait
     }
 
     /**
-     * Gets account usage details.
+     * Gets cloud usage details.
      *
-     * Returns a report detailing your current Cloudinary account usage details, including
-     * storage, bandwidth, requests, number of resources, and add-on usage.
+     * Returns a report detailing your current Cloudinary cloud usage details, including
+     * storage, bandwidth, requests, number of assets, and add-on usage.
      * Note that numbers are updated periodically.
      *
      * @param array $options The optional parameters. See the

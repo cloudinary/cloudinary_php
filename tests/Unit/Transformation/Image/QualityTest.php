@@ -10,11 +10,11 @@
 
 namespace Cloudinary\Test\Unit\Transformation\Image;
 
-use Cloudinary\Transformation\Chroma;
+use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\Delivery;
 use Cloudinary\Transformation\JpegMini;
 use Cloudinary\Transformation\Quality;
-use Cloudinary\Transformation\QualityParam;
+use Cloudinary\Transformation\QualityQualifier;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,18 +24,18 @@ final class QualityTest extends TestCase
 {
     public function testQualityParam()
     {
-        $qp = (new QualityParam(17))->chromaSubSampling(Chroma::C420);
+        $qp = (new QualityQualifier(17))->chromaSubSampling(ChromaSubSampling::chroma420());
 
         self::assertEquals('q_17:420', (string)$qp);
     }
 
     public function testQuality()
     {
-        $q = (new Quality(17))->chromaSubSampling(Chroma::C420);
+        $q = (new Quality(17))->chromaSubSampling(ChromaSubSampling::chroma420());
 
         self::assertEquals('q_17:420', (string)$q);
 
-        $qp = (new QualityParam(17))->chromaSubSampling(Chroma::C420);
+        $qp = (new QualityQualifier(17))->chromaSubSampling(ChromaSubSampling::chroma420());
 
         $q = new Quality($qp);
 
@@ -48,15 +48,15 @@ final class QualityTest extends TestCase
 
         self::assertEquals('q_auto', (string)$aq);
 
-        $aqe = Quality::eco();
+        $aqe = Quality::autoEco();
 
         self::assertEquals('q_auto:eco', (string)$aqe);
 
-        $aqec = Quality::eco()->chromaSubSampling(Chroma::C422);
+        $aqec = Quality::autoEco()->chromaSubSampling(ChromaSubSampling::chroma422());
 
         self::assertEquals('q_auto:eco:422', (string)$aqec);
 
-        $aqeaf = Quality::eco()->anyFormat();
+        $aqeaf = Quality::autoEco()->anyFormat();
 
         self::assertEquals('fl_any_format,q_auto:eco', (string)$aqeaf);
 
@@ -68,6 +68,8 @@ final class QualityTest extends TestCase
 
         self::assertEquals('q_jpegmini:1', (string)$qjm);
 
-        self::assertEquals('q_auto:best', (string)Delivery::quality(Quality::best()));
+        self::assertEquals('q_jpegmini:0', (string) Quality::jpegminiBest());
+
+        self::assertEquals('q_auto:best', (string)Delivery::quality(Quality::autoBest()));
     }
 }

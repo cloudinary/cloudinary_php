@@ -10,8 +10,8 @@
 
 namespace Cloudinary\Test\Unit\Admin;
 
-use Cloudinary\Test\Integration\TestHelpers\MockAdminApi;
-use Cloudinary\Test\Traits\RequestAssertionsTrait;
+use Cloudinary\Test\Helpers\MockAdminApi;
+use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Unit\UnitTestCase;
 
 /**
@@ -22,12 +22,12 @@ final class AdminApiTest extends UnitTestCase
     use RequestAssertionsTrait;
 
     /**
-     * Should allow the user to pass accessibility_analysis in the resource function.
+     * Should allow the user to pass accessibility_analysis in the asset function.
      */
     public function testAccessibilityAnalysisResource()
     {
         $mockAdminApi = new MockAdminApi();
-        $mockAdminApi->resource(self::$UNIQUE_TEST_ID, ['accessibility_analysis' => true]);
+        $mockAdminApi->asset(self::$UNIQUE_TEST_ID, ['accessibility_analysis' => true]);
         $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
 
         self::assertRequestQueryStringSubset($lastRequest, ['accessibility_analysis' => '1']);

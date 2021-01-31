@@ -13,6 +13,7 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ArrayUtils;
 use Cloudinary\JsonUtils;
 use Cloudinary\StringUtils;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 use InvalidArgumentException;
 
 /**
@@ -23,9 +24,14 @@ use InvalidArgumentException;
 abstract class BaseAction extends BaseComponent
 {
     /**
-     * @var array $parameters The components (parameters) of the action.
+     * @var array $qualifiers The components (qualifiers/parameters) of the action.
      */
-    protected $parameters = [];
+    protected $qualifiers = [];
+
+    /**
+     * @var string MAIN_QUALIFIER Represents the main qualifier of the action. (some actions do not have main qualifier)
+     */
+    const MAIN_QUALIFIER = null;
 
     /**
      * @var array $flags The flags of the action.
@@ -40,44 +46,52 @@ abstract class BaseAction extends BaseComponent
     /**
      * Action constructor.
      *
-     * @param mixed ...$parameters
+     * @param mixed ...$qualifiers
      */
-    public function __construct(...$parameters)
+    public function __construct(...$qualifiers)
     {
         parent::__construct();
 
-        $this->addParameters(...$parameters);
+        $this->addQualifiers(...$qualifiers);
     }
 
     /**
-     * Adds the parameter to the action.
+     * Adds the qualifier to the action.
      *
-     * @param BaseComponent|null $parameter The parameter to add.
+     * @param BaseComponent|null $qualifier The qualifier to add.
      *
      * @return $this
      */
-    public function addParameter(BaseComponent $parameter = null)
+    public function addQualifier(BaseComponent $qualifier = null)
     {
-        ArrayUtils::addNonEmpty($this->parameters, $parameter ? $parameter->getFullName() : null, $parameter);
+        ArrayUtils::addNonEmpty($this->qualifiers, $qualifier ? $qualifier->getFullName() : null, $qualifier);
 
         return $this;
     }
 
     /**
-     * Adds parameters to the action.
+     * Adds qualifiers to the action.
      *
-     * @param array $parameters The parameters to add.
+     * @param array $qualifiers The qualifiers to add.
      *
      * @return $this
      */
-    public function addParameters(...$parameters)
+    public function addQualifiers(...$qualifiers)
     {
-        if (count($parameters) === 1 && is_string($parameters[0])) {
-            $this->setGenericAction($parameters[0]);
-        } else {
-            foreach ($parameters as $parameter) {
-                $this->addParameter($parameter);
-            }
+        if (count($qualifiers) < 1) {
+            return $this;
+        }
+        // Allow initializing action directly by passing values to the main qualifier
+        // it can be a bit tricky, user is not supposed to pass BaseComponent directly to the action,
+        // but initialize qualifier instead (or qualifier should be initialised for the user)
+        if (! $qualifiers[0] instanceof BaseComponent) {
+            $this->getMainQualifier()->add(...$qualifiers);
+
+            return $this;
+        }
+
+        foreach ($qualifiers as $qualifier) {
+            $this->addQualifier($qualifier);
         }
 
         return $this;
@@ -104,13 +118,13 @@ abstract class BaseAction extends BaseComponent
     /**
      * Sets the flag.
      *
-     * @param FlagParameter $flag  The flag to set.
-     * @param bool          $set   Indicates whether to set(true) or unset(false) the flag instead.
-     *                             (Used for avoiding if conditions all over the code)
+     * @param FlagQualifier|null $flag The flag to set.
+     * @param bool               $set  Indicates whether to set(true) or unset(false) the flag instead.
+     *                                 (Used for avoiding if conditions all over the code)
      *
      * @return $this
      */
-    public function setFlag(FlagParameter $flag, $set = true)
+    public function setFlag(FlagQualifier $flag, $set = true)
     {
         if ($set === false) {
             return $this->unsetFlag($flag);
@@ -124,13 +138,32 @@ abstract class BaseAction extends BaseComponent
     /**
      * Removes the flag.
      *
-     * @param FlagParameter $flag The flag to unset.
+     * @param FlagQualifier $flag The flag to unset.
      *
      * @return $this
      */
-    public function unsetFlag(FlagParameter $flag)
+    public function unsetFlag(FlagQualifier $flag)
     {
         unset($this->flags[$flag->getFlagName()]);
+
+        return $this;
+    }
+
+    /**
+     * Imports (merges) qualifiers and flags from another action.
+     *
+     * @param BaseAction|null $action The action to import.
+     *
+     * @return $this
+     */
+    public function importAction($action)
+    {
+        if ($action === null) {
+            return $this;
+        }
+
+        $this->qualifiers = ArrayUtils::mergeNonEmpty($this->qualifiers, $action->qualifiers);
+        $this->flags      = ArrayUtils::mergeNonEmpty($this->flags, $action->flags);
 
         return $this;
     }
@@ -144,9 +177,9 @@ abstract class BaseAction extends BaseComponent
     {
         $jsonArray = [];
 
-        ArrayUtils::addNonEmpty($jsonArray, 'parameters', self::jsonSerializeParams($this->parameters));
+        ArrayUtils::addNonEmpty($jsonArray, 'qualifiers', self::jsonSerializeQualifiers($this->qualifiers));
         ArrayUtils::addNonEmpty($jsonArray, 'generic', $this->genericAction);
-        ArrayUtils::addNonEmpty($jsonArray, 'flags', self::jsonSerializeParams($this->flags));
+        ArrayUtils::addNonEmpty($jsonArray, 'flags', self::jsonSerializeQualifiers($this->flags));
 
         if (empty($jsonArray)) {
             return [];
@@ -158,20 +191,20 @@ abstract class BaseAction extends BaseComponent
     }
 
     /**
-     * Collects and flattens action parameters.
+     * Collects and flattens action qualifiers.
      *
-     * @return array A flat array of parameters
+     * @return array A flat array of qualifiers
      *
      * @internal
      */
-    public function getStringParameters()
+    public function getStringQualifiers()
     {
-        $flatParameters = [];
-        foreach ($this->parameters as $parameter) {
-            $flatParameters = ArrayUtils::mergeNonEmpty($flatParameters, $parameter->getStringParameters());
+        $flatQualifiers = [];
+        foreach ($this->qualifiers as $qualifier) {
+            $flatQualifiers = ArrayUtils::mergeNonEmpty($flatQualifiers, $qualifier->getStringQualifiers());
         }
 
-        return $flatParameters;
+        return $flatQualifiers;
     }
 
     /**
@@ -181,13 +214,33 @@ abstract class BaseAction extends BaseComponent
      */
     public function __toString()
     {
-        $flatParameters = $this->getStringParameters();
+        $flatQualifiers = $this->getStringQualifiers();
 
-        $allParameters = array_merge($flatParameters, [self::serializeFlags($this->flags)], [$this->genericAction]);
+        $allQualifiers = array_merge($flatQualifiers, [self::serializeFlags($this->flags)], [$this->genericAction]);
 
-        sort($allParameters);
+        sort($allQualifiers);
 
-        return ArrayUtils::implodeActionParams(...$allParameters);
+        return ArrayUtils::implodeActionQualifiers(...$allQualifiers);
+    }
+
+    /**
+     * Gets the main qualifier, if defined.
+     *
+     * In case the qualifier is not defined, new instance is initialised.
+     *
+     * @return BaseQualifier The main qualifier
+     *
+     * @internal
+     */
+    protected function getMainQualifier()
+    {
+        $mainQualifierClassName = static::MAIN_QUALIFIER;
+        $mainQualifierKey       = $mainQualifierClassName::getName();
+        if (! isset($this->qualifiers[$mainQualifierKey])) {
+            $this->qualifiers[$mainQualifierKey] = new $mainQualifierClassName();
+        }
+
+        return $this->qualifiers[$mainQualifierKey];
     }
 
     /**
@@ -202,8 +255,8 @@ abstract class BaseAction extends BaseComponent
         ksort($flags);
 
         $result = array_map(
-            static function (FlagParameter $flag) {
-                return ArrayUtils::implodeParamValues(
+            static function (FlagQualifier $flag) {
+                return ArrayUtils::implodeQualifierValues(
                     $flag->getFlagName(),
                     rawurlencode(StringUtils::encodeDot($flag->getValue()))
                 );
@@ -211,23 +264,23 @@ abstract class BaseAction extends BaseComponent
             array_values($flags)
         );
 
-        return (string)new FlagParameter(ArrayUtils::implodeFiltered('.', $result));
+        return (string)new FlagQualifier(ArrayUtils::implodeFiltered('.', $result));
     }
 
     /**
-     * Serializes parameters to JSON.
+     * Serializes qualifiers to JSON.
      *
-     * @param array $params The parameters to serialize.
+     * @param array $qualifiers The qualifiers to serialize.
      *
-     * @return array Serialized parameters.
+     * @return array Serialized qualifiers.
      */
-    protected static function jsonSerializeParams($params)
+    protected static function jsonSerializeQualifiers($qualifiers)
     {
         $result = array_map(
-            static function ($param) {
-                return JsonUtils::jsonSerialize($param);
+            static function ($qualifier) {
+                return JsonUtils::jsonSerialize($qualifier);
             },
-            array_values($params)
+            array_values($qualifiers)
         );
 
         return ArrayUtils::safeFilter($result);

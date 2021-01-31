@@ -64,7 +64,7 @@ final class UploadPresetsTest extends IntegrationTestCase
     {
         $result = self::$adminApi->uploadPresets();
 
-        $this->assertGreaterThanOrEqual(1, count($result['presets']));
+        self::assertGreaterThanOrEqual(1, count($result['presets']));
         self::assertValidUploadPreset($result['presets'][0]);
     }
 
@@ -178,7 +178,7 @@ final class UploadPresetsTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertEquals('updated', $result['message']);
+        self::assertEquals('updated', $result['message']);
 
         $uploadPreset = self::$adminApi->uploadPreset(self::$UPLOAD_PRESET_UPDATE);
 
@@ -209,7 +209,7 @@ final class UploadPresetsTest extends IntegrationTestCase
 
         $result = self::$adminApi->deleteUploadPreset($uploadPreset['name']);
 
-        $this->assertEquals('deleted', $result['message']);
+        self::assertEquals('deleted', $result['message']);
 
         $this->expectException(NotFound::class);
         self::$adminApi->uploadPreset($uploadPreset['name']);

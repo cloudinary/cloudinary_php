@@ -21,20 +21,11 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-class CompassGravity extends GravityParam
+class CompassGravity extends GravityQualifier
 {
-    use CompassGravityBuilderTrait;
+    const VALUE_CLASS = Compass::class;
 
-    const NORTH_WEST = 'north_west';
-    const NORTH      = 'north';
-    const NORTH_EAST = 'north_east';
-    const WEST       = 'west';
-    const CENTER     = 'center';
-    const EAST       = 'east';
-    const SOUTH_WEST = 'south_west';
-    const SOUTH      = 'south';
-    const SOUTH_EAST = 'south_east';
-    const XY_CENTER  = 'xy_center';
+    use CompassGravityBuilderTrait;
 
     /**
      * CompassGravity constructor.
@@ -57,7 +48,7 @@ class CompassGravity extends GravityParam
      */
     protected function direction($direction)
     {
-        $this->setParamValue($direction);
+        $this->setQualifierValue($direction);
 
         return $this;
     }

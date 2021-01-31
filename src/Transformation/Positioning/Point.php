@@ -41,6 +41,6 @@ class Point extends BaseAction
      */
     public function setPointValue($value)
     {
-        return $this->addParameter($value);
+        return $this->addQualifier($value);
     }
 }

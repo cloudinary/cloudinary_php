@@ -23,7 +23,7 @@ use Cloudinary\ClassUtils;
  *
  * @api
  */
-class LutLayer extends AssetBasedLayer
+class LutLayer extends AssetBasedSource implements AdjustmentInterface
 {
     /**
      * LutLayer constructor.
@@ -32,7 +32,7 @@ class LutLayer extends AssetBasedLayer
      */
     public function __construct($lut)
     {
-        parent::__construct(ClassUtils::verifyInstance($lut, LutLayerParam::class));
+        parent::__construct(ClassUtils::verifyInstance($lut, LutSourceQualifier::class));
     }
 
     /**
@@ -50,18 +50,18 @@ class LutLayer extends AssetBasedLayer
     }
 
     /**
-     * Gets the layer parameter.
+     * Gets the layer qualifier.
      *
-     * @return LutLayerParam
+     * @return LutSourceQualifier
      *
      * @internal
      */
-    protected function getLayerParam()
+    protected function getSourceQualifier()
     {
-        if (! isset($this->parameters['layer'])) {
-            $this->parameters['layer'] = new LutLayerParam(null);
+        if (! isset($this->qualifiers['source'])) {
+            $this->qualifiers['source'] = new LutSourceQualifier(null);
         }
 
-        return $this->parameters['layer'];
+        return $this->qualifiers['source'];
     }
 }

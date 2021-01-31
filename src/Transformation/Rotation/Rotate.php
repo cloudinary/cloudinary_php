@@ -10,11 +10,14 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Argument\AngleTrait;
 use Cloudinary\Transformation\Argument\Degree;
+use Cloudinary\Transformation\Argument\RotationModeTrait;
 
 /**
- * Rotates or flips an image or video by the specified number of degrees, or automatically (images only) according to its orientation or available metadata.
+ * Rotates or flips an image or video by the specified number of degrees, or automatically (images only) according to
+ * its orientation or available metadata.
  *
  * **Learn more**:
  * <a href=https://cloudinary.com/documentation/image_transformations#rotating_images
@@ -28,7 +31,17 @@ use Cloudinary\Transformation\Argument\Degree;
 class Rotate extends BaseAction
 {
     use AngleTrait;
+    use RotationModeTrait;
 
+    /**
+     * Rotate constructor.
+     *
+     * @param mixed $degree The degrees of the angle.
+     */
+    public function __construct(...$degree)
+    {
+        parent::__construct(ClassUtils::verifyVarArgsInstance($degree, Angle::class));
+    }
     /**
      * Sets the rotation angle.
      *
@@ -36,7 +49,7 @@ class Rotate extends BaseAction
      */
     public function setAngle(...$degree)
     {
-        $this->addParameter(Degree::angle(...$degree));
+        $this->addQualifier(Degree::byAngle(...$degree));
     }
 
     /**
@@ -48,6 +61,18 @@ class Rotate extends BaseAction
      */
     protected static function createWithDegree(...$degree)
     {
-        return new static(Angle::angle(...$degree));
+        return new static(Angle::byAngle(...$degree));
+    }
+
+    /**
+     * Named constructor.
+     *
+     * @param mixed $mode The rotation mode.
+     *
+     * @return static
+     */
+    protected static function createWithMode(...$mode)
+    {
+        return new static(Angle::mode(...$mode));
     }
 }

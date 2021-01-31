@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\Dimensions\DimensionsTrait;
+use Cloudinary\Transformation\Qualifier\Dimensions\DimensionsTrait;
 
 /**
  * Trait RegionTrait
@@ -19,6 +19,7 @@ trait RegionTrait
 {
     use AbsolutePositionTrait;
     use DimensionsTrait;
+    use GravityTrait;
 
     /**
      * Sets the region.
@@ -27,8 +28,8 @@ trait RegionTrait
      *
      * @return $this
      */
-    public function region(Region $region)
+    public function region($region)
     {
-        return $this->addParameter($region);
+        return $this->addQualifier($region);
     }
 }

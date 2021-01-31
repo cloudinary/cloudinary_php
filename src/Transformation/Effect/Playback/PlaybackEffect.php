@@ -21,6 +21,7 @@ abstract class PlaybackEffect
     const PREVIEW    = 'preview';
     const REVERSE    = 'reverse';
     const VOLUME     = 'volume';
+    const TRANSITION = 'transition';
 
     use PlaybackEffectTrait;
 }

@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Unit\Tag;
 
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Configuration\ResponsiveBreakpointsConfig;
 use Cloudinary\Tag\ImageTag;
 use Cloudinary\Test\Unit\Asset\ImageTest;
 use Cloudinary\Transformation\Scale;
@@ -29,7 +30,7 @@ final class ImageTagTest extends ImageTagTestCase
     {
         parent::setUp();
 
-        $this->breakpointsConf = new Configuration();
+        $this->breakpointsConf = new Configuration(Configuration::instance());
 
         $this->breakpointsConf->responsiveBreakpoints->minWidth  = self::MIN_WIDTH;
         $this->breakpointsConf->responsiveBreakpoints->maxWidth  = self::MAX_WIDTH;
@@ -46,8 +47,8 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagFromParams()
     {
-        $this->assertStrEquals(
-           "<img src='https://hello.com/test123/image/upload/c_scale,w_500/sample.png' dummy width='500'/>",
+        self::assertStrEquals(
+            "<img src='https://hello.com/test123/image/upload/c_scale,w_500/sample.png' dummy width='500'/>",
             ImageTag::fromParams(
                 self::IMAGE_NAME,
                 [
@@ -88,8 +89,8 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagCustomConfiguration()
     {
-        $configuration               = new Configuration();
-        $configuration->url->shorten = true;
+        $configuration                        = Configuration::instance();
+        $configuration->url->shorten          = true;
 
         // Can reference this image, since its functionality it tested in another test
         $expectedImage = new Image(self::IMAGE_NAME, $configuration);
@@ -195,7 +196,7 @@ final class ImageTagTest extends ImageTagTestCase
     public function testImageTagStaticBreakpointsLoggingWrongWidth()
     {
         $message = null;
-        $tag = new ImageTag(self::IMAGE_NAME);
+        $tag     = new ImageTag(self::IMAGE_NAME);
         try {
             $tag->srcset->staticBreakpoints(self::MAX_WIDTH, self::MIN_WIDTH, self::MAX_IMAGES);
         } catch (InvalidArgumentException $e) {
@@ -215,7 +216,7 @@ final class ImageTagTest extends ImageTagTestCase
     {
         $tag = new ImageTag(self::IMAGE_NAME);
 
-        $message = null;
+        $message                  = null;
         $expectedExceptionMessage = 'maxImages must be a positive integer';
         try {
             $tag->srcset->staticBreakpoints(self::MIN_WIDTH, self::MIN_WIDTH, -1);
@@ -237,9 +238,9 @@ final class ImageTagTest extends ImageTagTestCase
     {
         $tag = new ImageTag(self::IMAGE_NAME);
 
-        $message = null;
+        $message                  = null;
         $expectedExceptionMessage = 'Either valid (minWidth, maxWidth, maxImages) or breakpointsmust be provided to ' .
-            'the image srcset attribute';
+                                    'the image srcset attribute';
         try {
             $tag->srcset->staticBreakpoints(0, 0, 0);
         } catch (InvalidArgumentException $e) {

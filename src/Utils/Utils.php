@@ -21,10 +21,10 @@ use Psr\Http\Message\UriInterface;
  */
 class Utils
 {
-    const ALGO_SHA1 = 'sha1';
-    const ALGO_SHA256 = 'sha256';
+    const ALGO_SHA1                  = 'sha1';
+    const ALGO_SHA256                = 'sha256';
     const SHORT_URL_SIGNATURE_LENGTH = 8;
-    const LONG_URL_SIGNATURE_LENGTH = 32;
+    const LONG_URL_SIGNATURE_LENGTH  = 32;
 
     /**
      * Converts a float value to the string representation.
@@ -37,6 +37,12 @@ class Utils
     {
         if (! is_float($value)) {
             return $value;
+        }
+
+        // Ensure that trailing decimal(.0) part is not cropped when float is provided.
+        // e.g. float 1.0 should be returned as "1.0" and not "1" as it happens by default.
+        if ($value - (int)$value === 0.0) {
+            return sprintf("%.1f", $value);
         }
 
         $locale = localeconv();
@@ -281,7 +287,7 @@ class Utils
      */
     public static function objectToArray($object)
     {
-        $properties = (array) $object;
+        $properties = (array)$object;
 
         $snakeCaseProperties = [];
         foreach ($properties as $key => $value) {

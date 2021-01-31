@@ -110,7 +110,7 @@ trait PadTrait
      */
     public function position(BasePosition $position)
     {
-        return $this->addParameter($position);
+        return $this->addQualifier($position);
     }
 
     /**
@@ -124,11 +124,11 @@ trait PadTrait
      */
     public function setOffsetValue($value)
     {
-        if (! isset($this->parameters[CompassPosition::getName()])) {
-            $this->addParameter(new CompassPosition());
+        if (! isset($this->qualifiers[CompassPosition::getName()])) {
+            $this->addQualifier(new CompassPosition());
         }
 
-        $this->parameters[CompassPosition::getName()]->setOffsetValue($value);
+        $this->qualifiers[CompassPosition::getName()]->setOffsetValue($value);
 
         return $this;
     }

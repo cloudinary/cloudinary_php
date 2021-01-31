@@ -30,19 +30,19 @@ final class TagTest extends IntegrationTestCase
         self::$REMOVE_ALL_TAGS_PUBLIC_ID  = 'upload_tag_public_id_to_remove_all_tags_' . self::$UNIQUE_TEST_ID;
         self::$REMOVE_ALL_TAGS_PUBLIC_ID2 = 'upload_tag_public_id_to_remove_all_tags2_' . self::$UNIQUE_TEST_ID;
         self::$REPLACE_ALL_TAGS_PUBLIC_ID = 'upload_tag_public_id_to_replace_all_tags_' . self::$UNIQUE_TEST_ID;
-        self::addResourceToCleanupList(self::$REMOVE_ALL_TAGS_PUBLIC_ID);
-        self::addResourceToCleanupList(self::$REMOVE_ALL_TAGS_PUBLIC_ID2);
-        self::addResourceToCleanupList(self::$REPLACE_ALL_TAGS_PUBLIC_ID);
+        self::addAssetToCleanupList(self::$REMOVE_ALL_TAGS_PUBLIC_ID);
+        self::addAssetToCleanupList(self::$REMOVE_ALL_TAGS_PUBLIC_ID2);
+        self::addAssetToCleanupList(self::$REPLACE_ALL_TAGS_PUBLIC_ID);
 
-        self::uploadTestResourceImage(
+        self::uploadTestAssetImage(
             [
                 'tags'      => [self::$TAG_TO_REMOVE],
                 'public_id' => self::$UNIQUE_TEST_ID,
             ]
         );
-        self::uploadTestResourceImage(['public_id' => self::$REMOVE_ALL_TAGS_PUBLIC_ID]);
-        self::uploadTestResourceImage(['public_id' => self::$REMOVE_ALL_TAGS_PUBLIC_ID2]);
-        self::uploadTestResourceImage(
+        self::uploadTestAssetImage(['public_id' => self::$REMOVE_ALL_TAGS_PUBLIC_ID]);
+        self::uploadTestAssetImage(['public_id' => self::$REMOVE_ALL_TAGS_PUBLIC_ID2]);
+        self::uploadTestAssetImage(
             [
                 'tags'      => [self::$TAG_TO_REPLACE_ALL_TAGS],
                 'public_id' => self::$REPLACE_ALL_TAGS_PUBLIC_ID,
@@ -52,8 +52,8 @@ final class TagTest extends IntegrationTestCase
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
-        self::cleanupResources();
+        self::cleanupTestAssets();
+        self::cleanupAssets();
 
         parent::tearDownAfterClass();
     }
@@ -70,11 +70,11 @@ final class TagTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
 
-        $this->assertContains(self::$TAG_TO_ADD_TO_IMAGE, $resource['tags']);
+        self::assertContains(self::$TAG_TO_ADD_TO_IMAGE, $asset['tags']);
     }
 
     /**
@@ -84,11 +84,11 @@ final class TagTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->removeTag(self::$TAG_TO_REMOVE, [self::$UNIQUE_TEST_ID]);
 
-        $this->assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
 
-        $this->assertNotContains(self::$TAG_TO_REMOVE, $resource['tags']);
+        self::assertNotContains(self::$TAG_TO_REMOVE, $asset['tags']);
     }
 
     /**
@@ -98,21 +98,21 @@ final class TagTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->removeAllTags([self::$REMOVE_ALL_TAGS_PUBLIC_ID]);
 
-        $this->assertEquals([self::$REMOVE_ALL_TAGS_PUBLIC_ID], $result['public_ids']);
+        self::assertEquals([self::$REMOVE_ALL_TAGS_PUBLIC_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$REMOVE_ALL_TAGS_PUBLIC_ID);
+        $asset = self::$adminApi->asset(self::$REMOVE_ALL_TAGS_PUBLIC_ID);
 
-        $this->assertArrayNotHasKey('tags', $resource);
+        self::assertArrayNotHasKey('tags', $asset);
 
         $multipleIds = [self::$REMOVE_ALL_TAGS_PUBLIC_ID, self::$REMOVE_ALL_TAGS_PUBLIC_ID2];
 
         $result = self::$uploadApi->removeAllTags($multipleIds);
 
-        $this->assertEquals($multipleIds, $result['public_ids']);
+        self::assertEquals($multipleIds, $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$REMOVE_ALL_TAGS_PUBLIC_ID2);
+        $asset = self::$adminApi->asset(self::$REMOVE_ALL_TAGS_PUBLIC_ID2);
 
-        $this->assertArrayNotHasKey('tags', $resource);
+        self::assertArrayNotHasKey('tags', $asset);
     }
 
     /**
@@ -122,10 +122,10 @@ final class TagTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->replaceTag(self::$UNIQUE_TEST_TAG, [self::$REPLACE_ALL_TAGS_PUBLIC_ID]);
 
-        $this->assertEquals([self::$REPLACE_ALL_TAGS_PUBLIC_ID], $result['public_ids']);
+        self::assertEquals([self::$REPLACE_ALL_TAGS_PUBLIC_ID], $result['public_ids']);
 
-        $resource = self::$adminApi->resource(self::$REPLACE_ALL_TAGS_PUBLIC_ID);
+        $asset = self::$adminApi->asset(self::$REPLACE_ALL_TAGS_PUBLIC_ID);
 
-        $this->assertEquals([self::$UNIQUE_TEST_TAG], $resource['tags']);
+        self::assertEquals([self::$UNIQUE_TEST_TAG], $asset['tags']);
     }
 }

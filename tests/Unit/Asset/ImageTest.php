@@ -14,15 +14,16 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Image;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Argument\Color;
-use Cloudinary\Transformation\Argument\Gradient;
-use Cloudinary\Transformation\AutoBackground;
-use Cloudinary\Transformation\CompassGravity;
+use Cloudinary\Transformation\AspectRatio;
+use Cloudinary\Transformation\Background;
+use Cloudinary\Transformation\Conditional;
 use Cloudinary\Transformation\Expression\UVar;
 use Cloudinary\Transformation\FocalGravity;
-use Cloudinary\Transformation\ImageLayer;
+use Cloudinary\Transformation\Gravity;
+use Cloudinary\Transformation\ImageSource;
 use Cloudinary\Transformation\Pad;
-use Cloudinary\Transformation\Palette;
 use Cloudinary\Transformation\Scale;
+use Cloudinary\Transformation\Transformation;
 use Monolog\Logger as Monolog;
 use ReflectionException;
 use UnexpectedValueException;
@@ -68,10 +69,10 @@ final class ImageTest extends AssetTestCase
      */
     public function testSuffixForNotSupportedDeliveryType()
     {
-        $this->image->asset->suffix = self::SEO_NAME;
+        $this->image->asset->suffix       = self::SEO_NAME;
         $this->image->asset->deliveryType = DeliveryType::PUBLIC_DELIVERY;
 
-        $message = null;
+        $message                  = null;
         $expectedExceptionMessage = 'URL Suffix is only supported in ';
         try {
             $this->image->toUrl();
@@ -151,17 +152,13 @@ final class ImageTest extends AssetTestCase
                     170,
                     180
                 )->background(
-                    AutoBackground::gradientFade(
-                        Gradient::PREDOMINANT_GRADIENT,
-                        2,
-                        new Palette(['cyan', 'magenta', 'yellow', 'black'])
-                    )
-                )->gravity(new CompassGravity(CompassGravity::SOUTH_WEST))
+                    Background::predominantGradient(2)->palette('cyan', 'magenta', 'yellow', 'black')
+                )->gravity(Gravity::southWest())
             )->effect(Adjust::replaceColor(Color::GREEN, 17, Color::RED));
 
-        $this->image->overlay(ImageLayer::image($this->image->getPublicId()));
+        $this->image->overlay(ImageSource::image($this->image->getPublicId()));
 
-        $bColorStr = 'b_auto:predominant_gradient:2:palette_magenta_yellow_black';
+        $bColorStr = 'b_auto:predominant_gradient:2:palette_cyan_magenta_yellow_black';
 
         $t_str = "{$bColorStr},c_lpad,g_south_west,h_180,w_170/e_replace_color:green:17:red";
 
@@ -170,12 +167,16 @@ final class ImageTest extends AssetTestCase
             $this->image
         );
 
-        $this->image->ifCondition(UVar::uVar('var')->multiply()->int(2)->lessThanOrEqual()->float(997.997))
-                    ->resize(Scale::limitFit(101, 201))
-                    ->ifElse()
+        $this->image->conditional(
+            Conditional::ifCondition(
+                UVar::uVar('var')->multiply()->int(2)->lessThanOrEqual()->float(997.997),
+                Scale::limitFit(101, 201)
+            )->otherwise(
+                (new Transformation())
                     ->resize(Scale::fit(102, 202))
-                    ->resize(Scale::scale((202))->ignoreAspectRatio(true))
-                    ->endIfCondition();
+                    ->resize(Scale::scale((202))->aspectRatio(AspectRatio::ignoreInitialAspectRatio()))
+            )
+        );
 
         $elseTransStr = 'c_fit,h_202,w_102/c_scale,fl_ignore_aspect_ratio,w_202';
 
@@ -192,7 +193,7 @@ final class ImageTest extends AssetTestCase
     {
         self::assertImageUrl(
             'e_cartoonify/r_max/co_lightblue,e_outline:100/b_lightblue/c_scale,h_300/' . self::IMAGE_NAME,
-            $this->image->addActionFromParams(
+            $this->image->addActionFromQualifiers(
                 [
                     'transformation' => [
                         ['effect' => 'cartoonify'],
@@ -210,7 +211,7 @@ final class ImageTest extends AssetTestCase
     {
         self::assertImageUrl(
             'c_scale,h_200,w_100/c_fill,g_auto,h_160,w_80/' . self::IMAGE_NAME,
-            $this->image->scale(100, 200)->fill(80, 160, FocalGravity::auto())
+            $this->image->scale(100, 200)->fill(80, 160, Gravity::auto())
         );
     }
 
@@ -218,7 +219,7 @@ final class ImageTest extends AssetTestCase
     {
         self::assertImageUrl(
             self::IMAGE_NAME,
-            new Image(self::IMAGE_NAME, ['account' => ['cloud_name' => 'custom_cloud']]),
+            new Image(self::IMAGE_NAME, ['cloud' => ['cloud_name' => 'custom_cloud'], 'url' => ['analytics'=> false]]),
             ['cloud_name' => 'custom_cloud']
         );
 
@@ -231,9 +232,9 @@ final class ImageTest extends AssetTestCase
 
     public function testImageToJson()
     {
-        $this->assertEquals(
+        self::assertEquals(
             '{"asset":{"asset_type":"image","delivery_type":"upload","filename":"sample","extension":"png"},' .
-            '"account":{"cloud_name":"test123"}}',
+            '"cloud":{"cloud_name":"test123"},"url":{"analytics":false}}',
             json_encode($this->image)
         );
     }

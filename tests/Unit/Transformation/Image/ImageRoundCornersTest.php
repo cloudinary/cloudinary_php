@@ -20,14 +20,14 @@ final class ImageRoundCornersTest extends TestCase
 {
     public function testImageRoundCorners()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'r_max',
             (string)RoundCorners::max()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'r_17',
-            (string)RoundCorners::radius(17)
+            (string)RoundCorners::byRadius(17)
         );
     }
 }

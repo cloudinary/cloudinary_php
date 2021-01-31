@@ -10,8 +10,6 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\ClassUtils;
-
 /**
  * Represents an embedded smart object in a Photoshop document.
  *
@@ -22,37 +20,11 @@ use Cloudinary\ClassUtils;
  *
  * @api
  */
-abstract class SmartObject
+class SmartObject extends BasePageAction
 {
-    use PageNameTrait;
-    use PageNamesTrait;
-    use PageNumberTrait;
+    const MAIN_QUALIFIER = SmartObjectQualifier::class;
 
-    /**
-     * Internal named constructor.
-     *
-     * @param $value
-     *
-     * @return PageParam
-     *
-     * @internal
-     */
-    public static function createWithPageParam(...$value)
-    {
-        return ClassUtils::verifyVarArgsInstance($value, SmartObjectParam::class);
-    }
-
-    /**
-     * Internal named constructor.
-     *
-     * @param $value
-     *
-     * @return PageParam
-     *
-     * @internal
-     */
-    public static function createWithNamedPageParam(...$value)
-    {
-        return static::createWithPageParam(new LayerName(...$value));
-    }
+    use PageLayerNameTrait;
+    use PageLayerNamesTrait;
+    use PageIndexTrait;
 }

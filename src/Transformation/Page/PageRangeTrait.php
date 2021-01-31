@@ -20,15 +20,17 @@ use Cloudinary\Transformation\Argument\RangeArgument;
 trait PageRangeTrait
 {
     /**
-     * Creates a new instance using the specified range.
+     * Gets pages using the specified range.
      *
      * @param int|string $start The start of the range.
      * @param int|string $end   The end of the range.
      *
      * @return static
      */
-    public static function range($start, $end = null)
+    public function byRange($start, $end = null)
     {
-        return static::createWithPageParam(new RangeArgument($start, $end));
+        $this->add(new RangeArgument($start, $end));
+
+        return $this;
     }
 }

@@ -16,7 +16,7 @@ use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\CommonTransformationInterface;
 use Cloudinary\Transformation\ImageTransformation;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\VideoTransformation;
 
@@ -113,8 +113,8 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     /**
      * Adds (chains) a transformation action.
      *
-     * @param BaseAction|BaseParameter|mixed $action The transformation action to add.
-     *                                               If BaseParameter is provided, it is wrapped with action.
+     * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
+     *                                               If BaseQualifier is provided, it is wrapped with action.
      *
      * @return static
      */
@@ -159,7 +159,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      */
     public function toUrl($withTransformation = null, $append = true)
     {
-        return $this->finalizeUrlWithAuthToken(
+        return $this->finalizeUrl(
             ArrayUtils::implodeUrl($this->prepareUrlParts($withTransformation, $append))
         );
     }

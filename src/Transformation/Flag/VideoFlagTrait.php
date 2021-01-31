@@ -31,13 +31,13 @@ trait VideoFlagTrait
      *
      * @param string $filename The attachment's filename
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      *
      * @see Flag::attachment
      */
     public static function streamingAttachment($filename = null)
     {
-        return new FlagParameter(self::STREAMING_ATTACHMENT, $filename);
+        return new FlagQualifier(self::STREAMING_ATTACHMENT, $filename);
     }
 
     /**
@@ -45,64 +45,64 @@ trait VideoFlagTrait
      *
      * Delivering in this format requires a private CDN configuration.
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      *
      * @see https://cloudinary.com/documentation/video_manipulation_and_delivery#adaptive_bitrate_streaming_hls_and_mpeg_dash
      */
     public static function hlsv3()
     {
-        return new FlagParameter(self::HLSV3);
+        return new FlagQualifier(self::HLSV3);
     }
 
     /**
      * Keep the Display Aspect Ratio metadata of the uploaded video (if it’s different from the current video
      * dimensions).
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function keepDar()
     {
-        return new FlagParameter(self::KEEP_DAR);
+        return new FlagQualifier(self::KEEP_DAR);
     }
 
     /**
      * Don't stream a video that is currently being generated on the fly. Wait until the video is fully generated.
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function noStream()
     {
-        return new FlagParameter(self::NO_STREAM);
+        return new FlagQualifier(self::NO_STREAM);
     }
 
     /**
      * Convert the audio channel to mono
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function mono()
     {
-        return new FlagParameter(self::MONO);
+        return new FlagQualifier(self::MONO);
     }
 
     /**
      * Truncate (trim) a video file based on the start time defined in the metadata (relevant only where the metadata
      * includes a directive to play only a section of the video).
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function truncateTS()
     {
-        return new FlagParameter(self::TRUNCATE_TS);
+        return new FlagQualifier(self::TRUNCATE_TS);
     }
 
     /**
      * Create a waveform image (in the format specified by the file extension) from the audio or video file.
      *
-     * @return FlagParameter
+     * @return FlagQualifier
      */
     public static function waveform()
     {
-        return new FlagParameter(self::WAVEFORM);
+        return new FlagQualifier(self::WAVEFORM);
     }
 }

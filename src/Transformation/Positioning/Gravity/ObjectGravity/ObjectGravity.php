@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
+
 /**
  * Defines objects to use as the focal gravity of crops.
  *
@@ -19,44 +21,37 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-class ObjectGravity extends GravityParam implements
-    AccessoryObjectGravityInterface,
-    AnimalObjectGravityInterface,
-    ApplianceObjectGravityInterface,
-    ElectronicObjectGravityInterface,
-    FoodObjectGravityInterface,
-    FurnitureObjectGravityInterface,
-    IndoorObjectGravityInterface,
-    KitchenObjectGravityInterface,
-    ObjectGravityPriorityInterface,
-    OutdoorObjectGravityInterface,
-    PersonObjectGravityInterface,
-    VehicleObjectGravityInterface
+class ObjectGravity extends GravityQualifier implements ObjectGravityInterface
 {
-    use AccessoryObjectGravityBuilderTrait;
-    use AnimalObjectGravityBuilderTrait;
-    use ApplianceObjectGravityBuilderTrait;
-    use ElectronicObjectGravityBuilderTrait;
-    use FoodObjectGravityBuilderTrait;
-    use FurnitureObjectGravityBuilderTrait;
-    use IndoorObjectGravityBuilderTrait;
-    use KitchenObjectGravityBuilderTrait;
-    use ObjectGravityPriorityBuilderTrait;
-    use OutdoorObjectGravityBuilderTrait;
-    use PersonObjectGravityBuilderTrait;
-    use VehicleObjectGravityBuilderTrait;
+    use ObjectGravityTrait;
 
     /**
      * ObjectGravity constructor.
      *
      * @param string $objectName The name of the object.
-     * @param mixed $args Optional fallback.
+     * @param mixed  $args       Optional fallback.
      */
     public function __construct($objectName = null, ...$args)
     {
         parent::__construct();
 
-        $this->setParamValue($objectName);
+        $this->setQualifierValue($objectName);
         $this->add(...$args);
+    }
+
+    /**
+     * Adds fallback gravity (usually AutoGravity).
+     *
+     * @param AutoGravity|ObjectGravity|string|mixed $fallbackGravity The fallback gravity.
+     *
+     * @return ObjectGravity
+     */
+    public function fallbackGravity($fallbackGravity)
+    {
+        if ($fallbackGravity instanceof BaseQualifier) {
+            $fallbackGravity = $fallbackGravity->getValue();
+        }
+
+        return $this->add($fallbackGravity);
     }
 }

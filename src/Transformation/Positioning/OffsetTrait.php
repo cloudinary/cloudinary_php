@@ -26,7 +26,7 @@ trait OffsetTrait
      *
      * @return $this
      */
-    public function x($x)
+    public function offsetX($x)
     {
         return $this->setOffsetValue(ClassUtils::verifyInstance($x, X::class));
     }
@@ -38,7 +38,7 @@ trait OffsetTrait
      *
      * @return $this
      */
-    public function y($y)
+    public function offsetY($y)
     {
         return $this->setOffsetValue(ClassUtils::verifyInstance($y, Y::class));
     }
@@ -53,7 +53,7 @@ trait OffsetTrait
      */
     public function offset($x = null, $y = null)
     {
-        return $this->x($x)->y($y);
+        return $this->offsetX($x)->offsetY($y);
     }
 
     /**

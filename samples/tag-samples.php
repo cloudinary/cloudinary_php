@@ -24,7 +24,7 @@ use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Resize;
 
 Configuration::instance(
-    ['account' => ['cloud_name' => 'demo', 'api_key' => 'test_key', 'api_secret' => 'test_secret']]
+    ['cloud' => ['cloud_name' => 'demo', 'api_key' => 'test_key', 'api_secret' => 'test_secret']]
 );
 
 const FETCH_IMAGE_URL = 'http://upload.wikimedia.org/wikipedia/' .

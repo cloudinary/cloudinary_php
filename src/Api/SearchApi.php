@@ -20,7 +20,7 @@ use JsonSerializable;
  * Class SearchApi
  *
  * The Cloudinary API search method allows you fine control on filtering and retrieving information on all the assets
- * in your account with the help of query expressions in a Lucene-like query language. A few examples of what you can
+ * in your cloud with the help of query expressions in a Lucene-like query language. A few examples of what you can
  * accomplish using the search method include:
  *
  *  * Searching by descriptive attributes such as public ID, filename, folders, tags, context, etc.
@@ -88,9 +88,9 @@ class SearchApi implements JsonSerializable
     }
 
     /**
-     * Sets the query string for filtering the assets in your account.
+     * Sets the query string for filtering the assets in your cloud.
      *
-     * If this parameter is not provided then all resources are listed (up to max_results).
+     * If this parameter is not provided then all assets are listed (up to max_results).
      *
      * @param mixed $value The (Lucene-like) string expression specifying the search query.
      *

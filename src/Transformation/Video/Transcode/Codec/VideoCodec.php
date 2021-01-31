@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Determines the video codec to use.
@@ -22,7 +22,7 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class VideoCodec extends BaseParameter
+class VideoCodec extends BaseQualifier
 {
     use VideoCodecTrait;
 
@@ -98,20 +98,20 @@ class VideoCodec extends BaseParameter
     }
 
     /**
-     * Creates a new VideoCodec instance from an array of parameters.
+     * Creates a new VideoCodec instance from an array of qualifiers.
      *
-     * @param array $params The video codec parameters.
+     * @param array $qualifiers The video codec qualifiers.
      *
      * @return VideoCodec
      */
-    public static function fromParams($params)
+    public static function fromParams($qualifiers)
     {
-        if (is_array($params)) {
-            $codec   = ArrayUtils::get($params, 'codec');
-            $profile = ArrayUtils::get($params, 'profile');
-            $level   = ArrayUtils::get($params, 'level');
+        if (is_array($qualifiers)) {
+            $codec   = ArrayUtils::get($qualifiers, 'codec');
+            $profile = ArrayUtils::get($qualifiers, 'profile');
+            $level   = ArrayUtils::get($qualifiers, 'level');
         } else {
-            $codec   = $params;
+            $codec   = $qualifiers;
             $profile = $level = null;
         }
 

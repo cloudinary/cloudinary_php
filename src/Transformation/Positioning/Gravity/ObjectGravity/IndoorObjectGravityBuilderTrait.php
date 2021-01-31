@@ -20,80 +20,80 @@ trait IndoorObjectGravityBuilderTrait
     /**
      * Gravity indoor.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function indoor()
+    public static function indoor()
     {
-        return $this->add(ObjectGravity::INDOOR);
+        return ObjectGravity::INDOOR;
     }
 
     /**
      * Gravity book.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function book()
+    public static function book()
     {
-        return $this->add(ObjectGravity::BOOK);
+        return ObjectGravity::BOOK;
     }
 
     /**
      * Gravity clock.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function clock()
+    public static function clock()
     {
-        return $this->add(ObjectGravity::CLOCK);
+        return ObjectGravity::CLOCK;
     }
 
     /**
      * Gravity vase.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function vase()
+    public static function vase()
     {
-        return $this->add(ObjectGravity::VASE);
+        return ObjectGravity::VASE;
     }
 
     /**
      * Gravity scissors.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function scissors()
+    public static function scissors()
     {
-        return $this->add(ObjectGravity::SCISSORS);
+        return ObjectGravity::SCISSORS;
     }
 
     /**
      * Gravity teddyBear.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function teddyBear()
+    public static function teddyBear()
     {
-        return $this->add(ObjectGravity::TEDDY_BEAR);
+        return ObjectGravity::TEDDY_BEAR;
     }
 
     /**
      * Gravity hairDrier.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function hairDrier()
+    public static function hairDrier()
     {
-        return $this->add(ObjectGravity::HAIR_DRIER);
+        return ObjectGravity::HAIR_DRIER;
     }
 
     /**
      * Gravity toothbrush.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function toothbrush()
+    public static function toothbrush()
     {
-        return $this->add(ObjectGravity::TOOTHBRUSH);
+        return ObjectGravity::TOOTHBRUSH;
     }
 }

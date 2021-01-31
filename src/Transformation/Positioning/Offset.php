@@ -39,6 +39,6 @@ class Offset extends BaseAction
      */
     public function setOffsetValue($value)
     {
-        return $this->addParameter($value);
+        return $this->addQualifier($value);
     }
 }

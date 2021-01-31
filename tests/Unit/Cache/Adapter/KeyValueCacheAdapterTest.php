@@ -28,9 +28,9 @@ class KeyValueCacheAdapterTest extends UnitTestCase
     private $adapter;
     private $storage;
 
-    private $parameters = ['public_id', 'upload', 'image', 'w_100', 'jpg'];
+    private $qualifiers = ['public_id', 'upload', 'image', 'w_100', 'jpg'];
     private $value = [100, 200, 300, 399];
-    private $parameters2 = ['public_id2', 'fetch', 'image', 'w_200', 'png'];
+    private $qualifiers2 = ['public_id2', 'fetch', 'image', 'w_200', 'png'];
     private $value2 = [101, 201, 301, 398];
 
 
@@ -86,12 +86,12 @@ class KeyValueCacheAdapterTest extends UnitTestCase
 
     public function testGenerateCacheKey()
     {
-        list($publicId, $type, $resourceType, $transformation, $format) = $this->parameters;
+        list($publicId, $type, $resourceType, $transformation, $format) = $this->qualifiers;
 
         $values = [
             [ // valid values
                 '467d06e5a695b15468f9362e5a58d44de523026b',
-                $this->parameters,
+                $this->qualifiers,
             ],
             [ // allow empty values
                 '1576396c59fc50ac8dc37b75e1184268882c9bc2',
@@ -110,7 +110,7 @@ class KeyValueCacheAdapterTest extends UnitTestCase
 
     public function testGetSet()
     {
-        list($publicId, $type, $resourceType, $transformation, $format) = $this->parameters;
+        list($publicId, $type, $resourceType, $transformation, $format) = $this->qualifiers;
         $value = $this->value;
 
         $this->adapter->set($publicId, $type, $resourceType, $transformation, $format, $value);
@@ -121,7 +121,7 @@ class KeyValueCacheAdapterTest extends UnitTestCase
 
     public function testDelete()
     {
-        list($publicId, $type, $resourceType, $transformation, $format) = $this->parameters;
+        list($publicId, $type, $resourceType, $transformation, $format) = $this->qualifiers;
 
         $this->adapter->set($publicId, $type, $resourceType, $transformation, $format, $this->value);
         $actual_value = $this->adapter->get($publicId, $type, $resourceType, $transformation, $format);
@@ -140,10 +140,10 @@ class KeyValueCacheAdapterTest extends UnitTestCase
 
     public function testFlushAll()
     {
-        list($publicId, $type, $resourceType, $transformation, $format) = $this->parameters;
+        list($publicId, $type, $resourceType, $transformation, $format) = $this->qualifiers;
         $value = $this->value;
 
-        list($publicId2, $type2, $resourceType2, $transformation2, $format2) = $this->parameters2;
+        list($publicId2, $type2, $resourceType2, $transformation2, $format2) = $this->qualifiers2;
         $value2 = $this->value2;
 
         $this->adapter->set($publicId, $type, $resourceType, $transformation, $format, $value);

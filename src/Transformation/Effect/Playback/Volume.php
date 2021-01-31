@@ -21,14 +21,14 @@ use Cloudinary\Utils;
  *
  * @api
  */
-class Volume extends LimitedEffectParam
+class Volume extends LimitedEffectQualifier
 {
     const MUTE = 'mute';
 
     /**
      * Volume constructor.
      *
-     * @param       $volume
+     * @param mixed $volume
      */
     public function __construct($volume = null)
     {
@@ -38,15 +38,27 @@ class Volume extends LimitedEffectParam
     }
 
     /**
+     * Named Volume constructor.
+     *
+     * @param mixed $volume
+     *
+     * @return Volume
+     */
+    public static function volume($volume)
+    {
+        return new self($volume);
+    }
+
+    /**
      * Increases or decreases the volume by the specified number of decibels.
      *
      * @param int $dBOffset The offset in dB.
      *
      * @return Volume
      */
-    public function offset($dBOffset)
+    public static function byDecibels($dBOffset)
     {
-        return $this->setVolume(Utils::formatSigned($dBOffset) . 'dB');
+        return new self(Utils::formatSigned($dBOffset) . 'dB');
     }
 
     /**
@@ -56,9 +68,9 @@ class Volume extends LimitedEffectParam
      *
      * @return Volume
      */
-    public function relative($level)
+    public static function byPercent($level)
     {
-        return $this->setVolume($level);
+        return new self($level);
     }
 
     /**
@@ -69,9 +81,9 @@ class Volume extends LimitedEffectParam
      *
      * @return Volume
      */
-    public function mute()
+    public static function mute()
     {
-        return $this->setVolume(self::MUTE);
+        return new self(self::MUTE);
     }
 
     /**

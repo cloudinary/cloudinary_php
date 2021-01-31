@@ -18,14 +18,14 @@ use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
-use Cloudinary\Transformation\Argument\Text\TextStyle;
 use Cloudinary\Transformation\Effect;
-use Cloudinary\Transformation\Source;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\Resize;
+use Cloudinary\Transformation\Source;
+use Cloudinary\Transformation\TextStyle;
 use Cloudinary\Transformation\Transformation;
 
-Configuration::instance(['account' => ['cloud_name' => 'demo']]);
+Configuration::instance(['cloud' => ['cloud_name' => 'demo']]);
 
 $sample = [
     'name'      => 'Sample', //group name
@@ -54,9 +54,9 @@ $sample = [
                         ->roundCorners(20)
                         ->overlay(
                             Source::text('Memories from our trip')
-                                      ->style((new TextStyle(FontFamily::PARISIENNE, 35))->fontWeight(FontWeight::BOLD))
-                                      ->color('#990C47'),
-                            Position::center()->y(155)
+                                  ->textStyle((new TextStyle(FontFamily::PARISIENNE, 35))->fontWeight(FontWeight::BOLD))
+                                  ->textColor('#990C47'),
+                            Position::center()->offsetY(155)
                         )->effect(Effect::shadow())
                     ,
                     '(new Transformation())
@@ -79,8 +79,8 @@ $sample = [
     ->overlay(
         Source::text(\'Memories from our trip\')
                   ->style((new TextStyle(FontFamily::PARISIENNE, 35))->fontWeight(FontWeight::BOLD))
-                  ->color(\'#990C47\'),
-        Position::center()->y(155)
+                  ->textColor(\'#990C47\'),
+        Position::center()->offsetY(155)
     )->effect(Effect::shadow())',
                 ],
             ],

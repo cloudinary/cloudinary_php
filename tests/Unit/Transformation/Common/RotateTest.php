@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Unit\Transformation\Common;
 
 use Cloudinary\Transformation\Argument\Degree;
+use Cloudinary\Transformation\Argument\RotationMode;
 use Cloudinary\Transformation\Rotate;
 use PHPUnit\Framework\TestCase;
 
@@ -21,29 +22,34 @@ final class RotateTest extends TestCase
 {
     public function testRotate()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'a_17',
-            (string)Rotate::angle(17)
+            (string)Rotate::byAngle(17)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'a_17',
-            (string)Rotate::angle(Degree::angle(17))
+            (string)Rotate::byAngle(Degree::byAngle(17))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'a_hflip',
             (string)Rotate::horizontalFlip()
         );
 
-        $this->assertEquals(
-            'a_ignore.17',
-            (string)Rotate::angle(Degree::IGNORE, 17)
+        self::assertEquals(
+            'a_ignore',
+            (string)Rotate::mode(RotationMode::ignore())
         );
 
-        $this->assertEquals(
+        self::assertEquals(
+            'a_ignore.17',
+            (string)Rotate::mode(RotationMode::IGNORE, 17)
+        );
+
+        self::assertEquals(
             'a_90',
-            (string)Rotate::angle(Degree::deg90())
+            (string)Rotate::byAngle(Degree::deg90())
         );
     }
 }

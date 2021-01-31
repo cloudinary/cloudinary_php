@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Tag;
 
+use Cloudinary\ArrayUtils;
+
 /**
  * Generates an HTML `<img>` tag with the `src` attribute set to the transformation URL, optional `srcset` and other
  * specified attributes.
@@ -34,7 +36,7 @@ class ImageTag extends BaseImageTag
      */
     public function serializeAttributes($attributes = [])
     {
-        if (($this->config->tag->responsive || $this->config->tag->hiDpi) && ! $this->config->tag->clientHints) {
+        if (($this->config->tag->responsive || $this->config->tag->hidpi) && ! (bool)$this->config->tag->clientHints) {
             $attributes['data-src'] = $this->image;
 
             $this->addClass($this->config->tag->responsive ? self::RESPONSIVE_CLASS : self::HI_DPI_CLASS);
@@ -47,10 +49,15 @@ class ImageTag extends BaseImageTag
             $src = $this->image->toUrl($this->additionalTransformation);
         }
 
-        $attributes['src'] = $src;
+        ArrayUtils::addNonEmpty($attributes, 'src', $src);
 
         if (! empty((string)$this->srcset)) { // TODO: improve performance here
             $attributes['srcset'] = $this->srcset;
+
+            if (!array_key_exists('sizes', $this->attributes) && $this->config->tag->sizes) {
+                $attributes['sizes'] = new Sizes($this->srcset->getBreakpoints());
+            }
+
         }
 
         return parent::serializeAttributes($attributes);

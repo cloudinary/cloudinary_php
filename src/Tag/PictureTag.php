@@ -49,15 +49,15 @@ class PictureTag extends BaseTag
     /**
      * PictureTag constructor.
      *
-     * @param string|Image  $image         The public ID or Image instance.
+     * @param string|Image  $source        The public ID or Image instance.
      * @param array         $sources       The sources definitions.
      * @param Configuration $configuration The configuration instance.
      */
-    public function __construct($image, $sources, $configuration = null)
+    public function __construct($source, $sources, $configuration = null)
     {
         parent::__construct();
 
-        $this->image($image, $configuration);
+        $this->image($source, $configuration);
 
         $this->setSources($sources);
     }
@@ -106,18 +106,20 @@ class PictureTag extends BaseTag
     /**
      * Serializes the tag content.
      *
-     * @param array $additionalContent The additional content.
+     * @param array $additionalContent        The additional content.
+     * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append).
      *
      * @return string
      */
-    public function serializeContent($additionalContent = [])
+    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
     {
         return parent::serializeContent(
             ArrayUtils::mergeNonEmpty(
                 $this->sources,
                 [$this->imageTag],
                 $additionalContent
-            )
+            ),
+            $prependAdditionalContent
         );
     }
 }

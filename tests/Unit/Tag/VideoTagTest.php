@@ -14,6 +14,7 @@ use Cloudinary\Asset\Video;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Tag\VideoTag;
 use Cloudinary\Transformation\Angle;
+use Cloudinary\Transformation\Rotate;
 use Cloudinary\Transformation\Scale;
 use Cloudinary\Transformation\Transformation;
 
@@ -47,12 +48,12 @@ final class VideoTagTest extends TagTestCase
 
         $expected = "<video {$this->posterAttr}>\n{$this->defaultSourcesStr}\n</video>";
 
-        $this->assertEquals(
+        self::assertEquals(
             (string)$expected,
             (string)$tag
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             (string)$expected,
             (string)VideoTag::upload(self::VIDEO_NAME)
         );
@@ -60,13 +61,13 @@ final class VideoTagTest extends TagTestCase
 
     public function testVideoTagWithTransformation()
     {
-        $video = (new Video(self::VIDEO_NAME))->rotate(Angle::angle(17))->resize(Scale::scale(500));
+        $video = (new Video(self::VIDEO_NAME))->rotate(Rotate::byAngle(17))->resize(Scale::scale(500));
         $tag   = new VideoTag($video, []);
 
         $expectedPoster = 'https://res.cloudinary.com/test123/video/upload/a_17/c_scale,w_500/sample.jpg';
         $expected       = "<video src=\"$video\" poster=\"{$expectedPoster}\"></video>";
 
-        $this->assertEquals(
+        self::assertEquals(
             (string)$expected,
             (string)$tag
         );
@@ -76,15 +77,15 @@ final class VideoTagTest extends TagTestCase
     {
         $host = UrlConfig::DEFAULT_SHARED_HOST;
         $cloudName = 'test321';
-        $trStr = (new Transformation())->rotate(Angle::angle(17))->resize(Scale::scale(500))->toUrl();
+        $trStr = (new Transformation())->rotate(Rotate::byAngle(17))->resize(Scale::scale(500))->toUrl();
         $ver = 17;
         $assetType = 'video/upload';
         $publicId = self::ASSET_ID;
 
         $tag = (new VideoTag(self::VIDEO_NAME))
-            ->rotate(Angle::angle(17)) // transformation
+            ->rotate(Rotate::byAngle(17)) // transformation
             ->resize(Scale::scale(500))
-            ->cloudName($cloudName) // account config
+            ->cloudName($cloudName) // cloud config
             ->secure(false) // url config
             ->version($ver); // asset descriptor
 
@@ -98,7 +99,7 @@ final class VideoTagTest extends TagTestCase
 
         $expected = "<video poster=\"{$expectedPoster}\">\n{$sourcesStr}\n</video>";
 
-        $this->assertStrEquals(
+        self::assertStrEquals(
             $expected,
             $tag
         );
@@ -109,7 +110,7 @@ final class VideoTagTest extends TagTestCase
         $tag = new VideoTag(self::VIDEO_NAME, []);
 
         $expected = "<video src=\"{$this->video}\" $this->posterAttr></video>";
-        $this->assertEquals(
+        self::assertEquals(
             (string)$expected,
             (string)$tag
         );
@@ -122,7 +123,7 @@ final class VideoTagTest extends TagTestCase
         $customPosterAttr = str_replace(self::CLOUD_NAME, self::CUSTOM_CLOUD_NAME, $this->posterAttr);
         $expected         = "<video src=\"{$this->video->cloudName(self::CUSTOM_CLOUD_NAME)}\" $customPosterAttr>" .
                             '</video>';
-        $this->assertEquals(
+        self::assertEquals(
             $expected,
             (string)$tag->cloudName(self::CUSTOM_CLOUD_NAME)
         );
@@ -134,10 +135,10 @@ final class VideoTagTest extends TagTestCase
 
         $tag = (new VideoTag(self::VIDEO_NAME))->fallback($fallback);
 
-        $expected = "<video {$this->posterAttr}>\n{$fallback}\n{$this->defaultSourcesStr}\n</video>";
-        $this->assertEquals(
-            (string)$expected,
-            (string)$tag
+        $expected = "<video {$this->posterAttr}>\n{$this->defaultSourcesStr}\n{$fallback}\n</video>";
+        self::assertStrEquals(
+            $expected,
+            $tag
         );
     }
 
@@ -154,10 +155,10 @@ final class VideoTagTest extends TagTestCase
 
         $tag = (new VideoTag(self::VIDEO_NAME, []))->setAttributes($attributes);
 
-        $expected = "<video src=\"{$this->video}\" autoplay controls loop muted=\"true\" style=\"border: 1px\" " .
+        $expected = "<video autoplay controls loop muted=\"true\" style=\"border: 1px\" src=\"{$this->video}\" " .
                     "$this->posterAttr>" .
                     '</video>';
-        $this->assertEquals(
+        self::assertEquals(
             $expected,
             (string)$tag
         );

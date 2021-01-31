@@ -11,7 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
+use Cloudinary\Transformation\Qualifier\Dimensions\Dpr;
 
 /**
  * Trait DeliveryBuilderTrait
@@ -20,7 +20,7 @@ use Cloudinary\Transformation\Parameter\Dimensions\Dpr;
  */
 trait DeliveryBuilderTrait
 {
-    use ColorSpaceParamTrait;
+    use ColorSpaceQualifierTrait;
 
     /**
      * Sets the file format.
@@ -40,12 +40,12 @@ trait DeliveryBuilderTrait
      * Reducing the quality is a trade-off between visual quality and file size.
      *
      * @param int|Quality|mixed         $level  The level of the quality. (Range 1 to 100)
-     * @param null|string $preset A set level of automatic quality.  Use the constants defined in the QualityParam
+     * @param null|string $preset A set level of automatic quality.  Use the constants defined in the QualityQualifier
      *                            class.
      *
      * @return Quality
      *
-     * @see \Cloudinary\Transformation\QualityParam
+     * @see \Cloudinary\Transformation\QualityQualifier
      */
     public static function quality($level, $preset = null)
     {
@@ -75,5 +75,20 @@ trait DeliveryBuilderTrait
     public static function density($density)
     {
         return ClassUtils::verifyInstance($density, Density::class);
+    }
+
+    /**
+     * Uses the specified public ID of a placeholder image if the requested image or social network picture does
+     * not exist. The name of the placeholder image must include the file extension.
+     *
+     * @param DefaultImage|string $defaultImage The public ID with extension of the placeholder image.
+     *
+     * @return static
+     *
+     * @see \Cloudinary\Transformation\DefaultImage
+     */
+    public static function defaultImage($defaultImage)
+    {
+        return ClassUtils::verifyInstance($defaultImage, DefaultImage::class);
     }
 }

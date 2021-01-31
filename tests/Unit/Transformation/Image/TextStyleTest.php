@@ -10,13 +10,13 @@
 
 namespace Cloudinary\Test\Unit\Transformation\Image;
 
-use Cloudinary\Transformation\Argument\Text\FontAntialiasing;
+use Cloudinary\Transformation\Argument\Text\FontAntialias;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\Argument\Text\Stroke;
 use Cloudinary\Transformation\Argument\Text\TextAlignment;
 use Cloudinary\Transformation\Argument\Text\TextDecoration;
-use Cloudinary\Transformation\Argument\Text\TextStyle;
+use Cloudinary\Transformation\TextStyle;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,15 +26,15 @@ final class TextStyleTest extends TestCase
 {
     public function testTextStyle()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'Arial_14',
             (string)new TextStyle(FontFamily::ARIAL, 14)
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'Parisienne_17_ultrabold_strikethrough_justify_stroke_antialias_subpixel_letter_spacing_17',
             (string)(new TextStyle(FontFamily::PARISIENNE, 17))
-                ->fontAntialiasing(FontAntialiasing::SUBPIXEL)
+                ->fontAntialias(FontAntialias::SUBPIXEL)
                 ->letterSpacing(17)
                 ->textDecoration(TextDecoration::STRIKETHROUGH)
                 ->fontWeight(FontWeight::ULTRABOLD)

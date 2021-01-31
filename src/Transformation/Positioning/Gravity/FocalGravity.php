@@ -19,22 +19,9 @@ namespace Cloudinary\Transformation;
  *
  * @api
  */
-class FocalGravity extends GravityParam
+class FocalGravity extends GravityQualifier implements FocalGravityInterface
 {
     use FocalGravityBuilderTrait;
-
-    const AUTO               = 'auto';
-    const ADVANCED_FACE      = 'adv_face';
-    const ADVANCED_FACES     = 'adv_faces';
-    const ADVANCED_EYES      = 'adv_eyes';
-    const BODY               = 'body';
-    const FACE               = 'face';
-    const FACES              = 'faces';
-    const NO_FACES           = 'no_faces';
-    const CUSTOM             = 'no_faces';
-    const CUSTOM_NO_OVERRIDE = 'custom_no_override';
-    const OCR_TEXT           = 'ocr_text';
-    const NONE               = 'none';
 
     //TODO: handle aggressive auto gravity
 
@@ -63,7 +50,7 @@ class FocalGravity extends GravityParam
      */
     protected function setGravity($focalGravity, ...$fallBacks)
     {
-        $this->setParamValue($focalGravity, ...$fallBacks);
+        $this->setQualifierValue($focalGravity, ...$fallBacks);
 
         return $this;
     }

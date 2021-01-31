@@ -22,35 +22,35 @@ final class ClassUtilsTest extends TestCase
 {
     public function testVerifyInstance()
     {
-        $this->assertEquals(
+        self::assertEquals(
             null,
             ClassUtils::verifyInstance(null, TestClassA::class)
         );
-        $this->assertEquals(
+        self::assertEquals(
             TestClassA::class,
             get_class(ClassUtils::verifyInstance(new TestClassA(), TestClassA::class, TestClassB::class))
         );
-        $this->assertEquals(
+        self::assertEquals(
             TestClassB::class,
             get_class(ClassUtils::verifyInstance(new TestClassB(), TestClassA::class))
         );
-        $this->assertEquals(
+        self::assertEquals(
             TestClassA::class,
             get_class(ClassUtils::verifyInstance(20, TestClassA::class))
         );
-        $this->assertEquals(
+        self::assertEquals(
             TestClassB::class,
             get_class(ClassUtils::verifyInstance(20, TestClassA::class, TestClassB::class))
         );
-        $this->assertEquals(
+        self::assertEquals(
             TestClassA::class,
             get_class(ClassUtils::verifyInstance(new TestClassA(), TestClassA::class))
         );
-        $this->assertEquals(
+        self::assertEquals(
             'TestClassA(20)',
             (string)(ClassUtils::verifyInstance(20, TestClassA::class))
         );
-        $this->assertEquals(
+        self::assertEquals(
             'TestClassA(20, 30)',
             (string)(ClassUtils::verifyInstance(20, TestClassA::class, null, 30))
         );

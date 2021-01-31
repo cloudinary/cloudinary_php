@@ -24,46 +24,46 @@ final class ConfigUtilsTest extends UnitTestCase
     {
         $configArr = ConfigUtils::parseCloudinaryUrl('cloudinary://' . self::CLOUD_NAME);
 
-        $this->assertCount(1, $configArr['account']);
-        $this->assertEquals(self::CLOUD_NAME, $configArr['account']['cloud_name']);
+        self::assertCount(1, $configArr['cloud']);
+        self::assertEquals(self::CLOUD_NAME, $configArr['cloud']['cloud_name']);
     }
 
     public function testParseCloudinaryUrl()
     {
         $configArr = ConfigUtils::parseCloudinaryUrl($this->cloudinaryUrl);
 
-        $this->assertCount(3, $configArr['account']);
-        $this->assertEquals(self::CLOUD_NAME, $configArr['account']['cloud_name']);
-        $this->assertEquals(self::API_KEY, $configArr['account']['api_key']);
-        $this->assertEquals(self::API_SECRET, $configArr['account']['api_secret']);
+        self::assertCount(3, $configArr['cloud']);
+        self::assertEquals(self::CLOUD_NAME, $configArr['cloud']['cloud_name']);
+        self::assertEquals(self::API_KEY, $configArr['cloud']['api_key']);
+        self::assertEquals(self::API_SECRET, $configArr['cloud']['api_secret']);
     }
 
     public function testParseCloudinaryUrlSecureDistribution()
     {
-        $configArr = ConfigUtils::parseCloudinaryUrl($this->cloudinaryUrl . '/' . $this::SECURE_DIST);
+        $configArr = ConfigUtils::parseCloudinaryUrl($this->cloudinaryUrl . '/' . $this::SECURE_CNAME);
 
-        $this->assertCount(3, $configArr['account']);
+        self::assertCount(3, $configArr['cloud']);
 
-        $this->assertCount(2, $configArr['url']);
+        self::assertCount(2, $configArr['url']);
 
-        $this->assertTrue($configArr['url']['private_cdn']);
-        $this->assertEquals(self::SECURE_DIST, $configArr['url']['secure_distribution']);
+        self::assertTrue($configArr['url']['private_cdn']);
+        self::assertEquals(self::SECURE_CNAME, $configArr['url']['secure_cname']);
     }
 
     public function testParseCloudinaryUrlNestedValues()
     {
         $configArr = ConfigUtils::parseCloudinaryUrl("$this->cloudinaryUrl?foo[bar]=value&foo[baz][qux]=quxval");
 
-        $this->assertArrayHasKey('foo', $configArr);
-        $this->assertArrayHasKey('bar', $configArr['foo']);
-        $this->assertEquals('value', $configArr['foo']['bar']);
-        $this->assertEquals('quxval', $configArr['foo']['baz']['qux']);
+        self::assertArrayHasKey('foo', $configArr);
+        self::assertArrayHasKey('bar', $configArr['foo']);
+        self::assertEquals('value', $configArr['foo']['bar']);
+        self::assertEquals('quxval', $configArr['foo']['baz']['qux']);
     }
 
     public function testParseEmptyCloudinaryUrl()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->assertEquals([], ConfigUtils::parseCloudinaryUrl(null));
+        self::assertEquals([], ConfigUtils::parseCloudinaryUrl(null));
     }
 
     public function testParseInvalidCloudinaryUrlScheme()
@@ -84,12 +84,12 @@ final class ConfigUtilsTest extends UnitTestCase
             "$this->cloudinaryUrl?logging[enabled]=fALse&logging[nested][bool]=tRUe"
         );
 
-        $this->assertArrayHasKey('logging', $configArr);
-        $this->assertArrayHasKey('enabled', $configArr['logging']);
-        $this->assertArrayHasKey('nested', $configArr['logging']);
-        $this->assertArrayHasKey('bool', $configArr['logging']['nested']);
-        $this->assertEquals(false, $configArr['logging']['enabled']);
-        $this->assertEquals(true, $configArr['logging']['nested']['bool']);
+        self::assertArrayHasKey('logging', $configArr);
+        self::assertArrayHasKey('enabled', $configArr['logging']);
+        self::assertArrayHasKey('nested', $configArr['logging']);
+        self::assertArrayHasKey('bool', $configArr['logging']['nested']);
+        self::assertEquals(false, $configArr['logging']['enabled']);
+        self::assertEquals(true, $configArr['logging']['nested']['bool']);
     }
 
     public function testParseLoggerConfigFromCloudinaryUrl()

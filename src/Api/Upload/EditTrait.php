@@ -26,7 +26,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 trait EditTrait
 {
     /**
-     * Immediately and permanently deletes a single asset from your Cloudinary account.
+     * Immediately and permanently deletes a single asset from your Cloudinary cloud.
      *
      * Backed up assets are not deleted, and any assets and transformed assets already downloaded by visitors to your
      * website might still be accessible through cached copies on the CDN. You can invalidate any cached copies on the
@@ -50,7 +50,7 @@ trait EditTrait
     }
 
     /**
-     * Immediately and permanently deletes a single asset from your Cloudinary account.
+     * Immediately and permanently deletes a single asset from your Cloudinary cloud.
      *
      * Backed up assets are not deleted, and any assets and transformed assets already downloaded by visitors to your
      * website might still be accessible through cached copies on the CDN. You can invalidate any cached copies on the
@@ -69,9 +69,9 @@ trait EditTrait
     }
 
     /**
-     * Renames the specified asset in your Cloudinary account.
+     * Renames the specified asset in your Cloudinary cloud.
      *
-     * The existing URLs of renamed assets and their associated derived resources are no longer valid, although any
+     * The existing URLs of renamed assets and their associated derived assets are no longer valid, although any
      * assets and transformed assets already downloaded by visitors to your website might still be accessible through
      * cached copies on the CDN. You can invalidate any cached copies on the CDN with the `invalidate` parameter.
      *
@@ -95,9 +95,9 @@ trait EditTrait
     }
 
     /**
-     * Renames the specified asset in your Cloudinary account.
+     * Renames the specified asset in your Cloudinary cloud.
      *
-     * The existing URLs of renamed assets and their associated derived resources are no longer valid, although any
+     * The existing URLs of renamed assets and their associated derived assets are no longer valid, although any
      * assets and transformed assets already downloaded by visitors to your website might still be accessible through
      * cached copies on the CDN. You can invalidate any cached copies on the CDN with the `invalidate` parameter.
      *

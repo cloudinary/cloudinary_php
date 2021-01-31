@@ -28,7 +28,7 @@ use Cloudinary\ArrayUtils;
 trait UploadMappingsTrait
 {
     /**
-     * Lists upload mappings by folder and its mapped template (URL)..
+     * Lists upload mappings by folder and its mapped template (URL).
      *
      *
      * @param array $options The optional parameters. See the

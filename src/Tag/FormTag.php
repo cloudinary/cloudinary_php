@@ -68,13 +68,14 @@ class FormTag extends BaseConfigurableApiTag
      * <input name="api_key" type="hidden" value="1234"\/>
      * ```
      *
-     * @param array $additionalContent The additional content.
+     * @param array $additionalContent        The additional content.
+     * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append).
      *
      * @return string
      *
      * @internal
      */
-    public function serializeContent($additionalContent = [])
+    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
     {
         $inputTags    = [];
         $uploadParams = $this->getUploadParams();
@@ -83,6 +84,9 @@ class FormTag extends BaseConfigurableApiTag
             $inputTags[] = (string)(new FormInputTag($key, $value));
         }
 
-        return parent::serializeContent(ArrayUtils::mergeNonEmpty($inputTags, $additionalContent));
+        return parent::serializeContent(
+            ArrayUtils::mergeNonEmpty($inputTags, $additionalContent),
+            $prependAdditionalContent
+        );
     }
 }

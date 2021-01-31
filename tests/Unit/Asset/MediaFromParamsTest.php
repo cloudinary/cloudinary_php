@@ -83,6 +83,14 @@ final class MediaFromParamsTest extends AssetTestCase
             $options,
             ['hostname' => self::TEST_HOSTNAME, 'protocol' => 'https']
         );
+
+        $options = ['secure_cname' => self::TEST_HOSTNAME, 'secure' => true];
+
+        self::assertMediaFromParamsUrl(
+            self::IMAGE_NAME,
+            $options,
+            ['hostname' => self::TEST_HOSTNAME, 'protocol' => 'https']
+        );
     }
 
     /**
@@ -102,7 +110,7 @@ final class MediaFromParamsTest extends AssetTestCase
             [
                 'hostname'   => self::CLOUD_NAME . '-res-2.' . UrlConfig::DEFAULT_DOMAIN,
                 'cloud_name' => '',
-                'protocol' => 'https'
+                'protocol'   => 'https',
             ]
         );
     }
@@ -316,7 +324,7 @@ final class MediaFromParamsTest extends AssetTestCase
     public function expectedMediaSignatures()
     {
         return [
-            'Should sign transformation and ignore version' => [
+            'Should sign transformation and ignore version'                          => [
                 [
                     'version'        => 1234,
                     'transformation' => ['crop' => 'crop', 'width' => 10, 'height' => 20],
@@ -324,21 +332,21 @@ final class MediaFromParamsTest extends AssetTestCase
                 ],
                 's--Ai4Znfl3--/c_crop,h_20,w_10/v1234',
             ],
-            'Should ignore version'                         => [
+            'Should ignore version'                                                  => [
                 [
                     'version'  => 1234,
                     'sign_url' => true,
                 ],
                 's----SjmNDA--/v1234',
             ],
-            'Should sign transformation '                   => [
+            'Should sign transformation '                                            => [
                 [
                     'transformation' => ['crop' => 'crop', 'width' => 10, 'height' => 20],
                     'sign_url'       => true,
                 ],
                 's--Ai4Znfl3--/c_crop,h_20,w_10',
             ],
-            'Should sign transformation and ignore type'    => [
+            'Should sign transformation and ignore type'                             => [
                 [
                     'type'           => DeliveryType::AUTHENTICATED,
                     'transformation' => ['crop' => 'crop', 'width' => 10, 'height' => 20],
@@ -346,7 +354,7 @@ final class MediaFromParamsTest extends AssetTestCase
                 ],
                 's--Ai4Znfl3--/c_crop,h_20,w_10',
             ],
-            'Should sign remote URL'                        => [
+            'Should sign remote URL'                                                 => [
                 [
                     'type'     => DeliveryType::FETCH,
                     'version'  => 1234,
@@ -355,18 +363,18 @@ final class MediaFromParamsTest extends AssetTestCase
                 ],
                 's--hH_YcbiS--/v1234',
             ],
-            'Should sign an URL with a short signature by default' => [
+            'Should sign an URL with a short signature by default'                   => [
                 [
                     'sign_url' => true,
-                    'source' => 'sample.jpg',
+                    'source'   => 'sample.jpg',
                 ],
                 's--v2fTPYTu--',
             ],
             'Should sign an URL with a long signature if long_url_signature is true' => [
                 [
-                    'sign_url' => true,
+                    'sign_url'           => true,
                     'long_url_signature' => true,
-                    'source' => 'sample.jpg',
+                    'source'             => 'sample.jpg',
                 ],
                 's--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--',
             ],
@@ -384,7 +392,7 @@ final class MediaFromParamsTest extends AssetTestCase
         // Use values from the previous SDK to preserve signatures.
         $publicIdToSign = ArrayUtils::pop($options, 'source', 'image.jpg');
 
-        Configuration::instance()->account->apiSecret = 'b';
+        Configuration::instance()->cloud->apiSecret = 'b';
 
         $deliveryType = ArrayUtils::get($options, 'type', DeliveryType::UPLOAD);
 
@@ -404,18 +412,18 @@ final class MediaFromParamsTest extends AssetTestCase
     public function expectedFileSignatures()
     {
         return [
-            'Should sign an URL with a short signature by default' => [
+            'Should sign an URL with a short signature by default'                   => [
                 [
                     'sign_url' => true,
-                    'source' => 'sample.jpg',
+                    'source'   => 'sample.jpg',
                 ],
                 's--v2fTPYTu--',
             ],
             'Should sign an URL with a long signature if long_url_signature is true' => [
                 [
-                    'sign_url' => true,
+                    'sign_url'           => true,
                     'long_url_signature' => true,
-                    'source' => 'sample.jpg',
+                    'source'             => 'sample.jpg',
                 ],
                 's--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--',
             ],
@@ -433,7 +441,7 @@ final class MediaFromParamsTest extends AssetTestCase
         // Use values from the previous SDK to preserve signatures.
         $publicIdToSign = ArrayUtils::pop($options, 'source', 'image.jpg');
 
-        Configuration::instance()->account->apiSecret = 'b';
+        Configuration::instance()->cloud->apiSecret = 'b';
 
         $deliveryType = ArrayUtils::get($options, 'type', DeliveryType::UPLOAD);
 
@@ -485,10 +493,10 @@ final class MediaFromParamsTest extends AssetTestCase
      */
     public function testDisallowUrlSuffixWithNonUploadTypes()
     {
-        $this->assertErrorThrowing(
+        self::assertErrorThrowing(
             function () {
                 $options = ['url_suffix' => self::URL_SUFFIX, 'private_cdn' => true, 'type' => DeliveryType::FACEBOOK];
-                $url = (string)Media::fromParams(self::IMAGE_NAME, $options);
+                $url     = Media::fromParams(self::IMAGE_NAME, $options)->toUrl();
             }
         );
     }
@@ -620,7 +628,8 @@ final class MediaFromParamsTest extends AssetTestCase
             [
                 'hostname'   => self::PRIVATE_CDN_HOSTNAME,
                 'cloud_name' => '',
-                'full_path'  => "images/$expectedTransformedSignature/a_0/" . self::URL_SUFFIXED_ASSET_ID . '.' . self::IMG_EXT_JPG,
+                'full_path'  => "images/$expectedTransformedSignature/a_0/" . self::URL_SUFFIXED_ASSET_ID . '.'
+                                . self::IMG_EXT_JPG,
             ]
         );
     }

@@ -14,18 +14,22 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
-use Cloudinary\Transformation\Argument\Text\TextStyle;
 use Cloudinary\Transformation\BlendMode;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\FocalPosition;
 use Cloudinary\Transformation\Gravity;
-use Cloudinary\Transformation\ImageLayer;
+use Cloudinary\Transformation\ImageSource;
 use Cloudinary\Transformation\LayerStackPosition;
+use Cloudinary\Transformation\ImageOverlay;
 use Cloudinary\Transformation\Overlay;
 use Cloudinary\Transformation\Position;
+use Cloudinary\Transformation\Region;
+use Cloudinary\Transformation\Source;
+use Cloudinary\Transformation\TextStyle;
 use Cloudinary\Transformation\Transformation;
+use Cloudinary\Transformation\Underlay;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -43,7 +47,7 @@ final class OverUnderlayTest extends TestCase
 
         $tExpected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan';
 
-        $l = ImageLayer::image('test')->transformation($t);
+        $l = ImageSource::image('test')->transformation($t);
 
         $lExpected = "test/$tExpected/fl_layer_apply";
 
@@ -51,55 +55,77 @@ final class OverUnderlayTest extends TestCase
 
         $pExpected = 'g_south_west,x_17,y_19';
 
-        $this->assertEquals(
+        self::assertEquals(
             "l_$lExpected,$pExpected",
-            (string)new Overlay($l, $p)
+            (string)new ImageOverlay($l, $p)
         );
 
         $focalPosition = new FocalPosition(Gravity::auto(FocalGravity::ADVANCED_FACES));
 
-        $textLayer = ImageLayer::text('Hello world', new TextStyle(FontFamily::ARIAL, 14));
+        $textLayer = ImageSource::text('Hello world', new TextStyle(FontFamily::ARIAL, 14));
 
         $textLayer->setStackPosition(LayerStackPosition::UNDERLAY);
 
-        $this->assertEquals(
+        self::assertEquals(
             'u_text:Arial_14:Hello%20world/fl_layer_apply,g_auto:adv_faces',
-            (string)(new Overlay($textLayer))->position($focalPosition)
+            (string)(new ImageOverlay($textLayer))->position($focalPosition)
+        );
+    }
+
+    public function testUnderlay()
+    {
+        $t = new Transformation();
+        $source = Source::fetch('http://image.url');
+        $underlay = Underlay::source($source);
+        $t->underlay($underlay);
+
+        self::assertEquals(
+            "u_fetch:aHR0cDovL2ltYWdlLnVybA==/fl_layer_apply",
+            (string)$t
         );
     }
 
     public function testOverlayBlendMode()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'l_test/fl_layer_apply,x_10,y_20,e_screen',
             (string)(new Transformation())
-                ->overlay(ImageLayer::image('test'), Position::absolute(10, 20), BlendMode::screen())
+                ->overlay(Overlay::source('test')->position(Position::absolute(10, 20))->blendMode(BlendMode::screen()))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'l_test/fl_layer_apply,x_10,y_20,e_mask',
             (string)(new Transformation())
-                ->overlay(ImageLayer::image('test'), Position::absolute(10, 20), BlendMode::MASK)
+                ->overlay(Overlay::source('test')->position(Position::absolute(10, 20))->blendMode(BlendMode::mask()))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'u_test/fl_layer_apply,x_10,y_20,e_multiply',
             (string)(new Transformation())
-                ->underlay(ImageLayer::image('test'), Position::absolute(10, 20), 'multiply')
+                ->underlay(Overlay::source('test')->position(Position::absolute(10, 20))->blendMode('multiply'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'l_test/fl_layer_apply,e_anti_removal',
-            (string)(new Overlay('test'))->blendMode(BlendMode::antiRemoval())
+            (string)(Overlay::source('test')->blendMode(BlendMode::antiRemoval()))
+        );
+    }
+
+    public function testOverlayPosition()
+    {
+        self::assertEquals(
+            'l_test/fl_layer_apply,fl_no_overflow.tiled,x_10,y_20',
+            (string)(new Transformation())
+                ->overlay(Overlay::source('test')->position(Position::absolute(10, 20)->tiled()->allowOverflow(false)))
         );
     }
 
     public function testOverlayOtherImage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'l_some:test:image/e_blur_faces/fl_layer_apply,x_100,y_100',
             (string)(new Transformation())->overlay(
-                (new Image('some/test/image'))->effect(Effect::blurFaces()),
+                (new Image('some/test/image'))->effect(Effect::blur()->region(Region::faces())),
                 Position::absolute(100, 100)
             )
         );

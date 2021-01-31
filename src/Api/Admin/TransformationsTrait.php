@@ -34,8 +34,8 @@ trait TransformationsTrait
      * Lists stored transformations.
      *
      * @param array $options The optional parameters. See the
-     * <a href=https://cloudinary.com/documentation/admin_api#get_transformations target="_blank"> Admin API</a>
-     * documentation.
+     *                       <a href=https://cloudinary.com/documentation/admin_api#get_transformations
+     *                       target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -71,15 +71,15 @@ trait TransformationsTrait
     /**
      * Deletes the specified stored transformation.
      *
-     * Deleting a transformation also deletes all the stored derived resources based on this transformation (up to 1000).
-     * The method returns an error if there are more than 1000 derived resources based on this transformation.
+     * Deleting a transformation also deletes all the stored derived assets based on this transformation (up to 1000).
+     * The method returns an error if there are more than 1000 derived assets based on this transformation.
      *
-     * @param string|array $transformation The transformation to delete. Can be either a string or an array of parameters.
-     *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
-     *                                     100,"crop" => "fill").
+     * @param string|array $transformation The transformation to delete. Can be either a string or an array of
+     *                                     parameters. For example:
+     *                                     "w_150,h_100,c_fill" or ["width" => 150, "height" => 100,"crop" => "fill"].
      * @param array        $options        The optional parameters. See the
-     * <a href=https://cloudinary.com/documentation/admin_api#delete_transformation target="_blank"> Admin API</a>
-     * documentation.
+     *                                     <a href=https://cloudinary.com/documentation/admin_api#delete_transformation
+     *                                     target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *
@@ -104,8 +104,8 @@ trait TransformationsTrait
      *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
      *                                     100,"crop" => "fill").
      * @param array        $updates        The update parameters. See the
-     * <a href=https://cloudinary.com/documentation/admin_api#update_transformation target="_blank"> Admin API</a>
-     * documentation.
+     *                                     <a href=https://cloudinary.com/documentation/admin_api#update_transformation
+     *                                     target="_blank"> Admin API</a> documentation.
      *
      * @return ApiResponse
      *

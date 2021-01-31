@@ -12,8 +12,8 @@ namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\Dimensions\Dimensions;
-use Cloudinary\Transformation\Parameter\Dimensions\DimensionsTrait;
+use Cloudinary\Transformation\Qualifier\Dimensions\Dimensions;
+use Cloudinary\Transformation\Qualifier\Dimensions\DimensionsTrait;
 
 /**
  * Class BaseResizeAction
@@ -40,24 +40,24 @@ abstract class BaseResizeAction extends BaseAction
     {
         parent::__construct();
 
-        $this->addParameter(ClassUtils::verifyInstance($cropMode, CropMode::class));
+        $this->addQualifier(ClassUtils::verifyInstance($cropMode, CropMode::class));
 
         $this->width($width)->height($height);
     }
 
     /**
-     * Creates a new instance using provided array of parameters
+     * Creates a new instance using provided array of qualifiers
      *
-     * @param array $params The parameters.
+     * @param array $qualifiers The qualifiers.
      *
      * @return static
      */
-    public static function fromParams($params)
+    public static function fromParams($qualifiers)
     {
         return new static(
-            ArrayUtils::get($params, 'crop'),
-            ArrayUtils::get($params, 'width'),
-            ArrayUtils::get($params, 'height')
+            ArrayUtils::get($qualifiers, 'crop'),
+            ArrayUtils::get($qualifiers, 'width'),
+            ArrayUtils::get($qualifiers, 'height')
         );
     }
 
@@ -69,7 +69,7 @@ abstract class BaseResizeAction extends BaseAction
      *
      * @return static
      */
-    public function ignoreAspectRatio($ignoreAspectRatio = true)
+    protected function ignoreAspectRatio($ignoreAspectRatio = true)
     {
         return $this->setFlag(Flag::ignoreAspectRatio(), $ignoreAspectRatio);
     }
@@ -77,7 +77,7 @@ abstract class BaseResizeAction extends BaseAction
     /**
      * Sets the resize mode.
      *
-     * @param string|FlagParameter $resizeMode The resize mode. Can be set to: relative or regionRelative.
+     * @param string|FlagQualifier $resizeMode The resize mode. Can be set to: relative or regionRelative.
      *
      * @return static
      *
@@ -87,6 +87,28 @@ abstract class BaseResizeAction extends BaseAction
     public function resizeMode($resizeMode)
     {
         return $this->setFlag($resizeMode);
+    }
+
+    /**
+     * Modifies percentage-based width & height qualifiers of overlays and underlays (e.g., 1.0) to be relative to the
+     * overlaid region. Currently regions are only defined when using gravity 'face', 'faces' or 'custom'.
+     *
+     * @return static
+     */
+    public function regionRelative()
+    {
+        return $this->setFlag(new FlagQualifier(Flag::REGION_RELATIVE));
+    }
+
+    /**
+     * Modifies percentage-based width & height qualifiers of overlays and underlays (e.g., 1.0) to be relative to the
+     * containing image instead of the added layer.
+     *
+     * @return static
+     */
+    public function relative()
+    {
+        return $this->setFlag(new FlagQualifier(Flag::RELATIVE));
     }
 
     /**
@@ -100,11 +122,15 @@ abstract class BaseResizeAction extends BaseAction
      */
     protected function setDimension($value)
     {
-        if (! isset($this->parameters[Dimensions::getName()])) {
-            $this->addParameter(new Dimensions());
+        if (! isset($this->qualifiers[Dimensions::getName()])) {
+            $this->addQualifier(new Dimensions());
         }
 
-        $this->parameters[Dimensions::getName()]->addParameter($value);
+        if ($value instanceof AspectRatio && (string)$value->getValue() === AspectRatio::IGNORE_INITIAL) {
+            $this->ignoreAspectRatio();
+        }
+
+        $this->qualifiers[Dimensions::getName()]->addQualifier($value);
 
         return $this;
     }

@@ -21,7 +21,7 @@ final class JsonUtilsTest extends TestCase
 {
     public function testDecode()
     {
-        $this->assertEquals(
+        self::assertEquals(
             ['foo' => 'bar'],
             JsonUtils::decode('{"foo": "bar"}')
         );

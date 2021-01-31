@@ -20,90 +20,90 @@ trait VehicleObjectGravityBuilderTrait
     /**
      * Gravity vehicle.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function vehicle()
+    public static function vehicle()
     {
-        return $this->add(ObjectGravity::VEHICLE);
+        return ObjectGravity::VEHICLE;
     }
 
     /**
      * Gravity bicycle.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bicycle()
+    public static function bicycle()
     {
-        return $this->add(ObjectGravity::BICYCLE);
+        return ObjectGravity::BICYCLE;
     }
 
     /**
      * Gravity car.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function car()
+    public static function car()
     {
-        return $this->add(ObjectGravity::CAR);
+        return ObjectGravity::CAR;
     }
 
     /**
      * Gravity motorbike.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function motorbike()
+    public static function motorbike()
     {
-        return $this->add(ObjectGravity::MOTORBIKE);
+        return ObjectGravity::MOTORBIKE;
     }
 
     /**
      * Gravity aeroplane.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function aeroplane()
+    public static function aeroplane()
     {
-        return $this->add(ObjectGravity::AEROPLANE);
+        return ObjectGravity::AEROPLANE;
     }
 
     /**
      * Gravity bus.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bus()
+    public static function bus()
     {
-        return $this->add(ObjectGravity::BUS);
+        return ObjectGravity::BUS;
     }
 
     /**
      * Gravity train.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function train()
+    public static function train()
     {
-        return $this->add(ObjectGravity::TRAIN);
+        return ObjectGravity::TRAIN;
     }
 
     /**
      * Gravity truck.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function truck()
+    public static function truck()
     {
-        return $this->add(ObjectGravity::TRUCK);
+        return ObjectGravity::TRUCK;
     }
 
     /**
      * Gravity boat.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function boat()
+    public static function boat()
     {
-        return $this->add(ObjectGravity::BOAT);
+        return ObjectGravity::BOAT;
     }
 }

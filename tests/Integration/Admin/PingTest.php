@@ -21,13 +21,13 @@ final class PingTest extends IntegrationTestCase
     {
         $result = self::$adminApi->ping();
 
-        $this->assertEquals('ok', $result['status']);
+        self::assertEquals('ok', $result['status']);
     }
 
     public function testPingAsync()
     {
         $result = self::$adminApi->pingAsync()->wait();
 
-        $this->assertEquals('ok', $result['status']);
+        self::assertEquals('ok', $result['status']);
     }
 }

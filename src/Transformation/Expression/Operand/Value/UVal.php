@@ -88,17 +88,45 @@ class UVal extends Expression
     }
 
     /**
-     * The file reference expression component.
+     * The asset reference expression component.
      *
      * @param string $publicId The public ID of the file.
      *
      * @return self
      */
-    public static function fileReference($publicId)
+    public static function assetReference($publicId)
     {
         $publicId = StringUtils::ensureWrappedWith($publicId, self::STRING_MARKER);
 
         return self::uVal("ref:$publicId");
+    }
+
+    /**
+     * The context key reference expression component.
+     *
+     * @param string $contextKey The context key.
+     *
+     * @return self
+     */
+    public static function context($contextKey)
+    {
+        $contextKey = StringUtils::ensureWrappedWith($contextKey, self::STRING_MARKER);
+
+        return self::uVal("ctx:$contextKey");
+    }
+
+    /**
+     * The structured metadata key reference expression component.
+     *
+     * @param string $metadataKey The structured metadata key.
+     *
+     * @return self
+     */
+    public static function metadata($metadataKey)
+    {
+        $metadataKey = StringUtils::ensureWrappedWith($metadataKey, self::STRING_MARKER);
+
+        return self::uVal("md:$metadataKey");
     }
 
     /**

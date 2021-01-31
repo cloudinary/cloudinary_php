@@ -38,7 +38,7 @@ trait QualityTrait
      */
     public static function auto($preset = null)
     {
-        return static::createQuality(QualityParam::AUTO, $preset);
+        return static::createQuality(QualityQualifier::AUTO, $preset);
     }
 
     /**
@@ -46,9 +46,9 @@ trait QualityTrait
      *
      * @return static
      */
-    public static function good()
+    public static function autoGood()
     {
-        return static::auto(QualityParam::GOOD);
+        return static::auto(QualityQualifier::GOOD);
     }
 
     /**
@@ -56,9 +56,9 @@ trait QualityTrait
      *
      * @return static
      */
-    public static function best()
+    public static function autoBest()
     {
-        return static::auto(QualityParam::BEST);
+        return static::auto(QualityQualifier::BEST);
     }
 
     /**
@@ -66,9 +66,9 @@ trait QualityTrait
      *
      * @return static
      */
-    public static function eco()
+    public static function autoEco()
     {
-        return static::auto(QualityParam::ECO);
+        return static::auto(QualityQualifier::ECO);
     }
 
     /**
@@ -76,9 +76,9 @@ trait QualityTrait
      *
      * @return static
      */
-    public static function low()
+    public static function autoLow()
     {
-        return static::auto(QualityParam::LOW);
+        return static::auto(QualityQualifier::LOW);
     }
 
     /**
@@ -90,9 +90,50 @@ trait QualityTrait
      *
      * @see \Cloudinary\Transformation\JpegMini
      */
-    public static function jpegMini($level = null)
+    public static function jpegmini($level = null)
     {
-        return static::createQuality(QualityParam::JPEG_MINI, $level);
+        return static::createQuality(QualityQualifier::JPEG_MINI, $level);
+    }
+
+    /**
+     * Quality jpegminiBest.
+     *
+     * Alias for jpegmini(JpegMini::BEST)
+     *
+     * @return static
+     *
+     * @see \Cloudinary\Transformation\JpegMini
+     */
+    public static function jpegminiBest()
+    {
+        return static::jpegmini(JpegMini::BEST);
+    }
+    /**
+     * Quality jpegminiHigh.
+     *
+     * Alias for jpegmini(JpegMini::HIGH)
+     *
+     * @return static
+     *
+     * @see \Cloudinary\Transformation\JpegMini
+     */
+    public static function jpegminiHigh()
+    {
+        return static::jpegmini(JpegMini::HIGH);
+    }
+
+    /**
+     * Quality jpegminiMedium.
+     *
+     * Alias for jpegmini(JpegMini::MEDIUM)
+     *
+     * @return static
+     *
+     * @see \Cloudinary\Transformation\JpegMini
+     */
+    public static function jpegminiMedium()
+    {
+        return static::jpegmini(JpegMini::MEDIUM);
     }
 
     /**

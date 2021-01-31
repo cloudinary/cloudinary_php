@@ -17,9 +17,8 @@ require_once __DIR__ . '/SamplePage/Sample/TransformationSample.php';
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Transformation\Adjust;
-use Cloudinary\Transformation\Argument\Gradient;
-use Cloudinary\Transformation\Argument\GradientDirection;
 use Cloudinary\Transformation\Argument\Color;
+use Cloudinary\Transformation\Argument\GradientDirection;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontStyle;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
@@ -28,7 +27,7 @@ use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\AudioFrequency;
 use Cloudinary\Transformation\AutoBackground;
 use Cloudinary\Transformation\Background;
-use Cloudinary\Transformation\Chroma;
+use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\Codec\VideoCodecLevel;
 use Cloudinary\Transformation\Codec\VideoCodecProfile;
 use Cloudinary\Transformation\CompassGravity;
@@ -39,20 +38,20 @@ use Cloudinary\Transformation\Fill;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Gravity;
-use Cloudinary\Transformation\Reshape;
-use Cloudinary\Transformation\Source;
-use Cloudinary\Transformation\Outline;
+use Cloudinary\Transformation\OutlineMode;
 use Cloudinary\Transformation\Pad;
-use Cloudinary\Transformation\Parameter;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 use Cloudinary\Transformation\Position;
+use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Quality;
+use Cloudinary\Transformation\Reshape;
 use Cloudinary\Transformation\RoundCorners;
 use Cloudinary\Transformation\Scale;
+use Cloudinary\Transformation\Source;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\VideoCodec;
+use Cloudinary\Transformation\VideoEdit;
 
-Configuration::instance(['account' => ['cloud_name' => 'demo']]);
+Configuration::instance(['cloud' => ['cloud_name' => 'demo']]);
 
 $imageGroup = [
     'name'      => 'Image', //group name
@@ -147,8 +146,12 @@ $imageGroup = [
                     '(new Transformation())->resize(Crop::thumbnail(200, 200)->gravity(Gravity::north()))',
                 ],
                 [
-                    (new Transformation())->resize(Crop::thumbnail(200, 200, Gravity::face(CompassGravity::CENTER))),
-                    '(new Transformation())->resize(Crop::thumbnail(200, 200, Gravity::face(CompassGravity::CENTER)))',
+                    (new Transformation())->resize(
+                        Crop::thumbnail(200, 200)->gravity(Gravity::face(CompassGravity::center()))
+                    ),
+                    ' (new Transformation())->resize(
+                        Crop::thumbnail(200, 200)->gravity(Gravity::face(CompassGravity::center()))
+                    )',
                 ],
                 [
                     (new Transformation())->resize(Crop::thumbnail(200, 200, Gravity::auto())->zoom(0.7)),
@@ -164,26 +167,22 @@ $imageGroup = [
                     '(new Transformation())->resize(Pad::pad(200, 200)->background(Color::CORAL))',
                 ],
                 [
-                    (new Transformation())->resize(Pad::pad(200, 200)->background(AutoBackground::borderContrast())),
-                    '(new Transformation())->resize(Pad::pad(200, 200)->background(AutoBackground::borderContrast()))',
+                    (new Transformation())->resize(
+                        Pad::pad(200, 200)->background(AutoBackground::border()->contrast())
+                    ),
+                    ' (new Transformation())->resize(
+                        Pad::pad(200, 200)->background(AutoBackground::border()->contrast())
+                    )',
                 ],
                 [
                     (new Transformation())->resize(
                         Pad::pad(200, 200)->background(
-                            AutoBackground::gradientFade(
-                                Gradient::PREDOMINANT_GRADIENT,
-                                2,
-                                GradientDirection::DIAGONAL_DESC
-                            )
+                            Background::predominantGradient(2, GradientDirection::diagonalDesc())
                         )
                     ),
                     '(new Transformation())->resize(
     Pad::pad(200, 200)->background(
-        AutoBackground::gradientFade(
-            Gradient::PREDOMINANT_GRADIENT,
-            2,
-            GradientDirection::DIAGONAL_DESC
-        )
+        Background::predominantGradient(2, GradientDirection::diagonalDesc())
     )
 )',
                 ],
@@ -220,11 +219,11 @@ $imageGroup = [
                 ],
                 [
                     (new Transformation())->effect(
-                        Effect::shadow()->position(10, PVar::height()->divide()->numeric(50))->color(Color::green())
+                        Effect::shadow()->offset(10, PVar::height()->divide()->numeric(50))->color(Color::green())
                     ),
                     '
                     (new Transformation())->effect(
-    Effect::shadow()->position(10, PVar::height()->divide()->numeric(50))->color(Color::green())
+    Effect::shadow()->offset(10, PVar::height()->divide()->numeric(50))->color(Color::green())
 )',
                 ],
                 [
@@ -232,12 +231,16 @@ $imageGroup = [
                     '(new Transformation())->adjust(Adjust::replaceColor(NamedColor::MAROON, 80, \'2b38aa\'))',
                 ],
                 [
-                    (new Transformation())->effect(Effect::outline(Outline::OUTER, 15, 200)->color(Color::orange())),
-                    '(new Transformation())->effect(Effect::outline(Outline::OUTER, 15, 200)->color(Color::orange()))',
+                    (new Transformation())->effect(
+                        Effect::outline(OutlineMode::OUTER, 15, 200)->color(Color::orange())
+                    ),
+                    '(new Transformation())->effect(
+    Effect::outline(OutlineMode::OUTER, 15, 200)->color(Color::orange())
+)',
                 ],
                 [
                     (new Transformation())->effect(
-                        Effect::generic('outline:outer', 15, 200)->addParameter(Parameter::generic('co', 'orange'))
+                        Effect::generic('outline:outer', 15, 200)->addQualifier(Qualifier::generic('co', 'orange'))
                     ),
                     '(new Transformation())->effect(
     Effect::generic(\'outline:outer\', 15, 200)->addParameter(Parameters::generic(\'co\', \'orange\'))
@@ -267,15 +270,19 @@ $imageGroup = [
                     '(new Transformation())->quality(70)',
                 ],
                 [
-                    (new Transformation())->quality(Quality::level(70)->chromaSubSampling(Chroma::C420)),
-                    ' (new Transformation())->quality(Quality::level(70)->chromaSubSampling(ChromaSubSampling::C420))',
+                    (new Transformation())->quality(
+                        Quality::level(70)->chromaSubSampling(ChromaSubSampling::chroma420())
+                    ),
+                    ' (new Transformation())->quality(
+                        Quality::level(70)->chromaSubSampling(ChromaSubSampling::chroma420())
+                    )',
                 ],
                 [
                     (new Transformation())->quality(Quality::auto()),
                     '(new Transformation())->quality(Quality::auto())',
                 ],
                 [
-                    (new Transformation())->quality(Quality::good()),
+                    (new Transformation())->quality(Quality::autoGood()),
                     '(new Transformation())->quality(Quality::good())',
                 ],
                 [
@@ -343,12 +350,12 @@ $imageGroup = [
                 [
                     (new Transformation())->overlay(
                         Source::text('Flowers')
-                             ->fontFamily(FontFamily::VERDANA)
-                             ->fontSize(75)
-                             ->fontWeight(FontWeight::BOLD)
-                             ->fontStyle(FontStyle::ITALIC)
-                             ->textDecoration(TextDecoration::UNDERLINE)
-                             ->letterSpacing(14)
+                              ->fontFamily(FontFamily::VERDANA)
+                              ->fontSize(75)
+                              ->fontWeight(FontWeight::BOLD)
+                              ->fontStyle(FontStyle::ITALIC)
+                              ->textDecoration(TextDecoration::UNDERLINE)
+                              ->letterSpacing(14)
                     ),
                     '(new Transformation())->overlay(
     Source::text(\'Flowers\')
@@ -363,20 +370,20 @@ $imageGroup = [
                 [
                     (new Transformation())->overlay(
                         Source::text('Your Logo Here')->fontFamily(FontFamily::IMPACT)->fontSize(150)
-                             ->color(Color::WHITE)
-                             ->reshape(Reshape::distortArc(-120)),
-                        Position::south()->y(140)
+                              ->textColor(Color::WHITE)
+                              ->reshape(Reshape::distortArc(-120)),
+                        Position::south()->offsetY(140)
                     ),
                     '(new Transformation())->overlay(
     Source::text(\'Your Logo Here\')->fontFamily(FontFamily::IMPACT)->fontSize(150)
-        ->color(NamedColor::WHITE)
+        ->textColor(NamedColor::WHITE)
         ->reshape(Reshape::distortArc(-120)),
-    Position::south()->y(140)
+    Position::south()->offsetY(140)
 )',
                 ],
                 [
-                    (new Transformation())->add3DLut('iwltbap_aspen.3dl'),
-                    '(new Transformation())->add3DLut(\'iwltbap_aspen.3dl\')',
+                    (new Transformation())->adjust(Adjust::by3dLut('iwltbap_aspen.3dl')),
+                    '(new Transformation())->adjust(Adjust::by3dLut(\'iwltbap_aspen.3dl\'))',
                 ],
             ],
         ],
@@ -384,7 +391,7 @@ $imageGroup = [
             'name'  => 'CustomParameter',
             'items' => [
                 [
-                    (new Transformation())->addGenericParam('w', 500),
+                    (new Transformation())->addGenericQualifier('w', 500),
                     '(new Transformation())->addGenericParam(\'w\', 500)',
                 ],
             ],
@@ -401,12 +408,12 @@ $videoGroup = [
             'name'  => 'Trim',
             'items' => [
                 [
-                    (new Transformation())->trim(VideoRange::range(6.5, 10)),
-                    '(new Transformation())->trim(VideoRange::range(6.5, 10))',
+                    (new Transformation())->trim(VideoEdit::trim(6.5, 10)),
+                    '(new Transformation())->trim(VideoEdit::trim(6.5, 10))',
                 ],
                 [
-                    (new Transformation())->trim(VideoRange::range('10p')->duration('30p')),
-                    '(new Transformation())->trim(VideoRange::range(\'10p\')->duration(\'30p\'))',
+                    (new Transformation())->trim(VideoEdit::trim('10p')->duration('30p')),
+                    '(new Transformation())->trim(VideoEdit::trim(\'10p\')->duration(\'30p\'))',
                 ],
             ],
         ],
@@ -416,11 +423,11 @@ $videoGroup = [
                 [
                     (new Transformation())
                         ->resize(Fill::fill(300, 200))
-                        ->trim(VideoRange::range(0, 3))
+                        ->trim(VideoEdit::trim(0, 3))
                         ->concatenate(
                             Source::video('kitten_fighting')
-                                 ->trim(VideoRange::range(2, 5))
-                                 ->resize(Fill::fill(300, 200))
+                                  ->trim(VideoEdit::trim(2, 5))
+                                  ->resize(Fill::fill(300, 200))
                         ),
                     '(new Transformation())
     ->resize(Fill::fill(300, 200))

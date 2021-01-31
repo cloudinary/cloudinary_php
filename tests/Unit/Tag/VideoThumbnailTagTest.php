@@ -13,7 +13,7 @@ namespace Cloudinary\Test\Unit\Tag;
 use Cloudinary\Asset\Video;
 use Cloudinary\Tag\VideoThumbnailTag;
 use Cloudinary\Transformation\Effect;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
+use Cloudinary\Transformation\VideoEdit;
 
 /**
  * Class VideoThumbnailTagTest
@@ -26,19 +26,19 @@ final class VideoThumbnailTagTest extends ImageTagTestCase
     {
         $tag = new VideoThumbnailTag(self::VIDEO_NAME);
 
-        $this->assertEquals(
-            '<img src="https://res.cloudinary.com/test123/video/upload/'.self::TAG_END,
+        self::assertEquals(
+            '<img src="https://res.cloudinary.com/test123/video/upload/' . self::TAG_END,
             (string)$tag
         );
     }
 
     public function testVideoThumbnailTagWithTransformation()
     {
-        $video = (new Video(self::VIDEO_NAME))->trim(VideoRange::range(10, 20));
-        $tag = (new VideoThumbnailTag($video))->effect(Effect::sepia(20));
+        $video = (new Video(self::VIDEO_NAME))->trim(VideoEdit::trim(10, 20));
+        $tag   = (new VideoThumbnailTag($video))->effect(Effect::sepia(20));
 
-        $this->assertEquals(
-            '<img src="https://res.cloudinary.com/test123/video/upload/so_10,eo_20/e_sepia:20/'.self::TAG_END,
+        self::assertEquals(
+            '<img src="https://res.cloudinary.com/test123/video/upload/so_10,eo_20/e_sepia:20/' . self::TAG_END,
             (string)$tag
         );
     }

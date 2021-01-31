@@ -67,7 +67,7 @@ class SignatureVerifier
             return false;
         }
 
-        $apiSecret = Configuration::instance()->account->apiSecret;
+        $apiSecret = Configuration::instance()->cloud->apiSecret;
         self::validateApiSecret($apiSecret);
 
         $payloadToSign = $body . $timestamp;
@@ -93,7 +93,7 @@ class SignatureVerifier
 
         self::validateParams($paramsArray, self::$API_RESPONSE_VALIDATOR_ALLOWED_TYPES);
 
-        $apiSecret = Configuration::instance()->account->apiSecret;
+        $apiSecret = Configuration::instance()->cloud->apiSecret;
         self::validateApiSecret($apiSecret);
 
         $payloadToSign = 'public_id=' . $publicId . '&version=' . $version;

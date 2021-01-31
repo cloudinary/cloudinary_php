@@ -13,7 +13,7 @@ namespace Cloudinary\Api;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetTransformation;
 use Cloudinary\ClassUtils;
-use Cloudinary\Configuration\AccountConfig;
+use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Utils;
 
 /**
@@ -241,14 +241,14 @@ class ApiUtils
     /**
      * Signs parameters of the request.
      *
-     * @param string $secret     The API secret of the account.
      * @param array  $parameters Parameters to sign.
+     * @param string $secret     The API secret of the cloud.
      *
      * @return string The signature.
      *
      * @api
      */
-    public static function signParameters($secret, $parameters = [])
+    public static function signParameters($parameters, $secret)
     {
         $parameters = array_map('self::serializeSimpleApiParam', $parameters);
 
@@ -262,14 +262,14 @@ class ApiUtils
     /**
      * Adds signature and api_key to $parameters.
      *
-     * @param array|null    $parameters
-     * @param AccountConfig $account
+     * @param array|null  $parameters
+     * @param CloudConfig $cloudConfig
      *
      * @internal
      */
-    public static function signRequest(&$parameters, $account)
+    public static function signRequest(&$parameters, $cloudConfig)
     {
-        $parameters['signature'] = self::signParameters($account->apiSecret, $parameters);
-        $parameters['api_key']   = $account->apiKey;
+        $parameters['signature'] = self::signParameters($parameters, $cloudConfig->apiSecret);
+        $parameters['api_key']   = $cloudConfig->apiKey;
     }
 }

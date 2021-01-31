@@ -20,10 +20,10 @@ trait PersonObjectGravityBuilderTrait
     /**
      * Gravity person.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function person()
+    public static function person()
     {
-        return $this->add(ObjectGravity::PERSON);
+        return ObjectGravity::PERSON;
     }
 }

@@ -36,14 +36,14 @@ final class EditTest extends IntegrationTestCase
         self::$EXPLICIT_PUBLIC_ID = 'upload_edit_explicit_public_id_' . self::$UNIQUE_TEST_ID;
         self::$TRANSFORMATION_OBJECT = (new AssetTransformation())->resize(Resize::crop(400, 400, Gravity::face()));
 
-        self::uploadTestResourceImage(['public_id' => self::$EXPLICIT_PUBLIC_ID]);
-        self::uploadTestResourceImage(['public_id' => self::$DESTROY_PUBLIC_ID]);
-        self::uploadTestResourceImage(['public_id' => self::$SOURCE_PUBLIC_ID]);
+        self::uploadTestAssetImage(['public_id' => self::$EXPLICIT_PUBLIC_ID]);
+        self::uploadTestAssetImage(['public_id' => self::$DESTROY_PUBLIC_ID]);
+        self::uploadTestAssetImage(['public_id' => self::$SOURCE_PUBLIC_ID]);
     }
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
+        self::cleanupTestAssets();
 
         parent::tearDownAfterClass();
     }
@@ -55,10 +55,10 @@ final class EditTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->destroy(self::$DESTROY_PUBLIC_ID);
 
-        $this->assertEquals('ok', $result['result']);
+        self::assertEquals('ok', $result['result']);
 
         $this->expectException(NotFound::class);
-        self::$adminApi->resource(self::$DESTROY_PUBLIC_ID);
+        self::$adminApi->asset(self::$DESTROY_PUBLIC_ID);
     }
 
     /**
@@ -66,13 +66,13 @@ final class EditTest extends IntegrationTestCase
      */
     public function testRenameImage()
     {
-        $resource = self::$uploadApi->rename(self::$SOURCE_PUBLIC_ID, self::$RENAME_PUBLIC_ID);
+        $asset = self::$uploadApi->rename(self::$SOURCE_PUBLIC_ID, self::$RENAME_PUBLIC_ID);
 
-        self::assertValidResource($resource, ['public_id' => self::$RENAME_PUBLIC_ID]);
+        self::assertValidAsset($asset, ['public_id' => self::$RENAME_PUBLIC_ID]);
 
-        $resource = self::$adminApi->resource(self::$RENAME_PUBLIC_ID);
+        $asset = self::$adminApi->asset(self::$RENAME_PUBLIC_ID);
 
-        self::assertValidResource($resource, ['public_id' => self::$RENAME_PUBLIC_ID]);
+        self::assertValidAsset($asset, ['public_id' => self::$RENAME_PUBLIC_ID]);
     }
 
     /**
@@ -80,7 +80,7 @@ final class EditTest extends IntegrationTestCase
      */
     public function testEagerTransformation()
     {
-        $resource = self::$uploadApi->explicit(
+        $asset = self::$uploadApi->explicit(
             self::$EXPLICIT_PUBLIC_ID,
             [
                 'type' => 'upload',
@@ -90,10 +90,10 @@ final class EditTest extends IntegrationTestCase
             ]
         );
 
-        self::assertValidResource($resource);
-        self::assertCount(1, $resource['eager']);
+        self::assertValidAsset($asset);
+        self::assertCount(1, $asset['eager']);
         self::assertValidTransformationRepresentation(
-            $resource['eager'][0],
+            $asset['eager'][0],
             [
                 'transformation' => self::TRANSFORMATION_STRING,
                 'format' => AssetTestCase::IMG_EXT_GIF,
@@ -103,11 +103,11 @@ final class EditTest extends IntegrationTestCase
             ]
         );
 
-        $resource = self::$adminApi->resource($resource['public_id']);
+        $asset = self::$adminApi->asset($asset['public_id']);
 
-        self::assertCount(1, $resource['derived']);
-        self::assertValidDerivedResource(
-            $resource['derived'][0],
+        self::assertCount(1, $asset['derived']);
+        self::assertValidDerivedAsset(
+            $asset['derived'][0],
             [
                 'transformation' => self::TRANSFORMATION_STRING,
                 'format' => AssetTestCase::IMG_EXT_GIF,

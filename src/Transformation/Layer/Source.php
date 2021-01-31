@@ -23,6 +23,6 @@ namespace Cloudinary\Transformation;
  */
 abstract class Source
 {
-    use ImageLayerTrait;
-    use VideoLayerTrait;
+    use ImageSourceTrait;
+    use VideoSourceTrait;
 }

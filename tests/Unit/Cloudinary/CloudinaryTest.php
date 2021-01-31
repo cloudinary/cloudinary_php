@@ -24,9 +24,9 @@ class CloudinaryTest extends UnitTestCase
     {
         $c = new Cloudinary();
 
-        $this->assertNotNull($c->configuration->account->cloudName);
-        $this->assertNotNull($c->configuration->account->apiKey);
-        $this->assertNotNull($c->configuration->account->apiSecret);
+        self::assertNotNull($c->configuration->cloud->cloudName);
+        self::assertNotNull($c->configuration->cloud->apiKey);
+        self::assertNotNull($c->configuration->cloud->apiSecret);
     }
 
     /**
@@ -42,7 +42,7 @@ class CloudinaryTest extends UnitTestCase
     {
         $c = new Cloudinary(
             [
-                'account' => [
+                'cloud' => [
                     'cloud_name' => self::CLOUD_NAME,
                     'api_key'        => self::API_KEY,
                     'api_secret'     => self::API_SECRET,
@@ -50,17 +50,17 @@ class CloudinaryTest extends UnitTestCase
             ]
         );
 
-        $this->assertEquals(self::CLOUD_NAME, $c->configuration->account->cloudName);
-        $this->assertEquals(self::API_KEY, $c->configuration->account->apiKey);
-        $this->assertEquals(self::API_SECRET, $c->configuration->account->apiSecret);
+        self::assertEquals(self::CLOUD_NAME, $c->configuration->cloud->cloudName);
+        self::assertEquals(self::API_KEY, $c->configuration->cloud->apiKey);
+        self::assertEquals(self::API_SECRET, $c->configuration->cloud->apiSecret);
     }
 
     public function testCloudinaryFromUrl()
     {
         $c = new Cloudinary($this->cloudinaryUrl);
 
-        $this->assertEquals(self::CLOUD_NAME, $c->configuration->account->cloudName);
-        $this->assertEquals(self::API_KEY, $c->configuration->account->apiKey);
-        $this->assertEquals(self::API_SECRET, $c->configuration->account->apiSecret);
+        self::assertEquals(self::CLOUD_NAME, $c->configuration->cloud->cloudName);
+        self::assertEquals(self::API_KEY, $c->configuration->cloud->apiKey);
+        self::assertEquals(self::API_SECRET, $c->configuration->cloud->apiSecret);
     }
 }

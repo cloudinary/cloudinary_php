@@ -34,7 +34,7 @@ trait ScaleTrait
 
     /**
      * The image is resized so that it takes up as much space as possible within a bounding box defined by the given
-     * width and height parameters. The original aspect ratio is retained and all of the original image is visible.
+     * width and height qualifiers. The original aspect ratio is retained and all of the original image is visible.
      *
      * @param int|float|string|null $width       The required width of a transformed asset.
      * @param int|float|null        $height      The required height of a transformed asset.
@@ -50,7 +50,7 @@ trait ScaleTrait
     /**
      * Same as the Scale::fit mode but only if the original image is larger than the given limit (width and
      * height), in which case the image is scaled down so that it takes up as much space as possible within a bounding
-     * box defined by the given width and height parameters. The original aspect ratio is retained and all of the
+     * box defined by the given width and height qualifiers. The original aspect ratio is retained and all of the
      * original image is visible.
      *
      * @param int|float|string $width       The required width of a transformed asset.
@@ -69,7 +69,7 @@ trait ScaleTrait
     /**
      * Same as the Scale::fit mode but only if the original image is smaller than the given minimum (width and
      * height), in which case the image is scaled up so that it takes up as much space as possible within a bounding
-     * box defined by the given width and height parameters. The original aspect ratio is retained and all of the
+     * box defined by the given width and height qualifiers. The original aspect ratio is retained and all of the
      * original image is visible.
      *
      * @param int|float|string|null $width       The required width of a transformed asset.

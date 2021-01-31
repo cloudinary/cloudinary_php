@@ -27,8 +27,6 @@ use UnexpectedValueException;
  */
 trait AssetFinalizerTrait
 {
-    use LoggerTrait;
-
     /**
      *
      * Helper function for building hostname of form:
@@ -96,10 +94,10 @@ trait AssetFinalizerTrait
         if ($this->urlConfig->secure) {
             $protocol = UrlConfig::PROTOCOL_HTTPS;
 
-            $hostName = $this->urlConfig->secureDistribution;
+            $hostName = $this->urlConfig->secureCname;
             if (empty($hostName)) {
                 if ($this->urlConfig->privateCdn) {
-                    $hostName = self::buildHostName($this->account->cloudName);
+                    $hostName = self::buildHostName($this->cloud->cloudName);
                 } else {
                     $hostName      = UrlConfig::DEFAULT_SHARED_HOST;
                     $useSharedHost = true;
@@ -130,7 +128,7 @@ trait AssetFinalizerTrait
                 );
             } else {
                 $hostName = self::buildHostName(
-                    $this->urlConfig->privateCdn ? $this->account->cloudName : null,
+                    $this->urlConfig->privateCdn ? $this->cloud->cloudName : null,
                     $this->urlConfig->cdnSubdomain ? self::domainShard($this->asset->publicId()) : null
                 );
             }
@@ -139,7 +137,7 @@ trait AssetFinalizerTrait
         $distribution = "$protocol://$hostName";
 
         if ($useSharedHost) {
-            $distribution .= "/{$this->account->cloudName}";
+            $distribution .= "/{$this->cloud->cloudName}";
         }
 
         return $distribution;
@@ -246,7 +244,7 @@ trait AssetFinalizerTrait
         $signature = StringUtils::base64UrlEncode(
             Utils::sign(
                 $toSign,
-                $this->account->apiSecret,
+                $this->cloud->apiSecret,
                 true,
                 $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
             )
@@ -259,19 +257,35 @@ trait AssetFinalizerTrait
     }
 
     /**
+     * Finalizes URL.
+     *
+     * @param string $urlStr The URL to finalize.
+     *
+     * @return string|UriInterface The resulting URL.
+     */
+    protected function finalizeUrl($urlStr)
+    {
+        $urlParts = parse_url($urlStr);
+
+        $urlParts = $this->finalizeUrlWithAuthToken($urlParts);
+        $urlParts = $this->finalizeUrlWithAnalytics($urlParts);
+
+        return Uri::fromParts($urlParts);
+    }
+
+    /**
      * Finalizes URL signature, when AuthToken is used.
      *
-     * @param string $url The URL to sign
+     * @param array $urlParts The URL parts to sign.
      *
-     * @return string|UriInterface resulting URL
+     * @return array resulting URL parts
      */
-    protected function finalizeUrlWithAuthToken($url)
+    protected function finalizeUrlWithAuthToken($urlParts)
     {
         if (! $this->urlConfig->signUrl || ! $this->authToken->isEnabled()) {
-            return $url;
+            return $urlParts;
         }
 
-        $urlParts = parse_url($url);
         $token    = $this->authToken->generate($urlParts['path']);
 
         $urlParts['query'] = ArrayUtils::implodeAssoc(
@@ -282,6 +296,30 @@ trait AssetFinalizerTrait
             '='
         );
 
-        return Uri::fromParts($urlParts);
+        return $urlParts;
+    }
+
+    /**
+     * Finalizes URL with analytics data.
+     *
+     * @param array $urlParts The URL to add analytics to.
+     *
+     * @return array resulting URL
+     */
+    protected function finalizeUrlWithAnalytics($urlParts)
+    {
+        if (! $this->urlConfig->analytics) {
+            return $urlParts;
+        }
+
+        $urlParts['query'] = ArrayUtils::implodeAssoc(
+            ArrayUtils::mergeNonEmpty(
+                StringUtils::parseQueryString(ArrayUtils::get($urlParts, 'query')),
+                [Analytics::QUERY_KEY, Analytics::sdkAnalyticsSignature()]
+            ),
+            '='
+        );
+
+        return $urlParts;
     }
 }

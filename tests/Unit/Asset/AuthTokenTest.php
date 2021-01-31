@@ -39,7 +39,7 @@ class AuthTokenTest extends AuthTokenTestCase
         $this->authToken->config->acl = '/image/*';
         $expectedToken                = '__cld_token__=st=1111111111~exp=1111111411~acl=%2fimage%2f*'.
                                         '~hmac=1751370bcc6cfe9e03f30dd1a9722ba0f2cdca283fa3e6df3342a00a7528cc51';
-        $this->assertEquals(
+        self::assertEquals(
             $expectedToken,
             $this->authToken->generate(),
             $message
@@ -65,14 +65,14 @@ class AuthTokenTest extends AuthTokenTestCase
         $this->authToken->config->acl = '/image/*';
         $aclToken                     = $this->authToken->generate();
 
-        $this->assertNotEquals(
+        self::assertNotEquals(
             $aclToken,
             $urlToken
         );
 
         $aclTokenUrlIgnored = $this->authToken->generate(self::IMAGE_NAME);
 
-        $this->assertEquals(
+        self::assertEquals(
             $aclToken,
             $aclTokenUrlIgnored
         );

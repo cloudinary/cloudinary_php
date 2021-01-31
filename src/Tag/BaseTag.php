@@ -11,9 +11,9 @@
 namespace Cloudinary\Tag;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\Asset\AssetParams;
+use Cloudinary\Asset\AssetQualifiers;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Transformation\ParametersAction;
+use Cloudinary\Transformation\QualifiersAction;
 use Cloudinary\Utils;
 use UnexpectedValueException;
 
@@ -91,6 +91,20 @@ abstract class BaseTag
     }
 
     /**
+     * Imports (merges) the configuration.
+     *
+     * @param Configuration|string|array|null $configuration The Configuration source.
+     *
+     * @return static
+     */
+    public function importConfiguration($configuration)
+    {
+        $this->config->importConfig($configuration);
+
+        return $this;
+    }
+
+    /**
      * Adds a tag class.
      *
      * @param string|array $class The class to add.
@@ -99,6 +113,10 @@ abstract class BaseTag
      */
     public function addClass($class)
     {
+        if (empty($class)) {
+            return $this;
+        }
+
         if (is_string($class)) {
             $class = explode(' ', $class);
         }
@@ -222,15 +240,21 @@ abstract class BaseTag
     /**
      * Serializes the tag content.
      *
-     * @param array $additionalContent The additional content.
+     * @param array $additionalContent        The additional content.
+     * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append).
      *
      * @return string
      */
-    public function serializeContent($additionalContent = [])
+    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
     {
+        $content = $prependAdditionalContent ? ArrayUtils::mergeNonEmpty(
+            $additionalContent,
+            $this->content
+        ) : ArrayUtils::mergeNonEmpty($this->content, $additionalContent);
+
         return implode(
             $this->config->tag->contentDelimiter,
-            ArrayUtils::mergeNonEmpty($this->content, $additionalContent)
+            $content
         );
     }
 
@@ -250,7 +274,7 @@ abstract class BaseTag
             ksort($allAttributes);
         }
 
-        if (array_key_exists('src', $allAttributes)) {
+        if ($this->config->tag->prependSrcAttribute && array_key_exists('src', $allAttributes)) {
             ArrayUtils::prependAssoc($allAttributes, 'src', ArrayUtils::pop($allAttributes, 'src'));
         }
 
@@ -308,8 +332,8 @@ abstract class BaseTag
         $attributes = ArrayUtils::pop($params, 'attributes', []);
 
         $nonAttributes = array_merge(
-            AssetParams::ASSET_KEYS,
-            array_keys(ParametersAction::PARAMETERS),
+            AssetQualifiers::ASSET_KEYS,
+            array_keys(QualifiersAction::QUALIFIERS),
             ['responsive_breakpoints']
         );
 
@@ -317,6 +341,23 @@ abstract class BaseTag
 
         // Explicitly provided attributes override options
         return array_merge($paramsAttributes, $attributes);
+    }
+
+    /**
+     * Returns Configuration for fromParams function.
+     *
+     * @return Configuration
+     */
+    protected static function fromParamsDefaultConfig()
+    {
+        $configuration = (new Configuration(Configuration::instance()));
+        # set v1 defaults
+        $configuration->tag->quotesType       = self::SINGLE_QUOTES;
+        $configuration->tag->sortAttributes   = true;
+        $configuration->tag->voidClosingSlash = true;
+        $configuration->tag->contentDelimiter = '';
+
+        return $configuration;
     }
 
     /**

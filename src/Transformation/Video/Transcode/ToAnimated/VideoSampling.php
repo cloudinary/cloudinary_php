@@ -10,11 +10,11 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class VideoSampling
  */
-class VideoSampling extends BaseParameter
+class VideoSampling extends BaseQualifier
 {
 }

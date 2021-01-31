@@ -20,110 +20,110 @@ trait AccessoryObjectGravityBuilderTrait
     /**
      * Gravity accessory.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function accessory()
+    public static function accessory()
     {
-        return $this->add(ObjectGravity::ACCESSORY);
+        return ObjectGravity::ACCESSORY;
     }
 
     /**
      * Gravity frisbee.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function frisbee()
+    public static function frisbee()
     {
-        return $this->add(ObjectGravity::FRISBEE);
+        return ObjectGravity::FRISBEE;
     }
 
     /**
      * Gravity skis.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function skis()
+    public static function skis()
     {
-        return $this->add(ObjectGravity::SKIS);
+        return ObjectGravity::SKIS;
     }
 
     /**
      * Gravity snowboard.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function snowboard()
+    public static function snowboard()
     {
-        return $this->add(ObjectGravity::SNOWBOARD);
+        return ObjectGravity::SNOWBOARD;
     }
 
     /**
      * Gravity sportsBall.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function sportsBall()
+    public static function sportsBall()
     {
-        return $this->add(ObjectGravity::SPORTS_BALL);
+        return ObjectGravity::SPORTS_BALL;
     }
 
     /**
      * Gravity kite.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function kite()
+    public static function kite()
     {
-        return $this->add(ObjectGravity::KITE);
+        return ObjectGravity::KITE;
     }
 
     /**
      * Gravity baseballBat.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function baseballBat()
+    public static function baseballBat()
     {
-        return $this->add(ObjectGravity::BASEBALL_BAT);
+        return ObjectGravity::BASEBALL_BAT;
     }
 
     /**
      * Gravity baseballGlove.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function baseballGlove()
+    public static function baseballGlove()
     {
-        return $this->add(ObjectGravity::BASEBALL_GLOVE);
+        return ObjectGravity::BASEBALL_GLOVE;
     }
 
     /**
      * Gravity skateboard.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function skateboard()
+    public static function skateboard()
     {
-        return $this->add(ObjectGravity::SKATEBOARD);
+        return ObjectGravity::SKATEBOARD;
     }
 
     /**
      * Gravity surfboard.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function surfboard()
+    public static function surfboard()
     {
-        return $this->add(ObjectGravity::SURFBOARD);
+        return ObjectGravity::SURFBOARD;
     }
 
     /**
      * Gravity tennisracket.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function tennisracket()
+    public static function tennisracket()
     {
-        return $this->add(ObjectGravity::TENNIS_RACKET);
+        return ObjectGravity::TENNIS_RACKET;
     }
 }

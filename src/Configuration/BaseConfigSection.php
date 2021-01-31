@@ -34,6 +34,12 @@ abstract class BaseConfigSection implements ConfigurableInterface
     protected static $sensitiveDataKeys = [];
 
     /**
+     * @var array of configuration key aliases (usually used for deprecated keys backwards compatibility).
+     */
+    protected static $aliases = [];
+
+
+    /**
      * BaseConfig constructor.
      *
      * @param      $parameters
@@ -126,7 +132,7 @@ abstract class BaseConfigSection implements ConfigurableInterface
      */
     public function importParams($parameters, $includeSensitive = true)
     {
-        $validKeys = self::exportableKeys($includeSensitive);
+        $validKeys = self::importableKeys(self::exportableKeys($includeSensitive));
 
         $validParams = ArrayUtils::whitelist($parameters, $validKeys);
 
@@ -136,7 +142,7 @@ abstract class BaseConfigSection implements ConfigurableInterface
 
         // set class properties
         foreach ($validParams as $name => $value) {
-            $propertyName = StringUtils::snakeCaseToCamelCase($name);
+            $propertyName = StringUtils::snakeCaseToCamelCase(ArrayUtils::get(static::$aliases, $name, $name));
             if (property_exists(static::class, $propertyName)) {
                 $this->$propertyName = $value;
             }
@@ -181,6 +187,18 @@ abstract class BaseConfigSection implements ConfigurableInterface
                 return ! empty($key) && is_string($key);
             }
         );
+    }
+
+    /**
+     * Returns an array of importable configuration section keys.
+     *
+     * @param array $exportableKeys The exportable keys to extend with aliases.
+     *
+     * @return array of keys
+     */
+    protected static function importableKeys($exportableKeys)
+    {
+        return array_merge($exportableKeys, array_keys(static::$aliases));
     }
 
 

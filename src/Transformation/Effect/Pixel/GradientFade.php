@@ -10,32 +10,32 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ClassUtils;
+
 /**
  * Class GradientFade
  *
  * Applies a gradient fade effect from one edge of the image.
  *
- * Use ->x() or ->y() to indicate from which edge to fade and how much of the image should be faded.
-
- * Values of x and y can be specified as a percentage (Range: 0.0 to 1.0),
- * or in pixels (integer values). Positive values fade from the top (y) or left (x).
- * Negative values fade from the bottom (y) or right (x).
- * By default, the gradient is applied to the top 50% of the image (y = 0.5).
- * Only one direction can be specified but the fade can be applied symmetrically using the mode parameter.
- * To apply different amounts of fade to multiple edges, use chained fade effects.
+ * Use ->horizontalStartPoint() for x or ->verticalStartPoint() for y to indicate from which edge to fade and how much
+ * of the image should be faded. Values of x and y can be specified as a percentage (Range: 0.0 to 1.0), or in pixels
+ * (integer values). Positive values fade from the top (y) or left (x). Negative values fade from the bottom (y) or
+ * right (x). By default, the gradient is applied to the top 50% of the image (y = 0.5). Only one direction can be
+ * specified but the fade can be applied symmetrically using the mode qualifier. To apply different amounts of fade to
+ * multiple edges, use chained fade effects.
  *
  * @see ImagePixelEffectTrait::gradientFade()
  *
  * @api
  */
-class GradientFade extends EffectAction
+class GradientFade extends StrengthEffectAction
 {
-    use PointTrait;
+    use EffectActionTypeTrait;
 
     /**
      * Instructs the gradient fade to be applied symmetrically (to opposite edges of the image).
      */
-    const SYMMETRIC     = 'symmetric';
+    const SYMMETRIC = 'symmetric';
 
     /**
      * Instructs the gradient fade to be applied symmetrically (to opposite edges of the image) including
@@ -47,11 +47,56 @@ class GradientFade extends EffectAction
      * GradientFade constructor.
      *
      * @param      $strength
-     * @param null $mode
+     * @param null $type
      */
-    public function __construct($strength = null, $mode = null)
+    public function __construct($strength = null, $type = null)
     {
-        parent::__construct(new GradientFadeParam($strength, $mode));
+        parent::__construct(new GradientFadeQualifier($strength, $type));
+    }
+
+    /**
+     * Instructs the gradient fade to be applied symmetrically (to opposite edges of the image).
+     *
+     * @return string
+     */
+    public static function symmetric()
+    {
+        return self::SYMMETRIC;
+    }
+
+    /**
+     * Instructs the gradient fade to be applied symmetrically (to opposite edges of the image) including
+     * background padding.
+     *
+     * @return string
+     */
+    public static function symmetricPad()
+    {
+        return self::SYMMETRIC_PAD;
+    }
+
+    /**
+     * Sets the horizontal start point (x).
+     *
+     * @param int|float|string $x The value of the x dimension.
+     *
+     * @return $this
+     */
+    public function horizontalStartPoint($x)
+    {
+        return $this->setPointValue(ClassUtils::verifyInstance($x, X::class));
+    }
+
+    /**
+     * Sets the vertical start point (y).
+     *
+     * @param int|float|string $y The value of the y dimension.
+     *
+     * @return $this
+     */
+    public function verticalStartPoint($y)
+    {
+        return $this->setPointValue(ClassUtils::verifyInstance($y, Y::class));
     }
 
     /**
@@ -63,13 +108,13 @@ class GradientFade extends EffectAction
      *
      * @internal
      */
-    public function setPointValue($value)
+    protected function setPointValue($value)
     {
-        if (! isset($this->parameters[Point::getName()])) {
-            $this->addParameter(new Point());
+        if (! isset($this->qualifiers[Point::getName()])) {
+            $this->addQualifier(new Point());
         }
 
-        $this->parameters[Point::getName()]->setPointValue($value);
+        $this->qualifiers[Point::getName()]->setPointValue($value);
 
         return $this;
     }

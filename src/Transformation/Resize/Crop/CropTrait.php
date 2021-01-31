@@ -35,7 +35,7 @@ trait CropTrait
 
     /**
      * The thumb cropping mode is specifically used for creating image thumbnails from either face or custom
-     * coordinates, and must always be accompanied by the gravity parameter set to one of the face detection or custom
+     * coordinates, and must always be accompanied by the gravity qualifier set to one of the face detection or custom
      * values.
      *
      * @param int|float|string|null $width   The required width of a transformed asset.

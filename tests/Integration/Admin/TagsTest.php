@@ -32,12 +32,12 @@ final class TagsTest extends IntegrationTestCase
         self::$PREFIX_TAG = 'tags_prefix_tag_' . self::$UNIQUE_TEST_TAG;
         self::$TAG_WITH_PREFIX = self::$PREFIX_TAG . self::$UNIQUE_TEST_TAG;
 
-        self::uploadTestResourceImage(['tags' => [self::$TAG_WITH_PREFIX]]);
+        self::uploadTestAssetImage(['tags' => [self::$TAG_WITH_PREFIX]]);
     }
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestResources();
+        self::cleanupTestAssets();
 
         parent::tearDownAfterClass();
     }

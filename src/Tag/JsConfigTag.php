@@ -14,7 +14,7 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\Configuration;
 
 /**
- * Generates an HTML `<script>` tag for JavaScript:
+ * Generates an HTML `<script/>` tag for JavaScript:
  *
  * ```
  * <script type="text/javascript">
@@ -49,10 +49,10 @@ class JsConfigTag extends BaseTag
         }
 
         $params = [
-            'api_key'             => $configuration->account->apiKey,
-            'cloud_name'          => $configuration->account->cloudName,
+            'api_key'             => $configuration->cloud->apiKey,
+            'cloud_name'          => $configuration->cloud->cloudName,
             'private_cdn'         => $configuration->url->privateCdn,
-            'secure_distribution' => $configuration->url->secureDistribution,
+            'secure_distribution' => $configuration->url->secureCname, // secure_distribution is still used in v1
             'cdn_subdomain'       => $configuration->url->cdnSubdomain,
         ];
 

@@ -24,8 +24,10 @@ trait PageNamesTrait
      *
      * @return static
      */
-    public static function names(...$names)
+    public function byNames(...$names)
     {
-        return static::createWithNamedPageParam(...$names);
+        $this->add(new LayerName(...$names));
+
+        return $this;
     }
 }

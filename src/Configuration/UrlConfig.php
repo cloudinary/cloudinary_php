@@ -13,14 +13,18 @@ namespace Cloudinary\Configuration;
 /**
  * Defines the global configuration applied when generating Cloudinary URLs.
  *
- * @property bool $secure  Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
- * @property bool $forceVersion By default set to self::DEFAULT_FORCE_VERSION.
+ * @property bool   $secure                        Force HTTPS URLs for resources even if they are embedded in
+ *           non-secure HTTP pages.
+ * @property bool   $forceVersion                  By default set to self::DEFAULT_FORCE_VERSION.
+ * @property string $responsiveWidthTransformation The transformation to use with responsive width.
  *
  * @api
  */
 class UrlConfig extends BaseConfigSection
 {
     use UrlConfigTrait;
+
+    protected static $aliases = ['secure_distribution' => self::SECURE_CNAME];
 
     /**
      * @internal
@@ -46,21 +50,31 @@ class UrlConfig extends BaseConfigSection
     const PROTOCOL_HTTPS = 'https';
 
     /**
-     * Default value for secure (distribution)
+     * Default value for secure (distribution).
      */
     const DEFAULT_SECURE = true;
 
     /**
-     * Default value for forcing version
+     * Default value for forcing version.
      */
     const DEFAULT_FORCE_VERSION = true;
+
+    /**
+     * Default value for analytics.
+     */
+    const DEFAULT_ANALYTICS = true;
+
+    /**
+     * Default responsice width transformation.
+     */
+    const DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = 'c_limit,w_auto';
 
     // Supported parameters
     const CDN_SUBDOMAIN        = 'cdn_subdomain';
     const SECURE_CDN_SUBDOMAIN = 'secure_cdn_subdomain';
     const CNAME                = 'cname';
     const SECURE               = 'secure';
-    const SECURE_DISTRIBUTION  = 'secure_distribution';
+    const SECURE_CNAME         = 'secure_cname';
     const PRIVATE_CDN          = 'private_cdn';
 
     const SIGN_URL           = 'sign_url';
@@ -68,6 +82,10 @@ class UrlConfig extends BaseConfigSection
     const SHORTEN            = 'shorten';
     const USE_ROOT_PATH      = 'use_root_path';
     const FORCE_VERSION      = 'force_version';
+    const ANALYTICS          = 'analytics';
+
+    const RESPONSIVE_WIDTH                = 'responsive_width';
+    const RESPONSIVE_WIDTH_TRANSFORMATION = 'responsive_width_transformation';
 
     /**
      * Whether to automatically build URLs with multiple CDN sub-domains.
@@ -80,6 +98,7 @@ class UrlConfig extends BaseConfigSection
 
     /**
      * Secure CDN sub-domain.
+     *
      * @var bool
      */
     public $secureCdnSubdomain;
@@ -109,7 +128,7 @@ class UrlConfig extends BaseConfigSection
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
-    public $secureDistribution;
+    public $secureCname;
 
     /**
      * Set this parameter to true if you are an Advanced plan user with a private CDN distribution.
@@ -162,13 +181,34 @@ class UrlConfig extends BaseConfigSection
     protected $forceVersion;
 
     /**
+     * Set to false to omit analytics data.
+     *
+     * @var bool
+     */
+    protected $analytics;
+
+    /**
+     * Whether to use responsive width.
+     *
+     * @var bool $responsiveWidth
+     */
+    public $responsiveWidth;
+
+    /**
+     * The transformation to use with responsive width.
+     *
+     * @var string $responsiveWidthTransformation
+     */
+    protected $responsiveWidthTransformation;
+
+    /**
      * Serialises configuration section to a string representation.
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->toString([self::SECURE_DISTRIBUTION, self::PRIVATE_CDN]);
+        return $this->toString([self::SECURE_CNAME, self::PRIVATE_CDN]);
     }
 
 

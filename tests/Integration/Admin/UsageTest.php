@@ -20,11 +20,11 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
 final class UsageTest extends IntegrationTestCase
 {
     /**
-     * Get account usage details.
+     * Get cloud usage details.
      *
      * @throws ApiError
      */
-    public function testGetAccountUsageDetails()
+    public function testGetCloudUsageDetails()
     {
         $result = self::$adminApi->usage();
 
@@ -32,11 +32,11 @@ final class UsageTest extends IntegrationTestCase
     }
 
     /**
-     * Get account usage details for a specific date.
+     * Get cloud usage details for a specific date.
      *
      * @throws ApiError
      */
-    public function testGetAccountUsageDetailsForDate()
+    public function testGetCloudUsageDetailsForDate()
     {
         $date = date('d-m-Y', strtotime("-1 days"));
 
@@ -44,8 +44,8 @@ final class UsageTest extends IntegrationTestCase
 
         self::assertUsageResult($result);
 
-        $this->assertArrayNotHasKey('limit', $result['bandwidth']);
-        $this->assertArrayNotHasKey('used_percent', $result['bandwidth']);
+        self::assertArrayNotHasKey('limit', $result['bandwidth']);
+        self::assertArrayNotHasKey('used_percent', $result['bandwidth']);
     }
 
     /**
@@ -59,7 +59,7 @@ final class UsageTest extends IntegrationTestCase
     {
         $results[] = self::$adminApi->ping();
         $results[] = self::$adminApi->rootFolders();
-        $results[] = self::$adminApi->resourceTypes();
+        $results[] = self::$adminApi->assetTypes();
 
         foreach ($results as $result) {
             self::assertObjectStructure(

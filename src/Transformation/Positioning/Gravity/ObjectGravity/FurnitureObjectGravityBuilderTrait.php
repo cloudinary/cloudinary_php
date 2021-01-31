@@ -20,70 +20,70 @@ trait FurnitureObjectGravityBuilderTrait
     /**
      * Gravity furniture.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function furniture()
+    public static function furniture()
     {
-        return $this->add(ObjectGravity::FURNITURE);
+        return ObjectGravity::FURNITURE;
     }
 
     /**
      * Gravity chair.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function chair()
+    public static function chair()
     {
-        return $this->add(ObjectGravity::CHAIR);
+        return ObjectGravity::CHAIR;
     }
 
     /**
      * Gravity sofa.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function sofa()
+    public static function sofa()
     {
-        return $this->add(ObjectGravity::SOFA);
+        return ObjectGravity::SOFA;
     }
 
     /**
      * Gravity pottedPlant.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function pottedPlant()
+    public static function pottedPlant()
     {
-        return $this->add(ObjectGravity::POTTED_PLANT);
+        return ObjectGravity::POTTED_PLANT;
     }
 
     /**
      * Gravity bed.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bed()
+    public static function bed()
     {
-        return $this->add(ObjectGravity::BED);
+        return ObjectGravity::BED;
     }
 
     /**
      * Gravity diningTable.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function diningTable()
+    public static function diningTable()
     {
-        return $this->add(ObjectGravity::DINING_TABLE);
+        return ObjectGravity::DINING_TABLE;
     }
 
     /**
      * Gravity toilet.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function toilet()
+    public static function toilet()
     {
-        return $this->add(ObjectGravity::TOILET);
+        return ObjectGravity::TOILET;
     }
 }

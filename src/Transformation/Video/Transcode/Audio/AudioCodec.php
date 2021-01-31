@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\BaseParameter;
+use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Controls the audio codec or removes the audio channel.
@@ -20,7 +20,7 @@ use Cloudinary\Transformation\Parameter\BaseParameter;
  *
  * @api
  */
-class AudioCodec extends BaseParameter
+class AudioCodec extends BaseQualifier
 {
     /**
      * Removes the audio channel.

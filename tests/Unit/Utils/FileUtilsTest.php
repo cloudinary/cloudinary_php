@@ -37,7 +37,7 @@ final class FileUtilsTest extends TestCase
         ];
 
         foreach ($remoteFiles as $file) {
-            $this->assertFalse(FileUtils::isLocalFilePath($file));
+            self::assertFalse(FileUtils::isLocalFilePath($file));
         }
 
         $localFiles = [
@@ -47,7 +47,7 @@ final class FileUtilsTest extends TestCase
         ];
 
         foreach ($localFiles as $file) {
-            $this->assertTrue(FileUtils::isLocalFilePath($file));
+            self::assertTrue(FileUtils::isLocalFilePath($file));
         }
     }
 
@@ -61,7 +61,7 @@ final class FileUtilsTest extends TestCase
         ];
 
         foreach ($files as $file) {
-            $this->assertEquals($file[1], FileUtils::splitPathFilenameExtension($file[0]));
+            self::assertEquals($file[1], FileUtils::splitPathFilenameExtension($file[0]));
         }
     }
 }

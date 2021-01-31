@@ -39,6 +39,7 @@ trait ArchiveTrait
     {
         $simpleParams = [
             'allow_missing',
+            'asset_id',
             'async',
             'expires_at',
             'flatten_folders',
@@ -54,6 +55,7 @@ trait ArchiveTrait
             'timestamp',
             'type',
             'use_original_filename',
+            'version_id',
         ];
 
 
@@ -179,7 +181,7 @@ trait ArchiveTrait
         $options['mode'] = 'download';
         $params          = self::buildArchiveParams($options);
 
-        ApiUtils::signRequest($params, $this->getAccount());
+        ApiUtils::signRequest($params, $this->getCloud());
 
         $assetType = ArrayUtils::get($options, 'resource_type', AssetType::IMAGE);
 
@@ -216,5 +218,25 @@ trait ArchiveTrait
         $options[AssetType::KEY] = ArrayUtils::get($options, AssetType::KEY, AssetType::ALL);
 
         return $this->downloadArchiveUrl($options);
+    }
+
+    /**
+     * The returned url allows downloading the backedup asset based on the the asset ID and the version ID.
+     *
+     * @param string $assetId   The asset ID of the asset.
+     * @param string $versionId The version ID of the asset.
+     *
+     * @return string The signed URL for downloading backup version of the asset.
+     */
+    public function downloadBackedupAsset($assetId, $versionId)
+    {
+        $options['asset_id'] = $assetId;
+        $options['version_id'] = $versionId;
+
+        $params = self::buildArchiveParams($options);
+
+        ApiUtils::signRequest($params, $this->getCloud());
+
+        return $this->getUploadUrl(null, UploadEndPoint::DOWNLOAD_BACKUP, $params);
     }
 }

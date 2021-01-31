@@ -13,43 +13,39 @@ namespace Cloudinary\Transformation;
 /**
  * Class Shadow
  */
-class Shadow extends ColoredEffectAction
+class Shadow extends StrengthEffectAction
 {
     const SHADOW = 'shadow';
 
-    use AbsolutePositionTrait; // FIXME: use direction/relative position
+    use ColorTrait;
+    use OffsetTrait;
 
     /**
      * Shadow constructor.
      *
-     * @param      $strength
-     * @param null $position
-     * @param null $color
+     * @param        $strength
+     * @param null   $offsetX
+     * @param null   $offsetY
+     * @param null   $color
      */
-    public function __construct($strength = null, $position = null, $color = null)
+    public function __construct($strength = null, $offsetX = null, $offsetY = null, $color = null)
     {
-        parent::__construct(self::SHADOW, $strength);
-
-        $this->position($position);//FIXME:: x and y
+        parent::__construct(new StrengthEffectQualifier(self::SHADOW, EffectRange::PERCENT));
+        $this->strength($strength);
+        $this->offset($offsetX, $offsetY);
         $this->color($color);
     }
 
     /**
-     * Internal setter for the point value.
-     *
-     * @param mixed $value
+     * @param $value
      *
      * @return static
-     *
      * @internal
+     *
      */
-    public function setPointValue($value)
+    public function setOffsetValue($value)
     {
-        if (! isset($this->parameters[AbsolutePosition::getName()])) {
-            $this->addParameter(Position::absolute());
-        }
-
-        $this->parameters[AbsolutePosition::getName()]->setPointValue($value);
+        $this->addQualifier($value);
 
         return $this;
     }

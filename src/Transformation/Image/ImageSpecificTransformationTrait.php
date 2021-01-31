@@ -12,6 +12,7 @@ namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
+use Cloudinary\Transformation\Argument\ColorValue;
 
 /**
  * Trait ImageSpecificTransformationTrait
@@ -21,7 +22,7 @@ use Cloudinary\ClassUtils;
 trait ImageSpecificTransformationTrait
 {
     use ImageTransformationFlagTrait;
-    use ImageParameterTransformationTrait;
+    use ImageQualifierTransformationTrait;
     use LayeredImageTransformationTrait;
 
     /**
@@ -33,12 +34,12 @@ trait ImageSpecificTransformationTrait
      *
      * @return static
      *
-     * @see \Cloudinary\Transformation\Overlay
+     * @see \Cloudinary\Transformation\ImageOverlay
      * @see \Cloudinary\Transformation\BlendMode
      */
     public function overlay($layer, $position = null, $blendMode = null)
     {
-        return $this->addAction(new Overlay($layer, $position, $blendMode));
+        return $this->addAction(ClassUtils::verifyInstance($layer, ImageOverlay::class, null, $position, $blendMode));
     }
 
     /**
@@ -55,35 +56,16 @@ trait ImageSpecificTransformationTrait
      */
     public function underlay($layer, $position = null, $blendMode = null)
     {
-        $layer = ClassUtils::forceInstance($layer, BaseLayer::class, ImageLayer::class);
+        $underlay = ClassUtils::forceInstance($layer, ImageOverlay::class, null, $position, $blendMode);
+        $underlay->setStackPosition(LayerStackPosition::UNDERLAY);
 
-        $layer->setStackPosition(LayerStackPosition::UNDERLAY);
-
-        return $this->addAction(new Overlay($layer, $position, $blendMode));
-    }
-
-    /**
-     * Trims pixels according to the transparency levels of a given overlay image.
-     *
-     * Wherever the overlay image is transparent, the original is shown, and wherever the overlay is opaque, the
-     * resulting image is transparent.
-     *
-     * @param string                    $layer    The public ID of the image overlay.
-     * @param Position|AbsolutePosition $position The position of the overlay with respect to the base image.
-     *
-     * @return static
-     *
-     * @see \Cloudinary\Transformation\Overlay
-     */
-    public function cutter($layer, $position = null)
-    {
-        return $this->addAction((new Overlay($layer, $position))->cutter());
+        return $this->addAction($underlay);
     }
 
     /**
      * Changes the shape of the image.
      *
-     * @param ReshapeParam|EffectAction|EffectParam $reshape The reshape to apply.
+     * @param ReshapeQualifier|EffectAction|EffectQualifier|mixed $reshape The reshape to apply.
      *
      * @return static
      */
@@ -101,7 +83,7 @@ trait ImageSpecificTransformationTrait
      * Only $radiusOrTopLeft, $topRight and $bottomRight specified: Round the top-left corner according
      * to $radiusOrTopLeft, round the top-right & bottom-left corners according to $topRight, round the bottom-right
      * corner according to $bottomRight.<br>
-     * All parameters specified: Each corner is rounded accordingly.
+     * All qualifiers specified: Each corner is rounded accordingly.
      *
      * @param int|string|CornerRadius $radiusOrTopLeft The radius in pixels of the top left corner or all the corners
      *                                                 if no other corners are specified.
@@ -115,9 +97,9 @@ trait ImageSpecificTransformationTrait
      */
     public function roundCorners($radiusOrTopLeft, $topRight = null, $bottomRight = null, $bottomLeft = null)
     {
-        $params = ArrayUtils::safeFilter([$radiusOrTopLeft, $topRight, $bottomRight, $bottomLeft]);
+        $qualifiers = ArrayUtils::safeFilter([$radiusOrTopLeft, $topRight, $bottomRight, $bottomLeft]);
 
-        $roundCorners = ClassUtils::verifyVarArgsInstance($params, RoundCorners::class);
+        $roundCorners = ClassUtils::verifyVarArgsInstance($qualifiers, RoundCorners::class);
 
         return $this->addAction($roundCorners);
     }
@@ -140,30 +122,29 @@ trait ImageSpecificTransformationTrait
     /**
      * Sets the color of the background.
      *
-     * @param Background|string $background
+     * @param Background|ColorValue|string $color The color of the background to set.
      *
      * @return static
      *
-     * @see \Cloudinary\Transformation\Border
+     * @see \Cloudinary\Transformation\Background
+     */
+    public function backgroundColor($color)
+    {
+        return $this->addAction(ClassUtils::verifyInstance($color, Background::class));
+    }
+
+    /**
+     * Sets the image background.
+     *
+     * @param Background|string $background The background to set.
+     *
+     * @return static
+     *
+     * @see \Cloudinary\Transformation\Background
      */
     public function background($background)
     {
         return $this->addAction(ClassUtils::verifyInstance($background, Background::class));
-    }
-
-    /**
-     * Uses the specified public ID of a placeholder image if the requested image or social network picture does
-     * not exist. The name of the placeholder image must include the file extension.
-     *
-     * @param DefaultImage|string $defaultImage The public ID of the placeholder image.
-     *
-     * @return static
-     *
-     * @see \Cloudinary\Transformation\DefaultImage
-     */
-    public function defaultImage($defaultImage)
-    {
-        return $this->addAction(ClassUtils::verifyInstance($defaultImage, DefaultImage::class));
     }
 
     /**

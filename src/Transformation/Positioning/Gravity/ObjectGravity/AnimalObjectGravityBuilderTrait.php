@@ -20,110 +20,110 @@ trait AnimalObjectGravityBuilderTrait
     /**
      * Gravity animal.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function animal()
+    public static function animal()
     {
-        return $this->add(ObjectGravity::ANIMAL);
+        return ObjectGravity::ANIMAL;
     }
 
     /**
      * Gravity bird.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bird()
+    public static function bird()
     {
-        return $this->add(ObjectGravity::BIRD);
+        return ObjectGravity::BIRD;
     }
 
     /**
      * Gravity cat.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function cat()
+    public static function cat()
     {
-        return $this->add(ObjectGravity::CAT);
+        return ObjectGravity::CAT;
     }
 
     /**
      * Gravity dog.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function dog()
+    public static function dog()
     {
-        return $this->add(ObjectGravity::DOG);
+        return ObjectGravity::DOG;
     }
 
     /**
      * Gravity horse.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function horse()
+    public static function horse()
     {
-        return $this->add(ObjectGravity::HORSE);
+        return ObjectGravity::HORSE;
     }
 
     /**
      * Gravity sheep.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function sheep()
+    public static function sheep()
     {
-        return $this->add(ObjectGravity::SHEEP);
+        return ObjectGravity::SHEEP;
     }
 
     /**
      * Gravity cow.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function cow()
+    public static function cow()
     {
-        return $this->add(ObjectGravity::COW);
+        return ObjectGravity::COW;
     }
 
     /**
      * Gravity elephant.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function elephant()
+    public static function elephant()
     {
-        return $this->add(ObjectGravity::ELEPHANT);
+        return ObjectGravity::ELEPHANT;
     }
 
     /**
      * Gravity bear.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function bear()
+    public static function bear()
     {
-        return $this->add(ObjectGravity::BEAR);
+        return ObjectGravity::BEAR;
     }
 
     /**
      * Gravity zebra.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function zebra()
+    public static function zebra()
     {
-        return $this->add(ObjectGravity::ZEBRA);
+        return ObjectGravity::ZEBRA;
     }
 
     /**
      * Gravity giraffe.
      *
-     * @return ObjectGravity
+     * @return string
      */
-    public function giraffe()
+    public static function giraffe()
     {
-        return $this->add(ObjectGravity::GIRAFFE);
+        return ObjectGravity::GIRAFFE;
     }
 }

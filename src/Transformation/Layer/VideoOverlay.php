@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 
 /**
  * Defines how the video layer is applied.
@@ -25,37 +24,37 @@ use Cloudinary\Transformation\Parameter\VideoRange\VideoRange;
 class VideoOverlay extends BaseLayerContainer
 {
     /**
-     * @var VideoRange $timelinePosition The timeline position of the overlay.
+     * @var Timeline $timeline The timeline position of the overlay.
      */
-    protected $timelinePosition;
+    protected $timeline;
 
     /**
      * BaseLayerContainer constructor.
      *
-     * @param BaseLayer|string  $layer
+     * @param BaseSource|string $source
      * @param BasePosition|null $position
-     * @param VideoRange|null   $timelinePosition
+     * @param Timeline|null     $timeline
      */
     public function __construct(
-        $layer = null,
+        $source = null,
         $position = null,
-        $timelinePosition = null
+        $timeline = null
     ) {
-        parent::__construct($layer, $position);
+        parent::__construct($source, $position);
 
-        $this->timelinePosition($timelinePosition);
+        $this->timeline($timeline);
     }
 
     /**
      * Sets the timeline position of the overlay.
      *
-     * @param VideoRange|null $timelinePosition The timeline position of the overlay.
+     * @param Timeline|null $timeline The timeline position of the overlay.
      *
      * @return BaseLayerContainer
      */
-    public function timelinePosition(VideoRange $timelinePosition = null)
+    public function timeline(Timeline $timeline = null)
     {
-        $this->timelinePosition = $timelinePosition;
+        $this->timeline = $timeline;
 
         return $this;
     }
@@ -65,9 +64,9 @@ class VideoOverlay extends BaseLayerContainer
      *
      * @return $this
      */
-    public function concatenate()
+    protected function concatenate()
     {
-        $this->layer->setFlag(LayerFlag::splice());
+        $this->source->setFlag(LayerFlag::splice());
 
         return $this;
     }
@@ -79,21 +78,21 @@ class VideoOverlay extends BaseLayerContainer
      */
     public function cutter()
     {
-        $this->layer->setFlag(LayerFlag::cutter());
+        $this->source->setFlag(LayerFlag::cutter());
 
         return $this;
     }
 
     /**
-     * Sets the layer.
+     * Sets the source.
      *
-     * @param BaseLayer $layer The layer.
+     * @param BaseSource $source The source.
      *
      * @return static
      */
-    public function layer($layer)
+    public function source($source)
     {
-        $this->layer = ClassUtils::verifyInstance($layer, BaseLayer::class, VideoLayer::class);
+        $this->source = ClassUtils::verifyInstance($source, BaseSource::class, VideoSource::class);
 
         return $this;
     }
@@ -119,6 +118,6 @@ class VideoOverlay extends BaseLayerContainer
      */
     public function __toString()
     {
-        return implode(',', array_filter([parent::__toString(), $this->timelinePosition]));
+        return implode(',', array_filter([parent::__toString(), $this->timeline]));
     }
 }

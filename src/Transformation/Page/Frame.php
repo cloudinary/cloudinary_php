@@ -28,12 +28,12 @@ abstract class Frame
      *
      * @param $value
      *
-     * @return PageParam
+     * @return PageQualifier
      *
      * @internal
      */
-    public static function createWithPageParam(...$value)
+    public static function createWithPageQualifier(...$value)
     {
-        return new PageParam(...$value);
+        return new PageQualifier(...$value);
     }
 }

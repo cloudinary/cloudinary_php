@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class MinMaxRange
  */
-class MinMaxRange extends ParameterMultiValue
+class MinMaxRange extends QualifierMultiValue
 {
     const VALUE_DELIMITER = '-';
 

@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Test\Unit\Transformation\Image;
 
+use Cloudinary\Transformation\Expression\PVar;
 use Cloudinary\Transformation\Variable\Variable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -22,9 +23,15 @@ final class VariableTest extends TestCase
     public function testVariable()
     {
         self::assertEquals('$var_100', (string)new Variable('var', 100));
-        self::assertEquals('$var_100', (string)Variable::define('var', 100));
-
-        self::assertEquals('{"variable":{"name":"$var","value":100}}', json_encode(Variable::define('var', 100)));
+        self::assertEquals('$var_100', (string)Variable::set('var', 100));
+        self::assertEquals('$var_100_to_f', (string)Variable::set('var', 100)->asFloat());
+        self::assertEquals('$var_100_to_i', (string)Variable::set('var', 100)->asInteger());
+        self::assertEquals('$var_!100!', (string)Variable::set('var', '100'));
+        self::assertEquals('$var_iw', (string)Variable::set('var', PVar::initialWidth()));
+        self::assertEquals('$var_!apple:orange:kiwi!', (string)Variable::set('var', ['apple', 'orange', 'kiwi']));
+        self::assertEquals('$var_ref:!asset!', (string)Variable::setAssetReference('var', 'asset'));
+        self::assertEquals('$var_ctx:!ctx_key!', (string)Variable::setFromContext('var', 'ctx_key'));
+        self::assertEquals('$var_md:!md_key!', (string)Variable::setFromMetadata('var', 'md_key'));
     }
 
     public function testIsVariable()

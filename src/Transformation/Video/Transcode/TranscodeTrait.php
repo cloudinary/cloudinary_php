@@ -36,14 +36,14 @@ trait TranscodeTrait
     /**
      * Converts a video to animated image.
      *
+     * @param $animatedImageFormat
+     *
      * @return ToAnimatedAction
      *
      * @see \Cloudinary\Transformation\BitRate
      */
-    public static function toAnimated()
+    public static function toAnimated($animatedImageFormat = null)
     {
-        return new ToAnimatedAction();
+        return ClassUtils::forceInstance($animatedImageFormat, ToAnimatedAction::class);
     }
-
-
 }

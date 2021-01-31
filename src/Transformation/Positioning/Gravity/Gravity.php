@@ -24,6 +24,19 @@ namespace Cloudinary\Transformation;
 abstract class Gravity
 {
     use CompassGravityBuilderTrait;
+    use AutoGravityBuilderTrait;
     use FocalGravityBuilderTrait;
     use ObjectGravityBuilderTrait;
+
+    /**
+     * Creates a new instance of the ObjectGravity.
+     *
+     * @param mixed ...$objects The names of the objects.
+     *
+     * @return ObjectGravity
+     */
+    public static function focusOn(...$objects)
+    {
+        return new ObjectGravity(...$objects);
+    }
 }

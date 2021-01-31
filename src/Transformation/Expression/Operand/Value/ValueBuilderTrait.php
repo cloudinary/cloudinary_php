@@ -78,14 +78,14 @@ trait ValueBuilderTrait
     }
 
     /**
-     * Sets the file reference value.
+     * Sets the asset reference value.
      *
      * @param string $publicId The public ID of the file.
      *
      * @return Expression
      */
-    public function fileReference($publicId)
+    public function assetReference($publicId)
     {
-        return $this->setRightOperand(UVal::fileReference($publicId));
+        return $this->setRightOperand(UVal::assetReference($publicId));
     }
 }

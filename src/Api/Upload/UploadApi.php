@@ -14,7 +14,7 @@ use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiUtils;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
-use Cloudinary\Configuration\AccountConfig;
+use Cloudinary\Configuration\CloudConfig;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
@@ -83,15 +83,15 @@ class UploadApi
 
 
     /**
-     * Gets account config of the current instance.
+     * Gets cloud config of the current instance.
      *
-     * @return AccountConfig
+     * @return CloudConfig
      *
      * @internal
      */
-    public function getAccount()
+    public function getCloud()
     {
-        return $this->apiClient->getAccount();
+        return $this->apiClient->getCloud();
     }
 
     /**

@@ -23,19 +23,19 @@ class ConfigurationTest extends UnitTestCase
     {
         $config = new Configuration($this->cloudinaryUrl);
 
-        $this->assertEquals(self::CLOUD_NAME, $config->account->cloudName);
-        $this->assertEquals(self::API_KEY, $config->account->apiKey);
-        $this->assertEquals(self::API_SECRET, $config->account->apiSecret);
+        self::assertEquals(self::CLOUD_NAME, $config->cloud->cloudName);
+        self::assertEquals(self::API_KEY, $config->cloud->apiKey);
+        self::assertEquals(self::API_SECRET, $config->cloud->apiSecret);
     }
 
     public function testConfigToString()
     {
         $config = Configuration::fromCloudinaryUrl($this->cloudinaryUrl);
 
-        $config->url->secureDistribution = 'my_distribution';
-        $config->url->cname              = 'my.domain.com';
+        $config->url->secureCname = 'my_distribution';
+        $config->url->cname       = 'my.domain.com';
 
-        $this->assertStrEquals(
+        self::assertStrEquals(
             $this->cloudinaryUrl . '/my_distribution?url[cname]=my.domain.com',
             $config
         );
@@ -45,16 +45,16 @@ class ConfigurationTest extends UnitTestCase
     {
         $jsonConfig = json_encode(Configuration::fromCloudinaryUrl($this->cloudinaryUrl));
 
-        $expectedJsonConfig = '{"version":' . Configuration::VERSION . ',"account":{' .
+        $expectedJsonConfig = '{"version":' . Configuration::VERSION . ',"cloud":{' .
                               '"cloud_name":"' . self::CLOUD_NAME . '","api_key":"' . self::API_KEY . '","api_secret":"'
                               . self::API_SECRET . '"}}';
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedJsonConfig,
             $jsonConfig
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedJsonConfig,
             json_encode(Configuration::fromJson($expectedJsonConfig))
         );

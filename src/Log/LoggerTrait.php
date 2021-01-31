@@ -51,7 +51,7 @@ use Psr\Log\LoggerInterface;
  *
  *   new Foo(
  *       [
- *           "account" => [...],
+ *           "cloud" => [...],
  *           "logging" => [
  *               "file" => [
  *                   "my_debug_file" => [
@@ -78,7 +78,7 @@ use Psr\Log\LoggerInterface;
  *
  *   new Foo(
  *       [
- *           "account" => [...],
+ *           "cloud" => [...],
  *           "logging" => [
  *               "level" => "CRITICAL"
  *               "file" => [
@@ -99,7 +99,7 @@ use Psr\Log\LoggerInterface;
  *
  *   new Foo(
  *       [
- *           "account" => [...],
+ *           "cloud" => [...],
  *           "logging" => [
  *               "enabled" => false
  *           ]
@@ -119,7 +119,7 @@ use Psr\Log\LoggerInterface;
  *
  *   new Foo(
  *       [
- *           "account" => [...],
+ *           "cloud" => [...],
  *           "logging" => [
  *              "level" => "CRITICAL",
  *              "file" => [
@@ -145,7 +145,7 @@ trait LoggerTrait
     /**
      * @var LoggingConfig $logging
      */
-    protected $logging;
+    public $logging;
 
     /**
      * @var LoggerInterface $logger

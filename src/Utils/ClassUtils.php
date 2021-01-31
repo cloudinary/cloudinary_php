@@ -122,6 +122,37 @@ class ClassUtils
     }
 
     /**
+     * Variable arguments version of the ClassUtils::forceInstance.
+     *
+     * @param array  $varArgs       Arguments to verify
+     * @param string $baseClass     Base class name
+     * @param string $instanceClass Instance class to create in case $object is not derivative of the $baseClass.
+     *                              $baseClass is used in case it is not provided.
+     *
+     * @return mixed
+     *
+     * @see ClassUtils::verifyInstance
+     */
+    public static function forceVarArgsInstance(array $varArgs, $baseClass, $instanceClass = null)
+    {
+        // When passing array instead of varargs, unwrap it and proceed
+        if (count($varArgs) === 1 && is_array($varArgs[0])) {
+            $varArgs = $varArgs[0];
+        }
+
+        if (count($varArgs) === 1) {
+            return self::verifyInstance($varArgs[0], $baseClass, $instanceClass);
+        }
+
+        // At this point we create a new instance of a desired class and pass all args to it,
+        // hopefully it'll know what to do with them :)
+
+        $instanceClass = $instanceClass ?: $baseClass;
+
+        return new $instanceClass(...$varArgs);
+    }
+
+    /**
      * Variable arguments version of the ClassUtils::verifyInstance.
      *
      * @param array  $varArgs       Arguments to verify
@@ -135,19 +166,11 @@ class ClassUtils
      */
     public static function verifyVarArgsInstance(array $varArgs, $baseClass, $instanceClass = null)
     {
+        // No args, nothing to verify
         if (empty($varArgs)) {
-            return $varArgs;
+            return null;
         }
 
-        if (count($varArgs) === 1) {
-            return self::verifyInstance($varArgs[0], $baseClass, $instanceClass);
-        }
-
-        // At this point we create a new instance of a desired class and pass all args to it,
-        // hopefully it'll know what to do with them :)
-
-        $instanceClass = $instanceClass ?: $baseClass;
-
-        return new $instanceClass(...$varArgs);
+        return self::forceVarArgsInstance($varArgs, $baseClass, $instanceClass);
     }
 }

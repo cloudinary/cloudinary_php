@@ -14,7 +14,7 @@ use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Expression\UVal;
 use Cloudinary\Transformation\Expression\UVar;
-use Cloudinary\Transformation\Parameter;
+use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Resize;
 
 /**
@@ -81,7 +81,7 @@ final class TransformationVariableTest extends UnitTestCase
             self::$integerVariable2
         );
 
-        $this->assertComponentEquals($expected, $th);
+        self::assertComponentEquals($expected, $th);
 
         $th = Resize::thumbnail()
                     ->width(self::$integerExpression1)
@@ -90,27 +90,27 @@ final class TransformationVariableTest extends UnitTestCase
                     ->x(self::$integerVariable1)
                     ->y(self::$integerVariable2);
 
-        $this->assertComponentEquals($expected, $th);
+        self::assertComponentEquals($expected, $th);
 
         $th->width(self::$integerExpression1Raw)->height(self::$integerExpression2Raw);
 
-        $this->assertComponentEquals($expected, $th);
+        self::assertComponentEquals($expected, $th);
 
         $e = Effect::generic(self::$stringVariable, self::$integerExpression1);
 
-        $this->assertComponentEquals('e_' . self::$stringVariableStr .':' . self::$integerExpression1Str, $e);
+        self::assertComponentEquals('e_' . self::$stringVariableStr .':' . self::$integerExpression1Str, $e);
 
         $e = Effect::generic(self::$stringVariableStr, self::$integerExpression1Str);
 
-        $this->assertComponentEquals('e_' . self::$stringVariableStr .':' . self::$integerExpression1Str, $e);
+        self::assertComponentEquals('e_' . self::$stringVariableStr .':' . self::$integerExpression1Str, $e);
 
-        $nt = Parameter::namedTransformation(self::$stringVariable);
+        $nt = Qualifier::namedTransformation(self::$stringVariable);
 
-        $this->assertComponentEquals('t_' . self::$stringVariableStr, $nt);
+        self::assertComponentEquals('t_' . self::$stringVariableStr, $nt);
 
-        $q = Parameter::quality(self::$floatExpression1);
+        $q = Qualifier::quality(self::$floatExpression1);
 
-        $this->assertComponentEquals('q_' . self::$floatExpression1Str, $q);
+        self::assertComponentEquals('q_' . self::$floatExpression1Str, $q);
     }
 
     /**
@@ -120,6 +120,6 @@ final class TransformationVariableTest extends UnitTestCase
      */
     private function assertComponentEquals($expectedStr, $component, $messages = '')
     {
-        $this->assertEquals($expectedStr, (string)$component, $messages);
+        self::assertEquals($expectedStr, (string)$component, $messages);
     }
 }

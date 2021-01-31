@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class PageValue
  */
-class PageValue extends ParameterMultiValue
+class PageValue extends QualifierMultiValue
 {
     const VALUE_DELIMITER = ';';
 }

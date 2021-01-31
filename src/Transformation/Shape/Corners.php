@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class Corners
  */
-class Corners extends ParameterMultiValue
+class Corners extends QualifierMultiValue
 {
     const MAX_ARGUMENTS = 4;
 
@@ -27,19 +27,21 @@ class Corners extends ParameterMultiValue
     /**
      * Corners constructor.
      *
-     * @param int|string $topLeft     Top-left corner radius.
-     * @param int        $topRight    Top-right corner radius.
-     * @param int        $bottomRight Bottom-right corner radius.
-     * @param int        $bottomLeft  Bottom-left corner radius.
+     * @param int|string|array $topLeft     Top-left corner radius.
+     * @param int              $topRight    Top-right corner radius.
+     * @param int              $bottomRight Bottom-right corner radius.
+     * @param int              $bottomLeft  Bottom-left corner radius.
      */
     public function __construct($topLeft, $topRight = null, $bottomRight = null, $bottomLeft = null)
     {
-        $namedValues = [
-            'topLeft'     => $topLeft,
-            'topRight'    => $topRight,
-            'bottomRight' => $bottomRight,
-            'bottomLeft'  => $bottomLeft,
-        ];
+        if (is_array($topLeft)) {
+            $corners = array_pad($topLeft, 4, null);
+        } else {
+            $corners = [$topLeft, $topRight, $bottomRight, $bottomLeft];
+        }
+
+        $namedValues = array_combine(['topLeft', 'topRight', 'bottomRight', 'bottomLeft'], $corners);
+
         parent::__construct($namedValues);
     }
 }

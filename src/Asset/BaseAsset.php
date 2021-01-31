@@ -12,11 +12,13 @@ namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
-use Cloudinary\Configuration\AccountConfig;
+use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\AssetConfigTrait;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Configuration\LoggingConfig;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\JsonUtils;
+use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
 
 /**
@@ -35,14 +37,15 @@ abstract class BaseAsset implements AssetInterface
     use AssetConfigTrait;
 
     use DeliveryTypeTrait;
+    use LoggerTrait;
     use AssetFinalizerTrait;
 
     // Asset Configuration
 
     /**
-     * @var AccountConfig $account The configuration of the account.
+     * @var CloudConfig $cloud The configuration of the cloud.
      */
-    public $account;
+    public $cloud;
 
     /**
      * @var UrlConfig $urlConfig The configuration of the URL.
@@ -82,9 +85,11 @@ abstract class BaseAsset implements AssetInterface
             // TODO: discuss configuration transfer
             $this->asset = clone $source->asset;
 
-            $this->account   = clone $source->account;
+            $this->cloud     = clone $source->cloud;
             $this->urlConfig = clone $source->urlConfig;
             $this->authToken = clone $source->authToken;
+            $this->logging   = clone $source->logging;
+
             return;
         }
 
@@ -147,10 +152,11 @@ abstract class BaseAsset implements AssetInterface
      */
     public function deepCopy($other)
     {
-        $this->account   = clone $other->account;
+        $this->cloud     = clone $other->cloud;
         $this->urlConfig = clone $other->urlConfig;
         $this->asset     = clone $other->asset;
         $this->authToken = clone $other->authToken;
+        $this->logging   = clone $other->logging;
     }
 
 
@@ -230,18 +236,19 @@ abstract class BaseAsset implements AssetInterface
         try {
             $json = JsonUtils::decode($json);
 
-            $this->account = AccountConfig::fromJson($json, true);
+            $this->cloud     = CloudConfig::fromJson($json, true);
             $this->urlConfig = UrlConfig::fromJson($json, false);
-            $this->asset = AssetDescriptor::fromJson($json);
+            $this->asset     = AssetDescriptor::fromJson($json);
             $this->authToken = AuthToken::fromJson($json);
+            $this->logging   = LoggingConfig::fromJson($json);
         } catch (\InvalidArgumentException $e) {
             $this->getLogger()->critical(
                 'Error importing JSON',
                 [
                     'exception' => $e->getMessage(),
-                    'json' => json_encode($json),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
+                    'json'      => json_encode($json),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine(),
                 ]
             );
             throw $e;
@@ -260,12 +267,29 @@ abstract class BaseAsset implements AssetInterface
     public function configuration($configuration)
     {
         $tempConfiguration = new Configuration($configuration, true); // TODO: improve performance here
-        $this->account   = $tempConfiguration->account;
-        $this->urlConfig = $tempConfiguration->url;
-        $this->logging   = $tempConfiguration->logging;
+        $this->cloud     = $tempConfiguration->cloud;
+        $this->urlConfig   = $tempConfiguration->url;
+        $this->logging     = $tempConfiguration->logging;
 
         return $this;
     }
+
+    /**
+     * Imports (merges) the asset configuration.
+     *
+     * @param array|Configuration $configuration The configuration source.
+     *
+     * @return static
+     */
+    public function importConfiguration($configuration)
+    {
+        $this->cloud->importJson($configuration->cloud->jsonSerialize());
+        $this->urlConfig->importJson($configuration->url->jsonSerialize());
+        $this->logging->importJson($configuration->logging->jsonSerialize());
+
+        return $this;
+    }
+
 
     /**
      * Returns the public ID of the asset.
@@ -318,7 +342,7 @@ abstract class BaseAsset implements AssetInterface
      */
     public function toUrl()
     {
-        return $this->finalizeUrlWithAuthToken(ArrayUtils::implodeUrl($this->prepareUrlParts()));
+        return $this->finalizeUrl(ArrayUtils::implodeUrl($this->prepareUrlParts()));
     }
 
 
@@ -334,8 +358,6 @@ abstract class BaseAsset implements AssetInterface
         } catch (\Exception $e) {
             trigger_error($e->getMessage(), E_USER_ERROR);
         }
-
-        return '';
     }
 
     /**
@@ -350,7 +372,7 @@ abstract class BaseAsset implements AssetInterface
     {
         $json = $this->asset->jsonSerialize($includeEmptyKeys);
 
-        foreach ([$this->account, $this->urlConfig] as $confSection) {
+        foreach ([$this->cloud, $this->urlConfig] as $confSection) {
             $section = $confSection->jsonSerialize(false, $includeEmptyKeys, $includeEmptySections);
             if (! $includeEmptySections && empty(array_values($section)[0])) {
                 continue;
@@ -364,8 +386,8 @@ abstract class BaseAsset implements AssetInterface
     /**
      * Sets the property of the asset descriptor.
      *
-     * @param string $propertyName The name of the property.
-     * @param mixed $propertyValue The value of the property.
+     * @param string $propertyName  The name of the property.
+     * @param mixed  $propertyValue The value of the property.
      *
      * @return $this
      *
@@ -379,10 +401,10 @@ abstract class BaseAsset implements AssetInterface
             $this->getLogger()->critical(
                 $e->getMessage(),
                 [
-                    'propertyName' => $propertyName,
+                    'propertyName'  => $propertyName,
                     'propertyValue' => $propertyValue,
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
+                    'file'          => $e->getFile(),
+                    'line'          => $e->getLine(),
                 ]
             );
             throw $e;
@@ -401,9 +423,9 @@ abstract class BaseAsset implements AssetInterface
      *
      * @internal
      */
-    public function setAccountConfig($configKey, $configValue)
+    public function setCloudConfig($configKey, $configValue)
     {
-        $this->account->setAccountConfig($configKey, $configValue);
+        $this->cloud->setCloudConfig($configKey, $configValue);
 
         return $this;
     }

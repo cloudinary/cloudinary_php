@@ -10,22 +10,27 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Parameter\Dimensions\Dimensions;
+use Cloudinary\Transformation\Qualifier\Dimensions\Dimensions;
 
 /**
  * Class Region
  */
 class Region extends BaseAction
 {
+    const FACES   = "faces";
+    const GRAVITY = "gravity";
+    const CUSTOM  = "custom";
+
     use RegionTrait;
+    use PixelEffectRegionTrait;
 
     /**
      * Region constructor.
      *
-     * @param null $x
-     * @param null $y
-     * @param null $width
-     * @param null $height
+     * @param int|string $x
+     * @param int|string $y
+     * @param int|string $width
+     * @param int|string $height
      */
     public function __construct($x = null, $y = null, $width = null, $height = null)
     {
@@ -45,11 +50,11 @@ class Region extends BaseAction
      */
     public function setPointValue($value)
     {
-        if (! isset($this->parameters[Point::getName()])) {
-            $this->addParameter(new Point());
+        if (! isset($this->qualifiers[Point::getName()])) {
+            $this->addQualifier(new Point());
         }
 
-        $this->parameters[Point::getName()]->setPointValue($value);
+        $this->qualifiers[Point::getName()]->setPointValue($value);
 
         return $this;
     }
@@ -65,12 +70,30 @@ class Region extends BaseAction
      */
     public function setDimension($value)
     {
-        if (! isset($this->parameters[Dimensions::getName()])) {
-            $this->addParameter(new Dimensions());
+        if (! isset($this->qualifiers[Dimensions::getName()])) {
+            $this->addQualifier(new Dimensions());
         }
 
-        $this->parameters[Dimensions::getName()]->addParameter($value);
+        $this->qualifiers[Dimensions::getName()]->addQualifier($value);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegionType()
+    {
+        if (isset($this->qualifiers[GravityQualifier::getName()])) {
+            $gravityQualifier = $this->qualifiers[GravityQualifier::getName()];
+
+            if ((string)$gravityQualifier->getValue() === FocalGravity::FACES) {
+                return self::FACES;
+            }
+
+            return self::GRAVITY;
+        }
+
+        return self::CUSTOM;
     }
 }
