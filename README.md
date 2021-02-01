@@ -17,6 +17,11 @@ Cloudinary provides URL and HTTP based APIs that can be easily integrated with a
 
 For PHP, Cloudinary provides an extension for simplifying the integration even further.
 
+
+## Getting started guide
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png)  **Take a look at our [Getting started guide for PHP](http://cloudinary.com/documentation/php_integration)**.
+
+
 ## Setup ######################################################################
 
 You can install through composer with:
