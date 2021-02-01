@@ -100,7 +100,7 @@ Same goes for Twitter:
 
     cloudinary_url("billclinton.jpg", array("type" => "twitter_name"))
 
-![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php_image_manipulation) for more information about displaying and transforming images in PHP**.                                         
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php1_image_manipulation) for more information about displaying and transforming images in PHP**.                                         
 
 
 
