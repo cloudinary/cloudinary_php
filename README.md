@@ -127,7 +127,7 @@ You can also specify your own public ID:
     http://res.cloudinary.com/demo/image/upload/sample_remote.jpg
 
 
-![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php_image_upload) for plenty more options of uploading to the cloud from your PHP code**.
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php1_image_upload) for plenty more options of uploading to the cloud from your PHP code**.
 
 
 ### cl\_image\_tag
@@ -161,7 +161,7 @@ Parameters:
  - `upload-options-array` - upload options same as in Upload section above, with:
       - html - an associative array of html attributes for the upload field
 
-![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php_image_upload#direct_uploading_from_the_browser) for plenty more options of uploading directly from the browser**.
+![](http://res.cloudinary.com/cloudinary/image/upload/see_more_bullet.png) **See [our documentation](http://cloudinary.com/documentation/php1_image_upload#direct_uploading_from_the_browser) for plenty more options of uploading directly from the browser**.
 
 
 ### cl\_form\_tag
@@ -195,9 +195,9 @@ Additional resources are available at:
 * [Website](http://cloudinary.com)
 * [Knowledge Base](http://support.cloudinary.com/forums) 
 * [Documentation](http://cloudinary.com/documentation)
-* [Documentation for PHP integration](http://cloudinary.com/documentation/php_integration)
-* [PHP image upload documentation](http://cloudinary.com/documentation/php_image_upload)
-* [PHP image manipulation documentation](http://cloudinary.com/documentation/php_image_manipulation)
+* [Documentation for PHP integration](http://cloudinary.com/documentation/php1_integration)
+* [PHP image upload documentation](http://cloudinary.com/documentation/php1_image_upload)
+* [PHP image manipulation documentation](http://cloudinary.com/documentation/php1_image_manipulation)
 * [Image transformations documentation](http://cloudinary.com/documentation/image_transformations)
 
 ## Support
