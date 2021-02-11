@@ -36,15 +36,16 @@ class Configuration implements ConfigurableInterface
      *
      * @var array
      */
-    protected $sections = [
-        CloudConfig::CONFIG_NAME,
-        ApiConfig::CONFIG_NAME,
-        UrlConfig::CONFIG_NAME,
-        TagConfig::CONFIG_NAME,
-        ResponsiveBreakpointsConfig::CONFIG_NAME,
-        AuthTokenConfig::CONFIG_NAME,
-        LoggingConfig::CONFIG_NAME,
-    ];
+    protected $sections
+        = [
+            CloudConfig::CONFIG_NAME,
+            ApiConfig::CONFIG_NAME,
+            UrlConfig::CONFIG_NAME,
+            TagConfig::CONFIG_NAME,
+            ResponsiveBreakpointsConfig::CONFIG_NAME,
+            AuthTokenConfig::CONFIG_NAME,
+            LoggingConfig::CONFIG_NAME,
+        ];
 
     /**
      * @var bool Indicates whether to include sensitive keys during serialisation to string/json.
@@ -134,9 +135,38 @@ class Configuration implements ConfigurableInterface
 
         $this->initSections();
 
-        // When no configuration provided, fallback to the environment variable.
+        $this->import($config);
+    }
+
+    /**
+     * Initializes configuration sections.
+     */
+    protected function initSections()
+    {
+        $this->cloud                 = new CloudConfig();
+        $this->api                   = new ApiConfig();
+        $this->url                   = new UrlConfig();
+        $this->tag                   = new TagConfig();
+        $this->responsiveBreakpoints = new ResponsiveBreakpointsConfig();
+        $this->authToken             = new AuthTokenConfig();
+        $this->logging               = new LoggingConfig();
+    }
+
+    /**
+     * Imports configuration.
+     *
+     * @param Configuration|string|array|null $config Configuration source. Can be Cloudinary url, json, array, another
+     *                                                instance of the configuration.
+     */
+    public function import($config = null)
+    {
         if ($config === null) {
-            $config = (string)getenv(self::CLOUDINARY_URL_ENV_VAR) ?: null;
+            if (! getenv(self::CLOUDINARY_URL_ENV_VAR)) {
+                // Nothing to import
+                return;
+            }
+            // When no configuration provided, fallback to the environment variable.
+            $config = (string)getenv(self::CLOUDINARY_URL_ENV_VAR);
         }
 
         if (ConfigUtils::isCloudinaryUrl($config)) {
@@ -148,20 +178,6 @@ class Configuration implements ConfigurableInterface
         } else {
             throw new ConfigurationException('Invalid configuration, please set up your environment');
         }
-    }
-
-    /**
-     * Initializes configuration sections.
-     */
-    protected function initSections()
-    {
-        $this->cloud = new CloudConfig();
-        $this->api   = new ApiConfig();
-        $this->url                   = new UrlConfig();
-        $this->tag                   = new TagConfig();
-        $this->responsiveBreakpoints = new ResponsiveBreakpointsConfig();
-        $this->authToken             = new AuthTokenConfig();
-        $this->logging               = new LoggingConfig();
     }
 
     /**
@@ -271,6 +287,13 @@ class Configuration implements ConfigurableInterface
         return $this;
     }
 
+    public function validate()
+    {
+        if (empty($this->cloud->cloudName)) {
+            throw new ConfigurationException('Invalid configuration, please set up your environment');
+        }
+    }
+
     /**
      * Serialises Configuration to Cloudinary url
      *
@@ -282,7 +305,7 @@ class Configuration implements ConfigurableInterface
 
         $sections = [];
         foreach ($this->sections as $section) {
-            $section = StringUtils::snakeCaseToCamelCase($section);
+            $section     = StringUtils::snakeCaseToCamelCase($section);
             $sections [] = (string)($this->$section);
         }
 

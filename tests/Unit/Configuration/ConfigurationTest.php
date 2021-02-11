@@ -28,6 +28,17 @@ class ConfigurationTest extends UnitTestCase
         self::assertEquals(self::API_SECRET, $config->cloud->apiSecret);
     }
 
+    public function testConfigNoEnv()
+    {
+        self::clearEnvironment();
+
+        $config = new Configuration();
+
+        $config->cloud->cloudName(self::CLOUD_NAME);
+
+        self::assertEquals(self::CLOUD_NAME, $config->cloud->cloudName);
+    }
+
     public function testConfigToString()
     {
         $config = Configuration::fromCloudinaryUrl($this->cloudinaryUrl);
