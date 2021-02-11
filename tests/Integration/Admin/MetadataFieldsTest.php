@@ -60,17 +60,17 @@ class MetadataFieldsTest extends IntegrationTestCase
         parent::setUpBeforeClass();
 
         $id = self::$UNIQUE_TEST_ID;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_GENERAL = 'metadata_external_id_general_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE = 'metadata_external_id_date_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_ENUM_2 = 'metadata_external_id_enum_2_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_SET = 'metadata_external_id_set_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_SET_2 = 'metadata_external_id_set_2_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_SET_3 = 'metadata_external_id_set_3_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_DELETE_2 = 'metadata_deletion_test_2_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE_VALIDATION = 'metadata_date_validation_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE_VALIDATION_2 = 'metadata_date_validation_2_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_INT_VALIDATION = 'metadata_integer_validation_' . $id;
-        $METADATA_FIELDS[] = self::$EXTERNAL_ID_INT_VALIDATION_2 = 'metadata_integer_validation_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_GENERAL = 'metadata_external_id_general_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE = 'metadata_external_id_date_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_ENUM_2 = 'metadata_external_id_enum_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_SET = 'metadata_external_id_set_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_SET_2 = 'metadata_external_id_set_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_SET_3 = 'metadata_external_id_set_3_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DELETE_2 = 'metadata_deletion_test_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE_VALIDATION = 'metadata_date_validation_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE_VALIDATION_2 = 'metadata_date_validation_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_INT_VALIDATION = 'metadata_integer_validation_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_INT_VALIDATION_2 = 'metadata_integer_validation_2_' . $id;
         // External IDs for metadata fields that will be accessed through a mock (and should not be deleted or created)
         self::$EXTERNAL_ID_DELETE = 'metadata_deletion_test_' . $id;
         self::$EXTERNAL_ID_ENUM = 'metadata_external_id_enum_' . $id;
