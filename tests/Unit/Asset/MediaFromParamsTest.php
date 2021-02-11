@@ -17,6 +17,7 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
+use InvalidArgumentException;
 
 /**
  * Class MediaFromParamsTest
@@ -46,6 +47,34 @@ final class MediaFromParamsTest extends AssetTestCase
             self::IMAGE_NAME,
             $options,
             $options
+        );
+    }
+
+    /**
+     * Should allow overriding cloud_name in $options
+     */
+    public function testCloudNameNoConfig()
+    {
+        self::clearEnvironment();
+
+        $options = ['cloud_name' => 'test321', 'analytics' => false];
+
+        self::assertMediaFromParamsUrl(
+            self::IMAGE_NAME,
+            $options,
+            $options
+        );
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testNoConfig()
+    {
+        self::clearEnvironment();
+
+        self::assertMediaFromParamsUrl(
+            self::IMAGE_NAME
         );
     }
 

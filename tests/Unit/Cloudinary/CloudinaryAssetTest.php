@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Unit\Cloudinary;
 
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 
 /**
@@ -28,7 +29,7 @@ class CloudinaryAssetTest extends AssetTestCase
     {
         parent::setUp();
 
-        $this->c = new Cloudinary($this->cloudinaryUrl);
+        $this->c = new Cloudinary(Configuration::instance());
     }
 
     public function testSimpleCloudinaryImage()

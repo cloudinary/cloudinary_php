@@ -13,8 +13,8 @@ namespace Cloudinary\Api;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\GeneralError;
 use Cloudinary\ArrayUtils;
-use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\ApiConfig;
+use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\FileUtils;
 use Cloudinary\Utils;
@@ -93,8 +93,8 @@ class ApiClient extends BaseApiClient
 
         $tempConfiguration->cloud->assertNotEmpty(['cloudName', 'apiKey', 'apiSecret']);
 
-        $this->cloud = $tempConfiguration->cloud;
-        $this->api   = $tempConfiguration->api;
+        $this->cloud   = $tempConfiguration->cloud;
+        $this->api     = $tempConfiguration->api;
         $this->logging = $tempConfiguration->logging;
 
         return $this;

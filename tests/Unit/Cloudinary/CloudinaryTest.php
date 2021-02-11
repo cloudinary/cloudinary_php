@@ -34,7 +34,8 @@ class CloudinaryTest extends UnitTestCase
      */
     public function testCloudinaryUrlNotSet()
     {
-        putenv(Configuration::CLOUDINARY_URL_ENV_VAR); // unset CLOUDINARY_URL
+        self::clearEnvironment();
+
         new Cloudinary(); // Boom!
     }
 
@@ -44,8 +45,8 @@ class CloudinaryTest extends UnitTestCase
             [
                 'cloud' => [
                     'cloud_name' => self::CLOUD_NAME,
-                    'api_key'        => self::API_KEY,
-                    'api_secret'     => self::API_SECRET,
+                    'api_key'    => self::API_KEY,
+                    'api_secret' => self::API_SECRET,
                 ],
             ]
         );
@@ -58,6 +59,19 @@ class CloudinaryTest extends UnitTestCase
     public function testCloudinaryFromUrl()
     {
         $c = new Cloudinary($this->cloudinaryUrl);
+
+        self::assertEquals(self::CLOUD_NAME, $c->configuration->cloud->cloudName);
+        self::assertEquals(self::API_KEY, $c->configuration->cloud->apiKey);
+        self::assertEquals(self::API_SECRET, $c->configuration->cloud->apiSecret);
+    }
+
+    public function testCloudinaryFromConfiguration()
+    {
+        self::clearEnvironment();
+
+        $config = new Configuration($this->cloudinaryUrl);
+
+        $c = new Cloudinary($config);
 
         self::assertEquals(self::CLOUD_NAME, $c->configuration->cloud->cloudName);
         self::assertEquals(self::API_KEY, $c->configuration->cloud->apiKey);

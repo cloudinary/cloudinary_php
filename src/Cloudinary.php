@@ -55,6 +55,8 @@ class Cloudinary
     public function __construct($config = null)
     {
         $this->configuration = new Configuration($config);
+        $this->configuration->validate();
+
         $this->tagBuilder    = new TagBuilder($this->configuration);
     }
 
@@ -126,7 +128,10 @@ class Cloudinary
      */
     public function videoTag($publicId, $sources = null)
     {
-        return $this->createWithConfiguration($publicId, VideoTag::class, $sources);
+        $videoTag = ClassUtils::forceInstance($publicId, VideoTag::class, null, $sources, $this->configuration);
+        $videoTag->importConfiguration($this->configuration);
+
+        return $videoTag;
     }
 
     /**
@@ -172,7 +177,8 @@ class Cloudinary
      */
     protected function createWithConfiguration($publicId, $className, ...$args)
     {
-        $instance = ClassUtils::forceInstance($publicId, $className, null, ...$args);
+        $instance =  ClassUtils::forceInstance($publicId, $className, null, $this->configuration, ...$args);
+        // this covers the case when an instance of the asset is provided and the line above is a no op.
         $instance->importConfiguration($this->configuration);
 
         return $instance;

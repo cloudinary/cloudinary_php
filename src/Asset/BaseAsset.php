@@ -12,8 +12,8 @@ namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
-use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\AssetConfigTrait;
+use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\LoggingConfig;
 use Cloudinary\Configuration\UrlConfig;
@@ -207,6 +207,7 @@ abstract class BaseAsset implements AssetInterface
         $configuration->url->secure = false;
 
         $configuration->importJson($params);
+        $configuration->validate();
 
         return new static($asset, $configuration);
     }
@@ -267,7 +268,7 @@ abstract class BaseAsset implements AssetInterface
     public function configuration($configuration)
     {
         $tempConfiguration = new Configuration($configuration, true); // TODO: improve performance here
-        $this->cloud     = $tempConfiguration->cloud;
+        $this->cloud       = $tempConfiguration->cloud;
         $this->urlConfig   = $tempConfiguration->url;
         $this->logging     = $tempConfiguration->logging;
 

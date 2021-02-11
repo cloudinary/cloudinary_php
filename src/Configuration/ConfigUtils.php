@@ -34,7 +34,8 @@ class ConfigUtils
      */
     public static function isCloudinaryUrl($cloudinaryUrl)
     {
-        return Utils::tryParseUrl($cloudinaryUrl, [self::CLOUDINARY_URL_SCHEME]) ? true : false;
+        return Utils::tryParseUrl(self::normalizeCloudinaryUrl($cloudinaryUrl), [self::CLOUDINARY_URL_SCHEME]) ? true
+            : false;
     }
 
     /**
@@ -52,7 +53,7 @@ class ConfigUtils
             );
         }
 
-        $uri = Utils::tryParseUrl($cloudinaryUrl, [self::CLOUDINARY_URL_SCHEME]);
+        $uri = Utils::tryParseUrl(self::normalizeCloudinaryUrl($cloudinaryUrl), [self::CLOUDINARY_URL_SCHEME]);
 
         if (! $uri) {
             throw new UnexpectedValueException(
@@ -86,6 +87,22 @@ class ConfigUtils
         }
 
         return $config;
+    }
+
+    /**
+     * Tries to normalize the supplied cloudinary url string.
+     *
+     * @param string $cloudinaryUrl Cloudinary url candidate.
+     *
+     * @return string
+     */
+    public static function normalizeCloudinaryUrl($cloudinaryUrl)
+    {
+        if (! is_string($cloudinaryUrl)) {
+            return $cloudinaryUrl;
+        }
+
+        return StringUtils::truncatePrefix($cloudinaryUrl, Configuration::CLOUDINARY_URL_ENV_VAR . '=');
     }
 
     /**

@@ -28,6 +28,30 @@ class ConfigurationTest extends UnitTestCase
         self::assertEquals(self::API_SECRET, $config->cloud->apiSecret);
     }
 
+    /**
+     * Should allow passing Cloudinary URL that starts with a 'CLOUDINARY_URL=' prefix, which is technically illegal,
+     * but we are permissive.
+     */
+    public function testConfigFromFullUrl()
+    {
+        $config = new Configuration(Configuration::CLOUDINARY_URL_ENV_VAR . '=' . $this->cloudinaryUrl);
+
+        self::assertEquals(self::CLOUD_NAME, $config->cloud->cloudName);
+        self::assertEquals(self::API_KEY, $config->cloud->apiKey);
+        self::assertEquals(self::API_SECRET, $config->cloud->apiSecret);
+    }
+
+    public function testConfigNoEnv()
+    {
+        self::clearEnvironment();
+
+        $config = new Configuration();
+
+        $config->cloud->cloudName(self::CLOUD_NAME);
+
+        self::assertEquals(self::CLOUD_NAME, $config->cloud->cloudName);
+    }
+
     public function testConfigToString()
     {
         $config = Configuration::fromCloudinaryUrl($this->cloudinaryUrl);
