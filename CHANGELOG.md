@@ -1,3 +1,9 @@
+2.0.2 / 2021-02-11
+==================
+
+  * Fix `Configuration` initialisation
+  * Update README
+
 2.0.1 / 2021-01-31
 ==================
 
