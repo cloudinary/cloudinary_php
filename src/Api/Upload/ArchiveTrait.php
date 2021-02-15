@@ -27,13 +27,12 @@ use GuzzleHttp\Promise\PromiseInterface;
 trait ArchiveTrait
 {
     /**
+     * Returns an array of parameters used to create an archive.
+     *
      * @param $options
      *
      * @return array
      * @internal
-     *
-     * Returns an array of parameters used to create an archive
-     *
      */
     public static function buildArchiveParams($options)
     {
@@ -141,11 +140,11 @@ trait ArchiveTrait
      * @param array      $options                 Additional options. Can be one of the following:
      *
      * @var string       $resource_type           The resource type of files to include in the archive.
-     *                                     Must be one of image | video | raw
+     *                                     Must be one of image | video | raw.
      * @var string       $type                    The specific file delivery type of resources:
-     *                                     upload|private|authenticated
-     * @var string|array $tags                    (null) list of tags to include in the archive
-     * @var string|array $public_ids              (null) list of public_ids to include in the archive
+     *                                     upload|private|authenticated.
+     * @var string|array $tags                    (null) list of tags to include in the archive.
+     * @var string|array $public_ids              (null) list of public_ids to include in the archive.
      * @var string|array $prefixes                (null) Optional list of prefixes of public IDs (e.g., folders).
      * @var string|array $transformations         Optional list of transformations. The derived images of the given
      *                                     transformations are included in the archive. Using the string
@@ -153,7 +152,7 @@ trait ArchiveTrait
      *                                     'eager' upload parameter.
      * @var string       $mode                    (create) return the generated archive file or store it as a raw
      *                                     resource and return a JSON with URLs for accessing the archive. Possible
-     *                                     values: download, create
+     *                                     values: download, create.
      * @var string       $target_format           (zip)
      * @var string       $target_public_id        Optional public ID of the generated raw resource.
      *                                     Relevant only for the create mode. If not specified, a random public ID is
@@ -193,7 +192,7 @@ trait ArchiveTrait
      *
      * @param array $options Additional options. See ArchiveTrait::downloadArchiveUrl.
      *
-     * @return string The resulting archive URL
+     * @return string The resulting archive URL.
      *
      * @see ArchiveTrait::downloadArchiveUrl
      */
@@ -210,7 +209,7 @@ trait ArchiveTrait
      * @param string $folderPath Full path (from the root) of the folder to download.
      * @param array  $options    Additional options.
      *
-     * @return string Url for downloading an archive of a folder
+     * @return string Url for downloading an archive of a folder.
      */
     public function downloadFolder($folderPath, $options = [])
     {
