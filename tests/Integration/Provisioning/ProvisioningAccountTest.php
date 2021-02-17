@@ -49,6 +49,7 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
     private static $SUB_ACCOUNT_CUSTOM_ATTRIBUTES;
     private static $SUB_ACCOUNT_NEW_CUSTOM_ATTRIBUTES;
     private static $PREFIX;
+    private static $PREFIX_NON_EXISTENT;
 
     private static $USER_GROUP_CREATE_NAME;
     private static $USER_GROUP_DELETE_NAME;
@@ -63,6 +64,8 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
     private static $SUB_ACCOUNTS = [];
     private static $USERS_GROUPS = [];
 
+    private static $SUB_ACCOUNT_ID_NON_EXISTENT;
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -72,6 +75,8 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
         }
 
         self::$PREFIX = 'prefix_' . self::$UNIQUE_TEST_ID;
+        self::$PREFIX_NON_EXISTENT = self::$PREFIX . '_non_existent';
+        self::$SUB_ACCOUNT_ID_NON_EXISTENT = 'sub_account_non_existent_' . self::$UNIQUE_TEST_ID;
 
         self::$USER_CREATE_NAME = 'provisioning_user_name_create_' . self::$UNIQUE_TEST_ID;
         self::$USER_CREATE_EMAIL = 'provisioning_user_create_' . self::$UNIQUE_TEST_ID . '@cloudinary.com';
@@ -204,9 +209,30 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
     }
 
     /**
-     * Tests getting user accounts by id
+     * Tests getting pending user accounts by id
      */
-    public function testGetUsersListById()
+    public function testGetPendingUsersById()
+    {
+        $result = self::$accountApi->users(true, [self::$USER_GET_ID]);
+
+        self::assertCount(1, $result['users']);
+        self::assertValidAccountUser($result['users'][0], ['id' => self::$USER_GET_ID]);
+    }
+
+    /**
+     * Tests getting non-pending user accounts by id
+     */
+    public function testGetNonPendingUsersById()
+    {
+        $result = self::$accountApi->users(false, [self::$USER_GET_ID]);
+
+        self::assertCount(0, $result['users']);
+    }
+
+    /**
+     * Tests getting pending and non-pending user accounts by id
+     */
+    public function testGetUsersById()
     {
         $result = self::$accountApi->users(null, [self::$USER_GET_ID]);
 
@@ -219,10 +245,35 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
      */
     public function testGetUsersByPrefix()
     {
-        $result = self::$accountApi->users(null, [], self::$PREFIX);
+        $result = self::$accountApi->users(true, [], self::$PREFIX);
 
         self::assertCount(1, $result['users']);
         self::assertValidAccountUser($result['users'][0], ['id' => self::$USER_GET_ID]);
+
+        $result = self::$accountApi->users(true, [], self::$PREFIX_NON_EXISTENT);
+
+        self::assertCount(0, $result['users']);
+    }
+
+    /**
+     * Tests getting users by subAccountId
+     */
+    public function testGetUsersBySubAccountId()
+    {
+        $result = self::$accountApi->users(true, [], self::$USER_GET_NAME, self::$SUB_ACCOUNT_GET_ID);
+
+        self::assertCount(1, $result['users']);
+    }
+
+    /**
+     * Gets users by a non-existent sub account id
+     */
+    public function testGetUsersByNonExistentSubAccountId()
+    {
+        $this->expectException(NotFound::class);
+        $this->expectExceptionMessage('Cannot find sub account with id ' . self::$SUB_ACCOUNT_ID_NON_EXISTENT);
+
+        self::$accountApi->users(true, [], null, self::$SUB_ACCOUNT_ID_NON_EXISTENT);
     }
 
     /**
