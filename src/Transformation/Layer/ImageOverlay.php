@@ -10,12 +10,13 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
 
 /**
  * Class ImageOverlay
  */
-class ImageOverlay extends BaseLayerContainer
+class ImageOverlay extends BaseSourceContainer
 {
     use ImageSourceTrait;
 
@@ -80,12 +81,17 @@ class ImageOverlay extends BaseLayerContainer
     }
 
     /**
-     * Serializes to string.
-     *
-     * @return string
+     * @return array
      */
-    public function __toString()
+    protected function getSubActionQualifiers()
     {
-        return implode(',', array_filter([parent::__toString(), $this->blendMode]));
+        $subActionQualifiers = parent::getSubActionQualifiers();
+
+        $subActionQualifiers['additional'] = ArrayUtils::mergeNonEmpty(
+            $subActionQualifiers['additional'],
+            $this->blendMode? $this->blendMode->getStringQualifiers(): []
+        );
+
+        return $subActionQualifiers;
     }
 }

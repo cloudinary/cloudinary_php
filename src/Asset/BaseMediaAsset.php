@@ -99,7 +99,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      *
      * Appended transformation is nested.
      *
-     * @param CommonTransformation|string $transformation The transformation to add.
+     * @param CommonTransformation|array|string $transformation The transformation to add.
      *
      * @return $this
      */

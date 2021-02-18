@@ -49,7 +49,7 @@ final class VideoTransformationTest extends UnitTestCase
 
         $t->trim(Timeline::position('auto', '90%', 10.1));
 
-        $t2_expected = $t_expected . '/so_auto,eo_90p,du_10.1';
+        $t2_expected = $t_expected . '/du_10.1,eo_90p,so_auto';
         self::assertEquals(
             $t2_expected,
             (string)$t
@@ -106,7 +106,7 @@ final class VideoTransformationTest extends UnitTestCase
         $t->videoEdit(VideoEdit::trim()->startOffset('auto')->endOffset('90%')->duration(10.1));
 
         self::assertEquals(
-            'so_auto,eo_90p,du_10.1',
+            'du_10.1,eo_90p,so_auto',
             (string)$t
         );
     }

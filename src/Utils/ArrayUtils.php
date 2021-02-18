@@ -273,6 +273,8 @@ class ArrayUtils
      */
     public static function implodeActionQualifiers(...$qualifiers)
     {
+        sort($qualifiers, SORT_STRING);
+
         return self::implodeFiltered(',', $qualifiers);
     }
 

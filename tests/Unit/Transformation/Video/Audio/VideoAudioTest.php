@@ -50,12 +50,12 @@ final class VideoAudioTest extends UnitTestCase
     public function testTimeline()
     {
         $ranges = [
-            'so_2.67,eo_3.22'   => [2.67, 3.22],
-            'so_35p,eo_70p'     => ['35%', '70%'],
-            'so_36p,eo_71p'     => ['36p', '71p'],
-            'so_35.5p,eo_70.5p' => ['35.5p', '70.5p'],
-            'so_auto,eo_70.5p'  => ['auto', '70.5p'],
-            'so_auto,du_10p'    => ['auto', null, '10%'],
+            'eo_3.22,so_2.67'   => [2.67, 3.22],
+            'eo_70p,so_35p'     => ['35%', '70%'],
+            'eo_71p,so_36p'     => ['36p', '71p'],
+            'eo_70.5p,so_35.5p' => ['35.5p', '70.5p'],
+            'eo_70.5p,so_auto'  => ['auto', '70.5p'],
+            'du_10p,so_auto'    => ['auto', null, '10%'],
         ];
 
         foreach ($ranges as $transformation => $range) {
@@ -66,7 +66,7 @@ final class VideoAudioTest extends UnitTestCase
         }
 
         self::assertEquals(
-            'so_2.66,eo_3.21',
+            'eo_3.21,so_2.66',
             (string)Timeline::position()->offset('2.66..3.21')
         );
     }

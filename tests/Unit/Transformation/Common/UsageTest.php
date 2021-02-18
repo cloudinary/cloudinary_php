@@ -602,17 +602,17 @@ final class UsageTest extends TestCase
     public function testVideo()
     {
         self::assertEquals(
-            'so_6.5,eo_10',
+            'eo_10,so_6.5',
             (string)(new VideoTransformation())->trim(Timeline::position(6.5, 10))
         );
 
         self::assertEquals(
-            'so_10p,du_30p',
+            'du_30p,so_10p',
             (string)(new VideoTransformation())->trim(Timeline::position('10p')->duration('30p'))
         );
 
         self::assertEquals(
-            'c_fill,h_200,w_300/fl_splice,l_video:dog/so_0,eo_5/c_fill,h_200,w_300/fl_layer_apply',
+            'c_fill,h_200,w_300/fl_splice,l_video:dog/eo_5,so_0/c_fill,h_200,w_300/fl_layer_apply',
             (string)(new VideoTransformation())
                 ->resize(Fill::fill(300, 200))
                 ->overlay(

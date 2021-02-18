@@ -158,7 +158,7 @@ class QualifiersAction extends BaseAction
         $qualifiersAction  = $this->collectQualifiers($options);
         $rawTransformation = ArrayUtils::pop($options, 'raw_transformation');
 
-        $transformation = ArrayUtils::implodeActionQualifiers($if, $variables, $qualifiersAction, $rawTransformation);
+        $transformation = ArrayUtils::implodeFiltered(',', [$if, $variables, $qualifiersAction, $rawTransformation]);
 
         $baseTransformations[] = $transformation;
 
@@ -269,7 +269,7 @@ class QualifiersAction extends BaseAction
             }
         }
 
-        return ArrayUtils::implodeActionQualifiers(...$varQualifiers);
+        return ArrayUtils::implodeFiltered(',', $varQualifiers);
     }
 
     /**
