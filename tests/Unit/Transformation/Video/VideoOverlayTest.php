@@ -39,23 +39,18 @@ final class VideoOverlayTest extends TestCase
 
         $il = (new ImageSource('test'))->transformation($t);
 
-        $lExpected = "test/$tExpected/fl_layer_apply";
-
         $p = new CompassPosition(Compass::southWest(), 17, 19);
-
-        $pExpected = 'g_south_west,x_17,y_19';
-
         $tlp = Timeline::position(0, 10);
 
-        $tlpExpected = 'so_0,eo_10';
+        $expected = "l_test/$tExpected/eo_10,fl_layer_apply,g_south_west,so_0,x_17,y_19";
 
         self::assertEquals(
-            "l_$lExpected,$pExpected,$tlpExpected",
+            $expected,
             (string)new VideoOverlay($il, $p, $tlp)
         );
 
         self::assertEquals(
-            "l_$lExpected,$pExpected,$tlpExpected",
+            $expected,
             (string)(new VideoOverlay($il))->position($p)->timeline($tlp)
         );
     }
@@ -66,7 +61,7 @@ final class VideoOverlayTest extends TestCase
         $resizeStr = 'c_fill,h_200,w_300';
 
         self::assertEquals(
-            "$resizeStr/so_0,eo_3/fl_splice,l_video:kitten_fighting/so_2,eo_5/$resizeStr/fl_layer_apply",
+            "$resizeStr/eo_3,so_0/fl_splice,l_video:kitten_fighting/eo_5,so_2/$resizeStr/fl_layer_apply",
             (string)(new VideoTransformation())
                 ->resize($resize)
                 ->trim(Timeline::position(0, 3))
@@ -76,7 +71,7 @@ final class VideoOverlayTest extends TestCase
         );
 
         self::assertEquals(
-            "du_5,fl_splice,l_video:kitten_fighting/so_2,eo_5/$resizeStr/" .
+            "du_5,fl_splice,l_video:kitten_fighting/eo_5,so_2/$resizeStr/" .
             "e_transition,l_video:transition/fl_layer_apply/fl_layer_apply,so_0",
             (string)(new VideoTransformation())
                 ->videoEdit(
@@ -93,7 +88,7 @@ final class VideoOverlayTest extends TestCase
         $resizeStr = 'c_fill,h_200,w_300';
 
         self::assertEquals(
-            "$resizeStr/so_0,eo_3/fl_cutter,l_video:kitten_fighting/so_2,eo_5/$resizeStr/fl_layer_apply",
+            "$resizeStr/eo_3,so_0/fl_cutter,l_video:kitten_fighting/eo_5,so_2/$resizeStr/fl_layer_apply",
             (string)(new VideoTransformation())
                 ->resize($resize)
                 ->trim(Timeline::position(0, 3))

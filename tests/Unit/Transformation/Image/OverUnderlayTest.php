@@ -88,25 +88,25 @@ final class OverUnderlayTest extends TestCase
     public function testOverlayBlendMode()
     {
         self::assertEquals(
-            'l_test/fl_layer_apply,x_10,y_20,e_screen',
+            'l_test/e_screen,fl_layer_apply,x_10,y_20',
             (string)(new Transformation())
                 ->overlay(Overlay::source('test')->position(Position::absolute(10, 20))->blendMode(BlendMode::screen()))
         );
 
         self::assertEquals(
-            'l_test/fl_layer_apply,x_10,y_20,e_mask',
+            'l_test/e_mask,fl_layer_apply,x_10,y_20',
             (string)(new Transformation())
                 ->overlay(Overlay::source('test')->position(Position::absolute(10, 20))->blendMode(BlendMode::mask()))
         );
 
         self::assertEquals(
-            'u_test/fl_layer_apply,x_10,y_20,e_multiply',
+            'u_test/e_multiply,fl_layer_apply,x_10,y_20',
             (string)(new Transformation())
                 ->underlay(Overlay::source('test')->position(Position::absolute(10, 20))->blendMode('multiply'))
         );
 
         self::assertEquals(
-            'l_test/fl_layer_apply,e_anti_removal',
+            'l_test/e_anti_removal,fl_layer_apply',
             (string)(Overlay::source('test')->blendMode(BlendMode::antiRemoval()))
         );
     }

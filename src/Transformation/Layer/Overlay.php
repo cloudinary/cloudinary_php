@@ -27,7 +27,7 @@ abstract class Overlay
      */
     public static function source($source)
     {
-        return ClassUtils::verifyInstance($source, BaseLayerContainer::class, MediaOverlay::class);
+        return ClassUtils::verifyInstance($source, BaseSourceContainer::class, MediaOverlay::class);
     }
 
     /**
@@ -37,7 +37,7 @@ abstract class Overlay
      */
     public static function imageSource($source)
     {
-        return ClassUtils::verifyInstance($source, BaseLayerContainer::class, ImageOverlay::class);
+        return ClassUtils::verifyInstance($source, BaseSourceContainer::class, ImageOverlay::class);
     }
 
     /**
@@ -47,6 +47,6 @@ abstract class Overlay
      */
     public static function videoSource($source)
     {
-        return ClassUtils::verifyInstance($source, BaseLayerContainer::class, VideoOverlay::class);
+        return ClassUtils::verifyInstance($source, BaseSourceContainer::class, VideoOverlay::class);
     }
 }

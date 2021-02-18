@@ -76,7 +76,7 @@ final class ImageShapeTest extends TestCase
     public function testImageCutByImage()
     {
         self::assertEquals(
-            'l_sample/fl_layer_apply,g_south,y_20,fl_cutter',
+            'l_sample/fl_cutter,fl_layer_apply,g_south,y_20',
             (string)(new CutByImage('sample'))->position(Position::south()->offsetY(20))
         );
     }

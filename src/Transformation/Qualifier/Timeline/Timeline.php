@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
@@ -143,12 +144,29 @@ class Timeline extends BaseQualifier
     }
 
     /**
+     * Collects and flattens action qualifiers.
+     *
+     * @return array A flat array of qualifiers
+     *
+     * @internal
+     */
+    public function getStringQualifiers()
+    {
+        $flatQualifiers = [];
+        foreach (ArrayUtils::safeFilter([$this->offset, $this->duration]) as $qualifier) {
+            $flatQualifiers = ArrayUtils::mergeNonEmpty($flatQualifiers, $qualifier->getStringQualifiers());
+        }
+
+        return $flatQualifiers;
+    }
+
+    /**
      * Serialize to Cloudinary URL format
      *
      * @return string
      */
     public function __toString()
     {
-        return implode(',', array_filter([(string)$this->offset, (string)$this->duration]));
+        return ArrayUtils::implodeActionQualifiers(...$this->getStringQualifiers());
     }
 }

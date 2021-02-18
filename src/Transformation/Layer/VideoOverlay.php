@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
 
 /**
@@ -21,7 +22,7 @@ use Cloudinary\ClassUtils;
  *
  * @api
  */
-class VideoOverlay extends BaseLayerContainer
+class VideoOverlay extends BaseSourceContainer
 {
     /**
      * @var Timeline $timeline The timeline position of the overlay.
@@ -50,7 +51,7 @@ class VideoOverlay extends BaseLayerContainer
      *
      * @param Timeline|null $timeline The timeline position of the overlay.
      *
-     * @return BaseLayerContainer
+     * @return BaseSourceContainer
      */
     public function timeline(Timeline $timeline = null)
     {
@@ -112,12 +113,17 @@ class VideoOverlay extends BaseLayerContainer
     }
 
     /**
-     * Serializes to string.
-     *
-     * @return string
+     * @return array
      */
-    public function __toString()
+    protected function getSubActionQualifiers()
     {
-        return implode(',', array_filter([parent::__toString(), $this->timeline]));
+        $subActionQualifiers = parent::getSubActionQualifiers();
+
+        $subActionQualifiers['additional'] = ArrayUtils::mergeNonEmpty(
+            $subActionQualifiers['additional'],
+            $this->timeline? $this->timeline->getStringQualifiers(): []
+        );
+
+        return $subActionQualifiers;
     }
 }

@@ -204,7 +204,7 @@ abstract class BaseAction extends BaseComponent
             $flatQualifiers = ArrayUtils::mergeNonEmpty($flatQualifiers, $qualifier->getStringQualifiers());
         }
 
-        return $flatQualifiers;
+        return array_merge($flatQualifiers, [self::serializeFlags($this->flags)], [$this->genericAction]);
     }
 
     /**
@@ -214,13 +214,7 @@ abstract class BaseAction extends BaseComponent
      */
     public function __toString()
     {
-        $flatQualifiers = $this->getStringQualifiers();
-
-        $allQualifiers = array_merge($flatQualifiers, [self::serializeFlags($this->flags)], [$this->genericAction]);
-
-        sort($allQualifiers);
-
-        return ArrayUtils::implodeActionQualifiers(...$allQualifiers);
+        return ArrayUtils::implodeActionQualifiers(...$this->getStringQualifiers());
     }
 
     /**

@@ -38,7 +38,7 @@ final class VideoThumbnailTagTest extends ImageTagTestCase
         $tag   = (new VideoThumbnailTag($video))->effect(Effect::sepia(20));
 
         self::assertEquals(
-            '<img src="https://res.cloudinary.com/test123/video/upload/so_10,eo_20/e_sepia:20/' . self::TAG_END,
+            '<img src="https://res.cloudinary.com/test123/video/upload/eo_20,so_10/e_sepia:20/' . self::TAG_END,
             (string)$tag
         );
     }

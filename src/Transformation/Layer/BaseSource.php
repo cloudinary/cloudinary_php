@@ -81,7 +81,6 @@ abstract class BaseSource extends BaseAction
     }
 
 
-
     /**
      * Adds (appends) a transformation.
      *
@@ -107,11 +106,7 @@ abstract class BaseSource extends BaseAction
     {
         $all = parent::__toString();
 
-        $transformation = clone $this->getTransformation();
-
-        $transformation->addAction(LayerFlag::layerApply());
-
-        return ArrayUtils::implodeUrl([$all, (string)$transformation]);
+        return ArrayUtils::implodeUrl([$all, $this->getTransformation(), Flag::layerApply()]);
     }
 
     /**
@@ -122,7 +117,7 @@ abstract class BaseSource extends BaseAction
     public function jsonSerialize()
     {
         return [
-            'source'          => $this::getName(),
+            'source'         => $this::getName(),
             'transformation' => $this->transformation,
         ];
     }

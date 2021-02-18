@@ -177,7 +177,7 @@ class Cloudinary
      */
     protected function createWithConfiguration($publicId, $className, ...$args)
     {
-        $instance =  ClassUtils::forceInstance($publicId, $className, null, $this->configuration, ...$args);
+        $instance = ClassUtils::forceInstance($publicId, $className, null, $this->configuration, ...$args);
         // this covers the case when an instance of the asset is provided and the line above is a no op.
         $instance->importConfiguration($this->configuration);
 

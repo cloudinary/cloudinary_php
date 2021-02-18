@@ -121,7 +121,7 @@ final class LayerTest extends AssetTestCase
 
         $t->trim(Timeline::position(0, 10)->duration(10));
 
-        $tExpected = 'so_0,eo_10,du_10';
+        $tExpected = 'du_10,eo_10,so_0';
 
         self::assertEquals(
             "l_video:dog/$tExpected/fl_layer_apply",
@@ -140,7 +140,7 @@ final class LayerTest extends AssetTestCase
     public function testMediaOverlay()
     {
         self::assertStrEquals(
-            'l_media/fl_layer_apply,g_south,e_mask,so_5',
+            'l_media/e_mask,fl_layer_apply,g_south,so_5',
             (new MediaOverlay('media'))->position(Position::south())->blendMode(BlendMode::mask())->timeline(
                 Timeline::position()->startOffset(5)
             )

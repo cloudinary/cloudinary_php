@@ -11,16 +11,15 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\ClassUtils;
 
 /**
- * Class SourceBasedEffectAction
+ * Class BaseSourceContainer
  *
- * This is a base class for all source based effects.
+ * This is a base class for all source (layer) containers (overlays/underlays).
  *
  * @internal
  */
-abstract class SourceBasedEffectAction extends EffectAction
+abstract class BaseSourceContainer extends BaseAction
 {
     /**
      * @var BaseSource $source The source of the layer.
@@ -35,13 +34,12 @@ abstract class SourceBasedEffectAction extends EffectAction
     /**
      * BaseLayerContainer constructor.
      *
-     * @param EffectQualifier|string $effect   The effect name.
-     * @param BaseSource|string      $source   The source.
-     * @param Position               $position Layer position.
+     * @param BaseSource|string $source   The source.
+     * @param Position          $position Layer position.
      */
-    public function __construct($effect, $source = null, $position = null)
+    public function __construct($source = null, $position = null)
     {
-        parent::__construct($effect);
+        parent::__construct();
 
         $this->source($source);
         $this->position($position);
@@ -50,44 +48,53 @@ abstract class SourceBasedEffectAction extends EffectAction
     /**
      * Sets the source.
      *
-     * @param BaseSource|string $source The source.
+     * @param BaseSource $source The source.
      *
      * @return static
      */
-    public function source($source)
+    abstract public function source($source);
+
+    /**
+     * Sets the source position.
+     *
+     * @param Position $position The Position of the layer.
+     *
+     * @return static
+     */
+    abstract public function position($position = null);
+
+    /**
+     * Sets stack position of the source.
+     *
+     * @param string $stackPosition The stack position.
+     *
+     * @return $this
+     */
+    public function setStackPosition($stackPosition)
     {
-        $this->source = ClassUtils::verifyInstance($source, BaseSource::class, ImageSource::class);
+        $this->source->setStackPosition($stackPosition);
 
         return $this;
     }
 
     /**
-     * Sets the position of the layer.
+     * Collects source based action grouped by sub-actions.
      *
-     * @param BasePosition $position The position.
+     *  Typical source based action consists of 2 to 3 components.
      *
-     * @return static
-     */
-    public function position($position = null)
-    {
-        $this->position = ClassUtils::verifyInstance($position, BasePosition::class, AbsolutePosition::class);
-
-        return $this;
-    }
-
-    /**
-     * This function is similar to BaseSourceContainer::getSubActionQualifiers.
+     *  For example, if we take:
+     *      l_logo/c_scale,w_100/e_screen,fl_layer_apply,fl_no_overflow,g_south,y_20
      *
-     * The difference is that additional qualifiers come with the source sub-action.
+     *  We can see:
+     *      - source part (l_).
+     *      - nested transformation (optional).
+     *      - fl_layer_apply part with position, blend mode, and additional flags/qualifiers.
      *
-     * For example:
-     *  e_cut_out,l_logo/fl_layer_apply,g_south,y_20
+     * Occasionally the source part(l_) has additional qualifiers/flags, they come with the source itself.
      *
-     * Note that e_cut_out comes with l_logo in the same sub-action.
+     * @return array An array of grouped qualifiers
      *
-     * @return array
-     *
-     * @see BaseSourceContainer::getSubActionQualifiers
+     * @internal
      */
     protected function getSubActionQualifiers()
     {
@@ -96,10 +103,12 @@ abstract class SourceBasedEffectAction extends EffectAction
         $positionQualifiers   = $this->position ? $this->position->getStringQualifiers() : [];
         $additionalQualifiers = $this->getStringQualifiers();
 
+        $additionalQualifiers [] = Flag::layerApply();
+
         return [
-            'source'         => ArrayUtils::mergeNonEmpty($sourceQualifiers, $additionalQualifiers),
+            'source'         => $sourceQualifiers,
             'transformation' => $sourceTransformation,
-            'additional'     => ArrayUtils::mergeNonEmpty($positionQualifiers, [Flag::layerApply()]),
+            'additional'     => ArrayUtils::mergeNonEmpty($positionQualifiers, $additionalQualifiers),
         ];
     }
 

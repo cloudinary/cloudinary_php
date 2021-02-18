@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\Transformation\Argument\Range\Range;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
@@ -88,13 +89,25 @@ class VideoOffset extends BaseQualifier
     }
 
     /**
+     * Collects and flattens action qualifiers.
+     *
+     * @return array A flat array of qualifiers
+     *
+     * @internal
+     */
+    public function getStringQualifiers()
+    {
+        return ArrayUtils::safeFilter([$this->startOffset, (string)$this->endOffset]);
+    }
+
+    /**
      * Serializes to string.
      *
      * @return string
      */
     public function __toString()
     {
-        return implode(',', array_filter([(string)$this->startOffset, (string)$this->endOffset]));
+        return ArrayUtils::implodeActionQualifiers(...$this->getStringQualifiers());
     }
 
     /**
