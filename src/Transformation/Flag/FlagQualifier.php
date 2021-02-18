@@ -11,6 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
+use Cloudinary\StringUtils;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
@@ -78,7 +79,10 @@ class FlagQualifier extends BaseQualifier
     {
         $flagQualifierName = $this->flagName ? self::getKey() . "_{$this->flagName}" : '';
 
-        return ArrayUtils::implodeQualifierValues($flagQualifierName, $this->value);
+        return ArrayUtils::implodeQualifierValues(
+            $flagQualifierName,
+            rawurlencode(StringUtils::encodeDot($this->value))
+        );
     }
 
     /**

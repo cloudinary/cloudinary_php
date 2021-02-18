@@ -72,7 +72,7 @@ final class TransformationTest extends UnitTestCase
         $t->addAction(Effect::sepia(100));
 
         $t_expected = 'b_blue,c_lpad,g_south_west,h_18,w_17/e_replace_color:green:17:red/' .
-                      'c_scale,fl_attachment:file%252Ebin.ignore_aspect_ratio,h_200,w_100/e_sepia:100';
+                      'c_scale,fl_attachment:file%252Ebin,fl_ignore_aspect_ratio,h_200,w_100/e_sepia:100';
         self::assertEquals(
             $t_expected,
             (string)$t
@@ -294,7 +294,7 @@ final class TransformationTest extends UnitTestCase
     public function testSetFlags()
     {
         self::assertEquals(
-            'fl_animated.attachment:my_file%252Ebin.tiff8_lzw',
+            'fl_animated,fl_attachment:my_file%252Ebin,fl_tiff8_lzw',
             (string)(new Transformation())
                 ->addAction(
                     Action::generic()
@@ -309,7 +309,7 @@ final class TransformationTest extends UnitTestCase
     public function testSetFlagsWithBuilders()
     {
         self::assertEquals(
-            'fl_attachment:my_file.bin/fl_sanitize/fl_mono',
+            'fl_attachment:my_file%252Ebin/fl_sanitize/fl_mono',
             (string)(new Transformation())->attachment('my_file.bin')->sanitize()->mono()
         );
     }

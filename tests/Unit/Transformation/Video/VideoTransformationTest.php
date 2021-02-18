@@ -232,7 +232,7 @@ final class VideoTransformationTest extends UnitTestCase
     public function testVideoTransformationFlags()
     {
         self::assertEquals(
-            'fl_streaming_attachment:my_streaming_video.mp4',
+            'fl_streaming_attachment:my_streaming_video%252Emp4',
             (string)(new VideoTransformation())
                 ->streamingAttachment('my_streaming_video.mp4')
         );
