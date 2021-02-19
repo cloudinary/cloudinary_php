@@ -38,6 +38,11 @@ abstract class BaseConfigSection implements ConfigurableInterface
      */
     protected static $aliases = [];
 
+    /**
+     * @var array of configuration keys that were explicitly set by user. Used to distinguish from default values.
+     */
+    protected $explicitlySetKeys = [];
+
 
     /**
      * BaseConfig constructor.
@@ -86,6 +91,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
     public function __set($name, $value)
     {
         $this->$name = $value;
+
+        $this->explicitlySetKeys[$name] = true;
     }
 
     /**
@@ -103,6 +110,20 @@ abstract class BaseConfigSection implements ConfigurableInterface
         $this->__set(StringUtils::snakeCaseToCamelCase($name), $value);
 
         return $this;
+    }
+
+    /**
+     * Indicates whether the specified name was explicitly set by user.
+     *
+     * @param string $name Property name.
+     *
+     * @return bool
+     *
+     * @internal
+     */
+    public function isExplicitlySet($name)
+    {
+        return ArrayUtils::get($this->explicitlySetKeys, StringUtils::snakeCaseToCamelCase($name), false);
     }
 
     /**
@@ -145,6 +166,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
             $propertyName = StringUtils::snakeCaseToCamelCase(ArrayUtils::get(static::$aliases, $name, $name));
             if (property_exists(static::class, $propertyName)) {
                 $this->$propertyName = $value;
+
+                $this->explicitlySetKeys[$propertyName] = true;
             }
         }
 
@@ -316,8 +339,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
         // set class properties
         foreach (self::exportableKeys($includeSensitive) as $key) {
             $propertyName = StringUtils::snakeCaseToCamelCase($key);
-            if (property_exists(static::class, $propertyName) &&
-                ($includeEmptyKeys || $this->$propertyName !== null)
+            if (property_exists(static::class, $propertyName)
+                && ($includeEmptyKeys || $this->$propertyName !== null)
             ) {
                 $keys[$key] = $this->$propertyName;
             }

@@ -65,6 +65,21 @@ class ConfigurationTest extends UnitTestCase
         );
     }
 
+    public function testConfigKeyExplicitlySet()
+    {
+        $config = Configuration::fromCloudinaryUrl($this->cloudinaryUrl);
+
+        self::assertTrue($config->cloud->isExplicitlySet('cloud_name'));
+
+        self::assertTrue($config->url->secure); // configuration default is set to true.
+        self::assertFalse($config->url->isExplicitlySet('secure')); // it was not set by user.
+
+        // set the property
+        $config->url->secure = false;
+
+        self::assertTrue($config->url->isExplicitlySet('secure'));
+    }
+
     public function testConfigJsonSerialize()
     {
         $jsonConfig = json_encode(Configuration::fromCloudinaryUrl($this->cloudinaryUrl));
