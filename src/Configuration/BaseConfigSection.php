@@ -90,7 +90,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
      */
     public function __set($name, $value)
     {
-        $this->$name                    = $value;
+        $this->$name = $value;
+
         $this->explicitlySetKeys[$name] = true;
     }
 
@@ -164,7 +165,8 @@ abstract class BaseConfigSection implements ConfigurableInterface
         foreach ($validParams as $name => $value) {
             $propertyName = StringUtils::snakeCaseToCamelCase(ArrayUtils::get(static::$aliases, $name, $name));
             if (property_exists(static::class, $propertyName)) {
-                $this->$propertyName                    = $value;
+                $this->$propertyName = $value;
+
                 $this->explicitlySetKeys[$propertyName] = true;
             }
         }

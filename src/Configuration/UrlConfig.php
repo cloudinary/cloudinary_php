@@ -65,7 +65,7 @@ class UrlConfig extends BaseConfigSection
     const DEFAULT_ANALYTICS = true;
 
     /**
-     * Default responsice width transformation.
+     * Default responsive width transformation.
      */
     const DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = 'c_limit,w_auto';
 
