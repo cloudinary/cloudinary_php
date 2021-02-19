@@ -1,3 +1,13 @@
+2.0.3 / 2021-02-19
+==================
+
+  * Fix sorting of transformation parameters. 
+    Important! This fix produces different URLs for affected actions (Not relevant for `Media::fromParams`)
+  * Fix `Media::fromParams` configuration consumption
+  * Fix flags serialisation
+  * Improve tests of `users` Provisioning API method
+  * Fix metadata fields deletion after tests
+
 2.0.2 / 2021-02-11
 ==================
 
