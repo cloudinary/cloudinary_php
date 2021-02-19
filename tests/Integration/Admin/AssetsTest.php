@@ -473,7 +473,7 @@ final class AssetsTest extends IntegrationTestCase
 
         self::assertAssetDeleted($deleteResult, self::$BACKUP_1_PUBLIC_ID);
         self::assertNotEquals(self::$BACKUP_1_ASSET_FIRST['bytes'], self::$BACKUP_1_ASSET_SECOND['bytes']);
-
+        sleep(1); // prevent race
         $asset = self::$adminApi->asset(self::$BACKUP_1_PUBLIC_ID, ['versions' => true]);
 
         $restoreFirstResult  = self::$adminApi->restore(
