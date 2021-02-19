@@ -204,7 +204,12 @@ abstract class BaseAsset implements AssetInterface
         $configuration = (new Configuration(Configuration::instance()));
 
         # set v1 defaults
-        $configuration->url->secure = false;
+        if (!$configuration->url->isExplicitlySet('secure')) {
+            $configuration->url->secure(false);
+        }
+        if (!$configuration->url->isExplicitlySet('analytics')) {
+            $configuration->url->analytics(false);
+        }
 
         $configuration->importJson($params);
         $configuration->validate();
