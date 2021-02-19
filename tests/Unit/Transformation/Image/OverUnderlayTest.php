@@ -114,7 +114,7 @@ final class OverUnderlayTest extends TestCase
     public function testOverlayPosition()
     {
         self::assertEquals(
-            'l_test/fl_layer_apply,fl_no_overflow.tiled,x_10,y_20',
+            'l_test/fl_layer_apply,fl_no_overflow,fl_tiled,x_10,y_20',
             (string)(new Transformation())
                 ->overlay(Overlay::source('test')->position(Position::absolute(10, 20)->tiled()->allowOverflow(false)))
         );

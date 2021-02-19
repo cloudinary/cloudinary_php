@@ -273,9 +273,11 @@ class ArrayUtils
      */
     public static function implodeActionQualifiers(...$qualifiers)
     {
-        sort($qualifiers, SORT_STRING);
+        $serializedQualifiers = array_map('strval', $qualifiers);
 
-        return self::implodeFiltered(',', $qualifiers);
+        sort($serializedQualifiers);
+
+        return self::implodeFiltered(',', $serializedQualifiers);
     }
 
     /**

@@ -32,7 +32,7 @@ final class VideoTranscodeTest extends TestCase
         );
 
         self::assertEquals(
-            'dl_5,f_webp,fl_animated.awebp,vs_10',
+            'dl_5,f_webp,fl_animated,fl_awebp,vs_10',
             (string)Transcode::toAnimated(AnimatedFormat::webp())->sampling(10)->delay(5)
         );
     }

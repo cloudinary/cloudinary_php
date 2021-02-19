@@ -65,16 +65,16 @@ final class FormatTest extends TestCase
 
         $ffl->progressive(Progressive::steep())->preserveTransparency();
 
-        self::assertEquals('f_auto,fl_lossy.preserve_transparency.progressive:steep', (string)$ffl);
+        self::assertEquals('f_auto,fl_lossy,fl_preserve_transparency,fl_progressive:steep', (string)$ffl);
     }
 
     public function testAnimatedFormat()
     {
         self::assertEquals('f_auto,fl_animated', (string)AnimatedFormat::auto());
         self::assertEquals('f_gif,fl_animated', (string)AnimatedFormat::gif());
-        self::assertEquals('f_webp,fl_animated.awebp', (string)AnimatedFormat::webp());
-        self::assertEquals('f_png,fl_animated.apng', (string)AnimatedFormat::png());
+        self::assertEquals('f_webp,fl_animated,fl_awebp', (string)AnimatedFormat::webp());
+        self::assertEquals('f_png,fl_animated,fl_apng', (string)AnimatedFormat::png());
 
-        self::assertEquals('f_webp,fl_animated.awebp.lossy', (string)AnimatedFormat::webp()->lossy());
+        self::assertEquals('f_webp,fl_animated,fl_awebp,fl_lossy', (string)AnimatedFormat::webp()->lossy());
     }
 }

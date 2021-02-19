@@ -246,19 +246,7 @@ abstract class BaseAction extends BaseComponent
      */
     protected static function serializeFlags($flags)
     {
-        ksort($flags);
-
-        $result = array_map(
-            static function (FlagQualifier $flag) {
-                return ArrayUtils::implodeQualifierValues(
-                    $flag->getFlagName(),
-                    rawurlencode(StringUtils::encodeDot($flag->getValue()))
-                );
-            },
-            array_values($flags)
-        );
-
-        return (string)new FlagQualifier(ArrayUtils::implodeFiltered('.', $result));
+        return ArrayUtils::implodeActionQualifiers(...array_values($flags));
     }
 
     /**
