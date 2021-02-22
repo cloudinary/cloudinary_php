@@ -222,18 +222,20 @@ class Utils
     /**
      * Fixes array encoding.
      *
-     * http_build_query encodes a simple array:
-     *   $arr = ['v0', 'v1', ... ,'vn1]
+     * http_build_query encodes a simple array value:
+     *   ['arr' => [v0', 'v1', ... ,'vn1]]
      * as:
      *   arr[0]=v0&arr[1]=v1&...&arr[n]=vn
      *
-     * The issue with this encoding, is that on the server not written in PHP,
+     * The issue with this encoding is that on the server written not in PHP,
      * this query is parsed as an associative array/hashmap/dictionary of form:
      *   {
-     *      '0' : 'v0',
-     *      '1' : 'v1',
-     *      ...
-     *      'n' : 'vn'
+     *     "arr": {
+     *       "0" : "v0",
+     *       "1" : "v1",
+     *       ...
+     *       "n" : "vn"
+     *     }
      *   }
      *
      * To avoid this undesired behaviour, indices must be removed, so the query string would look like:

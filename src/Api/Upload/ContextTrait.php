@@ -104,7 +104,7 @@ trait ContextTrait
     {
         $params = [
             'context'    => ApiUtils::serializeContext($context),
-            'public_ids' => ApiUtils::serializeSimpleApiParam($publicIds),
+            'public_ids' => ArrayUtils::build($publicIds),
             'type'       => ArrayUtils::get($options, 'type'),
             'command'    => $command,
         ];

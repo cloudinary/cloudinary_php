@@ -133,7 +133,7 @@ class BaseApiClient
      */
     public function getAsync($endPoint, $queryParams = [])
     {
-        return $this->callAsync(HttpMethod::GET, $endPoint, ['query' => $queryParams]);
+        return $this->callAsync(HttpMethod::GET, $endPoint, ['query' => Utils::buildHttpQuery($queryParams)]);
     }
 
     /**
@@ -196,7 +196,7 @@ class BaseApiClient
      */
     public function delete($endPoint, $fields = [])
     {
-        return $this->callAsync(HttpMethod::DELETE, $endPoint, ['body' => Utils::buildHttpQuery($fields)])->wait();
+        return $this->callAsync(HttpMethod::DELETE, $endPoint, ['form_params' => $fields])->wait();
     }
 
     /**
@@ -258,7 +258,7 @@ class BaseApiClient
      */
     public function put($endPoint, $fields)
     {
-        return $this->callAsync(HttpMethod::PUT, $endPoint, ['body' => Utils::buildHttpQuery($fields)])->wait();
+        return $this->callAsync(HttpMethod::PUT, $endPoint, ['form_params' => $fields])->wait();
     }
 
     /**

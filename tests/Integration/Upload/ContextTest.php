@@ -20,6 +20,7 @@ final class ContextTest extends IntegrationTestCase
         parent::setUpBeforeClass();
 
         self::uploadTestAssetImage(['public_id' => self::$UNIQUE_TEST_ID]);
+        self::uploadTestAssetImage(['public_id' => self::$UNIQUE_TEST_ID2]);
     }
 
     public static function tearDownAfterClass()
@@ -49,14 +50,17 @@ final class ContextTest extends IntegrationTestCase
     public function testRemoveAllContextFromImagesByPublicIDsArray()
     {
         self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID]);
+        self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID2]);
 
-        $result = self::$uploadApi->removeAllContext([self::$UNIQUE_TEST_ID]);
+        $result = self::$uploadApi->removeAllContext([self::$UNIQUE_TEST_ID, self::$UNIQUE_TEST_ID2]);
 
-        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals([self::$UNIQUE_TEST_ID, self::$UNIQUE_TEST_ID2], $result['public_ids']);
 
         $resource = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
+        $resource2 = self::$adminApi->asset(self::$UNIQUE_TEST_ID2);
 
         self::assertArrayNotHasKey('context', $resource);
+        self::assertArrayNotHasKey('context', $resource2);
     }
 
     /**
