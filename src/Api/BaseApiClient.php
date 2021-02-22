@@ -24,6 +24,7 @@ use Cloudinary\Configuration\ApiConfig;
 use Cloudinary\JsonUtils;
 use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
+use Cloudinary\Utils;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -52,15 +53,16 @@ class BaseApiClient
     /**
      * @var array Cloudinary API Error Classes mapping between http error codes and Cloudinary exceptions
      */
-    const CLOUDINARY_API_ERROR_CLASSES = [
-        StatusCode::BAD_REQUEST => BadRequest::class,
-        StatusCode::UNAUTHORIZED => AuthorizationRequired::class,
-        StatusCode::FORBIDDEN => NotAllowed::class,
-        StatusCode::NOT_FOUND => NotFound::class,
-        StatusCode::CONFLICT => AlreadyExists::class,
-        Twitter::ENHANCE_YOUR_CALM => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
-        StatusCode::INTERNAL_SERVER_ERROR => GeneralError::class,
-    ];
+    const CLOUDINARY_API_ERROR_CLASSES
+        = [
+            StatusCode::BAD_REQUEST           => BadRequest::class,
+            StatusCode::UNAUTHORIZED          => AuthorizationRequired::class,
+            StatusCode::FORBIDDEN             => NotAllowed::class,
+            StatusCode::NOT_FOUND             => NotFound::class,
+            StatusCode::CONFLICT              => AlreadyExists::class,
+            Twitter::ENHANCE_YOUR_CALM        => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
+            StatusCode::INTERNAL_SERVER_ERROR => GeneralError::class,
+        ];
 
     /**
      * @var Client The Http client instance. Performs actual network calls.
@@ -131,7 +133,7 @@ class BaseApiClient
      */
     public function getAsync($endPoint, $queryParams = [])
     {
-        return $this->callAsync(HttpMethod::GET, $endPoint, ['query' => $queryParams]);
+        return $this->callAsync(HttpMethod::GET, $endPoint, ['query' => Utils::buildHttpQuery($queryParams)]);
     }
 
     /**
@@ -317,6 +319,7 @@ class BaseApiClient
     {
         $endPoint = self::finalizeEndPoint($endPoint);
         $this->getLogger()->debug("Making async $method request", ['method' => $method, 'endPoint' => $endPoint]);
+
         return $this
             ->httpClient
             ->requestAsync($method, $endPoint, $options)
@@ -332,10 +335,11 @@ class BaseApiClient
                         $this->getLogger()->critical(
                             'Async request failed',
                             [
-                                'code' => $e->getCode(),
-                                'message' => $e->getMessage()
+                                'code'    => $e->getCode(),
+                                'message' => $e->getMessage(),
                             ]
                         );
+
                         return Promise\rejection_for($e);
                     }
                 },
@@ -343,8 +347,8 @@ class BaseApiClient
                     $this->getLogger()->critical(
                         'Async request failed',
                         [
-                            'code' => $error->getCode(),
-                            'message' => $error->getMessage()
+                            'code'    => $error->getCode(),
+                            'message' => $error->getMessage(),
                         ]
                     );
                     if ($error instanceof ClientException) {
@@ -391,9 +395,9 @@ class BaseApiClient
 
         if ($statusCode !== StatusCode::OK) {
             if (array_key_exists($statusCode, self::CLOUDINARY_API_ERROR_CLASSES)) {
-                $errorClass = self::CLOUDINARY_API_ERROR_CLASSES[$statusCode];
+                $errorClass   = self::CLOUDINARY_API_ERROR_CLASSES[$statusCode];
                 $responseJson = $this->parseJsonResponse($response);
-                $message = ArrayUtils::get(
+                $message      = ArrayUtils::get(
                     $responseJson['error']['message'],
                     'message',
                     $responseJson['error']['message']
@@ -402,19 +406,19 @@ class BaseApiClient
                     'Request to Cloudinary server returned an error',
                     [
                         'statusCode' => $statusCode,
-                        'message' => $message
+                        'message'    => $message,
 
                     ]
                 );
                 throw new $errorClass($message);
             }
             $message = "Server returned unexpected status code - {$response->getStatusCode()} - " .
-                StringUtils::truncateMiddle($response->getBody());
+                       StringUtils::truncateMiddle($response->getBody());
             $this->getLogger()->critical($message);
             throw new GeneralError($message);
         }
 
-        $responseJson = $this->parseJsonResponse($response);
+        $responseJson    = $this->parseJsonResponse($response);
         $responseHeaders = $response->getHeaders();
 
         return new ApiResponse($responseJson, $responseHeaders);

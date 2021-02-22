@@ -20,7 +20,7 @@ use ReflectionException;
 use ReflectionMethod;
 
 
-if (!defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+if (! defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
     //PHP < 7.2 Define it as 0 so it does nothing
     define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
 }
@@ -39,6 +39,7 @@ abstract class CloudinaryTestCase extends TestCase
     protected static $UNIQUE_TEST_TAG;
     protected static $ASSET_TAGS;
     protected static $UNIQUE_TEST_ID;
+    protected static $UNIQUE_TEST_ID2;
 
     protected static $skipAllTests = false;
     protected static $skipReason;
@@ -47,11 +48,12 @@ abstract class CloudinaryTestCase extends TestCase
     {
         parent::setUpBeforeClass();
 
-        self::$SUFFIX = getenv('TRAVIS_JOB_ID') ?: mt_rand(11111, 99999);
-        self::$TEST_TAG = 'cloudinary_php_v' . str_replace(['.', '-'], '_', Cloudinary::VERSION);
+        self::$SUFFIX          = getenv('TRAVIS_JOB_ID') ?: mt_rand(11111, 99999);
+        self::$TEST_TAG        = 'cloudinary_php_v' . str_replace(['.', '-'], '_', Cloudinary::VERSION);
         self::$UNIQUE_TEST_TAG = self::$TEST_TAG . '_' . self::$SUFFIX;
-        self::$UNIQUE_TEST_ID = self::$UNIQUE_TEST_TAG;
-        self::$ASSET_TAGS = [self::$TEST_TAG, self::$UNIQUE_TEST_TAG];
+        self::$UNIQUE_TEST_ID  = self::$UNIQUE_TEST_TAG;
+        self::$UNIQUE_TEST_ID2 = self::$UNIQUE_TEST_ID . '_2';
+        self::$ASSET_TAGS      = [self::$TEST_TAG, self::$UNIQUE_TEST_TAG];
     }
 
     /**
@@ -175,6 +177,7 @@ abstract class CloudinaryTestCase extends TestCase
         } catch (ReflectionException $e) {
             // oops
             self::fail((string)$e);
+
             // we actually never get here
             return null;
         }

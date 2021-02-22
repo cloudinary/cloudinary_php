@@ -57,24 +57,28 @@ trait ArchiveTrait
             'version_id',
         ];
 
+        $arrayParams = [
+            'prefixes',
+            'public_ids',
+            'fully_qualified_public_ids',
+            'tags',
+            'target_tags',
+        ];
 
         $complexParams = [
-            'prefixes'                   => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'prefixes')),
-            'public_ids'                 => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'public_ids')),
-            'fully_qualified_public_ids' => ApiUtils::serializeSimpleApiParam(
-                ArrayUtils::get($options, 'fully_qualified_public_ids')
-            ),
-            'tags'                       => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
-            'target_tags'                => ApiUtils::serializeSimpleApiParam(
-                (ArrayUtils::get($options, 'target_tags'))
-            ),
-            'transformations'            => ApiUtils::serializeAssetTransformations(
+            'transformations' => ApiUtils::serializeAssetTransformations(
                 ArrayUtils::get($options, 'transformations')
             ),
         ];
 
+        $arrayParamValues = [];
+
+        foreach ($arrayParams as $arrayParam) {
+            $arrayParamValues[$arrayParam] = ArrayUtils::build(ArrayUtils::get($options, $arrayParam));
+        }
+
         return ApiUtils::finalizeUploadApiParams(
-            array_merge(ArrayUtils::whitelist($options, $simpleParams), $complexParams)
+            array_merge(ArrayUtils::whitelist($options, $simpleParams), $arrayParamValues, $complexParams)
         );
     }
 
@@ -139,6 +143,7 @@ trait ArchiveTrait
      *
      * @param array      $options                 Additional options. Can be one of the following:
      *
+     * @return string The resulting archive URL.
      * @var string       $resource_type           The resource type of files to include in the archive.
      *                                     Must be one of image | video | raw.
      * @var string       $type                    The specific file delivery type of resources:
@@ -173,7 +178,6 @@ trait ArchiveTrait
      *                                     generated archive file (for later housekeeping via the admin API).
      * @var string       $keep_derived            (false) keep the derived images used for generating the archive.
      *
-     * @return string The resulting archive URL.
      */
     public function downloadArchiveUrl($options = [])
     {
@@ -229,7 +233,7 @@ trait ArchiveTrait
      */
     public function downloadBackedupAsset($assetId, $versionId)
     {
-        $options['asset_id'] = $assetId;
+        $options['asset_id']   = $assetId;
         $options['version_id'] = $versionId;
 
         $params = self::buildArchiveParams($options);
