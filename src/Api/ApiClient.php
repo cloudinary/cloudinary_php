@@ -118,16 +118,20 @@ class ApiClient extends BaseApiClient
     /**
      * Performs an HTTP POST request with the given form parameters asynchronously.
      *
+     * Please note that form parameters are encoded in a slightly different way, see Utils::buildHttpQuery for details.
+     *
      * @param string|array $endPoint   The API endpoint path.
      * @param array        $formParams The form parameters
      *
      * @return PromiseInterface
      *
+     * @see Utils::buildHttpQuery
+     *
      * @internal
      */
     public function postFormAsync($endPoint, $formParams)
     {
-        return $this->callAsync(HttpMethod::POST, $endPoint, ['form_params' => $formParams]);
+        return $this->callAsync(HttpMethod::POST, $endPoint, ['body' => Utils::buildHttpQuery($formParams)]);
     }
 
     /**

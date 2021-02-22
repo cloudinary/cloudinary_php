@@ -15,6 +15,7 @@ use Cloudinary\Api\ApiUtils;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Configuration\CloudConfig;
+use Cloudinary\Utils;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
@@ -78,7 +79,7 @@ class UploadApi
         $baseUrl = $this->apiClient->getBaseUri();
         $path    = self::getUploadApiEndPoint($endPoint, ['resource_type' => $assetType]);
 
-        return ArrayUtils::implodeFiltered('?', ["{$baseUrl}{$path}", http_build_query($params)]);
+        return ArrayUtils::implodeFiltered('?', ["{$baseUrl}{$path}", Utils::buildHttpQuery($params)]);
     }
 
 
