@@ -56,6 +56,7 @@ trait UploadTrait
             'eval',
             'exif',
             'faces',
+            'filename_override',
             'folder',
             'format',
             'image_metadata',

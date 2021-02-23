@@ -504,4 +504,23 @@ final class UploadApiTest extends IntegrationTestCase
         self::assertRegExp('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['url']);
         self::assertRegExp('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
     }
+
+    /**
+     * Should successfully override original_filename.
+     *
+     * @throws ApiError
+     */
+    public function testFilenameOverride()
+    {
+        $asset = self::$uploadApi->upload(
+            'http://cloudinary.com/images/old_logo.png',
+            [
+                'filename_override' => 'overridden',
+                'tags' => self::$ASSET_TAGS
+            ]
+        );
+
+        self::assertValidAsset($asset);
+        self::assertEquals('overridden', $asset['original_filename']);
+    }
 }
