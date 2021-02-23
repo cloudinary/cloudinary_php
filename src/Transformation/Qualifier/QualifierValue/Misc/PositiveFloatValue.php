@@ -40,6 +40,9 @@ class PositiveFloatValue extends QualifierMultiValue
         }
 
         if (! is_numeric($floatValue)) {
+            if (!method_exists($floatValue, '__toString')) {
+                throw new InvalidArgumentException("Argument should be a number or a string");
+            }
             throw new InvalidArgumentException("'$floatValue' should be a number or a string");
         }
         if ($floatValue < 0) {
