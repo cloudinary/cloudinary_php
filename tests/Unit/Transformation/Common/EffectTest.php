@@ -23,6 +23,7 @@ use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Region;
 use Cloudinary\Transformation\Reshape;
 use Cloudinary\Transformation\SimulateColorBlind;
+use Cloudinary\Transformation\StyleTransfer;
 use Cloudinary\Transformation\WhiteBalance;
 use Cloudinary\Transformation\Xmp;
 use OutOfRangeException;
@@ -518,6 +519,16 @@ final class EffectTest extends TestCase
             'e_vectorize:colors:2:corners:25:despeckle:50:detail:0.5:paths:100',
             (string)Effect::vectorize()->numOfColors(2)->detailsLevel(0.5)->despeckleLevel(50)->cornersLevel(25)
                                                                                               ->paths(100)
+        );
+
+        $effect = new StyleTransfer('vectorize', 40);
+        $effect->preserveColor(true);
+        $effect->strength(20);
+        $effect->source('lighthouse');
+
+        self::assertEquals(
+            'e_style_transfer:preserve_color:20,l_lighthouse/fl_layer_apply',
+            (string)$effect
         );
     }
 
