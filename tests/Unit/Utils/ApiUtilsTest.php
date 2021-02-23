@@ -11,6 +11,8 @@
 namespace Cloudinary\Test\Unit\Utils;
 
 use Cloudinary\Api\ApiUtils;
+use Cloudinary\Transformation\Format;
+use Cloudinary\Transformation\Transformation;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,7 +21,9 @@ use PHPUnit\Framework\TestCase;
 final class ApiUtilsTest extends TestCase
 {
     /**
-     * @return array
+     * Data provider for the method `testSerializeArrayOfArrays()`.
+     *
+     * @return array[]
      */
     public function dataProviderSerializeArrayOfArrays()
     {
@@ -56,6 +60,8 @@ final class ApiUtilsTest extends TestCase
     }
 
     /**
+     * Data provider for the method `testSerializeHeaders()`.
+     *
      * @return array[]
      */
     public function dataProviderSerializeHeaders()
@@ -89,7 +95,7 @@ final class ApiUtilsTest extends TestCase
     }
 
     /**
-     * Verifies that different headers are correctly serialized
+     * Verifies that different headers are correctly serialized.
      *
      * @param $value
      * @param $result
@@ -117,6 +123,75 @@ final class ApiUtilsTest extends TestCase
         self::assertEquals(
             $result,
             ApiUtils::serializeArrayOfArrays($value)
+        );
+    }
+
+    /**
+     * Verifies that an asset transformations is correctly serialized.
+     */
+    public function testTransformationComplexExpressions()
+    {
+        $transformation1 = new Transformation();
+        $transformation1->scale(3204);
+
+        $transformation2 = new Transformation();
+        $transformation2->rotate(127);
+        $transformation2->format(Format::jpg());
+
+        self::assertEquals(
+            'c_scale,w_3204|a_127/f_jpg',
+            ApiUtils::serializeAssetTransformations([$transformation1, $transformation2])
+        );
+    }
+
+    /**
+     * Data provider for the method `testSerializeContext()`.
+     *
+     * @return array[]
+     */
+    public function dataProviderSerializeContext()
+    {
+        return [
+            [
+                'value' => '',
+                'result' => '',
+            ],
+            [
+                'value' => null,
+                'result' => '',
+            ],
+            [
+                'value' => 0,
+                'result' => '0',
+            ],
+            [
+                'value' => [],
+                'result' => '',
+            ],
+            [
+                'value' => ['!@#$%^&?*-+=[]{}()' => '!@#$%^&?*-+=[]{}()'],
+                'result' => '!@#$%^&?*-+\=[]{}()=!@#$%^&?*-+\=[]{}()',
+            ],
+            [
+                'value' => ['caption' => 'cap=caps', 'alt' => 'alternative|alt=a'],
+                'result' => 'caption=cap\=caps|alt=alternative\|alt\=a',
+            ],
+        ];
+    }
+
+    /**
+     * Verifies that context data is correctly serialized.
+     *
+     * @param $value
+     * @param $result
+     *
+     * @dataProvider dataProviderSerializeContext
+     */
+    public function testSerializeContext($value, $result)
+    {
+        self::assertEquals(
+            $result,
+            ApiUtils::serializeContext($value)
         );
     }
 }
