@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Integration\Admin;
 
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Api\Exception\NotFound;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 
@@ -165,5 +166,17 @@ final class FoldersTest extends IntegrationTestCase
         );
 
         return $result;
+    }
+
+    /**
+     * Should throw exception on non-existing folder.
+     *
+     * @throws ApiError
+     */
+    public function testFolderListingError()
+    {
+        $this->expectException(NotFound::class);
+
+        self::$adminApi->subfolders('non-existent-subfolder');
     }
 }
