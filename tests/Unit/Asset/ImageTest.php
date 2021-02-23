@@ -18,7 +18,6 @@ use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\Background;
 use Cloudinary\Transformation\Conditional;
 use Cloudinary\Transformation\Expression\UVar;
-use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\ImageSource;
 use Cloudinary\Transformation\Pad;
