@@ -60,6 +60,7 @@ final class FoldersTest extends IntegrationTestCase
     {
         self::cleanupTestAssets();
         self::cleanupFolder(self::$FOLDER_NAME);
+        self::cleanupFolder(self::$FOLDER2_NAME);
 
         parent::tearDownAfterClass();
     }
