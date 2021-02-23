@@ -12,8 +12,6 @@ namespace Cloudinary\Test\Helpers;
 
 /**
  * Class Addon
- *
- * @package Cloudinary\Test\Helpers
  */
 class Addon
 {
@@ -22,7 +20,10 @@ class Addon
     const AZURE                       = 'azure';                     // Microsoft azure video indexer.
     const BG_REMOVAL                  = 'bgremoval';                 // Cloudinary AI background removal.
     const FACIAL_ATTRIBUTES_DETECTION = 'facialattributesdetection'; // Advanced facial attributes detection.
-    const GOOGLE                      = 'google';                    // Google AI video moderation, google AI, etc
+    const GOOGLE                      = 'google';                    // Google AI video moderation, google AI
+                                                                     // video transcription, google auto tagging,
+                                                                     // google automatic video tagging,
+                                                                     // google translation.
     const IMAGGA                      = 'imagga';                    // Imagga auto tagging, crop and scale.
     const JPEGMINI                    = 'jpegmini';                  // JPEGmini image optimization.
     const LIGHTROOM                   = 'lightroom';                 // Adobe photoshop lightroom (BETA).
@@ -31,7 +32,9 @@ class Addon
     const OBJECT_AWARE_CROPPING       = 'objectawarecropping';       // Cloudinary object-aware cropping.
     const OCR                         = 'ocr';                       // OCR text detection and extraction.
     const PIXELZ                      = 'pixelz';                    // Remove the background.
-    const REKOGNITION                 = 'rekognition';               // Amazon rekognition AI moderation, etc.
+    const REKOGNITION                 = 'rekognition';               // Amazon rekognition AI moderation,
+                                                                     // amazon rekognition auto tagging,
+                                                                     // amazon rekognition celebrity detection.
     const URL2PNG                     = 'url2png';                   // URL2PNG website screenshots.
     const VIESUS                      = 'viesus';                    // VIESUS automatic image enhancement.
     const WEBPURIFY                   = 'webpurify';                 // WebPurify image moderation.
