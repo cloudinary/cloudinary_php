@@ -31,7 +31,6 @@ final class FoldersTest extends IntegrationTestCase
     private static $SUB_FOLDER_DELETE_FULL_PATH;
     private static $SUB_FOLDER_SINGLE_FULL_PATH;
 
-
     /**
      * @throws ApiError
      */
@@ -65,7 +64,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * Get a list of all root folders
+     * Get a list of all root folders.
      */
     public function testListRootFolders()
     {
@@ -86,7 +85,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * Get sub folders for a given folder
+     * Get sub folders for a given folder.
      *
      * @throws ApiError
      */
@@ -115,7 +114,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * Create folder
+     * Create folder.
      *
      * @throws ApiError
      */
@@ -137,7 +136,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * create a folder and asserts that creation succeeded
+     * Create a folder and asserts that creation succeeded.
      *
      * @param string $path
      *
