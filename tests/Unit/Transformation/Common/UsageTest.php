@@ -26,6 +26,7 @@ use Cloudinary\Transformation\Border;
 use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\Codec\VideoCodecLevel;
 use Cloudinary\Transformation\Codec\VideoCodecProfile;
+use Cloudinary\Transformation\ColorSpace;
 use Cloudinary\Transformation\Compass;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Conditional;
@@ -587,7 +588,8 @@ final class UsageTest extends TestCase
     public function testParametersBuilder()
     {
         self::assertEquals(
-            'w_100/h_200/ar_19:9/x_300/y_400/co_aquamarine/cn_cv',
+            'w_100/h_200/ar_19:9/x_300/y_400/co_aquamarine/cn_cv/d_public_id/dl_1/dn_1.5/l_id/fl_layer_apply/' .
+            'u_id/fl_layer_apply/pg_2/bo_rgb:ff00ff/dpr_2.5/so_2.51/eo_3.01/du_5/cs_srgb/z_1.1/ac_aac/af_8000',
             (string)(new Transformation())
                 ->addAction(Qualifier::width(100))
                 ->addAction(Qualifier::height(200))
@@ -596,6 +598,21 @@ final class UsageTest extends TestCase
                 ->addAction(Qualifier::y(400))
                 ->addAction(Qualifier::color(ColorValue::aquamarine()))
                 ->addAction(Qualifier::generic('cn', 'cv'))
+                ->addAction(Qualifier::defaultImage('public_id'))
+                ->addAction(Qualifier::delay(1))
+                ->addAction(Qualifier::density(1.5))
+                ->addAction(Qualifier::overlay('id'))
+                ->addAction(Qualifier::underlay('id'))
+                ->addAction(Qualifier::page(2))
+                ->addAction(Qualifier::border('#ff00ff'))
+                ->addAction(Qualifier::dpr(2.5))
+                ->addAction(Qualifier::startOffset(2.51))
+                ->addAction(Qualifier::endOffset(3.01))
+                ->addAction(Qualifier::duration(5))
+                ->addAction(Qualifier::colorSpace(ColorSpace::SRGB))
+                ->addAction(Qualifier::zoom(1.1))
+                ->addAction(Qualifier::audioCodec(AudioCodec::AAC))
+                ->addAction(Qualifier::audioFrequency(AudioFrequency::FREQ8000))
         );
     }
 
