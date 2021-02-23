@@ -384,27 +384,67 @@ final class UsageTest extends TestCase
         );
     }
 
+    /**
+     * Data provider for the `testFormat()` test.
+     *
+     * @return string[][]
+     */
+    public function formatDataProvider()
+    {
+        return [
+            [Format::AUTO, 'auto'],
+            [Format::GIF, 'gif'],
+            [Format::PNG, 'png'],
+            [Format::JPG, 'jpg'],
+            [Format::BMP, 'bmp'],
+            [Format::ICO, 'ico'],
+            [Format::PDF, 'pdf'],
+            [Format::TIFF, 'tiff'],
+            [Format::EPS, 'eps'],
+            [Format::JPC, 'jpc'],
+            [Format::JP2, 'jp2'],
+            [Format::PSD, 'psd'],
+            [Format::WEBP, 'webp'],
+            [Format::SVG, 'svg'],
+            [Format::WDP, 'wdp'],
+            [Format::DJVU, 'djvu'],
+            [Format::AI, 'ai'],
+            [Format::FLIF, 'flif'],
+            [Format::AVI, 'videoAvi'],
+            [Format::MP4, 'videoMp4'],
+            [Format::WEBM, 'videoWebm'],
+            [Format::MOV, 'videoMov'],
+            [Format::OGV, 'videoOgv'],
+            [Format::WMV, 'videoWmv'],
+            [Format::MPEG, 'videoMpeg'],
+            [Format::FLV, 'videoFlv'],
+            [Format::M3U8, 'videoM3u8'],
+            [Format::TS, 'videoTs'],
+            [Format::MKV, 'videoMkv'],
+            [Format::MPD, 'videoMpd'],
+            [Format::MP3, 'audioMp3'],
+            [Format::AAC, 'audioAac'],
+            [Format::M4A, 'audioM4a'],
+            [Format::OGG, 'audioOgg'],
+            [Format::WAV, 'audioWav'],
+            [Format::AIFF, 'audioAiff'],
+            [Format::FLAC, 'audioFlac'],
+            [Format::AMR, 'audioAmr'],
+            [Format::MIDI, 'audioMidi'],
+        ];
+    }
 
-    public function testFormat()
+    /**
+     * @dataProvider formatDataProvider
+     *
+     * @param string $format
+     * @param string $method
+     */
+    public function testFormat($format, $method)
     {
         self::assertEquals(
-            'f_auto',
-            (string)(new Transformation())->format(Format::auto())
-        );
-
-        self::assertEquals(
-            'f_png',
-            (string)(new Transformation())->format(Format::png())
-        );
-
-        self::assertEquals(
-            'f_mkv',
-            (string)(new Transformation())->format(Format::videoMkv())
-        );
-
-        self::assertEquals(
-            'f_aac',
-            (string)(new Transformation())->format(Format::audioAac())
+            'f_' . $format,
+            (string)(new Transformation())->format(Format::{$method}())
         );
     }
 
