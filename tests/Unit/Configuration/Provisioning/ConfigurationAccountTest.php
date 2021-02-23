@@ -10,7 +10,6 @@
 
 namespace Cloudinary\Test\Unit\Configuration\Provisioning;
 
-
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
 use Cloudinary\Test\Unit\Provisioning\ProvisioningUnitTestCase;
 
