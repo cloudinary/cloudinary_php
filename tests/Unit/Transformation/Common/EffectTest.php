@@ -393,24 +393,56 @@ final class EffectTest extends TestCase
         );
     }
 
+    /**
+     * Data provider for testArtisticFilter()
+     *
+     * @return array
+     */
+    public function artisticFilterDataProvider()
+    {
+        return [
+            ['al_dente', 'alDente'],
+            ['athena', 'athena'],
+            ['audrey', 'audrey'],
+            ['aurora', 'aurora'],
+            ['daguerre', 'daguerre'],
+            ['eucalyptus', 'eucalyptus'],
+            ['fes', 'fes'],
+            ['frost', 'frost'],
+            ['hairspray', 'hairspray'],
+            ['hokusai', 'hokusai'],
+            ['incognito', 'incognito'],
+            ['linen', 'linen'],
+            ['peacock', 'peacock'],
+            ['primavera', 'primavera'],
+            ['quartz', 'quartz'],
+            ['red_rock', 'redRock'],
+            ['refresh', 'refresh'],
+            ['sizzle', 'sizzle'],
+            ['sonnet', 'sonnet'],
+            ['ukulele', 'ukulele'],
+            ['zorro', 'zorro']
+        ];
+    }
 
-    public function testArtisticFilter()
+    /**
+     * Should create artistic filters.
+     *
+     * @dataProvider artisticFilterDataProvider
+     *
+     * @param string $filter
+     * @param string $method
+     */
+    public function testArtisticFilter($filter, $method)
     {
         self::assertEquals(
-            'e_art:incognito',
-            (string)Effect::artisticFilter(ArtisticFilter::INCOGNITO)
+            'e_art:' . $filter,
+            (string)Effect::artisticFilter(ArtisticFilter::{$method}())
         );
+    }
 
-        self::assertEquals(
-            'e_art:al_dente',
-            (string)Effect::artisticFilter(ArtisticFilter::alDente())
-        );
-
-        self::assertEquals(
-            'e_art:red_rock',
-            (string)Effect::artisticFilter(ArtisticFilter::redRock())
-        );
-
+    public function testArtisticFilterCustom()
+    {
         self::assertEquals(
             'e_art:custom',
             (string)Effect::artisticFilter('custom')
@@ -481,6 +513,7 @@ final class EffectTest extends TestCase
             'e_vectorize',
             (string)Effect::vectorize()
         );
+
         self::assertEquals(
             'e_vectorize:colors:2:corners:25:despeckle:50:detail:0.5:paths:100',
             (string)Effect::vectorize()->numOfColors(2)->detailsLevel(0.5)->despeckleLevel(50)->cornersLevel(25)
