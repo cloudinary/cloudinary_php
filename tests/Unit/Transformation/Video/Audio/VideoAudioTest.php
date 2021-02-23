@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Unit\Transformation\Video\Audio;
 use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\AudioFrequency;
+use Cloudinary\Transformation\Background;
 use Cloudinary\Transformation\Fps;
 use Cloudinary\Transformation\KeyframeInterval;
 use Cloudinary\Transformation\Timeline;
@@ -118,5 +119,13 @@ final class VideoAudioTest extends UnitTestCase
                 (string)new KeyframeInterval($value[0])
             );
         }
+    }
+
+    public function testBlurredBackground()
+    {
+        self::assertStrEquals(
+            'b_blurred:400:15',
+            Background::blurred()->intensity(400)->brightness(15)
+        );
     }
 }
