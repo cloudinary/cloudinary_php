@@ -24,10 +24,14 @@ final class VideoAudioTest extends UnitTestCase
 {
     public function testAudioFrequency()
     {
-        self::assertEquals(
-            'af_44100',
-            (string)AudioFrequency::freq44100()
-        );
+        $af = [8000, 11025, 16000, 22050, 32000, 37800, 44056, 44100, 47250, 48000, 88200, 96000, 176400, 192000];
+
+        foreach ($af as $audioFrequency) {
+            self::assertEquals(
+                "af_$audioFrequency",
+                (string)AudioFrequency::{'freq' . $audioFrequency}()
+            );
+        }
     }
 
     public function testAudioCodec()
@@ -90,6 +94,11 @@ final class VideoAudioTest extends UnitTestCase
                 (string)Fps::fromParams($value[0])
             );
         }
+
+        self::assertEquals(
+            'fps_22-24',
+            (string)(new Fps())->min(22)->max(24)
+        );
     }
 
     public function testKeyframeInterval()
