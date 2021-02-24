@@ -120,12 +120,4 @@ final class VideoAudioTest extends UnitTestCase
             );
         }
     }
-
-    public function testBlurredBackground()
-    {
-        self::assertStrEquals(
-            'b_blurred:400:15',
-            Background::blurred()->intensity(400)->brightness(15)
-        );
-    }
 }
