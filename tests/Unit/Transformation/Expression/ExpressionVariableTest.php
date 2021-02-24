@@ -14,6 +14,7 @@ use Cloudinary\Transformation\Expression\PVar;
 use Cloudinary\Transformation\Expression\UVal;
 use Cloudinary\Transformation\Expression\UVar;
 use Cloudinary\Transformation\Variable\Variable;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,6 +39,23 @@ final class ExpressionVariableTest extends TestCase
         self::assertEquals('iw', (string)PVar::initialWidth());
         self::assertEquals('du', (string)PVar::duration());
         self::assertEquals('idu', (string)PVar::initialDuration());
+        self::assertEquals('ih', (string)PVar::initialHeight());
+        self::assertEquals('ar', (string)PVar::aspectRatio());
+        self::assertEquals('pc', (string)PVar::pageCount());
+        self::assertEquals('fc', (string)PVar::faceCount());
+        self::assertEquals('ils', (string)PVar::illustrationScore());
+        self::assertEquals('cp', (string)PVar::currentPage());
+        self::assertEquals('px', (string)PVar::pageX());
+        self::assertEquals('py', (string)PVar::pageY());
+        self::assertEquals('ctx', (string)PVar::context());
+    }
+
+    public function testInvalidPredefinedVariable()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid predefined variable name: ''");
+
+        new PVar('');
     }
 
     public function testUserValues()
