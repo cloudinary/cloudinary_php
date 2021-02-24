@@ -592,4 +592,23 @@ class MetadataFieldsTest extends IntegrationTestCase
         self::assertMetadataFieldDataSource($result);
         self::assertCount(3, $result['values']);
     }
+
+    /**
+     * Should sort by asc or desc in a metadata field datasource.
+     */
+    public function testSortMetadataFieldDatasource()
+    {
+        // datasource is set with values in the order v2, v3, v4
+        $result = self::$adminApi->sortMetadataFieldDatasource(self::$EXTERNAL_ID_SET_3, 'value', 'asc');
+
+        self::assertMetadataFieldDataSource($result);
+        // ascending order means v2 is the first value
+        self::assertEquals(self::$DATASOURCE_MULTIPLE[0]['value'], $result['values'][0]['value']);
+
+        $result = self::$adminApi->sortMetadataFieldDatasource(self::$EXTERNAL_ID_SET_3, 'value', 'desc');
+
+        self::assertMetadataFieldDataSource($result);
+        // descending order means v4 is the first value
+        self::assertEquals(self::$DATASOURCE_MULTIPLE[2]['value'], $result['values'][0]['value']);
+    }
 }

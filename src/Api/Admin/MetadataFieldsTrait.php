@@ -180,4 +180,24 @@ trait MetadataFieldsTrait
 
         return $this->apiClient->postJson($uri, $params);
     }
+
+    /**
+     * Sorts metadata field datasource. Currently supports only value.
+     *
+     * @param string $fieldExternalId The ID of the metadata field.
+     * @param string $sortBy          Criteria for the sort. Currently supports only value.
+     * @param string $direction       Optional (gets either asc or desc).
+     *
+     * @return ApiResponse
+     */
+    public function sortMetadataFieldDatasource($fieldExternalId, $sortBy, $direction = null)
+    {
+        $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource', 'sort'];
+        $params = [
+            'sort_by'   => $sortBy,
+            'direction' => $direction,
+        ];
+
+        return $this->apiClient->postJson($uri, $params);
+    }
 }
