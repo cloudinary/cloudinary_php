@@ -23,6 +23,7 @@ use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Region;
 use Cloudinary\Transformation\Reshape;
 use Cloudinary\Transformation\SimulateColorBlind;
+use Cloudinary\Transformation\StyleTransfer;
 use Cloudinary\Transformation\WhiteBalance;
 use Cloudinary\Transformation\Xmp;
 use OutOfRangeException;
@@ -393,24 +394,56 @@ final class EffectTest extends TestCase
         );
     }
 
+    /**
+     * Data provider for testArtisticFilter()
+     *
+     * @return array
+     */
+    public function artisticFilterDataProvider()
+    {
+        return [
+            ['al_dente', 'alDente'],
+            ['athena', 'athena'],
+            ['audrey', 'audrey'],
+            ['aurora', 'aurora'],
+            ['daguerre', 'daguerre'],
+            ['eucalyptus', 'eucalyptus'],
+            ['fes', 'fes'],
+            ['frost', 'frost'],
+            ['hairspray', 'hairspray'],
+            ['hokusai', 'hokusai'],
+            ['incognito', 'incognito'],
+            ['linen', 'linen'],
+            ['peacock', 'peacock'],
+            ['primavera', 'primavera'],
+            ['quartz', 'quartz'],
+            ['red_rock', 'redRock'],
+            ['refresh', 'refresh'],
+            ['sizzle', 'sizzle'],
+            ['sonnet', 'sonnet'],
+            ['ukulele', 'ukulele'],
+            ['zorro', 'zorro']
+        ];
+    }
 
-    public function testArtisticFilter()
+    /**
+     * Should create artistic filters.
+     *
+     * @dataProvider artisticFilterDataProvider
+     *
+     * @param string $filter
+     * @param string $method
+     */
+    public function testArtisticFilter($filter, $method)
     {
         self::assertEquals(
-            'e_art:incognito',
-            (string)Effect::artisticFilter(ArtisticFilter::INCOGNITO)
+            'e_art:' . $filter,
+            (string)Effect::artisticFilter(ArtisticFilter::{$method}())
         );
+    }
 
-        self::assertEquals(
-            'e_art:al_dente',
-            (string)Effect::artisticFilter(ArtisticFilter::alDente())
-        );
-
-        self::assertEquals(
-            'e_art:red_rock',
-            (string)Effect::artisticFilter(ArtisticFilter::redRock())
-        );
-
+    public function testArtisticFilterCustom()
+    {
         self::assertEquals(
             'e_art:custom',
             (string)Effect::artisticFilter('custom')
@@ -477,10 +510,22 @@ final class EffectTest extends TestCase
             (string)Effect::styleTransfer('lighthouse')->preserveColor()->strength(40)
         );
 
+        // Test instantiating an Effect and overwriting values passed to constructor
+        $effect = new StyleTransfer('source1', 40);
+        $effect->preserveColor(true);
+        $effect->strength(20);
+        $effect->source('source2');
+
+        self::assertEquals(
+            'e_style_transfer:preserve_color:20,l_source2/fl_layer_apply',
+            (string)$effect
+        );
+
         self::assertEquals(
             'e_vectorize',
             (string)Effect::vectorize()
         );
+
         self::assertEquals(
             'e_vectorize:colors:2:corners:25:despeckle:50:detail:0.5:paths:100',
             (string)Effect::vectorize()->numOfColors(2)->detailsLevel(0.5)->despeckleLevel(50)->cornersLevel(25)

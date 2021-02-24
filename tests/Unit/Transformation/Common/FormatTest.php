@@ -48,6 +48,14 @@ final class FormatTest extends TestCase
         self::assertEquals('f_aiff', (string)$ifb);
     }
 
+    public function testFormatMethod()
+    {
+        $f = new Format(Format::JPG);
+        $f->format(Format::GIF);
+
+        self::assertEquals('f_gif', (string)$f);
+    }
+
     public function testAutoFormat()
     {
         $af = Format::auto();

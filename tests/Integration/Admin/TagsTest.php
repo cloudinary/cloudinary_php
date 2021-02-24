@@ -45,7 +45,7 @@ final class TagsTest extends IntegrationTestCase
     /**
      * List tags of images
      *
-     * @throws \Cloudinary\Api\Exception\ApiError
+     * @throws ApiError
      */
     public function testListTagsOfImages()
     {

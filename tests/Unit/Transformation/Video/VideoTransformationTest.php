@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Unit\Transformation\Video;
 
 use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Adjust;
+use Cloudinary\Transformation\Argument\Range\Range;
 use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Fps;
@@ -26,6 +27,7 @@ use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\VideoEdit;
 use Cloudinary\Transformation\VideoEffect;
 use Cloudinary\Transformation\VideoTransformation;
+use UnexpectedValueException;
 
 /**
  * Class VideoTransformationTest
@@ -242,5 +244,21 @@ final class VideoTransformationTest extends UnitTestCase
             (string)(new Transformation())
                 ->hlsv3()
         );
+    }
+
+    public function testVideoTransformationRange()
+    {
+        self::assertEquals(
+            '1.2,3.4',
+            (string)(new Range([1.2, 3.4]))
+        );
+    }
+
+    public function testExceptionsVideoTransformationRange()
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('A valid Range is expected');
+
+        new Range([1.2, 3.4, 3.4]);
     }
 }

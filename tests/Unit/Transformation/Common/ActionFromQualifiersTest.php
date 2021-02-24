@@ -317,6 +317,10 @@ final class ActionFromQualifiersTest extends AssetTestCase
                 ['resource_type' => 'subtitles', 'public_id' => 'sample_sub_en.srt'],
                 'subtitles:sample_sub_en.srt',
             ],
+            'lut'                           => [
+                ['resource_type' => 'lut', 'public_id' => 'public_id'],
+                'lut:public_id',
+            ],
             'subtitles with font family and size' => [
                 [
                     'resource_type' => 'subtitles',

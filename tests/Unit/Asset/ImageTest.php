@@ -18,7 +18,6 @@ use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\Background;
 use Cloudinary\Transformation\Conditional;
 use Cloudinary\Transformation\Expression\UVar;
-use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\ImageSource;
 use Cloudinary\Transformation\Pad;
@@ -192,7 +191,7 @@ final class ImageTest extends AssetTestCase
     public function testImageTransformationFromParams()
     {
         self::assertImageUrl(
-            'e_cartoonify/r_max/co_lightblue,e_outline:100/b_lightblue/c_scale,h_300/' . self::IMAGE_NAME,
+            'e_cartoonify/r_max/co_lightblue,e_outline:100/b_lightblue/c_scale,h_300/eo_3,so_1/' . self::IMAGE_NAME,
             $this->image->addActionFromQualifiers(
                 [
                     'transformation' => [
@@ -201,6 +200,7 @@ final class ImageTest extends AssetTestCase
                         ['effect' => 'outline:100', 'color' => 'lightblue'],
                         ['background' => 'lightblue'],
                         ['height' => 300, 'crop' => 'scale'],
+                        ['offset' => '1..3'],
                     ],
                 ]
             )

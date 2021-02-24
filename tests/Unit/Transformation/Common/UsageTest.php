@@ -26,6 +26,7 @@ use Cloudinary\Transformation\Border;
 use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\Codec\VideoCodecLevel;
 use Cloudinary\Transformation\Codec\VideoCodecProfile;
+use Cloudinary\Transformation\ColorSpace;
 use Cloudinary\Transformation\Compass;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Conditional;
@@ -383,27 +384,67 @@ final class UsageTest extends TestCase
         );
     }
 
+    /**
+     * Data provider for the `testFormat()` test.
+     *
+     * @return string[][]
+     */
+    public function formatDataProvider()
+    {
+        return [
+            [Format::AUTO, 'auto'],
+            [Format::GIF, 'gif'],
+            [Format::PNG, 'png'],
+            [Format::JPG, 'jpg'],
+            [Format::BMP, 'bmp'],
+            [Format::ICO, 'ico'],
+            [Format::PDF, 'pdf'],
+            [Format::TIFF, 'tiff'],
+            [Format::EPS, 'eps'],
+            [Format::JPC, 'jpc'],
+            [Format::JP2, 'jp2'],
+            [Format::PSD, 'psd'],
+            [Format::WEBP, 'webp'],
+            [Format::SVG, 'svg'],
+            [Format::WDP, 'wdp'],
+            [Format::DJVU, 'djvu'],
+            [Format::AI, 'ai'],
+            [Format::FLIF, 'flif'],
+            [Format::AVI, 'videoAvi'],
+            [Format::MP4, 'videoMp4'],
+            [Format::WEBM, 'videoWebm'],
+            [Format::MOV, 'videoMov'],
+            [Format::OGV, 'videoOgv'],
+            [Format::WMV, 'videoWmv'],
+            [Format::MPEG, 'videoMpeg'],
+            [Format::FLV, 'videoFlv'],
+            [Format::M3U8, 'videoM3u8'],
+            [Format::TS, 'videoTs'],
+            [Format::MKV, 'videoMkv'],
+            [Format::MPD, 'videoMpd'],
+            [Format::MP3, 'audioMp3'],
+            [Format::AAC, 'audioAac'],
+            [Format::M4A, 'audioM4a'],
+            [Format::OGG, 'audioOgg'],
+            [Format::WAV, 'audioWav'],
+            [Format::AIFF, 'audioAiff'],
+            [Format::FLAC, 'audioFlac'],
+            [Format::AMR, 'audioAmr'],
+            [Format::MIDI, 'audioMidi'],
+        ];
+    }
 
-    public function testFormat()
+    /**
+     * @dataProvider formatDataProvider
+     *
+     * @param string $format
+     * @param string $method
+     */
+    public function testFormat($format, $method)
     {
         self::assertEquals(
-            'f_auto',
-            (string)(new Transformation())->format(Format::auto())
-        );
-
-        self::assertEquals(
-            'f_png',
-            (string)(new Transformation())->format(Format::png())
-        );
-
-        self::assertEquals(
-            'f_mkv',
-            (string)(new Transformation())->format(Format::videoMkv())
-        );
-
-        self::assertEquals(
-            'f_aac',
-            (string)(new Transformation())->format(Format::audioAac())
+            'f_' . $format,
+            (string)(new Transformation())->format(Format::{$method}())
         );
     }
 
@@ -587,7 +628,8 @@ final class UsageTest extends TestCase
     public function testParametersBuilder()
     {
         self::assertEquals(
-            'w_100/h_200/ar_19:9/x_300/y_400/co_aquamarine/cn_cv',
+            'w_100/h_200/ar_19:9/x_300/y_400/co_aquamarine/cn_cv/d_public_id/dl_1/dn_1.5/l_id/fl_layer_apply/' .
+            'u_id/fl_layer_apply/pg_2/bo_rgb:ff00ff/dpr_2.5/so_2.51/eo_3.01/du_5/cs_srgb/z_1.1/ac_aac/af_8000',
             (string)(new Transformation())
                 ->addAction(Qualifier::width(100))
                 ->addAction(Qualifier::height(200))
@@ -596,6 +638,21 @@ final class UsageTest extends TestCase
                 ->addAction(Qualifier::y(400))
                 ->addAction(Qualifier::color(ColorValue::aquamarine()))
                 ->addAction(Qualifier::generic('cn', 'cv'))
+                ->addAction(Qualifier::defaultImage('public_id'))
+                ->addAction(Qualifier::delay(1))
+                ->addAction(Qualifier::density(1.5))
+                ->addAction(Qualifier::overlay('id'))
+                ->addAction(Qualifier::underlay('id'))
+                ->addAction(Qualifier::page(2))
+                ->addAction(Qualifier::border('#ff00ff'))
+                ->addAction(Qualifier::dpr(2.5))
+                ->addAction(Qualifier::startOffset(2.51))
+                ->addAction(Qualifier::endOffset(3.01))
+                ->addAction(Qualifier::duration(5))
+                ->addAction(Qualifier::colorSpace(ColorSpace::SRGB))
+                ->addAction(Qualifier::zoom(1.1))
+                ->addAction(Qualifier::audioCodec(AudioCodec::AAC))
+                ->addAction(Qualifier::audioFrequency(AudioFrequency::FREQ8000))
         );
     }
 

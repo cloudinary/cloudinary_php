@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Integration\Admin;
 
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Api\Exception\NotFound;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 
@@ -30,7 +31,6 @@ final class FoldersTest extends IntegrationTestCase
     private static $SUB_FOLDER_CREATE_FULL_PATH;
     private static $SUB_FOLDER_DELETE_FULL_PATH;
     private static $SUB_FOLDER_SINGLE_FULL_PATH;
-
 
     /**
      * @throws ApiError
@@ -60,12 +60,13 @@ final class FoldersTest extends IntegrationTestCase
     {
         self::cleanupTestAssets();
         self::cleanupFolder(self::$FOLDER_NAME);
+        self::cleanupFolder(self::$FOLDER2_NAME);
 
         parent::tearDownAfterClass();
     }
 
     /**
-     * Get a list of all root folders
+     * Get a list of all root folders.
      */
     public function testListRootFolders()
     {
@@ -86,7 +87,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * Get sub folders for a given folder
+     * Get sub folders for a given folder.
      *
      * @throws ApiError
      */
@@ -115,7 +116,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * Create folder
+     * Create folder.
      *
      * @throws ApiError
      */
@@ -137,7 +138,7 @@ final class FoldersTest extends IntegrationTestCase
     }
 
     /**
-     * create a folder and asserts that creation succeeded
+     * Create a folder and asserts that creation succeeded.
      *
      * @param string $path
      *
@@ -166,5 +167,17 @@ final class FoldersTest extends IntegrationTestCase
         );
 
         return $result;
+    }
+
+    /**
+     * Should throw exception on non-existing folder.
+     *
+     * @throws ApiError
+     */
+    public function testFolderListingError()
+    {
+        $this->expectException(NotFound::class);
+
+        self::$adminApi->subfolders('non-existent-subfolder');
     }
 }

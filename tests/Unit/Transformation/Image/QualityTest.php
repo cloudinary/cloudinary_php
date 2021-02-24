@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Unit\Transformation\Image;
 use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\Delivery;
 use Cloudinary\Transformation\JpegMini;
+use Cloudinary\Transformation\Qualifier\Dimensions\Dpr;
 use Cloudinary\Transformation\Quality;
 use Cloudinary\Transformation\QualityQualifier;
 use PHPUnit\Framework\TestCase;
@@ -71,5 +72,16 @@ final class QualityTest extends TestCase
         self::assertEquals('q_jpegmini:0', (string) Quality::jpegminiBest());
 
         self::assertEquals('q_auto:best', (string)Delivery::quality(Quality::autoBest()));
+    }
+
+    public function testDpr()
+    {
+        self::assertEquals('dpr_1.5', (string)Delivery::dpr(1.5));
+        self::assertEquals('dpr_auto', (string)Delivery::dpr(Dpr::auto()));
+    }
+
+    public function testDensity()
+    {
+        self::assertEquals('dn_1.5', (string)Delivery::density(1.5));
     }
 }
