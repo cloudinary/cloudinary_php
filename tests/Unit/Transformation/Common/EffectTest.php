@@ -510,6 +510,17 @@ final class EffectTest extends TestCase
             (string)Effect::styleTransfer('lighthouse')->preserveColor()->strength(40)
         );
 
+        // Test instantiating an Effect and overwriting values passed to constructor
+        $effect = new StyleTransfer('source1', 40);
+        $effect->preserveColor(true);
+        $effect->strength(20);
+        $effect->source('source2');
+
+        self::assertEquals(
+            'e_style_transfer:preserve_color:20,l_source2/fl_layer_apply',
+            (string)$effect
+        );
+
         self::assertEquals(
             'e_vectorize',
             (string)Effect::vectorize()
@@ -519,16 +530,6 @@ final class EffectTest extends TestCase
             'e_vectorize:colors:2:corners:25:despeckle:50:detail:0.5:paths:100',
             (string)Effect::vectorize()->numOfColors(2)->detailsLevel(0.5)->despeckleLevel(50)->cornersLevel(25)
                                                                                               ->paths(100)
-        );
-
-        $effect = new StyleTransfer('vectorize', 40);
-        $effect->preserveColor(true);
-        $effect->strength(20);
-        $effect->source('lighthouse');
-
-        self::assertEquals(
-            'e_style_transfer:preserve_color:20,l_lighthouse/fl_layer_apply',
-            (string)$effect
         );
     }
 
