@@ -16,6 +16,7 @@ use Cloudinary\Transformation\AudioFrequency;
 use Cloudinary\Transformation\Fps;
 use Cloudinary\Transformation\KeyframeInterval;
 use Cloudinary\Transformation\Timeline;
+use InvalidArgumentException;
 
 /**
  * Class VideoAudioTest
@@ -109,5 +110,47 @@ final class VideoAudioTest extends UnitTestCase
                 (string)new KeyframeInterval($value[0])
             );
         }
+    }
+
+
+    /**
+     * Data provider for testExceptionsKeyframeInterval().
+     *
+     * @return array[]
+     */
+    public function exceptionsKeyframeIntervalDataProvider()
+    {
+        return [
+            [
+                'exceptionClass' => InvalidArgumentException::class,
+                'exceptionMessage' => 'No more than 1 argument is expected',
+                'args' => [1, 2]
+            ],
+            [
+                'exceptionClass' => InvalidArgumentException::class,
+                'exceptionMessage' => "'-1' should be greater than zero",
+                'args' => [-1],
+            ],
+            [
+                'exceptionClass' => InvalidArgumentException::class,
+                'exceptionMessage' => "Argument should be a number or a string",
+                'args' => [['a' => 2]],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider exceptionsKeyframeIntervalDataProvider
+     *
+     * @param string $exceptionClass
+     * @param string $exceptionMessage
+     * @param array  $args
+     */
+    public function testExceptionsKeyframeInterval($exceptionClass, $exceptionMessage, $args)
+    {
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+
+        new KeyframeInterval(...$args);
     }
 }
