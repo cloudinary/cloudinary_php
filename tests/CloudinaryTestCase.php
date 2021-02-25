@@ -149,8 +149,8 @@ abstract class CloudinaryTestCase extends TestCase
             try {
                 return $f();
             } catch (Exception $e) {
-                $message = $message ?: $e->getMessage();
-                sleep($delay);
+                $message = $message ?: $e->getMessage(); // save error message, if not provided
+                $i === $retries - 1 ?: sleep($delay); // prevent sleep on the last loop
             }
         }
         self::fail($message);
