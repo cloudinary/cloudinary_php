@@ -14,6 +14,7 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\GeneralError;
 use Cloudinary\Api\Metadata\SetMetadataField;
 use Cloudinary\Api\Metadata\StringMetadataField;
+use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\FileUtils;
@@ -71,7 +72,7 @@ final class UploadApiTest extends IntegrationTestCase
         self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID = 'metadata_field_external_id_' . self::$UNIQUE_TEST_ID;
         self::$METADATA_FIELD_VALUE              = 'metadata_field_value_' . self::$UNIQUE_TEST_ID;
 
-        self::$METADATA_FIELD_EXTERNAL_ID_SET = 'metadata_external_id_set_' . self::$UNIQUE_TEST_ID;
+        self::$METADATA_FIELD_EXTERNAL_ID_SET = 'metadata_external_id_uploader_set_' . self::$UNIQUE_TEST_ID;
         self::$DATASOURCE_ENTRY_EXTERNAL_ID   = 'metadata_datasource_entry_external_id' . self::$UNIQUE_TEST_ID;
         self::$DATASOURCE_ENTRY_EXTERNAL_ID2  = 'metadata_datasource_entry_external_id2' . self::$UNIQUE_TEST_ID;
 
@@ -380,8 +381,8 @@ final class UploadApiTest extends IntegrationTestCase
         );
 
         self::assertEquals(
-            self::$METADATA_FIELD_VALUE,
-            $asset['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
+            self::$METADATA_FIELDS,
+            ArrayUtils::whitelist($asset['metadata'], array_keys(self::$METADATA_FIELDS))
         );
     }
 
@@ -404,8 +405,8 @@ final class UploadApiTest extends IntegrationTestCase
         );
 
         self::assertEquals(
-            self::$METADATA_FIELDS[self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID],
-            $result['metadata'][self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID]
+            self::$METADATA_FIELDS,
+            ArrayUtils::whitelist($result['metadata'], array_keys(self::$METADATA_FIELDS))
         );
     }
 
