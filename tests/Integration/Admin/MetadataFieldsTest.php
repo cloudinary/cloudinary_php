@@ -137,7 +137,7 @@ class MetadataFieldsTest extends IntegrationTestCase
      * @param array       $values        An associative array where the key is the name of the parameter to check
      *                                   and the value is the value.
      */
-    private static function assertMetadataField($metadataField, $type = null, $values = array())
+    private static function assertMetadataField($metadataField, $type = null, $values = [])
     {
         self::assertInternalType(IsType::TYPE_STRING, $metadataField['external_id']);
         if ($type) {

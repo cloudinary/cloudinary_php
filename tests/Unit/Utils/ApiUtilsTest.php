@@ -176,6 +176,10 @@ final class ApiUtilsTest extends TestCase
                 'value' => ['caption' => 'cap=caps', 'alt' => 'alternative|alt=a'],
                 'result' => 'caption=cap\=caps|alt=alternative\|alt\=a',
             ],
+            [
+                'value' => ['caption' => ['cap1', 'cap2'], 'alt' => ['a|"a"', 'b="b"']],
+                'result' => 'caption=["cap1","cap2"]|alt=["a\|\"a\"","b\=\"b\""]',
+            ],
         ];
     }
 

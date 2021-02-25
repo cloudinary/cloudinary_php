@@ -76,6 +76,10 @@ class ApiUtils
      */
     public static function serializeContext($context)
     {
+        if (is_array($context)) {
+            $context = array_map('\Cloudinary\Api\ApiUtils::serializeJson', $context);
+        }
+
         return self::serializeParameter($context, self::CONTEXT_OUTER_DELIMITER, self::CONTEXT_INNER_DELIMITER);
     }
 
@@ -92,6 +96,11 @@ class ApiUtils
     {
         if ($jsonParam === null) {
             return null;
+        }
+
+        // Avoid extra double quotes around strings.
+        if (is_string($jsonParam) || method_exists($jsonParam, '__toString')) {
+            return $jsonParam;
         }
 
         return json_encode($jsonParam); //TODO: serialize dates
@@ -204,7 +213,7 @@ class ApiUtils
      */
     public static function serializeResponsiveBreakpoints($breakpoints)
     {
-        if (!$breakpoints) {
+        if (! $breakpoints) {
             return null;
         }
         $breakpointsParams = [];
