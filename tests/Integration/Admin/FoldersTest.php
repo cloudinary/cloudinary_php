@@ -39,13 +39,13 @@ final class FoldersTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$FOLDER_BASE_NAME = 'test_folder';
-        self::$FOLDER_NAME = self::$FOLDER_BASE_NAME . '_' . self::$UNIQUE_TEST_ID;
-        self::$FOLDER2_NAME = self::$FOLDER_BASE_NAME . '_2_' . self::$UNIQUE_TEST_ID;
-        self::$SUB_FOLDER_NAME = 'test_sub_folder_' . self::$UNIQUE_TEST_ID;
-        self::$SUB_FOLDER_CREATE_NAME = 'test_sub_folder_for_create_' . self::$UNIQUE_TEST_ID;
-        self::$SUB_FOLDER_DELETE_NAME = 'test_sub_folder_for_delete_' . self::$UNIQUE_TEST_ID;
-        self::$SUB_FOLDER_FULL_PATH = self::$FOLDER_NAME . '/' . self::$SUB_FOLDER_NAME;
+        self::$FOLDER_BASE_NAME            = 'test_folder';
+        self::$FOLDER_NAME                 = self::$FOLDER_BASE_NAME . '_' . self::$UNIQUE_TEST_ID;
+        self::$FOLDER2_NAME                = self::$FOLDER_BASE_NAME . '_2_' . self::$UNIQUE_TEST_ID;
+        self::$SUB_FOLDER_NAME             = 'test_sub_folder_' . self::$UNIQUE_TEST_ID;
+        self::$SUB_FOLDER_CREATE_NAME      = 'test_sub_folder_for_create_' . self::$UNIQUE_TEST_ID;
+        self::$SUB_FOLDER_DELETE_NAME      = 'test_sub_folder_for_delete_' . self::$UNIQUE_TEST_ID;
+        self::$SUB_FOLDER_FULL_PATH        = self::$FOLDER_NAME . '/' . self::$SUB_FOLDER_NAME;
         self::$SUB_FOLDER_CREATE_FULL_PATH = self::$FOLDER_NAME . '/' . self::$SUB_FOLDER_CREATE_NAME;
         self::$SUB_FOLDER_DELETE_FULL_PATH = self::$FOLDER_NAME . '/' . self::$SUB_FOLDER_DELETE_NAME;
         self::$SUB_FOLDER_SINGLE_FULL_PATH = self::$SUB_FOLDER_FULL_PATH . '/' . self::$SUB_FOLDER_NAME;
@@ -144,26 +144,29 @@ final class FoldersTest extends IntegrationTestCase
      *
      * @return ApiResponse
      * @throws ApiError
+     * @throws \Exception
      */
     private static function createTestFolder($path)
     {
-        $result = self::$adminApi->createFolder($path);
+        $result      = self::$adminApi->createFolder($path);
         $pathAsArray = explode('/', $path);
-        $name = array_pop($pathAsArray);
+        $name        = array_pop($pathAsArray);
 
         self::assertValidFolder($result, ['path' => $path, 'name' => $name]);
         self::assertTrue($result['success']);
 
-        sleep(2);
+        self::retryAssertionIfThrows(
+            static function () use ($path, $name, $pathAsArray) {
+                $folders = self::$adminApi->subfolders(implode('/', $pathAsArray));
 
-        $folders = self::$adminApi->subfolders(implode('/', $pathAsArray));
-
-        self::assertArrayContainsArray(
-            $folders['folders'],
-            [
-                'name' => $name,
-                'path' => $path
-            ]
+                self::assertArrayContainsArray(
+                    $folders['folders'],
+                    [
+                        'name' => $name,
+                        'path' => $path,
+                    ]
+                );
+            }
         );
 
         return $result;

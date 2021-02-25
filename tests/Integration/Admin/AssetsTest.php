@@ -395,7 +395,7 @@ final class AssetsTest extends IntegrationTestCase
 
         self::uploadTestAssetImage([ModerationType::KEY => ModerationType::WEBPURIFY]);
 
-        $this->retryAssertionIfThrows(
+        self::retryAssertionIfThrows(
             function () {
                 $result = self::$adminApi->assetsByModeration(
                     ModerationType::WEBPURIFY,
@@ -465,7 +465,7 @@ final class AssetsTest extends IntegrationTestCase
     /**
      * Restore different versions of a deleted asset.
      *
-     * @throws ApiError
+     * @throws Exception
      */
     public function testRestoreDeletedAssetDifferentVersions()
     {
@@ -473,8 +473,16 @@ final class AssetsTest extends IntegrationTestCase
 
         self::assertAssetDeleted($deleteResult, self::$BACKUP_1_PUBLIC_ID);
         self::assertNotEquals(self::$BACKUP_1_ASSET_FIRST['bytes'], self::$BACKUP_1_ASSET_SECOND['bytes']);
-        sleep(1); // prevent race
-        $asset = self::$adminApi->asset(self::$BACKUP_1_PUBLIC_ID, ['versions' => true]);
+
+        $asset = null;
+        self::retryAssertionIfThrows(
+            static function () use (&$asset) {
+                $asset = self::$adminApi->asset(self::$BACKUP_1_PUBLIC_ID, ['versions' => true]);
+
+                self::assertGreaterThanOrEqual(2, count($asset['versions']));
+            }
+        );
+
 
         $restoreFirstResult  = self::$adminApi->restore(
             [

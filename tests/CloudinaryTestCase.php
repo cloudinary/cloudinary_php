@@ -143,15 +143,14 @@ abstract class CloudinaryTestCase extends TestCase
      *
      * @throws Exception
      */
-    public function retryAssertionIfThrows($f, $retries = 3, $delay = 3, $message = '')
+    public static function retryAssertionIfThrows($f, $retries = 3, $delay = 3, $message = '')
     {
-        for ($i = 1; $i <= $retries; $i++) {
+        for ($i = 0; $i < $retries; $i++) {
             try {
                 return $f();
             } catch (Exception $e) {
-                if ($i < $retries) {
-                    sleep($delay);
-                }
+                $message = $message ?: $e->getMessage();
+                sleep($delay);
             }
         }
         self::fail($message);
