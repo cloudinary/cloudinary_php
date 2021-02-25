@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Integration\Upload;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\Api\Metadata\SetMetadataField;
 use Cloudinary\Api\Metadata\StringMetadataField;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
@@ -23,7 +24,6 @@ use Cloudinary\Transformation\Resize;
 use GuzzleHttp\Psr7\Uri;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 use Psr\Http\Message\StreamInterface;
-
 use function GuzzleHttp\Psr7\stream_for;
 
 /**
@@ -50,6 +50,12 @@ final class UploadApiTest extends IntegrationTestCase
 
     private static $METADATA_FIELD_UNIQUE_EXTERNAL_ID;
     private static $METADATA_FIELD_VALUE;
+
+    private static $METADATA_FIELD_EXTERNAL_ID_SET;
+    private static $DATASOURCE_MULTIPLE;
+    private static $DATASOURCE_ENTRY_EXTERNAL_ID;
+    private static $DATASOURCE_ENTRY_EXTERNAL_ID2;
+
     private static $METADATA_FIELDS;
 
     private static $INCOMING_TRANSFORMATION_ARR;
@@ -63,14 +69,41 @@ final class UploadApiTest extends IntegrationTestCase
         self::$REMOTE_TEST_IMAGE_ID = 'upload_remote_' . self::$UNIQUE_TEST_ID;
 
         self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID = 'metadata_field_external_id_' . self::$UNIQUE_TEST_ID;
-        self::$METADATA_FIELD_VALUE = 'metadata_field_value_' . self::$UNIQUE_TEST_ID;
+        self::$METADATA_FIELD_VALUE              = 'metadata_field_value_' . self::$UNIQUE_TEST_ID;
+
+        self::$METADATA_FIELD_EXTERNAL_ID_SET = 'metadata_external_id_set_' . self::$UNIQUE_TEST_ID;
+        self::$DATASOURCE_ENTRY_EXTERNAL_ID   = 'metadata_datasource_entry_external_id' . self::$UNIQUE_TEST_ID;
+        self::$DATASOURCE_ENTRY_EXTERNAL_ID2  = 'metadata_datasource_entry_external_id2' . self::$UNIQUE_TEST_ID;
+
+        self::$DATASOURCE_MULTIPLE = [
+            [
+                'value'       => 'v2',
+                'external_id' => self::$DATASOURCE_ENTRY_EXTERNAL_ID,
+            ],
+            [
+                'value'       => 'v3',
+                'external_id' => self::$DATASOURCE_ENTRY_EXTERNAL_ID2,
+            ],
+            [
+                'value' => 'v4',
+            ],
+        ];
+
         self::$METADATA_FIELDS = [
-            self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID => self::$METADATA_FIELD_VALUE
+            self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID => self::$METADATA_FIELD_VALUE,
+            self::$METADATA_FIELD_EXTERNAL_ID_SET    => [
+                self::$DATASOURCE_ENTRY_EXTERNAL_ID,
+                self::$DATASOURCE_ENTRY_EXTERNAL_ID2,
+            ],
         ];
 
         $stringMetadataField = new StringMetadataField(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
         $stringMetadataField->setExternalId(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
         self::$adminApi->addMetadataField($stringMetadataField);
+
+        $setMetadataField = new SetMetadataField(self::$METADATA_FIELD_EXTERNAL_ID_SET, self::$DATASOURCE_MULTIPLE);
+        $setMetadataField->setExternalId(self::$METADATA_FIELD_EXTERNAL_ID_SET);
+        self::$adminApi->addMetadataField($setMetadataField);
 
         $uploadPreset = self::$adminApi->createUploadPreset(
             [
@@ -92,6 +125,7 @@ final class UploadApiTest extends IntegrationTestCase
         self::cleanupTestAssets();
         self::cleanupUploadPreset(self::$UNIQUE_UPLOAD_PRESET);
         self::cleanupMetadataField(self::$METADATA_FIELD_UNIQUE_EXTERNAL_ID);
+        self::cleanupMetadataField(self::$METADATA_FIELD_EXTERNAL_ID_SET);
 
         parent::tearDownAfterClass();
     }
@@ -197,7 +231,7 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testUploadGSUrl()
     {
-        $this->markTestSkipped('Check GS authorization issue');
+        self::markTestSkipped('Check GS authorization issue');
 
         $gsImage = 'gs://gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_BQA.TIF';
         $result  = self::$uploadApi->upload($gsImage, ['tags' => self::$ASSET_TAGS]);
@@ -294,7 +328,7 @@ final class UploadApiTest extends IntegrationTestCase
         self::assertValidAsset(
             $result,
             [
-                'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
+                'width' => self::INCOMING_TRANSFORMATION_WIDTH,
             ]
         );
 
@@ -303,7 +337,7 @@ final class UploadApiTest extends IntegrationTestCase
         self::assertValidAsset(
             $result,
             [
-                'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
+                'width' => self::INCOMING_TRANSFORMATION_WIDTH,
             ]
         );
     }
@@ -315,7 +349,7 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testAddTheMetadataFieldImagesByPublicID()
     {
-        $this->markTestIncomplete('This functionality is not implemented yet');
+        self::markTestIncomplete('This functionality is not implemented yet');
     }
 
     /**
@@ -340,8 +374,8 @@ final class UploadApiTest extends IntegrationTestCase
         $asset = self::$uploadApi->upload(
             self::TEST_IMAGE_PATH,
             [
-                'tags' => self::$ASSET_TAGS,
-                'metadata' => self::$METADATA_FIELDS
+                'tags'     => self::$ASSET_TAGS,
+                'metadata' => self::$METADATA_FIELDS,
             ]
         );
 
@@ -363,9 +397,9 @@ final class UploadApiTest extends IntegrationTestCase
         $result = self::$uploadApi->explicit(
             $asset['public_id'],
             [
-                'type' => DeliveryType::UPLOAD,
+                'type'          => DeliveryType::UPLOAD,
                 'resource_type' => AssetType::IMAGE,
-                'metadata' => self::$METADATA_FIELDS
+                'metadata'      => self::$METADATA_FIELDS,
             ]
         );
 
@@ -387,7 +421,7 @@ final class UploadApiTest extends IntegrationTestCase
         $result = self::$uploadApi->updateMetadata(
             self::$METADATA_FIELDS,
             [
-                $asset['public_id']
+                $asset['public_id'],
             ]
         );
 
@@ -409,7 +443,7 @@ final class UploadApiTest extends IntegrationTestCase
             self::$METADATA_FIELDS,
             [
                 $resource1['public_id'],
-                $resource2['public_id']
+                $resource2['public_id'],
             ]
         );
 
@@ -454,12 +488,12 @@ final class UploadApiTest extends IntegrationTestCase
                     [
                         'create_derived' => true,
                         'transformation' => [
-                            'angle' => 90
+                            'angle' => 90,
                         ],
-                        'format' => Format::GIF
-                    ]
+                        'format'         => Format::GIF,
+                    ],
                 ],
-                'tags' => self::$ASSET_TAGS
+                'tags'                   => self::$ASSET_TAGS,
             ]
         );
 
