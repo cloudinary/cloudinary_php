@@ -153,6 +153,7 @@ abstract class CloudinaryTestCase extends TestCase
                 $i === $retries - 1 ?: sleep($delay); // prevent sleep on the last loop
             }
         }
+
         self::fail($message);
 
         return $f();

@@ -480,7 +480,9 @@ final class AssetsTest extends IntegrationTestCase
                 $asset = self::$adminApi->asset(self::$BACKUP_1_PUBLIC_ID, ['versions' => true]);
 
                 self::assertGreaterThanOrEqual(2, count($asset['versions']));
-            }
+            },
+            3,
+            5 // sleep for 5 seconds
         );
 
 
