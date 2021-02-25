@@ -1,3 +1,12 @@
+2.0.4 / 2021-02-25
+==================
+
+  * Fix handling of array parameters in APIs
+  * Fix encoding of arrays in structured metadata
+  * Improve test coverage
+  * Fix `PositiveFloatValue` error when value cannot be cast to string
+  * Fix unstable integration tests
+
 2.0.3 / 2021-02-19
 ==================
 
