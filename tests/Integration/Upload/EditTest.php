@@ -39,6 +39,7 @@ final class EditTest extends IntegrationTestCase
     private static $CHANGE_TYPE_PUBLIC_ID;
     private static $DESTROY_PUBLIC_ID;
     private static $EXPLICIT_PUBLIC_ID;
+    private static $EXCEPTION_PUBLIC_ID;
     private static $TRANSFORMATION_OBJECT;
 
     /**
@@ -65,6 +66,7 @@ final class EditTest extends IntegrationTestCase
         self::$DESTROY_PUBLIC_ID                             = 'upload_edit_destroy_public_id_' . self::$UNIQUE_TEST_ID;
         self::$EXPLICIT_PUBLIC_ID                            =
             'upload_edit_explicit_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$EXCEPTION_PUBLIC_ID = 'upload_edit_exception_public_id_' . self::$UNIQUE_TEST_ID;
         self::$TRANSFORMATION_OBJECT                         = (new AssetTransformation())->resize(
             Resize::crop(400, 400, Gravity::face())
         );
@@ -76,6 +78,8 @@ final class EditTest extends IntegrationTestCase
         self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_TARGET_PUBLIC_ID]);
         self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID]);
         self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID]);
+        $resource = self::uploadTestAssetFile(['public_id' => self::$EXCEPTION_PUBLIC_ID]);
+        self::$EXCEPTION_PUBLIC_ID = $resource['public_id'];
     }
 
     public static function tearDownAfterClass()
@@ -206,5 +210,77 @@ final class EditTest extends IntegrationTestCase
                 'bytes'          => 43,
             ]
         );
+    }
+
+    /**
+     * Data provider of `testExpectUpdateException()` method.
+     *
+     * @return array[]
+     */
+    public function expectUpdateExceptionDataProvider()
+    {
+        return [
+            'Illegal value for `raw_convert`' => [
+                'publicId' => static function () {
+                    return self::$EXCEPTION_PUBLIC_ID;
+                },
+                'options' => ['raw_convert' => 'illegal', 'resource_type' => 'raw'],
+                'exception' => BadRequest::class,
+                'exceptionMessage' => 'Illegal value',
+            ],
+
+            'Illegal value for `categorization`' => [
+                'publicId' => static function () {
+                    return self::$EXPLICIT_PUBLIC_ID;
+                },
+                'options' => ['categorization' => 'illegal'],
+                'exception' => BadRequest::class,
+                'exceptionMessage' => 'Illegal value',
+            ],
+
+            'Illegal value for `detection`' => [
+                'publicId' => static function () {
+                    return self::$EXPLICIT_PUBLIC_ID;
+                },
+                'options' => ['detection' => 'illegal'],
+                'exception' => BadRequest::class,
+                'exceptionMessage' => "Illegal value",
+            ],
+
+            'Illegal value for `background_removal`' => [
+                'publicId' => static function () {
+                    return self::$EXPLICIT_PUBLIC_ID;
+                },
+                'options' => ['background_removal' => 'illegal'],
+                'exception' => BadRequest::class,
+                'exceptionMessage' => 'Illegal value',
+            ],
+        ];
+    }
+
+    /**
+     * Test wrong cases update a resource.
+     *
+     * @param string|callable $publicId
+     * @param array           $options
+     * @param ApiError        $exception
+     * @param string          $exceptionMessage
+     *
+     * @dataProvider expectUpdateExceptionDataProvider
+     */
+    public function testExpectUpdateException(
+        $publicId,
+        array $options,
+        $exception,
+        $exceptionMessage = null
+    ) {
+        if (is_callable($publicId)) {
+            $publicId = $publicId();
+        }
+
+        $this->expectException($exception);
+        $this->expectExceptionMessage($exceptionMessage);
+
+        self::$adminApi->update($publicId, $options);
     }
 }
