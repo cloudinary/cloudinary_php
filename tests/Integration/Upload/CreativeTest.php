@@ -133,5 +133,7 @@ final class CreativeTest extends IntegrationTestCase
                 'format'          => 'png',
             ]
         );
+        self::assertGreaterThan(5, $asset['width']);
+        self::assertGreaterThan(5, $asset['height']);
     }
 }
