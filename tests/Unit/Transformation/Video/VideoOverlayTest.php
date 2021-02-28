@@ -44,15 +44,21 @@ final class VideoOverlayTest extends TestCase
 
         $expected = "l_test/$tExpected/eo_10,fl_layer_apply,g_south_west,so_0,x_17,y_19";
 
+        $videoOverlayConstructed = new VideoOverlay($il, $p, $tlp);
         self::assertEquals(
             $expected,
-            (string)new VideoOverlay($il, $p, $tlp)
+            (string)$videoOverlayConstructed
         );
+        self::assertInstanceOf(ImageSource::class, $videoOverlayConstructed->jsonSerialize()['source']);
+        self::assertInstanceOf(CompassPosition::class, $videoOverlayConstructed->jsonSerialize()['position']);
 
+        $videoOverlayMethods = (new VideoOverlay($il))->position($p)->timeline($tlp);
         self::assertEquals(
             $expected,
-            (string)(new VideoOverlay($il))->position($p)->timeline($tlp)
+            (string)$videoOverlayMethods
         );
+        self::assertInstanceOf(ImageSource::class, $videoOverlayMethods->jsonSerialize()['source']);
+        self::assertInstanceOf(CompassPosition::class, $videoOverlayMethods->jsonSerialize()['position']);
     }
 
     public function testVideoConcatenate()
