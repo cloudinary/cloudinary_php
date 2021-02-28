@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Unit\Transformation\Image;
 use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\ResizeFactory;
 use PHPUnit\Framework\TestCase;
+use UnexpectedValueException;
 
 /**
  * Class ResizeFactoryTest
@@ -24,5 +25,13 @@ final class ResizeFactoryTest extends TestCase
         $pad = ResizeFactory::createResize('pad');
 
         self::assertInstanceOf(Pad::class, $pad);
+    }
+
+    public function testExceptionResizeFactory()
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unsupported resize mode nonexistent');
+
+        ResizeFactory::createResize('nonexistent');
     }
 }
