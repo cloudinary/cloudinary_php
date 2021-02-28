@@ -48,16 +48,26 @@ final class EditTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$RENAME_SOURCE_PUBLIC_ID             = 'upload_edit_rename_source_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TARGET_PUBLIC_ID             = 'upload_edit_rename_target__public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_SOURCE_PUBLIC_ID = 'upload_edit_rename_to_existing_source_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_TARGET_PUBLIC_ID = 'upload_edit_rename_to_existing_target_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID = 'upload_edit_rename_to_existing_overwrite_source_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID = 'upload_edit_rename_to_existing_overwrite_target_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$CHANGE_TYPE_PUBLIC_ID = 'upload_edit_change_type_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$DESTROY_PUBLIC_ID = 'upload_edit_destroy_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$EXPLICIT_PUBLIC_ID = 'upload_edit_explicit_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$TRANSFORMATION_OBJECT = (new AssetTransformation())->resize(Resize::crop(400, 400, Gravity::face()));
+        self::$RENAME_SOURCE_PUBLIC_ID                       =
+            'upload_edit_rename_source_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_TARGET_PUBLIC_ID                       =
+            'upload_edit_rename_target__public_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_TO_EXISTING_SOURCE_PUBLIC_ID           =
+            'upload_edit_rename_to_existing_source_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_TO_EXISTING_TARGET_PUBLIC_ID           =
+            'upload_edit_rename_to_existing_target_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID =
+            'upload_edit_rename_to_existing_overwrite_source_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID =
+            'upload_edit_rename_to_existing_overwrite_target_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$CHANGE_TYPE_PUBLIC_ID                         =
+            'upload_edit_change_type_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$DESTROY_PUBLIC_ID                             = 'upload_edit_destroy_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$EXPLICIT_PUBLIC_ID                            =
+            'upload_edit_explicit_public_id_' . self::$UNIQUE_TEST_ID;
+        self::$TRANSFORMATION_OBJECT                         = (new AssetTransformation())->resize(
+            Resize::crop(400, 400, Gravity::face())
+        );
 
         self::uploadTestAssetImage(['public_id' => self::$EXPLICIT_PUBLIC_ID]);
         self::uploadTestAssetImage(['public_id' => self::$DESTROY_PUBLIC_ID]);
@@ -165,7 +175,7 @@ final class EditTest extends IntegrationTestCase
         $asset = self::$uploadApi->explicit(
             self::$EXPLICIT_PUBLIC_ID,
             [
-                'type' => 'upload',
+                'type'  => 'upload',
                 'eager' => [
                     self::$TRANSFORMATION_OBJECT,
                 ],
@@ -178,10 +188,10 @@ final class EditTest extends IntegrationTestCase
             $asset['eager'][0],
             [
                 'transformation' => self::TRANSFORMATION_STRING,
-                'format' => AssetTestCase::IMG_EXT_GIF,
-                'bytes' => 43,
-                'width' => 1,
-                'height' => 1
+                'format'         => AssetTestCase::IMG_EXT_GIF,
+                'bytes'          => 43,
+                'width'          => 1,
+                'height'         => 1,
             ]
         );
 
@@ -192,8 +202,8 @@ final class EditTest extends IntegrationTestCase
             $asset['derived'][0],
             [
                 'transformation' => self::TRANSFORMATION_STRING,
-                'format' => AssetTestCase::IMG_EXT_GIF,
-                'bytes' => 43,
+                'format'         => AssetTestCase::IMG_EXT_GIF,
+                'bytes'          => 43,
             ]
         );
     }
