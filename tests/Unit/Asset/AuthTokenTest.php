@@ -12,6 +12,7 @@ namespace Cloudinary\Test\Unit\Asset;
 
 use Cloudinary\Asset\AuthToken;
 use InvalidArgumentException;
+use ReflectionMethod;
 
 /**
  * Class AuthTokenTest
@@ -77,5 +78,18 @@ class AuthTokenTest extends AuthTokenTestCase
             $aclTokenUrlIgnored
         );
     }
-}
 
+    /**
+     * Should escape a URL using lowercase hex symbols
+     */
+    public function testEscapeToLower()
+    {
+        $method = new ReflectionMethod(AuthToken::class, 'escapeToLower');
+        $method->setAccessible(true);
+
+        self::assertEquals(
+            'Encode%20these%20%3a%7e%40%23%25%5e%26%7b%7d%5b%5d%5c%22%27%3b%2f%22,%20but%20not%20those%20$!()_.*',
+            $method->invoke(null, 'Encode these :~@#%^&{}[]\\"\';/", but not those $!()_.*')
+        );
+    }
+}
