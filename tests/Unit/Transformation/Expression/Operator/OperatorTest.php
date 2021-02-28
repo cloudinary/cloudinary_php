@@ -37,6 +37,8 @@ final class OperatorTest extends TestCase
 
         self::assertEquals('mod', (string)ArithmeticOperator::modulo());
         self::assertEquals('mod', (string)new ArithmeticOperator('%'));
+
+        self::assertEquals(['operator' => 'mod'], (new ArithmeticOperator('%'))->jsonSerialize());
     }
 
     public function testRelationalOperator()
