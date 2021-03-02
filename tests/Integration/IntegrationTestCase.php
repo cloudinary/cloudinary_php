@@ -21,6 +21,7 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\ConfigUtils;
+use Cloudinary\StringUtils;
 use Cloudinary\Test\CloudinaryTestCase;
 use Cloudinary\Test\Helpers\Addon;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
@@ -28,6 +29,7 @@ use Exception;
 use GuzzleHttp\Client;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 use Psr\Http\Message\RequestInterface;
+use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
 
@@ -43,7 +45,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     const TEST_EVAL_STR = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
                           'upload_options["context"] = "width=" + resource_info["width"]';
 
-    private static $ASSETS_STACK = [];
+    private static $TEST_ASSETS = [];
 
     protected static $UNIQUE_UPLOAD_PRESET;
 
@@ -72,28 +74,6 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Adds details of an asset to a list for later deletion using `cleanupAssets()`
-     *
-     * @param string $public_id
-     * @param array  $options
-     */
-    protected static function addAssetToCleanupList($public_id, $options = [])
-    {
-        self::$ASSETS_STACK[] = ['public_id' => $public_id, 'options' => $options];
-    }
-
-    /**
-     * Cleanup all assets in a stack
-     */
-    protected static function cleanupAssets()
-    {
-        foreach (self::$ASSETS_STACK as $key => $asset) {
-            self::cleanupAsset($asset['public_id'], $asset['options']);
-            unset(self::$ASSETS_STACK[$key]);
-        }
-    }
-
-    /**
      * Should a certain add on be tested?
      *
      * @param string $addOn
@@ -117,6 +97,57 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $cldRunDestructiveTests = strtolower(getenv('CLD_RUN_DESTRUCTIVE_TESTS'));
 
         return $cldRunDestructiveTests === 'yes';
+    }
+
+    /**
+     * Create assets used for testing (uploading optional).
+     *
+     * Sample usage:
+     *
+     *   self::createTestAssets(
+     *       [
+     *           'test_rename_source',
+     *           'test_rename_target' => ['upload' => false],
+     *           'test_tagging_raw' => [
+     *               'cleanup' => true,
+     *               'options' => ['resource_type' => 'raw', 'tags' => ['foo', 'bar'], 'file' => $raw],
+     *           ],
+     *       ]
+     *   );
+     *
+     * @param array  $assets Test assets to create.
+     * @param string $prefix Prefix for the public id (defaults to test class name).
+     *
+     * @throws ApiError
+     */
+    protected static function createTestAssets($assets = [], $prefix = null)
+    {
+        foreach ($assets as $key => $values) {
+            $key          = is_array($values) ? $key : $values;
+            $publicId     = self::getUniquePublicId($key, $prefix);
+            $options      = ArrayUtils::get($values, 'options', []);
+            $assetOptions = ['public_id' => $publicId];
+            $assetOptions = is_array($options) ? array_merge($options, $assetOptions) : $assetOptions;
+            $assetType    = ArrayUtils::get($assetOptions, AssetType::KEY, AssetType::IMAGE);
+            $file         = ArrayUtils::get($assetOptions, 'file');
+            $upload       = ArrayUtils::get($values, 'upload', true);
+
+            $asset = null;
+            if ($upload && $assetType === AssetType::IMAGE) {
+                $asset = self::uploadTestAssetImage($assetOptions, $file);
+            } elseif ($upload && $assetType === AssetType::RAW) {
+                $asset = self::uploadTestAssetFile($assetOptions);
+            } elseif ($upload && $assetType === AssetType::VIDEO) {
+                $asset = self::uploadTestAssetVideo($assetOptions);
+            }
+
+            self::addAssetToTestAssetsList(
+                $asset,
+                $assetOptions,
+                ArrayUtils::get($values, 'cleanup', false),
+                $key
+            );
+        }
     }
 
     /**
@@ -197,6 +228,72 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
+     * Adds an asset to the list of test assets.
+     *
+     * @param ApiResponse|null $asset   A test asset.
+     * @param array            $options Additional details to save alongside test asset.
+     * @param bool             $cleanup A boolean indicating whether an asset should be deleted directly by public id
+     *                                  during cleanup (this is useful, for example, for assets which do not contain the
+     *                                  test tag).
+     * @param string           $key     A key to save the test asset under (defaults to the asset's public_id).
+     */
+    private static function addAssetToTestAssetsList($asset, $options = [], $cleanup = false, $key = null)
+    {
+        $key = $key ?: ArrayUtils::get((array)$asset, 'public_id');
+
+        if ($key) {
+            self::$TEST_ASSETS[$key] = ['asset' => $asset, 'options' => $options, 'cleanup' => $cleanup];
+        }
+    }
+
+    /**
+     * Return an uploaded asset.
+     *
+     * @param string $name The key used to save the test asset.
+     *
+     * @return ApiResponse|null
+     */
+    protected static function getTestAsset($name)
+    {
+        return isset(self::$TEST_ASSETS[$name]['asset']) ? self::$TEST_ASSETS[$name]['asset'] : null;
+    }
+
+    /**
+     * Return a public id of a test asset.
+     *
+     * @param string $name        The key used to save the test asset.
+     *
+     * @return string|null
+     */
+    protected static function getTestAssetPublicId($name)
+    {
+        if (!self::$TEST_ASSETS[$name]) {
+            return null;
+        }
+
+        if (self::$TEST_ASSETS[$name]['asset']) {
+            return self::$TEST_ASSETS[$name]['asset']['public_id'];
+        }
+
+        return self::$TEST_ASSETS[$name]['options']['public_id'];
+    }
+
+    /**
+     * Get a unique public id.
+     *
+     * @param string $name   The name to generate the public id.
+     * @param string $prefix The prefix for the public id (defaults to the test's class name).
+     *
+     * @return string
+     */
+    private static function getUniquePublicId($name, $prefix = null)
+    {
+        $prefix = $prefix !== null ? $prefix : (new ReflectionClass(static::class))->getShortName();
+
+        return StringUtils::camelCaseToSnakeCase($prefix . '_' . $name . '_' . self::$UNIQUE_TEST_ID);
+    }
+
+    /**
      * Fetch remote asset
      *
      * @param       $assetId
@@ -211,6 +308,17 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $res = (new Client())->head($assetUrl);
 
         self::assertEquals(StatusCode::OK, $res->getStatusCode());
+    }
+
+    /**
+     * Adds an asset to a list for later deletion using `cleanupAssets()`.
+     *
+     * @param ApiResponse $asset
+     * @param array       $options
+     */
+    protected static function addAssetToCleanupList($asset, $options = [])
+    {
+        self::addAssetToTestAssetsList($asset, $options, true);
     }
 
     /**
@@ -668,6 +776,20 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         return $result;
     }
 
+
+    /**
+     * Cleanup all assets marked for cleanup in the TEST_ASSETS stack.
+     */
+    protected static function cleanupMarkedTestAssets()
+    {
+        foreach (self::$TEST_ASSETS as $key => $asset) {
+            if ($asset['cleanup']) {
+                self::cleanupAsset($asset['asset']['public_id'], $asset['options']);
+                unset(self::$TEST_ASSETS[$key]);
+            }
+        }
+    }
+
     /**
      * Delete an asset by tag
      *
@@ -711,15 +833,20 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Delete asset with UNIQUE_TEST_TAG
+     * Delete assets created for tests.
      *
-     * Try to delete asset if deletion fails log the error
+     * 1. Will directly delete all assets marked for cleanup.
+     * 2. Will delete all assets with the test tag of the given asset types (defaults to image)
      *
-     * @param string $assetType
+     * @param array $assetTypes An array of asset types to delete (defaults to image)
      */
-    protected static function cleanupTestAssets($assetType = AssetType::IMAGE)
+    protected static function cleanupTestAssets($assetTypes = [AssetType::IMAGE])
     {
-        self::cleanupAssetsByTag(self::$UNIQUE_TEST_TAG, [AssetType::KEY => $assetType]);
+        self::cleanupMarkedTestAssets();
+
+        foreach ($assetTypes as $assetType) {
+            self::cleanupAssetsByTag(self::$UNIQUE_TEST_TAG, [AssetType::KEY => $assetType]);
+        }
     }
 
     /**

@@ -14,6 +14,7 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\BadRequest;
 use Cloudinary\Api\Exception\NotFound;
 use Cloudinary\Asset\AssetTransformation;
+use Cloudinary\Asset\AssetType;
 use Cloudinary\Test\Helpers\MockUploadApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Integration\IntegrationTestCase;
@@ -30,16 +31,18 @@ final class EditTest extends IntegrationTestCase
 
     const TRANSFORMATION_STRING = 'c_crop,g_face,h_400,w_400';
 
-    private static $RENAME_SOURCE_PUBLIC_ID;
-    private static $RENAME_TARGET_PUBLIC_ID;
-    private static $RENAME_TO_EXISTING_SOURCE_PUBLIC_ID;
-    private static $RENAME_TO_EXISTING_TARGET_PUBLIC_ID;
-    private static $RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID;
-    private static $RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID;
-    private static $CHANGE_TYPE_PUBLIC_ID;
-    private static $DESTROY_PUBLIC_ID;
-    private static $EXPLICIT_PUBLIC_ID;
-    private static $EXCEPTION_PUBLIC_ID;
+    const RENAME_TARGET                       = 'rename_target';
+    const RENAME_SOURCE                       = 'rename_source';
+    const RENAME_TO_EXISTING_SOURCE           = 'rename_to_existing_source';
+    const RENAME_TO_EXISTING_TARGET           = 'rename_to_existing_target';
+    const RENAME_TO_EXISTING_SOURCE_OVERWRITE = 'rename_to_existing_overwrite_source';
+    const RENAME_TO_EXISTING_TARGET_OVERWRITE = 'rename_to_existing_overwrite_target';
+    const CHANGE_TYPE                         = 'change_type';
+    const DESTROY                             = 'destroy';
+    const EXPLICIT                            = 'explicit';
+    const EXCEPTION_IMAGE                     = 'exception_image';
+    const EXCEPTION_RAW                       = 'exception_raw';
+
     private static $TRANSFORMATION_OBJECT;
 
     /**
@@ -49,37 +52,28 @@ final class EditTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$RENAME_SOURCE_PUBLIC_ID                       =
-            'upload_edit_rename_source_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TARGET_PUBLIC_ID                       =
-            'upload_edit_rename_target__public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_SOURCE_PUBLIC_ID           =
-            'upload_edit_rename_to_existing_source_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_TARGET_PUBLIC_ID           =
-            'upload_edit_rename_to_existing_target_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID =
-            'upload_edit_rename_to_existing_overwrite_source_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID =
-            'upload_edit_rename_to_existing_overwrite_target_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$CHANGE_TYPE_PUBLIC_ID                         =
-            'upload_edit_change_type_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$DESTROY_PUBLIC_ID                             = 'upload_edit_destroy_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$EXPLICIT_PUBLIC_ID                            =
-            'upload_edit_explicit_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$EXCEPTION_PUBLIC_ID = 'upload_edit_exception_public_id_' . self::$UNIQUE_TEST_ID;
-        self::$TRANSFORMATION_OBJECT                         = (new AssetTransformation())->resize(
+        self::$TRANSFORMATION_OBJECT = (new AssetTransformation())->resize(
             Resize::crop(400, 400, Gravity::face())
         );
 
-        self::uploadTestAssetImage(['public_id' => self::$EXPLICIT_PUBLIC_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$DESTROY_PUBLIC_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$RENAME_SOURCE_PUBLIC_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_SOURCE_PUBLIC_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_TARGET_PUBLIC_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID]);
-        $resource = self::uploadTestAssetFile(['public_id' => self::$EXCEPTION_PUBLIC_ID]);
-        self::$EXCEPTION_PUBLIC_ID = $resource['public_id'];
+        self::createTestAssets(
+            [
+                self::RENAME_TARGET => ['upload' => false],
+                self::RENAME_SOURCE,
+                self::RENAME_TO_EXISTING_SOURCE,
+                self::RENAME_TO_EXISTING_TARGET,
+                self::RENAME_TO_EXISTING_SOURCE_OVERWRITE,
+                self::RENAME_TO_EXISTING_TARGET_OVERWRITE,
+                self::CHANGE_TYPE => ['upload' => false],
+                self::DESTROY,
+                self::EXPLICIT,
+                self::EXCEPTION_IMAGE,
+                self::EXCEPTION_RAW => [
+                    'options' => [AssetType::KEY => AssetType::RAW],
+                    'cleanup' => true
+                ],
+            ]
+        );
     }
 
     public static function tearDownAfterClass()
@@ -94,12 +88,12 @@ final class EditTest extends IntegrationTestCase
      */
     public function testDestroyImageByPublicID()
     {
-        $result = self::$uploadApi->destroy(self::$DESTROY_PUBLIC_ID);
+        $result = self::$uploadApi->destroy(self::getTestAssetPublicId(self::DESTROY));
 
         self::assertEquals('ok', $result['result']);
 
         $this->expectException(NotFound::class);
-        self::$adminApi->asset(self::$DESTROY_PUBLIC_ID);
+        self::$adminApi->asset(self::getTestAssetPublicId(self::DESTROY));
     }
 
     /**
@@ -107,13 +101,16 @@ final class EditTest extends IntegrationTestCase
      */
     public function testRenameImage()
     {
-        $asset = self::$uploadApi->rename(self::$RENAME_SOURCE_PUBLIC_ID, self::$RENAME_TARGET_PUBLIC_ID);
+        $asset = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_SOURCE),
+            self::getTestAssetPublicId(self::RENAME_TARGET)
+        );
 
-        self::assertValidAsset($asset, ['public_id' => self::$RENAME_TARGET_PUBLIC_ID]);
+        self::assertValidAsset($asset, ['public_id' => self::getTestAssetPublicId(self::RENAME_TARGET)]);
 
-        $asset = self::$adminApi->asset(self::$RENAME_TARGET_PUBLIC_ID);
+        $asset = self::$adminApi->asset(self::getTestAssetPublicId(self::RENAME_TARGET));
 
-        self::assertValidAsset($asset, ['public_id' => self::$RENAME_TARGET_PUBLIC_ID]);
+        self::assertValidAsset($asset, ['public_id' => self::getTestAssetPublicId(self::RENAME_TARGET)]);
     }
 
     /**
@@ -123,8 +120,8 @@ final class EditTest extends IntegrationTestCase
     {
         $this->expectException(BadRequest::class);
         self::$uploadApi->rename(
-            self::$RENAME_TO_EXISTING_SOURCE_PUBLIC_ID,
-            self::$RENAME_TO_EXISTING_TARGET_PUBLIC_ID
+            self::getTestAssetPublicId(self::RENAME_TO_EXISTING_SOURCE),
+            self::getTestAssetPublicId(self::RENAME_TO_EXISTING_TARGET)
         );
     }
 
@@ -134,16 +131,22 @@ final class EditTest extends IntegrationTestCase
     public function testRenameAndOverwriteToExistingImagePublicId()
     {
         $resource = self::$uploadApi->rename(
-            self::$RENAME_TO_EXISTING_SOURCE_OVERWRITE_PUBLIC_ID,
-            self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID,
+            self::getTestAssetPublicId(self::RENAME_TO_EXISTING_SOURCE_OVERWRITE),
+            self::getTestAssetPublicId(self::RENAME_TO_EXISTING_TARGET_OVERWRITE),
             ['overwrite' => true]
         );
 
-        self::assertValidAsset($resource, ['public_id' => self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID]);
+        self::assertValidAsset(
+            $resource,
+            ['public_id' => self::getTestAssetPublicId(self::RENAME_TO_EXISTING_TARGET_OVERWRITE)]
+        );
 
-        $resource = self::$adminApi->asset(self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID);
+        $resource = self::$adminApi->asset(self::getTestAssetPublicId(self::RENAME_TO_EXISTING_TARGET_OVERWRITE));
 
-        self::assertValidAsset($resource, ['public_id' => self::$RENAME_TO_EXISTING_TARGET_OVERWRITE_PUBLIC_ID]);
+        self::assertValidAsset(
+            $resource,
+            ['public_id' => self::getTestAssetPublicId(self::RENAME_TO_EXISTING_TARGET_OVERWRITE)]
+        );
     }
 
     /**
@@ -153,8 +156,8 @@ final class EditTest extends IntegrationTestCase
     {
         $mockUploadApi = new MockUploadApi();
         $mockUploadApi->rename(
-            self::$CHANGE_TYPE_PUBLIC_ID,
-            self::$CHANGE_TYPE_PUBLIC_ID,
+            self::getTestAssetPublicId(self::CHANGE_TYPE),
+            self::getTestAssetPublicId(self::CHANGE_TYPE),
             ['to_type' => 'private']
         );
         $lastRequest = $mockUploadApi->getMockHandler()->getLastRequest();
@@ -165,8 +168,8 @@ final class EditTest extends IntegrationTestCase
             $lastRequest,
             [
                 'to_type' => 'private',
-                'from_public_id' => self::$CHANGE_TYPE_PUBLIC_ID,
-                'to_public_id' => self::$CHANGE_TYPE_PUBLIC_ID
+                'from_public_id' => self::getTestAssetPublicId(self::CHANGE_TYPE),
+                'to_public_id' => self::getTestAssetPublicId(self::CHANGE_TYPE)
             ]
         );
     }
@@ -177,7 +180,7 @@ final class EditTest extends IntegrationTestCase
     public function testEagerTransformation()
     {
         $asset = self::$uploadApi->explicit(
-            self::$EXPLICIT_PUBLIC_ID,
+            self::getTestAssetPublicId(self::EXPLICIT),
             [
                 'type'  => 'upload',
                 'eager' => [
@@ -221,36 +224,28 @@ final class EditTest extends IntegrationTestCase
     {
         return [
             'Illegal value for `raw_convert`' => [
-                'publicId' => static function () {
-                    return self::$EXCEPTION_PUBLIC_ID;
-                },
+                'publicId' => self::EXCEPTION_RAW,
                 'options' => ['raw_convert' => 'illegal', 'resource_type' => 'raw'],
                 'exception' => BadRequest::class,
                 'exceptionMessage' => 'Illegal value',
             ],
 
             'Illegal value for `categorization`' => [
-                'publicId' => static function () {
-                    return self::$EXPLICIT_PUBLIC_ID;
-                },
+                'publicId' => self::EXCEPTION_IMAGE,
                 'options' => ['categorization' => 'illegal'],
                 'exception' => BadRequest::class,
                 'exceptionMessage' => 'Illegal value',
             ],
 
             'Illegal value for `detection`' => [
-                'publicId' => static function () {
-                    return self::$EXPLICIT_PUBLIC_ID;
-                },
+                'publicId' => self::EXCEPTION_IMAGE,
                 'options' => ['detection' => 'illegal'],
                 'exception' => BadRequest::class,
                 'exceptionMessage' => "Illegal value",
             ],
 
             'Illegal value for `background_removal`' => [
-                'publicId' => static function () {
-                    return self::$EXPLICIT_PUBLIC_ID;
-                },
+                'publicId' => self::EXCEPTION_IMAGE,
                 'options' => ['background_removal' => 'illegal'],
                 'exception' => BadRequest::class,
                 'exceptionMessage' => 'Illegal value',
@@ -261,10 +256,10 @@ final class EditTest extends IntegrationTestCase
     /**
      * Test wrong cases update a resource.
      *
-     * @param string|callable $publicId
-     * @param array           $options
-     * @param ApiError        $exception
-     * @param string          $exceptionMessage
+     * @param string   $publicId
+     * @param array    $options
+     * @param ApiError $exception
+     * @param string   $exceptionMessage
      *
      * @dataProvider expectUpdateExceptionDataProvider
      */
@@ -274,13 +269,12 @@ final class EditTest extends IntegrationTestCase
         $exception,
         $exceptionMessage = null
     ) {
-        if (is_callable($publicId)) {
-            $publicId = $publicId();
-        }
-
         $this->expectException($exception);
         $this->expectExceptionMessage($exceptionMessage);
 
-        self::$adminApi->update($publicId, $options);
+        self::$adminApi->update(
+            self::getTestAssetPublicId($publicId),
+            $options
+        );
     }
 }
