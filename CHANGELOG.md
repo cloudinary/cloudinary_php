@@ -1,3 +1,17 @@
+2.1.0 / 2021-03-10
+==================
+
+New functionality and features
+------------------------------
+
+  * Add `filename_override` upload parameter
+
+Other Changes
+-------------
+
+  * Fix Upload API signature
+  * Fix expression normalisation
+
 2.0.4 / 2021-02-25
 ==================
 
