@@ -17,7 +17,7 @@ use Cloudinary\Test\Integration\IntegrationTestCase;
  */
 final class ContextTest extends IntegrationTestCase
 {
-    const CONTEXT_DATA = ['k1' => 'v2', 'k2' => 'v2'];
+    const CONTEXT_DATA = ['k1' => 'v2', 'k2' => 'vשаß = & | ? !@#$%^&*()_+{}:">?/.,\']['];
 
     /**
      * @throws ApiError

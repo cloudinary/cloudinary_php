@@ -11,14 +11,14 @@
 namespace Cloudinary\Test\Unit\Utils;
 
 use Cloudinary\Api\ApiUtils;
+use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Transformation;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class ApiUtilsTest
  */
-final class ApiUtilsTest extends TestCase
+final class ApiUtilsTest extends UnitTestCase
 {
     /**
      * Data provider for the method `testSerializeArrayOfArrays()`.
@@ -153,31 +153,31 @@ final class ApiUtilsTest extends TestCase
     {
         return [
             [
-                'value' => '',
+                'value'  => '',
                 'result' => '',
             ],
             [
-                'value' => null,
+                'value'  => null,
                 'result' => '',
             ],
             [
-                'value' => 0,
+                'value'  => 0,
                 'result' => '0',
             ],
             [
-                'value' => [],
+                'value'  => [],
                 'result' => '',
             ],
             [
-                'value' => ['!@#$%^&?*-+=[]{}()' => '!@#$%^&?*-+=[]{}()'],
+                'value'  => ['!@#$%^&?*-+=[]{}()' => '!@#$%^&?*-+=[]{}()'],
                 'result' => '!@#$%^&?*-+\=[]{}()=!@#$%^&?*-+\=[]{}()',
             ],
             [
-                'value' => ['caption' => 'cap=caps', 'alt' => 'alternative|alt=a'],
+                'value'  => ['caption' => 'cap=caps', 'alt' => 'alternative|alt=a'],
                 'result' => 'caption=cap\=caps|alt=alternative\|alt\=a',
             ],
             [
-                'value' => ['caption' => ['cap1', 'cap2'], 'alt' => ['a|"a"', 'b="b"']],
+                'value'  => ['caption' => ['cap1', 'cap2'], 'alt' => ['a|"a"', 'b="b"']],
                 'result' => 'caption=["cap1","cap2"]|alt=["a\|\"a\"","b\=\"b\""]',
             ],
         ];
@@ -196,6 +196,49 @@ final class ApiUtilsTest extends TestCase
         self::assertEquals(
             $result,
             ApiUtils::serializeContext($value)
+        );
+    }
+
+    /**
+     * Data provider for the method `testSignParameters()`.
+     *
+     * @return array[]
+     */
+    public function dataProviderSignParameters()
+    {
+        return [
+            [
+                'value'  => ['p1' => 'v1'],
+                'result' => '4cdcfc973f12ab6a9a6ba56595a9c2897bdb8f32',
+            ],
+            [
+                'value'  => ['p1' => 'v1,v2'],
+                'result' => '9e06ad20c8a98319b00503edc4053be120017905',
+            ],
+            [
+                'value'  => ['p1' => ['v1', 'v2']],
+                'result' => '9e06ad20c8a98319b00503edc4053be120017905',
+            ],
+            [
+                'value'  => ['p1' => 'v1=v2*|}{ & !@#$%^&*()_;/.,?><\\/|_+a'],
+                'result' => 'bbdc631f4b490c0ba65722d8dbf9300d1fd98e86',
+            ],
+        ];
+    }
+
+    /**
+     * Verifies that context data is correctly serialized.
+     *
+     * @param $value
+     * @param $result
+     *
+     * @dataProvider dataProviderSignParameters
+     */
+    public function testSignParameters($value, $result)
+    {
+        self::assertEquals(
+            $result,
+            ApiUtils::signParameters($value, self::API_SECRET)
         );
     }
 }
