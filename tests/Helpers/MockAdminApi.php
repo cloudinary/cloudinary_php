@@ -11,13 +11,14 @@
 namespace Cloudinary\Test\Helpers;
 
 use Cloudinary\Api\Admin\AdminApi;
-use GuzzleHttp\Handler\MockHandler;
 
 /**
  * Class MockAdminApi
  */
 class MockAdminApi extends AdminApi
 {
+    use MockApiTrait;
+
     /**
      * MockAdminApi constructor.
      *
@@ -28,15 +29,5 @@ class MockAdminApi extends AdminApi
         parent::__construct($configuration);
 
         $this->apiClient = new MockApiClient($configuration);
-    }
-
-    /**
-     * Returns mock handler.
-     *
-     * @return MockHandler
-     */
-    public function getMockHandler()
-    {
-        return $this->apiClient->mockHandler;
     }
 }
