@@ -14,7 +14,6 @@ use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Transformation\Extract;
-use Cloudinary\Transformation\Page;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 
 /**
