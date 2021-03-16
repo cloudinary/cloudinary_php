@@ -12,20 +12,30 @@ namespace Cloudinary\Test\Unit\Transformation\Video;
 
 use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Adjust;
+use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Range\Range;
 use Cloudinary\Transformation\AspectRatio;
+use Cloudinary\Transformation\Compass;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Fps;
+use Cloudinary\Transformation\Gravity;
+use Cloudinary\Transformation\ImageSource;
+use Cloudinary\Transformation\Overlay;
 use Cloudinary\Transformation\Pad;
+use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\Qualifier\Dimensions\Width;
+use Cloudinary\Transformation\Resize;
 use Cloudinary\Transformation\Scale;
+use Cloudinary\Transformation\Source;
 use Cloudinary\Transformation\StreamingProfile;
 use Cloudinary\Transformation\SubtitlesSource;
+use Cloudinary\Transformation\TextStyle;
 use Cloudinary\Transformation\Timeline;
 use Cloudinary\Transformation\Transcode;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\VideoEdit;
 use Cloudinary\Transformation\VideoEffect;
+use Cloudinary\Transformation\VideoSource;
 use Cloudinary\Transformation\VideoTransformation;
 use UnexpectedValueException;
 
@@ -136,6 +146,29 @@ final class VideoTransformationTest extends UnitTestCase
         self::assertEquals(
             'l_subtitles:sample_sub_en.srt/fl_layer_apply',
             (string)(new VideoTransformation())->overlay(new SubtitlesSource('sample_sub_en.srt'))
+        );
+
+        self::assertEquals(
+            'l_logo/c_thumb,h_50,w_50/o_30/du_5,fl_layer_apply,g_north_west,x_10,y_10',
+            (string)(new VideoTransformation())->overlay(
+                Overlay::videoSource(
+                    VideoSource::image('logo')->resize(Resize::thumbnail(50, 50))->adjust(Adjust::opacity(30))
+                )->position((new Position())
+                    ->gravity(Gravity::compass(Compass::northWest()))
+                    ->offsetX(10)->offsetY(10))
+                ->timeline(Timeline::position()->duration(5))
+            )
+        );
+
+        self::assertEquals(
+            'l_text:Arial_30:Earth/e_outline:5/fl_layer_apply,g_north_west,so_5,x_10,y_10',
+            (string)(new VideoTransformation())->overlay(
+                Overlay::source(
+                    Source::text('Earth')->fontFamily('Arial')->fontSize(30)->effect(Effect::outline(5))
+                )->position(
+                    (new Position())->gravity(Gravity::compass(Compass::northWest()))->offsetX(10)->offsetY(10)
+                )->timeline(Timeline::position(5))
+            )
         );
 
         self::assertEquals(
