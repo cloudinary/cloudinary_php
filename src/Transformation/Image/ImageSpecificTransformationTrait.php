@@ -39,7 +39,15 @@ trait ImageSpecificTransformationTrait
      */
     public function overlay($layer, $position = null, $blendMode = null)
     {
-        return $this->addAction(ClassUtils::verifyInstance($layer, ImageOverlay::class, null, $position, $blendMode));
+        return $this->addAction(
+            ClassUtils::verifyInstance(
+                $layer,
+                BaseSourceContainer::class,
+                ImageOverlay::class,
+                $position,
+                $blendMode
+            )
+        );
     }
 
     /**
