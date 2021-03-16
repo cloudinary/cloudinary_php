@@ -20,6 +20,8 @@ use Cloudinary\Test\Integration\IntegrationTestCase;
  */
 final class OAuthTest extends IntegrationTestCase
 {
+    const FAKE_OAUTH_TOKEN = 'MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4';
+
     private static $UNIQUE_IMAGE_PUBLIC_ID;
 
     public static function setUpBeforeClass()
@@ -31,12 +33,12 @@ final class OAuthTest extends IntegrationTestCase
 
     public function testOAuthToken()
     {
-        $config = ConfigUtils::parseCloudinaryUrl(getenv(Configuration::CLOUDINARY_URL_ENV_VAR));
-        $config = array_merge_recursive(['cloud' => ['oauth_token' => 'not_a_real_token']], $config);
+        $config = new Configuration(Configuration::instance());
+        $config->cloud->oauthToken(self::FAKE_OAUTH_TOKEN);
         $adminApi = new AdminApi($config);
 
         $this->expectExceptionMessage('Invalid token');
 
-        $adminApi->asset(self::$UNIQUE_IMAGE_PUBLIC_ID, ['oauth_token' => 'not_a_real_token']);
+        $adminApi->asset(self::$UNIQUE_IMAGE_PUBLIC_ID);
     }
 }

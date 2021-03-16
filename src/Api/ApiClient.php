@@ -376,13 +376,13 @@ class ApiClient extends BaseApiClient
             'http_errors'     => false, // We handle HTTP errors by ourselves and throw corresponding exceptions
         ];
 
-        if (empty($this->cloud->oauthToken)) {
+        if (isset($this->cloud->oauthToken)) {
             $authConfig = [
-                'auth' => [$this->cloud->apiKey, $this->cloud->apiSecret]
+                'headers' => ['Authorization' => 'Bearer ' . $this->cloud->oauthToken]
             ];
         } else {
             $authConfig = [
-               'headers' => ['Authorization' => 'Bearer ' . $this->cloud->oauthToken]
+                'auth' => [$this->cloud->apiKey, $this->cloud->apiSecret]
             ];
         }
 
@@ -411,7 +411,7 @@ class ApiClient extends BaseApiClient
     }
 
     /**
-     * Validates if all required authorization params are passed
+     * Validates if all required authorization params are passed.
      *
      * @param CloudConfig $cloudConfig Config to validate
      *

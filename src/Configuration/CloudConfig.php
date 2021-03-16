@@ -72,7 +72,7 @@ class CloudConfig extends BaseConfigSection
      */
     public function __toString()
     {
-        return $this->toString([self::CLOUD_NAME, self::API_KEY, self::API_SECRET, self::OAUTH_TOKEN]);
+        return $this->toString([self::CLOUD_NAME, self::API_KEY, self::API_SECRET]);
     }
 
 
