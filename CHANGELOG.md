@@ -1,3 +1,11 @@
+2.1.1 / 2021-03-17
+==================
+
+  * Fix video overlay
+  * Improve `AuthToken` validation, require at least `url` or `acl`
+  * Improve unit tests, use a mock client to check multipart options
+  * Remove unused import in CreativeTest.php
+
 2.1.0 / 2021-03-10
 ==================
 
