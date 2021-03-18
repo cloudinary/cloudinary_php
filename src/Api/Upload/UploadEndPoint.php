@@ -27,5 +27,6 @@ class UploadEndPoint
     const TEXT             = 'text';
     const GENERATE_ARCHIVE = 'generate_archive';
     const METADATA         = 'metadata';
+    const DOWNLOAD         = 'download';
     const DOWNLOAD_BACKUP  = 'download_backup';
 }
