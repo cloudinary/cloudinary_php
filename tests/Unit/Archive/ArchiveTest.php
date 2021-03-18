@@ -11,10 +11,15 @@
 namespace Cloudinary\Test\Unit\Archive;
 
 use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Api\Upload\UploadEndPoint;
 use Cloudinary\Asset\AssetType;
-use Cloudinary\Test\Unit\UnitTestCase;
+use Cloudinary\Asset\DeliveryType;
+use Cloudinary\Test\Unit\Asset\AssetTestCase;
 
-class ArchiveTest extends UnitTestCase
+/**
+ * Class ArchiveTest
+ */
+class ArchiveTest extends AssetTestCase
 {
     /**
      * @var UploadApi $uploadApi
@@ -50,5 +55,37 @@ class ArchiveTest extends UnitTestCase
         // should use original file_name of folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['use_original_filename' => true]);
         self::assertContains('use_original_filename', $url);
+    }
+
+    public function testPrivateDownloadUrl()
+    {
+        $attachmentName = 'my_attachment_name';
+        $expirationTime = time() + 60;
+
+        $url            = self::$uploadApi->privateDownloadUrl(
+            self::ASSET_ID,
+            self::IMG_EXT,
+            [
+                "type"       => DeliveryType::UPLOAD,
+                "attachment" => $attachmentName,
+                "expires_at" => $expirationTime,
+            ]
+        );
+
+        $expectedParts  = [
+            AssetType::IMAGE . '/' . UploadEndPoint::DOWNLOAD,
+            'public_id=' . self::ASSET_ID,
+            'format=' . self::IMG_EXT,
+            'type=' . DeliveryType::UPLOAD,
+            'attachment=' . $attachmentName,
+            'expires_at=' . $expirationTime,
+            'timestamp',
+            'signature',
+            'api_key',
+        ];
+
+        foreach ($expectedParts as $expectedPart) {
+            self::assertContains($expectedPart, $url);
+        }
     }
 }
