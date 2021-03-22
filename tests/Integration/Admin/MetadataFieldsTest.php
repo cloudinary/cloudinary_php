@@ -24,6 +24,7 @@ use Cloudinary\Api\Metadata\Validators\DateGreaterThan;
 use Cloudinary\Api\Metadata\Validators\DateLessThan;
 use Cloudinary\Api\Metadata\Validators\IntLessThan;
 use Cloudinary\Test\Helpers\MockAdminApi;
+use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use DateInterval;
 use DateTime;
@@ -35,6 +36,8 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
  */
 class MetadataFieldsTest extends IntegrationTestCase
 {
+    use RequestAssertionsTrait;
+
     private static $METADATA_FIELDS = [];
     private static $EXTERNAL_ID_GENERAL;
     private static $EXTERNAL_ID_STRING;

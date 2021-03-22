@@ -694,24 +694,6 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
-     * Assert that a request was made to the correct url.
-     *
-     * @param RequestInterface $request
-     * @param string           $path
-     * @param string           $message
-     */
-    protected static function assertRequestUrl(RequestInterface $request, $path, $message = '')
-    {
-        $config = Configuration::instance();
-
-        self::assertEquals(
-            '/' . ApiClient::apiVersion() . '/' . $config->cloud->cloudName . $path,
-            $request->getUri()->getPath(),
-            $message
-        );
-    }
-
-    /**
      * Assert the HTTP request method is GET.
      *
      * @param RequestInterface $request
