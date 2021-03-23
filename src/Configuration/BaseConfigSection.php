@@ -299,13 +299,12 @@ abstract class BaseConfigSection implements ConfigurableInterface
      * Serialises configuration section to a string representation.
      *
      * @param array $excludedKeys     The keys to exclude from export to string.
-     * @param bool  $includeEmptyKeys Whether to include keys with empty(null) values.
      *
      * @return string
      */
-    public function toString($excludedKeys = [], $includeEmptyKeys = false)
+    public function toString($excludedKeys = [])
     {
-        $sectionJson                      = $this->jsonSerialize($includeEmptyKeys, true);
+        $sectionJson                      = $this->jsonSerialize();
         $sectionJson[static::CONFIG_NAME] = ArrayUtils::blacklist($sectionJson[static::CONFIG_NAME], $excludedKeys);
 
         return urldecode(http_build_query($sectionJson));
