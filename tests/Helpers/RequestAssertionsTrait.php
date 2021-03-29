@@ -52,4 +52,21 @@ trait RequestAssertionsTrait
             $message ?: 'The expected fields and values were not found in the request body'
         );
     }
+
+    /**
+     * Asserts that a request contains the expected fields and values in json format.
+     *
+     * @param RequestInterface $request
+     * @param array|null       $fields
+     * @param string           $message
+     */
+    protected static function assertRequestJsonBodySubset(RequestInterface $request, $fields = null, $message = '')
+    {
+        self::assertArraySubset(
+            $fields,
+            json_decode($request->getBody()->getContents(), true),
+            false,
+            $message ?: 'The expected fields and values were not found in the request body'
+        );
+    }
 }
