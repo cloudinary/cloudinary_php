@@ -556,30 +556,6 @@ final class AssetsTest extends IntegrationTestCase
     }
 
     /**
-     * Update the access mode of uploaded images by public IDs
-     */
-    public function testUpdateAssetsAccessModeByPublicId()
-    {
-        self::markTestIncomplete('updateAssetsAccessMode not implemented yet');
-    }
-
-    /**
-     * Update the access mode of uploaded images by prefix
-     */
-    public function testUpdateAssetsAccessModeByPrefix()
-    {
-        self::markTestIncomplete('updateAssetsAccessMode not implemented yet');
-    }
-
-    /**
-     * Update the access mode of uploaded images by tag
-     */
-    public function testUpdateAssetsAccessModeByTag()
-    {
-        self::markTestIncomplete('updateAssetsAccessMode not implemented yet');
-    }
-
-    /**
      * Delete uploaded images by a single public ID given as a string
      *
      * @throws ApiError
