@@ -49,7 +49,6 @@ final class CreativeTest extends IntegrationTestCase
     public static function tearDownAfterClass()
     {
         self::cleanupTestAssets();
-        self::cleanupAssets();
 
         parent::tearDownAfterClass();
     }
@@ -60,7 +59,7 @@ final class CreativeTest extends IntegrationTestCase
     public function testGenerateSprite()
     {
         $asset = self::$uploadApi->generateSprite(self::$TAG_TO_GENERATE_SPRITE);
-        self::addAssetToCleanupList($asset['public_id'], [DeliveryType::KEY => DeliveryType::SPRITE]);
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
 
         self::assertAssetUrl($asset, 'css_url', 'css', DeliveryType::SPRITE);
         self::assertAssetUrl($asset, 'image_url', 'png', DeliveryType::SPRITE);
@@ -93,7 +92,7 @@ final class CreativeTest extends IntegrationTestCase
     public function testCreateMulti()
     {
         $asset = self::$uploadApi->multi(self::$TAG_TO_MULTI);
-        self::addAssetToCleanupList($asset['public_id'], [DeliveryType::KEY => DeliveryType::MULTI]);
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::MULTI]);
 
         self::assertAssetUrl($asset, 'url', 'gif', DeliveryType::MULTI);
         self::assertAssetUrl($asset, 'secure_url', 'gif', DeliveryType::MULTI);
@@ -123,7 +122,7 @@ final class CreativeTest extends IntegrationTestCase
     public function testCreateImageOfTextString()
     {
         $asset = self::$uploadApi->text(self::$UNIQUE_TEST_ID);
-        self::addAssetToCleanupList($asset['public_id'], [DeliveryType::KEY => DeliveryType::TEXT]);
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::TEXT]);
 
         self::assertValidAsset(
             $asset,
@@ -132,5 +131,7 @@ final class CreativeTest extends IntegrationTestCase
                 'format'          => 'png',
             ]
         );
+        self::assertGreaterThan(5, $asset['width']);
+        self::assertGreaterThan(5, $asset['height']);
     }
 }

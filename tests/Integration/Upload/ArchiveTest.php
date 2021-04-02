@@ -53,8 +53,7 @@ final class ArchiveTest extends IntegrationTestCase
 
     public static function tearDownAfterClass()
     {
-        self::cleanupTestAssets();
-        self::cleanupTestAssets(AssetType::RAW);
+        self::cleanupTestAssets([AssetType::IMAGE, AssetType::RAW]);
 
         parent::tearDownAfterClass();
     }

@@ -186,11 +186,11 @@ class AuthToken
     }
 
     /**
-     * Converts URL to lowercase and escapes it.
+     * Escapes a url using lowercase hex characters
      *
      * @param string $url The URL to escape
      *
-     * @return string|string[]|null escaped and lowered URL
+     * @return string|string[]|null escaped URL
      */
     private static function escapeToLower($url)
     {
