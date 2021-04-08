@@ -47,7 +47,7 @@ class VideoThumbnailTag extends ImageTag
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
+     * @return VideoThumbnailTag
      */
     public static function fromParams($source, $params = [])
     {

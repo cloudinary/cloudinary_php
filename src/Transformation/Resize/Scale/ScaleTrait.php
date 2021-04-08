@@ -25,7 +25,7 @@ trait ScaleTrait
      * @param int|float|null        $height      The required height of a transformed asset.
      * @param int|float|array       $aspectRatio Resizes the asset to a new aspect ratio.
      *
-     * @return static
+     * @return Scale
      */
     public static function scale($width = null, $height = null, $aspectRatio = null)
     {
@@ -40,7 +40,7 @@ trait ScaleTrait
      * @param int|float|null        $height      The required height of a transformed asset.
      * @param int|float|array       $aspectRatio Resizes the asset to a new aspect ratio.
      *
-     * @return static
+     * @return Scale
      */
     public static function fit($width = null, $height = null, $aspectRatio = null)
     {
@@ -57,7 +57,7 @@ trait ScaleTrait
      * @param int|float        $height      The required height of a transformed asset.
      * @param int|float|array  $aspectRatio Resizes the asset to a new aspect ratio.
      *
-     * @return static
+     * @return Scale
      *
      * @see Scale::fit
      */
@@ -76,7 +76,7 @@ trait ScaleTrait
      * @param int|float|null        $height      The required height of a transformed asset.
      * @param int|float|array       $aspectRatio Resizes the asset to a new aspect ratio.
      *
-     * @return static
+     * @return Scale
      *
      * @see Scale::fit
      */
@@ -88,12 +88,12 @@ trait ScaleTrait
     /**
      * @param mixed ...$args
      *
-     * @return static
+     * @return Scale
      *
      * @internal
      */
     protected static function createScale(...$args)
     {
-        return new static(...$args);
+        return new Scale(...$args);
     }
 }

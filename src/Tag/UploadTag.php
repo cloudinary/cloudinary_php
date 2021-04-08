@@ -74,7 +74,7 @@ class UploadTag extends BaseConfigurableApiTag
      *                                     with the asset's metadata.
      * @param array  $params               The upload parameters.
      *
-     * @return mixed
+     * @return UploadTag
      */
 
     public static function fromParams($field, $params = [])

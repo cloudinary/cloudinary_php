@@ -27,7 +27,7 @@ trait ImaggaTrait
      * @param int|float|string|null $width       The required width of a transformed asset.
      * @param int|float|null        $height      The required height of a transformed asset.
      *
-     * @return static
+     * @return Imagga
      */
     public static function imaggaCrop($width = null, $height = null)
     {
@@ -42,7 +42,7 @@ trait ImaggaTrait
      * @param int|float|string|null $width       The required width of a transformed asset.
      * @param int|float|null        $height      The required height of a transformed asset.
      *
-     * @return static
+     * @return Imagga
      */
     public static function imaggaScale($width = null, $height = null)
     {
@@ -52,12 +52,12 @@ trait ImaggaTrait
     /**
      * @param mixed ...$args
      *
-     * @return static
+     * @return Imagga
      *
      * @internal
      */
     protected static function createImagga(...$args)
     {
-        return new static(...$args);
+        return new Imagga(...$args);
     }
 }
