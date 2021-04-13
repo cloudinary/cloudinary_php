@@ -85,6 +85,7 @@ trait RequestAssertionsTrait
         self::assertArraySubset(
             $fields,
             json_decode($request->getBody()->getContents(), true),
+            false,
             $message ?: 'The expected fields and values were not found in the request body'
         );
     }
