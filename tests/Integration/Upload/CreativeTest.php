@@ -21,9 +21,10 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
  */
 final class CreativeTest extends IntegrationTestCase
 {
+    const EXPLODE_GIF = 'explode_gif';
+
     private static $TAG_TO_MULTI;
     private static $TAG_TO_GENERATE_SPRITE;
-    private static $EXPLODE_GIF_PUBLIC_ID;
 
     /**
      * @throws ApiError
@@ -34,16 +35,19 @@ final class CreativeTest extends IntegrationTestCase
 
         self::$TAG_TO_MULTI           = 'upload_creative_multi_' . self::$UNIQUE_TEST_TAG;
         self::$TAG_TO_GENERATE_SPRITE = 'upload_creative_generate_sprite_' . self::$UNIQUE_TEST_TAG;
-        self::$EXPLODE_GIF_PUBLIC_ID  = 'upload_creative_explode_gif_' . self::$UNIQUE_TEST_ID;
 
         $tags = [
             self::$TAG_TO_GENERATE_SPRITE,
             self::$TAG_TO_MULTI,
         ];
 
-        self::uploadTestAssetImage(['tags' => $tags, 'public_id' => self::$UNIQUE_TEST_ID]);
-        self::uploadTestAssetImage(['tags' => $tags]);
-        self::uploadTestAssetImage(['public_id' => self::$EXPLODE_GIF_PUBLIC_ID], self::TEST_IMAGE_GIF_PATH);
+        self::createTestAssets(
+            [
+                ['options' => ['tags' => $tags]],
+                ['options' => ['tags' => $tags]],
+                self::EXPLODE_GIF => ['options' => ['file' => self::TEST_IMAGE_GIF_PATH]]
+            ]
+        );
     }
 
     public static function tearDownAfterClass()
@@ -105,7 +109,7 @@ final class CreativeTest extends IntegrationTestCase
     public function testExplodeGIF()
     {
         $result = self::$uploadApi->explode(
-            self::$EXPLODE_GIF_PUBLIC_ID,
+            self::getTestAssetPublicId(self::EXPLODE_GIF),
             [
                 'transformation' => Extract::getPage()->all(),
             ]
