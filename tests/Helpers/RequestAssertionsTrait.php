@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Test\Helpers;
 
+use Cloudinary\Api\ApiClient;
+use Cloudinary\Configuration\Configuration;
 use Psr\Http\Message\RequestInterface;
 
 use function GuzzleHttp\Psr7\parse_query;
@@ -21,6 +23,24 @@ use function GuzzleHttp\Psr7\parse_query;
  */
 trait RequestAssertionsTrait
 {
+    /**
+     * Assert that a request was made to the correct url.
+     *
+     * @param RequestInterface $request
+     * @param string           $path
+     * @param string           $message
+     */
+    protected static function assertRequestUrl(RequestInterface $request, $path, $message = '')
+    {
+        $config = Configuration::instance();
+
+        self::assertEquals(
+            '/' . ApiClient::apiVersion() . '/' . $config->cloud->cloudName . $path,
+            $request->getUri()->getPath(),
+            $message
+        );
+    }
+
     /**
      * Asserts that a request's query string contains the expected fields and values.
      *

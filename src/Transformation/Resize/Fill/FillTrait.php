@@ -29,7 +29,7 @@ trait FillTrait
      * @param Gravity               $gravity Which part of the original image to include when the resulting image is
      *                                       smaller than the original or the proportions do not match.
      *
-     * @return static
+     * @return Fill
      */
     public static function fill($width = null, $height = null, $gravity = null)
     {
@@ -50,7 +50,7 @@ trait FillTrait
      * @param Gravity               $gravity Which part of the original image to include when the resulting image is
      *                                       smaller than the original or the proportions do not match.
      *
-     * @return static
+     * @return Fill
      *
      * @see Fill::fill
      */
@@ -64,12 +64,12 @@ trait FillTrait
      *
      * @param mixed ...$args
      *
-     * @return static
+     * @return Fill
      *
      * @internal
      */
     protected static function createFill(...$args)
     {
-        return new static(...$args);
+        return new Fill(...$args);
     }
 }
