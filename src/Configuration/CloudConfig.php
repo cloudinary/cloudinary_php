@@ -25,14 +25,15 @@ class CloudConfig extends BaseConfigSection
     const CONFIG_NAME = 'cloud';
 
     // Supported parameters
-    const CLOUD_NAME = 'cloud_name';
-    const API_KEY    = 'api_key';
-    const API_SECRET = 'api_secret';
+    const CLOUD_NAME  = 'cloud_name';
+    const API_KEY     = 'api_key';
+    const API_SECRET  = 'api_secret';
+    const OAUTH_TOKEN = 'oauth_token';
 
     /**
      * @var array of configuration keys that contain sensitive data that should not be exported (for example api key)
      */
-    protected static $sensitiveDataKeys = [self::API_KEY, self::API_SECRET];
+    protected static $sensitiveDataKeys = [self::API_KEY, self::API_SECRET, self::OAUTH_TOKEN];
 
     /**
      * Mandatory. The name of your Cloudinary cloud. Used to build the public URL for all your media assets.
@@ -56,6 +57,13 @@ class CloudConfig extends BaseConfigSection
      * @var string
      */
     public $apiSecret;
+
+    /**
+     * Optional for sever-side operations. Can be passed instead of passing API key and API secret.
+     *
+     * @var string
+     */
+    public $oauthToken;
 
     /**
      * Serialises configuration section to a string representation.

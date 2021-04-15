@@ -463,57 +463,6 @@ final class AssetsTest extends IntegrationTestCase
     }
 
     /**
-     * Restore different versions of a deleted asset.
-     *
-     * @throws Exception
-     */
-    public function testRestoreDeletedAssetDifferentVersions()
-    {
-        $deleteResult = self::$adminApi->deleteAssets([self::$BACKUP_1_PUBLIC_ID]);
-
-        self::assertAssetDeleted($deleteResult, self::$BACKUP_1_PUBLIC_ID);
-        self::assertNotEquals(self::$BACKUP_1_ASSET_FIRST['bytes'], self::$BACKUP_1_ASSET_SECOND['bytes']);
-
-        $asset = null;
-        self::retryAssertionIfThrows(
-            static function () use (&$asset) {
-                $asset = self::$adminApi->asset(self::$BACKUP_1_PUBLIC_ID, ['versions' => true]);
-
-                self::assertGreaterThanOrEqual(2, count($asset['versions']));
-            },
-            3,
-            5 // sleep for 5 seconds
-        );
-
-
-        $restoreFirstResult  = self::$adminApi->restore(
-            [
-                self::$BACKUP_1_PUBLIC_ID,
-            ],
-            [
-                'versions' => [$asset['versions'][0]['version_id']],
-            ]
-        );
-        $restoreSecondResult = self::$adminApi->restore(
-            [
-                self::$BACKUP_1_PUBLIC_ID,
-            ],
-            [
-                'versions' => [$asset['versions'][1]['version_id']],
-            ]
-        );
-
-        self::assertEquals(
-            $restoreFirstResult[self::$BACKUP_1_PUBLIC_ID]['bytes'],
-            self::$BACKUP_1_ASSET_FIRST['bytes']
-        );
-        self::assertEquals(
-            $restoreSecondResult[self::$BACKUP_1_PUBLIC_ID]['bytes'],
-            self::$BACKUP_1_ASSET_SECOND['bytes']
-        );
-    }
-
-    /**
      * Restore two different deleted assets.
      *
      * @throws ApiError
@@ -553,30 +502,6 @@ final class AssetsTest extends IntegrationTestCase
         $asset = self::$adminApi->asset(self::$RESTORE_PUBLIC_ID, ['versions' => true]);
 
         self::assertGreaterThanOrEqual(1, $asset['versions']);
-    }
-
-    /**
-     * Update the access mode of uploaded images by public IDs
-     */
-    public function testUpdateAssetsAccessModeByPublicId()
-    {
-        self::markTestIncomplete('updateAssetsAccessMode not implemented yet');
-    }
-
-    /**
-     * Update the access mode of uploaded images by prefix
-     */
-    public function testUpdateAssetsAccessModeByPrefix()
-    {
-        self::markTestIncomplete('updateAssetsAccessMode not implemented yet');
-    }
-
-    /**
-     * Update the access mode of uploaded images by tag
-     */
-    public function testUpdateAssetsAccessModeByTag()
-    {
-        self::markTestIncomplete('updateAssetsAccessMode not implemented yet');
     }
 
     /**

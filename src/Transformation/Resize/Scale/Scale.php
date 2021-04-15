@@ -22,7 +22,11 @@ class Scale extends BaseResizeAction
     /**
      * Changes the aspect ratio of an image while retaining all important content and avoiding unnatural distortions.
      *
+     * Liquid Rescaling is only supported for Scale mode.
+     *
      * @return $this
+     *
+     * @see \Cloudinary\Transformation\LiquidRescaling
      */
     public function liquidRescaling()
     {

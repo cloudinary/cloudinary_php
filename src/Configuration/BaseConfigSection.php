@@ -305,6 +305,11 @@ abstract class BaseConfigSection implements ConfigurableInterface
     public function toString($excludedKeys = [])
     {
         $sectionJson                      = $this->jsonSerialize();
+
+        if (empty($sectionJson)) {
+            return '';
+        }
+
         $sectionJson[static::CONFIG_NAME] = ArrayUtils::blacklist($sectionJson[static::CONFIG_NAME], $excludedKeys);
 
         return urldecode(http_build_query($sectionJson));

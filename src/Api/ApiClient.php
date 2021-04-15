@@ -23,6 +23,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\LimitStream;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -58,17 +59,7 @@ class ApiClient extends BaseApiClient
 
         $this->baseUri = "{$this->api->uploadPrefix}/" . self::apiVersion() . "/{$this->cloud->cloudName}/";
 
-        $clientConfig = [
-            'auth'            => [$this->cloud->apiKey, $this->cloud->apiSecret],
-            'base_uri'        => $this->baseUri,
-            'connect_timeout' => $this->api->connectionTimeout,
-            'timeout'         => $this->api->timeout,
-            'proxy'           => $this->api->apiProxy,
-            'headers'         => ['User-Agent' => self::userAgent()],
-            'http_errors'     => false, // We handle HTTP errors by ourselves and throw corresponding exceptions
-        ];
-
-        $this->httpClient = new Client($clientConfig);
+        $this->httpClient = new Client($this->buildHttpClientConfig());
     }
 
     /**
@@ -108,7 +99,7 @@ class ApiClient extends BaseApiClient
     {
         $tempConfiguration = new Configuration($configuration); // TODO: improve performance here
 
-        $tempConfiguration->cloud->assertNotEmpty(['cloudName', 'apiKey', 'apiSecret']);
+        self::validateAuthorization($tempConfiguration->cloud);
 
         $this->cloud   = $tempConfiguration->cloud;
         $this->api     = $tempConfiguration->api;
@@ -384,6 +375,38 @@ class ApiClient extends BaseApiClient
     }
 
     /**
+     * Build configuration used by HTTP client
+     *
+     * @return array
+     *
+     * @internal
+     *
+     */
+    private function buildHttpClientConfig()
+    {
+        $clientConfig = [
+            'base_uri'        => $this->baseUri,
+            'connect_timeout' => $this->api->connectionTimeout,
+            'timeout'         => $this->api->timeout,
+            'proxy'           => $this->api->apiProxy,
+            'headers'         => ['User-Agent' => self::userAgent()],
+            'http_errors'     => false, // We handle HTTP errors by ourselves and throw corresponding exceptions
+        ];
+
+        if (isset($this->cloud->oauthToken)) {
+            $authConfig = [
+                'headers' => ['Authorization' => 'Bearer ' . $this->cloud->oauthToken]
+            ];
+        } else {
+            $authConfig = [
+                'auth' => [$this->cloud->apiKey, $this->cloud->apiSecret]
+            ];
+        }
+
+        return array_merge_recursive($clientConfig, $authConfig);
+    }
+
+    /**
      * Builds multipart request body from an array of parameters
      *
      * @param array $parameters The input parameters
@@ -402,5 +425,25 @@ class ApiClient extends BaseApiClient
                 $parameters
             )
         );
+    }
+
+    /**
+     * Validates if all required authorization params are passed.
+     *
+     * @param CloudConfig $cloudConfig Config to validate
+     *
+     * @throws InvalidArgumentException In case not all required keys are set.
+     *
+     * @internal
+     */
+    private static function validateAuthorization($cloudConfig)
+    {
+        $keysToValidate = ['cloudName'];
+
+        if (empty($cloudConfig->oauthToken)) {
+            array_push($keysToValidate, 'apiKey', 'apiSecret');
+        }
+
+        $cloudConfig->assertNotEmpty($keysToValidate);
     }
 }

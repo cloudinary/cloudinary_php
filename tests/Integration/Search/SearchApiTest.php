@@ -214,55 +214,6 @@ class SearchApiTest extends IntegrationTestCase
     }
 
     /**
-     * Finds assets by multi parameters
-     *
-     * @throws ApiError
-     */
-    public function testExecuteWithParams()
-    {
-        $this->markTestSkipped('TODO: Implement mock');
-
-        $this
-            ->search
-            ->expression('format:jpg')
-            ->maxResults(10)
-            ->nextCursor('abcd')
-            ->sortBy('created_at', 'asc')
-            ->sortBy('updated_at')
-            ->aggregate('format')
-            ->aggregate('resource_type')
-            ->withField('tags')
-            ->withField('image_metadata')
-            ->execute();
-
-        assertJson(
-            $this,
-            json_encode(
-                [
-                    'sort_by' => [
-                        ['created_at' => 'asc'],
-                        ['updated_at' => 'desc'],
-                    ],
-                    'aggregate' => ['format', 'resource_type'],
-                    'with_field' => ['tags', 'image_metadata'],
-                    'expression' => 'format:jpg',
-                    'max_results' => 10,
-                    'next_cursor' => 'abcd',
-                ]
-            ),
-            //Curl::$instance->fields(),
-            'Should correctly encode JSON into the HTTP request'
-        );
-
-        assertJson(
-            $this,
-            json_encode(['Content-type: application/json', 'Accept: application/json']),
-            // json_encode(Curl::$instance->getopt(CURLOPT_HTTPHEADER)),
-            'Should use right headers for execution of advanced search api'
-        );
-    }
-
-    /**
      * Find assets without limiting expression to certain fields
      * Shows results containing given text in any string field
      * This test will match two results where the expression is matched in tags and public_id

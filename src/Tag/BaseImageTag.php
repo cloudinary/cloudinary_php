@@ -76,7 +76,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
+     * @return BaseImageTag
      */
     public static function fromParams($source, $params = [])
     {
