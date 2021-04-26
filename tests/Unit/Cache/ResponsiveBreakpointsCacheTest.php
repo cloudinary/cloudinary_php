@@ -78,18 +78,6 @@ final class ResponsiveBreakpointsCacheTest extends UnitTestCase
     }
 
     /**
-     * Integration test
-     */
-    public function testRBCacheFetchBreakpointsFromCloudinary()
-    {
-        self::markTestSkipped('Skip integration test');
-        $actualBreakpoints = $this->cache->get(new Image(AssetTestCase::IMAGE_NAME), true);
-
-        self::assertInternalType('array', $actualBreakpoints);
-        self::assertGreaterThan(0, count($actualBreakpoints));
-    }
-
-    /**
      * @expectedException InvalidArgumentException
      */
     public function testRBCacheSetInvalidBreakpoints()
