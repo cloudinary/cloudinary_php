@@ -209,29 +209,45 @@ final class EditTest extends IntegrationTestCase
     }
 
     /**
-     * check that context is returned in the rename response
+     * Test context in the rename API response
      */
     public function testRenameReturnsContext()
     {
         $result = self::$uploadApi->rename(
             self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_CONTEXT_TEST),
-            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_CONTEXT_TEST)
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_CONTEXT_TEST),
+            ['context' => true]
         );
 
         self::assertArrayHasKey('context', $result);
+
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_CONTEXT_TEST),
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_CONTEXT_TEST)
+        );
+
+        self::assertArrayNotHasKey('context', $result);
     }
 
     /**
-     * check that structured metadata is returned in the rename response
+     * Test structured metadata in the rename API response
      */
-    public function testRenameReturnsMetadata()
+    public function testMetadataInRename()
     {
         $result = self::$uploadApi->rename(
             self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_METADATA_TEST),
-            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_METADATA_TEST)
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_METADATA_TEST),
+            ['metadata' => true]
         );
 
         self::assertArrayHasKey('metadata', $result);
+
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_METADATA_TEST),
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_METADATA_TEST)
+        );
+
+        self::assertArrayNotHasKey('metadata', $result);
     }
 
     /**
