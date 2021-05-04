@@ -90,6 +90,8 @@ trait EditTrait
         $params                   = ArrayUtils::whitelist($options, ['type', 'to_type', 'invalidate', 'overwrite']);
         $params['from_public_id'] = $fromPublicId;
         $params['to_public_id']   = $toPublicId;
+        $params['context'] = true;
+        $params['metadata'] = true;
 
         return $this->callUploadApiAsync(UploadEndPoint::RENAME, $params, $options);
     }

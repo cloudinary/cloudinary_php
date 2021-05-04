@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Integration\Upload;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\BadRequest;
 use Cloudinary\Api\Exception\NotFound;
+use Cloudinary\Api\Metadata\StringMetadataField;
 use Cloudinary\Asset\AssetTransformation;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Test\Helpers\MockUploadApi;
@@ -31,19 +32,28 @@ final class EditTest extends IntegrationTestCase
 
     const TRANSFORMATION_STRING = 'c_crop,g_face,h_400,w_400';
 
-    const RENAME_TARGET                       = 'rename_target';
-    const RENAME_SOURCE                       = 'rename_source';
-    const RENAME_TO_EXISTING_SOURCE           = 'rename_to_existing_source';
-    const RENAME_TO_EXISTING_TARGET           = 'rename_to_existing_target';
-    const RENAME_TO_EXISTING_SOURCE_OVERWRITE = 'rename_to_existing_overwrite_source';
-    const RENAME_TO_EXISTING_TARGET_OVERWRITE = 'rename_to_existing_overwrite_target';
-    const CHANGE_TYPE                         = 'change_type';
-    const DESTROY                             = 'destroy';
-    const EXPLICIT                            = 'explicit';
-    const EXCEPTION_IMAGE                     = 'exception_image';
-    const EXCEPTION_RAW                       = 'exception_raw';
+    const RENAME_TARGET                        = 'rename_target';
+    const RENAME_SOURCE                        = 'rename_source';
+    const RENAME_TO_EXISTING_SOURCE            = 'rename_to_existing_source';
+    const RENAME_TO_EXISTING_TARGET            = 'rename_to_existing_target';
+    const RENAME_TO_EXISTING_SOURCE_OVERWRITE  = 'rename_to_existing_overwrite_source';
+    const RENAME_TO_EXISTING_TARGET_OVERWRITE  = 'rename_to_existing_overwrite_target';
+    const RENAME_TARGET_FOR_CONTEXT_TEST       = 'rename_target_for_context_test';
+    const RENAME_SOURCE_FOR_CONTEXT_TEST       = 'rename_source_for_context_test';
+    const RENAME_TARGET_FOR_METADATA_TEST      = 'rename_target_for_metadata_test';
+    const RENAME_SOURCE_FOR_METADATA_TEST      = 'rename_source_for_metadata_test';
+    const CHANGE_TYPE                          = 'change_type';
+    const DESTROY                              = 'destroy';
+    const EXPLICIT                             = 'explicit';
+    const EXCEPTION_IMAGE                      = 'exception_image';
+    const EXCEPTION_RAW                        = 'exception_raw';
 
     private static $TRANSFORMATION_OBJECT;
+    private static $RENAME_RETURN_CONTEXT_KEY;
+    private static $RENAME_RETURN_CONTEXT_VALUE;
+    private static $RENAME_RETURN_METADATA;
+    private static $RENAME_RETURN_METADATA_EXTERNAL_ID;
+    private static $RENAME_RETURN_METADATA_DEFAULT_VALUE;
 
     /**
      * @throws ApiError
@@ -55,6 +65,16 @@ final class EditTest extends IntegrationTestCase
         self::$TRANSFORMATION_OBJECT = (new AssetTransformation())->resize(
             Resize::crop(400, 400, Gravity::face())
         );
+        self::$RENAME_RETURN_CONTEXT_KEY = 'rename_return_context_key_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_RETURN_CONTEXT_VALUE = 'rename_return_context_value_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_RETURN_METADATA_EXTERNAL_ID = 'rename_metadata_external_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_RETURN_METADATA_DEFAULT_VALUE = 'rename_metadata_default_value_' . self::$UNIQUE_TEST_ID;
+
+        self::$RENAME_RETURN_METADATA = new StringMetadataField(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);
+        self::$RENAME_RETURN_METADATA->setExternalId(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);
+        self::$RENAME_RETURN_METADATA->setDefaultValue(self::$RENAME_RETURN_METADATA_DEFAULT_VALUE);
+        self::$RENAME_RETURN_METADATA->setMandatory(true);
+        self::$adminApi->addMetadataField(self::$RENAME_RETURN_METADATA);
 
         self::createTestAssets(
             [
@@ -64,6 +84,16 @@ final class EditTest extends IntegrationTestCase
                 self::RENAME_TO_EXISTING_TARGET,
                 self::RENAME_TO_EXISTING_SOURCE_OVERWRITE,
                 self::RENAME_TO_EXISTING_TARGET_OVERWRITE,
+                self::RENAME_TARGET_FOR_CONTEXT_TEST => ['upload' => false],
+                self::RENAME_SOURCE_FOR_CONTEXT_TEST => [
+                    'options' => [
+                        'context' => [
+                            self::$RENAME_RETURN_CONTEXT_KEY => self::$RENAME_RETURN_CONTEXT_VALUE
+                        ]
+                    ]
+                ],
+                self::RENAME_TARGET_FOR_METADATA_TEST => ['upload' => false],
+                self::RENAME_SOURCE_FOR_METADATA_TEST,
                 self::CHANGE_TYPE => ['upload' => false],
                 self::DESTROY,
                 self::EXPLICIT,
@@ -76,9 +106,13 @@ final class EditTest extends IntegrationTestCase
         );
     }
 
+    /**
+     * @throws ApiError
+     */
     public static function tearDownAfterClass()
     {
         self::cleanupTestAssets();
+        self::$adminApi->deleteMetadataField(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);
 
         parent::tearDownAfterClass();
     }
@@ -172,6 +206,32 @@ final class EditTest extends IntegrationTestCase
                 'to_public_id' => self::getTestAssetPublicId(self::CHANGE_TYPE)
             ]
         );
+    }
+
+    /**
+     * check that context is returned in the rename response
+     */
+    public function testRenameReturnsContext()
+    {
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_CONTEXT_TEST),
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_CONTEXT_TEST)
+        );
+
+        self::assertArrayHasKey('context', $result);
+    }
+
+    /**
+     * check that structured metadata is returned in the rename response
+     */
+    public function testRenameReturnsMetadata()
+    {
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_METADATA_TEST),
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_METADATA_TEST)
+        );
+
+        self::assertArrayHasKey('metadata', $result);
     }
 
     /**
