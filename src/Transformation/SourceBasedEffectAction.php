@@ -76,18 +76,23 @@ abstract class SourceBasedEffectAction extends EffectAction
     }
 
     /**
-     * This function is similar to BaseSourceContainer::getSubActionQualifiers.
+     * Collects source based action grouped by sub-actions.
      *
-     * The difference is that additional qualifiers come with the source sub-action.
+     *  Typical source based action consists of 2 to 3 components.
      *
-     * For example:
-     *  e_cut_out,l_logo/fl_layer_apply,g_south,y_20
+     *  For example, if we take:
+     *      l_logo/c_scale,w_100/e_screen,fl_layer_apply,fl_no_overflow,g_south,y_20
      *
-     * Note that e_cut_out comes with l_logo in the same sub-action.
+     *  We can see:
+     *      - source part (l_).
+     *      - nested transformation (optional).
+     *      - fl_layer_apply part with position, blend mode, and additional flags/qualifiers.
      *
-     * @return array
+     * Occasionally the source part(l_) has additional qualifiers/flags, they come with the source itself.
      *
-     * @see BaseSourceContainer::getSubActionQualifiers
+     * @return array An array of grouped qualifiers
+     *
+     * @internal
      */
     protected function getSubActionQualifiers()
     {
@@ -96,10 +101,12 @@ abstract class SourceBasedEffectAction extends EffectAction
         $positionQualifiers   = $this->position ? $this->position->getStringQualifiers() : [];
         $additionalQualifiers = $this->getStringQualifiers();
 
+        $additionalQualifiers [] = Flag::layerApply();
+
         return [
-            'source'         => ArrayUtils::mergeNonEmpty($sourceQualifiers, $additionalQualifiers),
+            'source'         => $sourceQualifiers,
             'transformation' => $sourceTransformation,
-            'additional'     => ArrayUtils::mergeNonEmpty($positionQualifiers, [Flag::layerApply()]),
+            'additional'     => ArrayUtils::mergeNonEmpty($positionQualifiers, $additionalQualifiers),
         ];
     }
 
