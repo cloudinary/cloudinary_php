@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Integration\Upload;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\BadRequest;
 use Cloudinary\Api\Exception\NotFound;
+use Cloudinary\Api\Metadata\StringMetadataField;
 use Cloudinary\Asset\AssetTransformation;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Test\Helpers\MockUploadApi;
@@ -37,6 +38,10 @@ final class EditTest extends IntegrationTestCase
     const RENAME_TO_EXISTING_TARGET           = 'rename_to_existing_target';
     const RENAME_TO_EXISTING_SOURCE_OVERWRITE = 'rename_to_existing_overwrite_source';
     const RENAME_TO_EXISTING_TARGET_OVERWRITE = 'rename_to_existing_overwrite_target';
+    const RENAME_TARGET_FOR_CONTEXT_TEST      = 'rename_target_for_context_test';
+    const RENAME_SOURCE_FOR_CONTEXT_TEST      = 'rename_source_for_context_test';
+    const RENAME_TARGET_FOR_METADATA_TEST     = 'rename_target_for_metadata_test';
+    const RENAME_SOURCE_FOR_METADATA_TEST     = 'rename_source_for_metadata_test';
     const CHANGE_TYPE                         = 'change_type';
     const DESTROY                             = 'destroy';
     const EXPLICIT                            = 'explicit';
@@ -44,6 +49,11 @@ final class EditTest extends IntegrationTestCase
     const EXCEPTION_RAW                       = 'exception_raw';
 
     private static $TRANSFORMATION_OBJECT;
+    private static $RENAME_RETURN_CONTEXT_KEY;
+    private static $RENAME_RETURN_CONTEXT_VALUE;
+    private static $RENAME_RETURN_METADATA;
+    private static $RENAME_RETURN_METADATA_EXTERNAL_ID;
+    private static $RENAME_RETURN_METADATA_DEFAULT_VALUE;
 
     /**
      * @throws ApiError
@@ -52,33 +62,57 @@ final class EditTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$TRANSFORMATION_OBJECT = (new AssetTransformation())->resize(
+        self::$TRANSFORMATION_OBJECT                = (new AssetTransformation())->resize(
             Resize::crop(400, 400, Gravity::face())
         );
+        self::$RENAME_RETURN_CONTEXT_KEY            = 'rename_return_context_key_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_RETURN_CONTEXT_VALUE          = 'rename_return_context_value_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_RETURN_METADATA_EXTERNAL_ID   = 'rename_metadata_external_id_' . self::$UNIQUE_TEST_ID;
+        self::$RENAME_RETURN_METADATA_DEFAULT_VALUE = 'rename_metadata_default_value_' . self::$UNIQUE_TEST_ID;
+
+        self::$RENAME_RETURN_METADATA = new StringMetadataField(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);
+        self::$RENAME_RETURN_METADATA->setExternalId(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);
+        self::$RENAME_RETURN_METADATA->setDefaultValue(self::$RENAME_RETURN_METADATA_DEFAULT_VALUE);
+        self::$RENAME_RETURN_METADATA->setMandatory(true);
+        self::$adminApi->addMetadataField(self::$RENAME_RETURN_METADATA);
 
         self::createTestAssets(
             [
-                self::RENAME_TARGET => ['upload' => false],
+                self::RENAME_TARGET                   => ['upload' => false],
                 self::RENAME_SOURCE,
                 self::RENAME_TO_EXISTING_SOURCE,
                 self::RENAME_TO_EXISTING_TARGET,
                 self::RENAME_TO_EXISTING_SOURCE_OVERWRITE,
                 self::RENAME_TO_EXISTING_TARGET_OVERWRITE,
-                self::CHANGE_TYPE => ['upload' => false],
+                self::RENAME_TARGET_FOR_CONTEXT_TEST  => ['upload' => false],
+                self::RENAME_SOURCE_FOR_CONTEXT_TEST  => [
+                    'options' => [
+                        'context' => [
+                            self::$RENAME_RETURN_CONTEXT_KEY => self::$RENAME_RETURN_CONTEXT_VALUE,
+                        ],
+                    ],
+                ],
+                self::RENAME_TARGET_FOR_METADATA_TEST => ['upload' => false],
+                self::RENAME_SOURCE_FOR_METADATA_TEST,
+                self::CHANGE_TYPE                     => ['upload' => false],
                 self::DESTROY,
                 self::EXPLICIT,
                 self::EXCEPTION_IMAGE,
-                self::EXCEPTION_RAW => [
+                self::EXCEPTION_RAW                   => [
                     'options' => [AssetType::KEY => AssetType::RAW],
-                    'cleanup' => true
+                    'cleanup' => true,
                 ],
             ]
         );
     }
 
+    /**
+     * @throws ApiError
+     */
     public static function tearDownAfterClass()
     {
         self::cleanupTestAssets();
+        self::$adminApi->deleteMetadataField(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);
 
         parent::tearDownAfterClass();
     }
@@ -167,11 +201,53 @@ final class EditTest extends IntegrationTestCase
         self::assertRequestBodySubset(
             $lastRequest,
             [
-                'to_type' => 'private',
+                'to_type'        => 'private',
                 'from_public_id' => self::getTestAssetPublicId(self::CHANGE_TYPE),
-                'to_public_id' => self::getTestAssetPublicId(self::CHANGE_TYPE)
+                'to_public_id'   => self::getTestAssetPublicId(self::CHANGE_TYPE),
             ]
         );
+    }
+
+    /**
+     * Test context in the rename API response
+     */
+    public function testRenameReturnsContext()
+    {
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_CONTEXT_TEST),
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_CONTEXT_TEST),
+            ['context' => true]
+        );
+
+        self::assertArrayHasKey('context', $result);
+
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_CONTEXT_TEST),
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_CONTEXT_TEST)
+        );
+
+        self::assertArrayNotHasKey('context', $result);
+    }
+
+    /**
+     * Test structured metadata in the rename API response
+     */
+    public function testMetadataInRename()
+    {
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_METADATA_TEST),
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_METADATA_TEST),
+            ['metadata' => true]
+        );
+
+        self::assertArrayHasKey('metadata', $result);
+
+        $result = self::$uploadApi->rename(
+            self::getTestAssetPublicId(self::RENAME_TARGET_FOR_METADATA_TEST),
+            self::getTestAssetPublicId(self::RENAME_SOURCE_FOR_METADATA_TEST)
+        );
+
+        self::assertArrayNotHasKey('metadata', $result);
     }
 
     /**
@@ -224,30 +300,30 @@ final class EditTest extends IntegrationTestCase
     {
         return [
             'Illegal value for `raw_convert`' => [
-                'publicId' => self::EXCEPTION_RAW,
-                'options' => ['raw_convert' => 'illegal', 'resource_type' => 'raw'],
-                'exception' => BadRequest::class,
+                'publicId'         => self::EXCEPTION_RAW,
+                'options'          => ['raw_convert' => 'illegal', 'resource_type' => 'raw'],
+                'exception'        => BadRequest::class,
                 'exceptionMessage' => 'Illegal value',
             ],
 
             'Illegal value for `categorization`' => [
-                'publicId' => self::EXCEPTION_IMAGE,
-                'options' => ['categorization' => 'illegal'],
-                'exception' => BadRequest::class,
+                'publicId'         => self::EXCEPTION_IMAGE,
+                'options'          => ['categorization' => 'illegal'],
+                'exception'        => BadRequest::class,
                 'exceptionMessage' => 'Illegal value',
             ],
 
             'Illegal value for `detection`' => [
-                'publicId' => self::EXCEPTION_IMAGE,
-                'options' => ['detection' => 'illegal'],
-                'exception' => BadRequest::class,
+                'publicId'         => self::EXCEPTION_IMAGE,
+                'options'          => ['detection' => 'illegal'],
+                'exception'        => BadRequest::class,
                 'exceptionMessage' => "Illegal value",
             ],
 
             'Illegal value for `background_removal`' => [
-                'publicId' => self::EXCEPTION_IMAGE,
-                'options' => ['background_removal' => 'illegal'],
-                'exception' => BadRequest::class,
+                'publicId'         => self::EXCEPTION_IMAGE,
+                'options'          => ['background_removal' => 'illegal'],
+                'exception'        => BadRequest::class,
                 'exceptionMessage' => 'Illegal value',
             ],
         ];
