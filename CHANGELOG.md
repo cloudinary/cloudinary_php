@@ -1,3 +1,24 @@
+2.2.0 / 2021-05-12
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `context` and `metadata` in `rename` Upload API
+  * Add `OAuth` support to Admin Api
+  * Add support for `privateDownloadUrl`
+
+Other Changes
+-------------
+
+  * Fix `StyleTransfer` effect
+  * Fix `LoggerTest` class to work in PHP 8
+  * Fix unit and integration tests
+  * Fix return type in doc strings
+  * Fix notice in configuration serialization
+  * Update PHP SDK Reference copyright date
+
+
 2.1.1 / 2021-03-17
 ==================
 
