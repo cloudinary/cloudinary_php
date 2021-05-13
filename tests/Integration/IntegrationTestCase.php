@@ -11,7 +11,6 @@
 namespace Cloudinary\Test\Integration;
 
 use Cloudinary\Api\Admin\AdminApi;
-use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Upload\UploadApi;
@@ -28,7 +27,6 @@ use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
 use PHPUnit_Framework_Constraint_IsType as IsType;
-use Psr\Http\Message\RequestInterface;
 use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
@@ -691,55 +689,6 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         foreach ($values as $key => $value) {
             self::assertEquals($value, $uploadMapping[$key]);
         }
-    }
-
-    /**
-     * Assert the HTTP request method is GET.
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     */
-    protected static function assertRequestGet(RequestInterface $request, $message = 'HTTP method should be GET')
-    {
-        self::assertEquals('GET', $request->getMethod(), $message);
-    }
-
-    /**
-     * Assert the HTTP request method is POST.
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     */
-    protected static function assertRequestPost(RequestInterface $request, $message = 'HTTP method should be POST')
-    {
-        self::assertEquals('POST', $request->getMethod(), $message);
-    }
-
-    /**
-     * Assert the HTTP request method is DELETE.
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     */
-    protected static function assertRequestDelete(RequestInterface $request, $message = 'HTTP method should be DELETE')
-    {
-        self::assertEquals('DELETE', $request->getMethod(), $message);
-    }
-
-    /**
-     * Asserts that a request contains the expected fields and values.
-     *
-     * @param RequestInterface $request
-     * @param array|null       $fields
-     * @param string           $message
-     */
-    protected static function assertRequestFields(RequestInterface $request, $fields = null, $message = '')
-    {
-        self::assertEquals(
-            json_decode($request->getBody()->getContents(), true),
-            $fields,
-            $message
-        );
     }
 
     /**
