@@ -616,4 +616,22 @@ final class EffectTest extends TestCase
             (string)Effect::fromParams('sepia')
         );
     }
+
+    public function testThemeEffects()
+    {
+        self::assertEquals(
+            'e_theme:color_black:photosensitivity_50',
+            (string)Effect::theme(Color::black())->photoSensitivity(50)
+        );
+
+        self::assertEquals(
+            'e_theme:color_black:photosensitivity_50',
+            (string)Effect::theme(Color::black(), 50)
+        );
+
+        self::assertEquals(
+            'e_theme:color_#ff9900',
+            (string)Effect::theme(Color::rgb('#ff9900'))
+        );
+    }
 }

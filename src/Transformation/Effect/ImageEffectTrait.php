@@ -21,4 +21,5 @@ trait ImageEffectTrait
     use ImagePixelEffectTrait;
     use MiscEffectTrait;
     use AddonEffectTrait;
+    use ThemeEffectTrait;
 }
