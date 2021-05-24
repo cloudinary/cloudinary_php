@@ -23,6 +23,7 @@ use Cloudinary\Utils;
  */
 class BreakpointsJson extends BaseQualifier
 {
+    const DEFAULT_BYTES_STEP = 20000;
     /**
      * @var string $name The name of the qualifier. Actually width qualifier is used for this purpose.
      */
@@ -115,7 +116,7 @@ class BreakpointsJson extends BaseQualifier
      */
     public function bytesStep($bytesStep)
     {
-        $this->bytesStep = $bytesStep ?: ResponsiveBreakpointsConfig::DEFAULT_BYTES_STEP;
+        $this->bytesStep = $bytesStep ?: self::DEFAULT_BYTES_STEP;
 
         return $this;
     }

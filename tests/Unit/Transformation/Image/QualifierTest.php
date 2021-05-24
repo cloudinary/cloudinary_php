@@ -119,7 +119,7 @@ final class QualifierTest extends TestCase
             'w_auto:breakpoints_' .
             ResponsiveBreakpointsConfig::DEFAULT_MIN_WIDTH . '_' .
             ResponsiveBreakpointsConfig::DEFAULT_MAX_WIDTH . '_' .
-            Utils::bytesToKB(ResponsiveBreakpointsConfig::DEFAULT_BYTES_STEP) . '_' .
+            Utils::bytesToKB(BreakpointsJson::DEFAULT_BYTES_STEP) . '_' .
             ResponsiveBreakpointsConfig::DEFAULT_MAX_IMAGES . ':json',
             (string)new BreakpointsJson()
         );

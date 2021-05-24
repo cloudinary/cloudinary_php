@@ -94,6 +94,11 @@ class PictureTag extends BaseTag
                 $sourceTag->media(ArrayUtils::get($source, 'min_width'), ArrayUtils::get($source, 'max_width'));
                 $sourceTag->additionalTransformation = ArrayUtils::get($source, 'transformation');
 
+                $sizes = ArrayUtils::get($source, 'sizes');
+                if (! empty($sizes)) {
+                    $sourceTag->setAttribute('sizes', $sizes);
+                }
+
                 $source = $sourceTag;
             }
 

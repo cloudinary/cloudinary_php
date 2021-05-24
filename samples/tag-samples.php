@@ -17,7 +17,9 @@ require_once __DIR__ . '/SamplePage/Sample/TagSample.php';
 use Cloudinary\Asset\Video;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Tag\BaseImageTag;
 use Cloudinary\Tag\ImageTag;
+use Cloudinary\Tag\PictureTag;
 use Cloudinary\Tag\UploadTag;
 use Cloudinary\Tag\VideoTag;
 use Cloudinary\Transformation\Effect;
@@ -27,8 +29,9 @@ Configuration::instance(
     ['cloud' => ['cloud_name' => 'demo', 'api_key' => 'test_key', 'api_secret' => 'test_secret']]
 );
 
-const FETCH_IMAGE_URL = 'http://upload.wikimedia.org/wikipedia/' .
-                        'commons/4/46/Jennifer_Lawrence_at_the_83rd_Academy_Awards.jpg';
+const FETCH_IMAGE_URL
+= 'http://upload.wikimedia.org/wikipedia/' .
+  'commons/4/46/Jennifer_Lawrence_at_the_83rd_Academy_Awards.jpg';
 
 $testImage = 'sample';
 
@@ -72,6 +75,40 @@ $imageTagGroup = [
                 ],
             ],
         ],
+        [
+            'name'  => 'SrcSet Optimal Breakpoints',
+            'items' => [
+                [
+                    (new ImageTag('sample'))->autoOptimalBreakpoints(),
+                    '(new ImageTag(\'sample\'))->autoOptimalBreakpoints()',
+                ],
+            ],
+        ],
+        [
+            'name'  => 'Picture Tag',
+            'items' => [
+                [
+                    new PictureTag(
+                        'sample',
+                        [
+                            ['max_width' => 360, 'transformation' => 'ar_9:16,c_fill,g_auto,w_360'],
+                            ['min_width' => 360, 'max_width' => 800, 'transformation' => 'ar_1,c_fill,g_auto,w_800'],
+                            ['min_width' => 800, 'transformation' => 'ar_16:9,c_fill,g_auto'],
+                        ]
+                    ),
+                    'new PictureTag(
+                        \'sample\',
+                         [
+                            [\'max_width\' => 360, \'transformation\' => \'ar_9:16,c_fill,g_auto,w_360\'],
+                            [\'min_width\' => 360, \'max_width\' => 800, 
+                            \'transformation\' => \'ar_1,c_fill,g_auto,w_800\'],
+                            [\'min_width\' => 800, \'transformation\' => \'ar_16:9,c_fill,g_auto\'],
+                        ]
+                    )',
+                ],
+            ],
+        ],
+
     ],
 ];
 
@@ -81,7 +118,7 @@ $videoTagGroup = [
     'iconClass' => 'fas fa-video-o',
     'items'     => [
         [
-            'name'  => 'Upload',
+            'name'  => 'Video Tag',
             'items' => [
                 [
                     new VideoTag('dog'),
