@@ -54,10 +54,15 @@ class ImageTag extends BaseImageTag
         if (! empty((string)$this->srcset)) { // TODO: improve performance here
             $attributes['srcset'] = $this->srcset;
 
-            if (!array_key_exists('sizes', $this->attributes) && $this->config->tag->sizes) {
-                $attributes['sizes'] = new Sizes($this->srcset->getBreakpoints());
+            if (! array_key_exists('sizes', $this->attributes)) {
+                if (is_bool($this->config->tag->sizes)) {
+                    if ($this->config->tag->sizes) {
+                        $attributes['sizes'] = new Sizes($this->srcset->getBreakpoints());
+                    }
+                } elseif (is_string($this->config->tag->sizes)) {
+                    $attributes['sizes'] = $this->config->tag->sizes;
+                }
             }
-
         }
 
         return parent::serializeAttributes($attributes);

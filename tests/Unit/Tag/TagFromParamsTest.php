@@ -12,8 +12,6 @@ namespace Cloudinary\Test\Unit\Tag;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\Media;
-use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
-use Cloudinary\Cache\ResponsiveBreakpointsCache;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Tag\ImageTag;
 use Cloudinary\Tag\SpriteTag;
@@ -21,7 +19,6 @@ use Cloudinary\Tag\Tag;
 use Cloudinary\Tag\UploadTag;
 use Cloudinary\Tag\VideoTag;
 use Cloudinary\Tag\VideoThumbnailTag;
-use Cloudinary\Test\Unit\Cache\Storage\DummyCacheStorage;
 use DOMDocument;
 
 /**
@@ -55,7 +52,7 @@ final class TagFromParamsTest extends ImageTagTestCase
 
     public static function setUpBeforeClass()
     {
-        self::$breakpointsArr = [self::$minWidth, 200, 300, self::$maxWidth];
+        self::$breakpointsArr = [self::$minWidth, 360, 375, self::$maxWidth];
         self::$maxImages      = count(self::$breakpointsArr);
         self::$commonSrcset   = ['breakpoints' => self::$breakpointsArr];
 
@@ -284,8 +281,9 @@ final class TagFromParamsTest extends ImageTagTestCase
                 [
                     'srcset' => [
                         'min_width'  => self::$minWidth,
-                        'max_width'  => $x = self::$maxWidth,
+                        'max_width'  => self::$maxWidth,
                         'max_images' => count(self::$breakpointsArr),
+                        'auto_optimal_breakpoints' => true
                     ],
                 ]
             )
@@ -314,6 +312,7 @@ final class TagFromParamsTest extends ImageTagTestCase
                         'min_width'  => self::$breakpointsArr[0],
                         'max_width'  => self::$maxWidth,
                         'max_images' => 1,
+                        'auto_optimal_breakpoints' => true
                     ],
                 ]
             )
@@ -425,32 +424,6 @@ final class TagFromParamsTest extends ImageTagTestCase
             self::$breakpointsArr
         );
         self::assertStrEquals($expectedTagWithoutWidthAndHeight, $tagWithSizes);
-    }
-
-    public function testImageTagResponsiveBreakpointsCache()
-    {
-        $cache = ResponsiveBreakpointsCache::instance();
-        $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
-
-        $asset = Media::fromParams(self::$publicId, self::$commonImageOptions);
-        $cache->set($asset, self::$breakpointsArr);
-
-        $expectedTag = self::expectedImageTagFromParams(
-            self::$publicId,
-            self::$commonTransformationStr,
-            '',
-            self::$breakpointsArr
-        );
-
-        $imageTag = ImageTag::fromParams(
-            self::$publicId,
-            array_merge(
-                self::$commonImageOptions,
-                ['srcset' => ['use_cache' => true]]
-            )
-        );
-
-        self::assertStrEquals($expectedTag, $imageTag);
     }
 
     public function testCreateATagWithCustomAttributesLegacyApproach()

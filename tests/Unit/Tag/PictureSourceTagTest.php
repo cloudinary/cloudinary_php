@@ -75,6 +75,8 @@ final class PictureSourceTagTest extends ImageTagTestCase
         $configuration->responsiveBreakpoints->maxWidth  = self::MAX_WIDTH;
         $configuration->responsiveBreakpoints->maxImages = self::MAX_IMAGES;
 
+        $configuration->responsiveBreakpoints->autoOptimalBreakpoints = true;
+
         $expectedImage = new Image(self::IMAGE_NAME, $configuration);
 
         self::assertPictureSourceTag(

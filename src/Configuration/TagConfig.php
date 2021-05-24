@@ -36,6 +36,7 @@ class TagConfig extends BaseConfigSection
     const RESPONSIVE_CLASS       = 'responsive_class';
     const RESPONSIVE_PLACEHOLDER = 'responsive_placeholder';
     const SIZES                  = 'sizes';
+    const RELATIVE_WIDTH         = 'relative_width';
     const HIDPI                  = 'hidpi';
     const CLIENT_HINTS           = 'client_hints';
     const UNSIGNED_UPLOAD        = 'unsigned_upload';
@@ -70,9 +71,20 @@ class TagConfig extends BaseConfigSection
     /**
      * Whether to automatically generate "sizes" attribute if not provided.
      *
-     * @var bool $sizes
+     * @var bool|int|string $sizes
+     *
      */
     public $sizes;
+
+    /**
+     * The percentage of the screen that the image occupies.
+     *
+     * Used for responsive breakpoints optimization.
+     *
+     * @var float $relativeWidth Specify a percentage of the screen width (Range: 0.0 to 1.0)
+     *
+     */
+    public $relativeWidth;
 
     /**
      * Whether to use hi dpi.

@@ -218,6 +218,20 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     }
 
     /**
+     * Defines whether to use auto optimal breakpoints.
+     *
+     * @param bool $autoOptimalBreakpoints Indicates whether to use auto optimal breakpoints.
+     *
+     * @return $this
+     */
+    public function autoOptimalBreakpoints($autoOptimalBreakpoints = true)
+    {
+        $this->srcset->autoOptimalBreakpoints($autoOptimalBreakpoints);
+
+        return $this;
+    }
+
+    /**
      * Sets the property of the asset descriptor.
      *
      * @param string $propertyName  The name of the property.
