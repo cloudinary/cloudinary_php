@@ -48,4 +48,5 @@ interface ImageFormatInterface
     const INDD = 'indd';
     const IDML = 'idml';
     const OBJZ = 'objz';
+    const USDZ = 'usdz';
 }

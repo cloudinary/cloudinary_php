@@ -410,6 +410,7 @@ final class UsageTest extends TestCase
             [Format::DJVU, 'djvu'],
             [Format::AI, 'ai'],
             [Format::FLIF, 'flif'],
+            [Format::USDZ, 'usdz'],
             [Format::AVI, 'videoAvi'],
             [Format::MP4, 'videoMp4'],
             [Format::WEBM, 'videoWebm'],
