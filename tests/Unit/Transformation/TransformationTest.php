@@ -326,6 +326,14 @@ final class TransformationTest extends UnitTestCase
         );
     }
 
+    public function testTiffWithIgnoreMaskChannels()
+    {
+        self::assertEquals(
+            'f_tiff,fl_ignore_mask_channels',
+            (string)(new Transformation())->delivery(Delivery::format(Format::tiff())->ignoreMaskChannels())
+        );
+    }
+
     public function testColorSpace()
     {
         self::assertEquals(

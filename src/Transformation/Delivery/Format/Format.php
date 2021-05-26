@@ -90,4 +90,16 @@ class Format extends BaseAction implements FormatInterface
     {
         return $this->setFlag(Flag::preserveTransparency());
     }
+
+    /**
+     * Ensures that an alpha channel is not applied to a TIFF image if it is a mask channel.
+     *
+     * @return Format
+     *
+     * @see Flag::ignoreMaskChannels
+     */
+    public function ignoreMaskChannels()
+    {
+        return $this->setFlag(Flag::ignoreMaskChannels());
+    }
 }
