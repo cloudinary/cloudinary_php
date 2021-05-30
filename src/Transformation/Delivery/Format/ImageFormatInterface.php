@@ -47,5 +47,6 @@ interface ImageFormatInterface
     const FBXZ = 'fbxz';
     const INDD = 'indd';
     const IDML = 'idml';
+    const AVIF = 'avif';
     const OBJZ = 'objz';
 }

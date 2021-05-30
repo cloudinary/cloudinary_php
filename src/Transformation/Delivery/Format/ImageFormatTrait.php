@@ -178,6 +178,16 @@ trait ImageFormatTrait
     }
 
     /**
+     * Image format avif.
+     *
+     * @return static
+     */
+    public static function avif()
+    {
+        return static::createFormat(Format::AVIF);
+    }
+
+    /**
      * Image format flif.
      *
      * @return static
