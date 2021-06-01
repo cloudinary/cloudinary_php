@@ -284,5 +284,10 @@ final class ResizeTest extends TestCase
             'c_crop,g_auto:ocr_text_30,h_200,w_100',
             (string)Resize::crop(100, 200)->gravity(Gravity::auto(AutoGravity::object(Gravity::ocrText())->weight(30)))
         );
+
+        self::assertEquals(
+            'c_crop,h_70,w_50,z_0.5',
+            (string)Resize::crop(50, 70)->zoom(0.5)
+        );
     }
 }
