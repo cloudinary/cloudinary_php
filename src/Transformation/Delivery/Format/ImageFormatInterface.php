@@ -49,4 +49,5 @@ interface ImageFormatInterface
     const IDML = 'idml';
     const AVIF = 'avif';
     const OBJZ = 'objz';
+    const USDZ = 'usdz';
 }

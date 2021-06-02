@@ -196,4 +196,14 @@ trait ImageFormatTrait
     {
         return static::createFormat(Format::FLIF);
     }
+
+    /**
+     * Image format usdz.
+     *
+     * @return static
+     */
+    public static function usdz()
+    {
+        return static::createFormat(Format::USDZ);
+    }
 }

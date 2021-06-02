@@ -411,6 +411,7 @@ final class UsageTest extends TestCase
             [Format::AI, 'ai'],
             [Format::AVIF, 'avif'],
             [Format::FLIF, 'flif'],
+            [Format::USDZ, 'usdz'],
             [Format::AVI, 'videoAvi'],
             [Format::MP4, 'videoMp4'],
             [Format::WEBM, 'videoWebm'],
