@@ -13,12 +13,15 @@ namespace Cloudinary\Test\Unit\Transformation;
 use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Action;
 use Cloudinary\Transformation\Adjust;
+use Cloudinary\Transformation\Animated;
+use Cloudinary\Transformation\AnimatedEdit;
 use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\ColorSpace;
+use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\Compass;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Conditional;
@@ -375,6 +378,15 @@ final class TransformationTest extends UnitTestCase
         );
     }
 
+    public function testAnimated()
+    {
+        self::assertStrEquals(
+            'dl_200,e_loop:2',
+            (new Transformation())->animated(Animated::edit()->delay(200)->loop(2))
+        );
+    }
+
+
 
     public function testPage()
     {
@@ -514,11 +526,11 @@ final class TransformationTest extends UnitTestCase
     public function testCoupleSample()
     {
         self::assertStrEquals(
-            'c_fill,g_south,h_250,w_400/'.
-            'l_nice_couple/c_crop,fl_region_relative,g_faces,h_1.3,w_1.3/e_saturation:50/'.
-            'e_vignette/c_scale,w_100/r_max/fl_layer_apply,g_center,x_-20,y_20/'.
-            'l_balloon/c_scale,h_55/e_hue:-20/a_5/fl_layer_apply,x_30,y_5/'.
-            'l_text:Cookie_40_bold:Love/co_rgb:F08,e_colorize/a_20/fl_layer_apply,x_-45,y_44/'.
+            'c_fill,g_south,h_250,w_400/' .
+            'l_nice_couple/c_crop,fl_region_relative,g_faces,h_1.3,w_1.3/e_saturation:50/' .
+            'e_vignette/c_scale,w_100/r_max/fl_layer_apply,g_center,x_-20,y_20/' .
+            'l_balloon/c_scale,h_55/e_hue:-20/a_5/fl_layer_apply,x_30,y_5/' .
+            'l_text:Cookie_40_bold:Love/co_rgb:F08,e_colorize/a_20/fl_layer_apply,x_-45,y_44/' .
             'c_crop,h_250,w_300,x_30/r_60',
             (new Transformation())
                 ->resize(
@@ -600,9 +612,9 @@ final class TransformationTest extends UnitTestCase
                 )
             );
 
-         self::assertEquals(
-             '$mywidth_100/$aheight_300/h_3_mul_ih_add_$aheight,w_3_add_$mywidth_mul_3_add_4_div_2_mul_iw_mul_$mywidth',
-             (string)$transformation
-         );
+        self::assertEquals(
+            '$mywidth_100/$aheight_300/h_3_mul_ih_add_$aheight,w_3_add_$mywidth_mul_3_add_4_div_2_mul_iw_mul_$mywidth',
+            (string)$transformation
+        );
     }
 }
