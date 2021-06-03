@@ -49,13 +49,13 @@ trait PlaybackEffectTrait
     }
 
     /**
-     * Delivers a video or animated GIF that contains additional loops of the video/GIF.
+     * Delivers a video that contains additional loops of the video.
      *
      * The total number of iterations is the number of additional loops plus one.
-     * For animated GIFs only, you can also specify the loop effect without a numeric value to instruct it to loop
-     * the GIF infinitely.
      *
-     * @param int $additionalIterations The additional number of times to play the video or animated GIF.
+     * For animated images (GIF), see Animated::edit()->loop().
+     *
+     * @param int $additionalIterations The additional number of times to play the video.
      *
      * @return Loop
      */
