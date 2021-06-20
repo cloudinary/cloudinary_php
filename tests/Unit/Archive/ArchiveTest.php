@@ -62,7 +62,7 @@ class ArchiveTest extends AssetTestCase
         $attachmentName = 'my_attachment_name';
         $expirationTime = time() + 60;
 
-        $url            = self::$uploadApi->privateDownloadUrl(
+        $url = self::$uploadApi->privateDownloadUrl(
             self::ASSET_ID,
             self::IMG_EXT,
             [
@@ -72,7 +72,7 @@ class ArchiveTest extends AssetTestCase
             ]
         );
 
-        $expectedParts  = [
+        $expectedParts = [
             AssetType::IMAGE . '/' . UploadEndPoint::DOWNLOAD,
             'public_id=' . self::ASSET_ID,
             'format=' . self::IMG_EXT,
@@ -87,5 +87,18 @@ class ArchiveTest extends AssetTestCase
         foreach ($expectedParts as $expectedPart) {
             self::assertContains($expectedPart, $url);
         }
+    }
+
+    public function testPrivateDownloadUrlAssetType()
+    {
+        $videoUrl = self::$uploadApi->privateDownloadUrl(
+            self::ASSET_ID,
+            self::VID_EXT,
+            [
+                'resource_type' => AssetType::VIDEO,
+            ]
+        );
+
+        self::assertContains(AssetType::VIDEO . '/' . UploadEndPoint::DOWNLOAD, $videoUrl);
     }
 }
