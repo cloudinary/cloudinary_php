@@ -324,7 +324,7 @@ final class UploadApiTest extends IntegrationTestCase
      */
     public function testUploadIncomingTransformation()
     {
-        $result = self::uploadTestAssetImage(['transformation' => self::$INCOMING_TRANSFORMATION_ARR]);
+        $result = self::uploadTestAssetImage(self::$INCOMING_TRANSFORMATION_ARR);
 
         self::assertValidAsset(
             $result,
