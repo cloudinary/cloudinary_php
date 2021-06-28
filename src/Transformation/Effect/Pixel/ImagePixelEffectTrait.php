@@ -11,6 +11,7 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\Asset\Media;
+use Cloudinary\Transformation\Argument\Color;
 
 /**
  * Trait ImagePixelEffectTrait
@@ -45,6 +46,26 @@ trait ImagePixelEffectTrait
         return new MakeTransparent(
             new ToleranceEffectQualifier(PixelEffect::MAKE_TRANSPARENT, EffectRange::PERCENT, $tolerance)
         );
+    }
+
+    /**
+     * Makes the background of an image transparent (or solid white for JPGs).
+     *
+     * Use when the background is a uniform color.
+     *
+     * @param bool         $screen        When true, provides better results for images with near perfect green/blue
+     *                                    background.
+     * @param string|Color $colorToRemove The background color as an RGB/A hex code. Overrides the algorithm's choice of
+     *                                    background color.
+     *                                    Default: The algorithm's choice - often the edge color of the image.
+     *
+     * @return RemoveBackground
+     *
+     * @see \Cloudinary\Transformation\RemoveBackground
+     */
+    public static function removeBackground($screen = false, $colorToRemove = null)
+    {
+        return new RemoveBackground($screen, $colorToRemove);
     }
 
     /**
