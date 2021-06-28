@@ -256,6 +256,16 @@ final class EffectTest extends TestCase
             'co_white,e_make_transparent:17',
             (string)PixelEffect::makeTransparent()->tolerance(17)->colorToReplace(Color::white())
         );
+
+        self::assertEquals(
+            'e_bgremoval:screen:aabbcc',
+            (string)PixelEffect::removeBackground()->colorToRemove(Color::rgb("#aabbcc"))->screen()
+        );
+
+        self::assertEquals(
+            'e_bgremoval:red',
+            (string)PixelEffect::removeBackground()->colorToRemove(Color::red())
+        );
     }
 
     public function testDither()
