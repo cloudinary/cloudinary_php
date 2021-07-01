@@ -14,7 +14,7 @@ use Cloudinary\Api\Exception\GeneralError;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7;
 
 /**
  * Class Utils
@@ -160,11 +160,11 @@ class FileUtils
         }
 
         if (self::isBase64Data($file)) {
-            $file = stream_for($file);
+            $file = Psr7\Utils::streamFor($file);
         } elseif (is_string($file)) {
             $file = self::safeFileOpen($file, 'rb');
         }
 
-        return stream_for($file);
+        return Psr7\Utils::streamFor($file);
     }
 }
