@@ -1,3 +1,23 @@
+2.3.0 / 2021-07-04
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `RemoveBackground` effect
+  * Add support for `ignoreMaskChannels` flag
+  * Add support for `Animated::edit` action
+  * Add support for `USDZ` format
+  * Add support for `AVIF` image format
+
+Other Changes
+-------------
+
+  * Fix `GuzzleHttp\Psr7` deprecation errors
+  * Fix video concatenation with `transition` transformation
+  * Fix support of `resource_type` in `privateDownloadUrl`
+  * Fix support of incoming transformation in `upload` API
+
 2.2.0 / 2021-05-12
 ==================
 
