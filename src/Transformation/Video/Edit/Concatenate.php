@@ -85,6 +85,8 @@ class Concatenate extends VideoOverlay
     public function transition($source)
     {
         $this->source->addTransformation(ClassUtils::verifyInstance($source, Transition::class));
+        // When using a transition video, splice flag should be omitted.
+        $this->source->unsetFlag(LayerFlag::splice());
 
         return $this;
     }

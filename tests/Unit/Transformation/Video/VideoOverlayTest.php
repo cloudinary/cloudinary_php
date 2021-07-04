@@ -77,7 +77,7 @@ final class VideoOverlayTest extends TestCase
         );
 
         self::assertEquals(
-            "du_5,fl_splice,l_video:kitten_fighting/eo_5,so_2/$resizeStr/" .
+            "du_5,l_video:kitten_fighting/eo_5,so_2/$resizeStr/" .
             "e_transition,l_video:transition/fl_layer_apply/fl_layer_apply,so_0",
             (string)(new VideoTransformation())
                 ->videoEdit(
