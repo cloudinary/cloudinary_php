@@ -14,7 +14,7 @@ use Cloudinary\Api\ApiClient;
 use Cloudinary\Configuration\Configuration;
 use Psr\Http\Message\RequestInterface;
 
-use function GuzzleHttp\Psr7\parse_query;
+use GuzzleHttp\Psr7;
 
 /**
  * Trait RequestAssertionsTrait
@@ -101,7 +101,7 @@ trait RequestAssertionsTrait
     {
         self::assertArraySubset(
             $fields,
-            parse_query($request->getUri()->getQuery()),
+            Psr7\Query::parse($request->getUri()->getQuery()),
             $message ?: 'The expected fields and values were not found in the request query string'
         );
     }
@@ -117,7 +117,7 @@ trait RequestAssertionsTrait
     {
         self::assertArraySubset(
             $fields,
-            parse_query($request->getBody()->getContents()),
+            Psr7\Query::parse($request->getBody()->getContents()),
             $message ?: 'The expected fields and values were not found in the request body'
         );
     }
