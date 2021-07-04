@@ -25,7 +25,7 @@ use Cloudinary\Transformation\Resize;
 use GuzzleHttp\Psr7\Uri;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 use Psr\Http\Message\StreamInterface;
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7;
 
 /**
  * Class UploadApiTest
@@ -297,7 +297,7 @@ final class UploadApiTest extends IntegrationTestCase
                 "\xFC\x00\x00\x00\x00\x00\x00\x00\x00fff\xFC\x00\x00\x00\x00\x00\x00\x00\x00\xC4\xF5(\xFF\x00\x00\x00" .
                 "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
 
-        $largeStream = stream_for($head . str_repeat("\xFF", self::LARGE_TEST_IMAGE_SIZE - strlen($head)));
+        $largeStream = Psr7\Utils::streamFor($head . str_repeat("\xFF", self::LARGE_TEST_IMAGE_SIZE - strlen($head)));
         $largeStream->rewind();
 
         return $largeStream;
