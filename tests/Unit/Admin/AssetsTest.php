@@ -70,4 +70,17 @@ final class AssetsTest extends UnitTestCase
         self::assertRequestUrl($lastRequest, $url);
         self::assertRequestJsonBodySubset($lastRequest, $bodyFields);
     }
+
+    /**
+     * Test update assets complex fields serialization.
+     */
+    public function testUpdateAssetFields()
+    {
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->update(self::$UNIQUE_TEST_ID, ['metadata' => ['key'=>'value']]);
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, '/resources/image/upload/' . self::$UNIQUE_TEST_ID);
+        self::assertRequestBodySubset($lastRequest, ['metadata'=>'key=value']);
+    }
 }
