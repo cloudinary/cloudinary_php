@@ -58,18 +58,4 @@ trait AngleTrait
     {
         return static::createWithDegree(...$degree);
     }
-
-    /**
-     * Creates the instance.
-     *
-     * @param int|array $degree Given degrees or mode.
-     *
-     * @return static
-     *
-     * @internal
-     */
-    protected static function createWithDegree(...$degree)
-    {
-        return new static(...$degree);
-    }
 }
