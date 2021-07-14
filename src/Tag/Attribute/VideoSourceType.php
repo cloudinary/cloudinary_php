@@ -37,7 +37,7 @@ class VideoSourceType extends SourceType
     /**
      * The mp4 video source type.
      *
-     * @param string|array $codecs The codecs.
+     * @param string|string[] $codecs The codecs.
      *
      * @return VideoSourceType
      */
@@ -49,7 +49,7 @@ class VideoSourceType extends SourceType
     /**
      * The webm video source type.
      *
-     * @param string|array $codecs The codecs.
+     * @param string|string[] $codecs The codecs.
      *
      * @return VideoSourceType
      */
@@ -61,7 +61,7 @@ class VideoSourceType extends SourceType
     /**
      * The ogg video source type.
      *
-     * @param string|array $codecs The codecs.
+     * @param string|string[] $codecs The codecs.
      *
      * @return VideoSourceType
      */

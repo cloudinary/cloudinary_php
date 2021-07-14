@@ -59,7 +59,7 @@ class Media extends BaseMediaAsset
     /**
      * Internal getter for a list of the delivery types that support SEO suffix.
      *
-     * @return array
+     * @return array[]
      *
      * @internal
      */

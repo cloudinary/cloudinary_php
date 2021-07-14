@@ -24,7 +24,7 @@ use InvalidArgumentException;
 abstract class BaseAction extends BaseComponent
 {
     /**
-     * @var array $qualifiers The components (qualifiers/parameters) of the action.
+     * @var BaseComponent[] $qualifiers The components (qualifiers/parameters) of the action.
      */
     protected $qualifiers = [];
 
@@ -34,7 +34,7 @@ abstract class BaseAction extends BaseComponent
     const MAIN_QUALIFIER = null;
 
     /**
-     * @var array $flags The flags of the action.
+     * @var FlagQualifier[] $flags The flags of the action.
      */
     protected $flags = [];
 
