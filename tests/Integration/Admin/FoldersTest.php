@@ -50,7 +50,9 @@ final class FoldersTest extends IntegrationTestCase
         self::$SUB_FOLDER_DELETE_FULL_PATH = self::$FOLDER_NAME . '/' . self::$SUB_FOLDER_DELETE_NAME;
         self::$SUB_FOLDER_SINGLE_FULL_PATH = self::$SUB_FOLDER_FULL_PATH . '/' . self::$SUB_FOLDER_NAME;
 
-        self::uploadTestAssetImage(['folder' => self::$SUB_FOLDER_FULL_PATH]);
+        self::createTestAssets(
+            ['options' => ['folder' => self::$SUB_FOLDER_FULL_PATH]]
+        );
         self::createTestFolder(self::$SUB_FOLDER_DELETE_FULL_PATH);
         self::createTestFolder(self::$SUB_FOLDER_SINGLE_FULL_PATH);
         self::createTestFolder(self::$FOLDER2_NAME);

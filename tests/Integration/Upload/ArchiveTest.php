@@ -20,13 +20,13 @@ use ZipArchive;
  */
 final class ArchiveTest extends IntegrationTestCase
 {
+    const ARCHIVE_IMAGE_1 = 'archive_image_1';
+    const ARCHIVE_IMAGE_2 = 'archive_image_2';
+    const ARCHIVE_RAW     = 'archive_raw';
+
     private static $ARCHIVE_TEST_TAG;
     private static $ARCHIVE_TEST_TAG2;
-
-    private static $ARCHIVE_TEST_RAW_ID;
-    private static $ARCHIVE_TEST_IMAGE_ID;
-
-    private static $ARCHIVE_TEST_TAGS = [];
+    private static $ARCHIVE_TEST_TAGS;
 
     /**
      * @throws ApiError
@@ -37,18 +37,28 @@ final class ArchiveTest extends IntegrationTestCase
 
         self::$ARCHIVE_TEST_TAG  = 'upload_archive_1_' . self::$UNIQUE_TEST_TAG;
         self::$ARCHIVE_TEST_TAG2 = 'upload_archive_2_' . self::$UNIQUE_TEST_TAG;
-
-        self::$ARCHIVE_TEST_IMAGE_ID = 'upload_archive_1_' . self::$UNIQUE_TEST_ID;
-
         self::$ARCHIVE_TEST_TAGS = [
             self::$ARCHIVE_TEST_TAG,
             self::$ARCHIVE_TEST_TAG2,
         ];
 
-        self::uploadTestAssetImage(['tags' => [self::$ARCHIVE_TEST_TAG], 'public_id' => self::$UNIQUE_TEST_ID]);
-        self::uploadTestAssetImage(['tags' => [self::$ARCHIVE_TEST_TAG2], 'public_id' => self::$ARCHIVE_TEST_IMAGE_ID]);
-        // raw file public id also includes file extension, that we can get only from our server.
-        self::$ARCHIVE_TEST_RAW_ID = self::uploadTestAssetFile(['tags' => [self::$ARCHIVE_TEST_TAG]])['public_id'];
+        self::createTestAssets(
+            [
+                self::ARCHIVE_IMAGE_1 => [
+                    'options' => ['tags' => [self::$ARCHIVE_TEST_TAG]],
+                ],
+                self::ARCHIVE_IMAGE_2 => [
+                    'options' => ['tags' => [self::$ARCHIVE_TEST_TAG2]],
+                ],
+                self::ARCHIVE_RAW     => [
+                    'options' => [
+                        AssetType::KEY => AssetType::RAW,
+                        'file'         => self::TEST_DOCX_PATH,
+                        'tags'         => [self::$ARCHIVE_TEST_TAG],
+                    ],
+                ],
+            ]
+        );
     }
 
     public static function tearDownAfterClass()
@@ -136,8 +146,8 @@ final class ArchiveTest extends IntegrationTestCase
     public function testCreateArchiveMultipleAssetTypes()
     {
         $testIds = [
-            'image/upload/' . self::$UNIQUE_TEST_ID,
-            'raw/upload/' . self::$ARCHIVE_TEST_RAW_ID,
+            'image/upload/' . self::getTestAssetPublicId(self::ARCHIVE_IMAGE_1),
+            'raw/upload/' . self::getTestAssetPublicId(self::ARCHIVE_RAW),
         ];
 
         $archive = self::$uploadApi->createZip(
@@ -183,7 +193,10 @@ final class ArchiveTest extends IntegrationTestCase
     {
         $result = self::$uploadApi->downloadZipUrl(
             [
-                'public_ids' => [self::$UNIQUE_TEST_ID, self::$ARCHIVE_TEST_IMAGE_ID],
+                'public_ids' => [
+                    self::getTestAssetPublicId(self::ARCHIVE_IMAGE_1),
+                    self::getTestAssetPublicId(self::ARCHIVE_IMAGE_2),
+                ],
             ]
         );
 

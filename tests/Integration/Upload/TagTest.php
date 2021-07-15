@@ -22,9 +22,10 @@ final class TagTest extends IntegrationTestCase
     private static $TAG_TO_REPLACE_ALL_TAGS;
     private static $TAG_TO_REMOVE;
 
-    const REMOVE_ALL_TAGS  = 'remove_all_tags';
-    const REMOVE_ALL_TAGS2 = 'remove_all_tags2';
-    const REPLACE_ALL_TAGS = 'replace_all_tags';
+    const REMOVE_ALL_TAGS    = 'remove_all_tags';
+    const REMOVE_ALL_TAGS2   = 'remove_all_tags2';
+    const REPLACE_ALL_TAGS   = 'replace_all_tags';
+    const ADD_AND_DELETE_TAG = 'add_and_delete_tag';
 
     /**
      * @throws ApiError
@@ -33,25 +34,21 @@ final class TagTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::$TAG_TO_ADD_TO_IMAGE        = 'upload_tag_add_tag_test_' . self::$UNIQUE_TEST_TAG;
-        self::$TAG_TO_REPLACE_ALL_TAGS    = 'upload_tag_replace_all_tags_' . self::$UNIQUE_TEST_TAG;
-        self::$TAG_TO_REMOVE              = 'upload_tag_remove_tag_' . self::$UNIQUE_TEST_TAG;
+        self::$TAG_TO_ADD_TO_IMAGE     = 'upload_tag_add_tag_test_' . self::$UNIQUE_TEST_TAG;
+        self::$TAG_TO_REPLACE_ALL_TAGS = 'upload_tag_replace_all_tags_' . self::$UNIQUE_TEST_TAG;
+        self::$TAG_TO_REMOVE           = 'upload_tag_remove_tag_' . self::$UNIQUE_TEST_TAG;
 
         self::createTestAssets(
             [
-                self::REMOVE_ALL_TAGS  => ['cleanup' => true],
-                self::REMOVE_ALL_TAGS2 => ['cleanup' => true],
-                self::REPLACE_ALL_TAGS => [
+                self::REMOVE_ALL_TAGS    => ['cleanup' => true],
+                self::REMOVE_ALL_TAGS2   => ['cleanup' => true],
+                self::REPLACE_ALL_TAGS   => [
                     'options' => ['tags' => [self::$TAG_TO_REPLACE_ALL_TAGS]],
                     'cleanup' => true
                 ],
-            ]
-        );
-
-        self::uploadTestAssetImage(
-            [
-                'tags'      => [self::$TAG_TO_REMOVE],
-                'public_id' => self::$UNIQUE_TEST_ID,
+                self::ADD_AND_DELETE_TAG => [
+                    'options' => ['tags' => [self::$TAG_TO_REMOVE]],
+                ],
             ]
         );
     }
@@ -71,13 +68,18 @@ final class TagTest extends IntegrationTestCase
         $result = self::$uploadApi->addTag(
             self::$TAG_TO_ADD_TO_IMAGE,
             [
-                self::$UNIQUE_TEST_ID,
+                self::getTestAssetPublicId(self::ADD_AND_DELETE_TAG),
             ]
         );
 
-        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals(
+            [
+                self::getTestAssetPublicId(self::ADD_AND_DELETE_TAG)
+            ],
+            $result['public_ids']
+        );
 
-        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::getTestAssetPublicId(self::ADD_AND_DELETE_TAG));
 
         self::assertContains(self::$TAG_TO_ADD_TO_IMAGE, $asset['tags']);
     }
@@ -87,11 +89,21 @@ final class TagTest extends IntegrationTestCase
      */
     public function testRemoveTagFromImagesByPublicID()
     {
-        $result = self::$uploadApi->removeTag(self::$TAG_TO_REMOVE, [self::$UNIQUE_TEST_ID]);
+        $result = self::$uploadApi->removeTag(
+            self::$TAG_TO_REMOVE,
+            [
+                self::getTestAssetPublicId(self::ADD_AND_DELETE_TAG)
+            ]
+        );
 
-        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals(
+            [
+                self::getTestAssetPublicId(self::ADD_AND_DELETE_TAG)
+            ],
+            $result['public_ids']
+        );
 
-        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::getTestAssetPublicId(self::ADD_AND_DELETE_TAG));
 
         self::assertNotContains(self::$TAG_TO_REMOVE, $asset['tags']);
     }
