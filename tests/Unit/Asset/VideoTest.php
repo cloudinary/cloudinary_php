@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Test\Unit\Asset;
 
+use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\Video;
 use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\Qualifier\Dimensions\Width;
@@ -35,6 +36,26 @@ final class VideoTest extends AssetTestCase
 
         self::assertVideoUrl(
             "{$t_expected}/".self::VIDEO_NAME,
+            (string)$v
+        );
+    }
+
+    /**
+     * Should support duration in video preview.
+     */
+    public function testVideoPreview()
+    {
+        $v = Video::fromParams(
+            'video_id',
+            [
+                'resource_type' => AssetType::VIDEO,
+                'effect' => 'preview:durations_2',
+                'secure' => true
+            ]
+        );
+
+        self::assertVideoUrl(
+            'e_preview:durations_2/video_id',
             (string)$v
         );
     }

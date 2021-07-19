@@ -39,6 +39,7 @@ class PVar extends Expression
     const CURRENT_PAGE         = 'cp';
     const PAGE_X               = 'px';
     const PAGE_Y               = 'py';
+    const PREVIEW_DURATION     = 'preview:duration';
 
     // String variables
     const TAGS    = 'tags';
@@ -77,6 +78,7 @@ class PVar extends Expression
         'pageY'                => self::PAGE_Y,
         'tags'                 => self::TAGS,
         'context'              => self::CONTEXT,
+        'preview:duration'     => self::PREVIEW_DURATION,
     ];
 
     use PredefinedVariableTrait;
