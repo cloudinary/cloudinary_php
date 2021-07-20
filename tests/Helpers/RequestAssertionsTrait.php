@@ -138,4 +138,20 @@ trait RequestAssertionsTrait
             $message ?: 'The expected fields and values were not found in the request body'
         );
     }
+
+    /**
+     * Asserts that a request contains the expected fields and values in its header.
+     *
+     * @param RequestInterface $request The request object.
+     * @param array|null       $fields  An array of keys and values to look for in the the request.
+     * @param string           $message
+     */
+    protected static function assertRequestHeaderSubset(RequestInterface $request, $fields = null, $message = '')
+    {
+        self::assertArraySubset(
+            $fields,
+            $request->getHeaders(),
+            $message ?: 'The expected fields and values were not found in the request header'
+        );
+    }
 }

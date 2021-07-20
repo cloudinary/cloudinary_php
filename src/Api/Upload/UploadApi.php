@@ -10,8 +10,8 @@
 
 namespace Cloudinary\Api\Upload;
 
-use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiUtils;
+use Cloudinary\Api\UploadApiClient;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Configuration\CloudConfig;
@@ -37,7 +37,7 @@ class UploadApi
     const MODE_DOWNLOAD = 'download';
 
     /**
-     * @var ApiClient $apiClient The HTTP API client instance.
+     * @var UploadApiClient $apiClient The HTTP API client instance.
      */
     protected $apiClient;
 
@@ -48,7 +48,7 @@ class UploadApi
      */
     public function __construct($configuration = null)
     {
-        $this->apiClient = new ApiClient($configuration);
+        $this->apiClient = new UploadApiClient($configuration);
     }
 
     /**

@@ -28,6 +28,6 @@ class MockUploadApi extends UploadApi
     {
         parent::__construct($configuration);
 
-        $this->apiClient = new MockApiClient($configuration);
+        $this->apiClient = new MockUploadApiClient($configuration);
     }
 }
