@@ -11,6 +11,7 @@
 namespace Cloudinary\Test;
 
 use Cloudinary\Cloudinary;
+use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\TestCase;
@@ -33,6 +34,8 @@ if (! defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
 abstract class CloudinaryTestCase extends TestCase
 {
     const TEST_BASE64_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    const TEST_ASSETS_DIR   = __DIR__ . '/assets/';
+    const TEST_IMAGE_PATH   = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME;
 
     protected static $SUFFIX;
     protected static $TEST_TAG;

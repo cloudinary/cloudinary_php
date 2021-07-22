@@ -61,4 +61,53 @@ final class UploadApiTest extends AssetTestCase
         self::assertContains('asset_id', $url);
         self::assertContains('version_id', $url);
     }
+
+    /**
+     * Data provider for `testUploadRequestHeaderParameters()`.
+     *
+     * @return array
+     */
+    public function uploadRequestHeaderParametersDataProvider()
+    {
+        return [
+            'Should support headers as strings' => [
+                'file'    => self::TEST_IMAGE_PATH,
+                'options' => [
+                    'headers' => ['Link: 1', 'X-Robots-Tag: noindex'],
+                ],
+                'result'  => ['Link' => ['1'], 'X-Robots-Tag' => ['noindex']],
+            ],
+
+            'Should support headers as arrays' => [
+                'file'    => self::TEST_IMAGE_PATH,
+                'options' => [
+                    'headers' => ['Link' => '1', 'X-Robots-Tag' => 'noindex'],
+                ],
+                'result'  => ['Link' => ['1'], 'X-Robots-Tag' => ['noindex']],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider uploadRequestHeaderParametersDataProvider
+     *
+     * Checks `upload` request headers parameters.
+     *
+     * @param string $file
+     * @param array  $options
+     * @param array  $result
+     *
+     * @throws ApiError
+     */
+    public function testUploadRequestHeaderParameters($file, $options, $result)
+    {
+        $mockUploadApi = new MockUploadApi();
+        $mockUploadApi->upload($file, $options);
+        $lastRequest = $mockUploadApi->getMockHandler()->getLastRequest();
+
+        self::assertArraySubset(
+            $result,
+            $lastRequest->getHeaders()
+        );
+    }
 }
