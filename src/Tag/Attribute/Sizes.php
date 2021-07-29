@@ -10,26 +10,28 @@
 
 namespace Cloudinary\Tag;
 
+use Cloudinary\Configuration\Configuration;
+
 /**
  * Class Sizes
  *
- * 'sizes' attribute of the img tag
+ * 'sizes' attribute of the img/source tag
  */
 class Sizes
 {
     /**
-     * @var array $breakpoints The breakpoints.
+     * @var Configuration $configuration The Configuration instance.
      */
-    protected $breakpoints;
+    protected $configuration;
 
     /**
      * Sizes constructor.
      *
-     * @param array $breakpoints The breakpoints.
+     * @param Configuration $configuration The Configuration instance..
      */
-    public function __construct($breakpoints)
+    public function __construct($configuration)
     {
-        $this->breakpoints = $breakpoints;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -39,15 +41,6 @@ class Sizes
      */
     public function __toString()
     {
-        if (empty($this->breakpoints)) {
-            return '';
-        }
-
-        $sizesItems = [];
-        foreach ($this->breakpoints as $breakpoint) {
-            $sizesItems[] = "(max-width: {$breakpoint}px) {$breakpoint}px";
-        }
-
-        return implode(", ", $sizesItems);
+        return (int)($this->configuration->tag->relativeWidth * 100) . 'vw';
     }
 }

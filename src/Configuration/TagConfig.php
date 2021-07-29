@@ -20,6 +20,7 @@ use Cloudinary\Transformation\Format;
  * @property string $quotesType        Sets the type of the quotes to use (single or double). Default:
  *           BaseTag::DOUBLE_QUOTES.
  * @property string $contentDelimiter  The delimiter between content items.
+ * @property float  $relativeWidth     The percentage of the screen that the image occupies.
  *
  * @api
  */
@@ -30,6 +31,7 @@ class TagConfig extends BaseConfigSection
     const DEFAULT_VIDEO_POSTER_FORMAT = Format::JPG;
     const DEFAULT_QUOTES_TYPE         = BaseTag::DOUBLE_QUOTES;
     const DEFAULT_CONTENT_DELIMITER   = "\n";
+    const DEFAULT_RELATIVE_WIDTH      = 1.0;
 
     // Supported parameters
     const RESPONSIVE             = 'responsive';
@@ -84,7 +86,7 @@ class TagConfig extends BaseConfigSection
      * @var float $relativeWidth Specify a percentage of the screen width (Range: 0.0 to 1.0)
      *
      */
-    public $relativeWidth;
+    protected $relativeWidth;
 
     /**
      * Whether to use hi dpi.
