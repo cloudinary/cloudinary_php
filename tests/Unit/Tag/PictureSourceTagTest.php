@@ -63,7 +63,7 @@ final class PictureSourceTagTest extends ImageTagTestCase
         // Here we test that configuration is not lost while passing it further
         self::assertPictureSourceTag(
             [$expectedImage],
-            new PictureSourceTag(self::IMAGE_NAME, $configuration)
+            new PictureSourceTag(self::IMAGE_NAME, null, null, null, $configuration)
         );
     }
 
@@ -81,19 +81,65 @@ final class PictureSourceTagTest extends ImageTagTestCase
 
         self::assertPictureSourceTag(
             [$expectedImage, self::BREAKPOINTS_ARR],
-            new PictureSourceTag(self::IMAGE_NAME, $configuration)
+            new PictureSourceTag(self::IMAGE_NAME, null, null, null, $configuration)
         );
     }
 
-    public function testPictureSourceTagMediaAttribute()
+    public function testPictureSourceTagSizesAttribute()
     {
         self::assertPictureSourceTag(
             [
                 $this->src,
                 null,
-                ['media' => '(min-width: '.self::MIN_WIDTH.'px) and (max-width: '.self::MAX_WIDTH.'px)'],
+                [
+                    'sizes' => '100vw',
+                    'media' => '(min-width: ' . self::MIN_WIDTH . 'px) and (max-width: ' . self::MAX_WIDTH . 'px)',
+                ],
             ],
-            (new PictureSourceTag($this->src))->media(self::MIN_WIDTH, self::MAX_WIDTH)
+            (new PictureSourceTag($this->src))->sizes('100vw')->media(self::MIN_WIDTH, self::MAX_WIDTH)
         );
+    }
+
+    public function testPictureSourceTagAutoOptimalBreakPointsAndRelativeWidth()
+    {
+        self::assertPictureSourceTag(
+            [
+                $this->src,
+                self::BREAKPOINTS_ARR_HALF,
+                [
+                    'sizes' => '50vw',
+                    'media' => '(min-width: ' . self::MIN_WIDTH . 'px) and (max-width: ' . self::MAX_WIDTH . 'px)',
+                ],
+            ],
+            (new PictureSourceTag($this->src))->media(self::MIN_WIDTH, self::MAX_WIDTH)->autoOptimalBreakpoints()
+                                              ->relativeWidth(0.5)
+        );
+    }
+
+    public function testPictureSourceTagInvalidMedia()
+    {
+        self::assertNotContains(
+            'media',
+            (new PictureSourceTag($this->src))->media(self::MAX_WIDTH, self::MIN_WIDTH)->toTag()
+        );
+    }
+
+    public function testPictureSourceTagNoMedia()
+    {
+        self::assertNotContains(
+            'media',
+            (new PictureSourceTag($this->src))->media()->toTag()
+        );
+    }
+
+    public function testPictureSourceTagSizesWithAutoOptimalBreakpoints()
+    {
+        $configuration = Configuration::instance();
+
+        $configuration->responsiveBreakpoints->autoOptimalBreakpoints = true;
+
+        $this->expectExceptionMessage("Invalid input: sizes must not be used with autoOptimalBreakpoints");
+
+        new PictureSourceTag(self::IMAGE_NAME, null, null, "500px", $configuration);
     }
 }
