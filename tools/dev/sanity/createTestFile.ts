@@ -9,12 +9,15 @@ function createTestFile(txs: ITxResult[]) {
 
 namespace Cloudinary\\Transformation;
 
-require_once getenv("HOME") ."/dev/cloudinary_php_v2/vendor/autoload.php";
+require_once "../../../vendor/autoload.php";
 
+use Cloudinary\\Asset\\AssetType;
 use Cloudinary\\Asset\\Media;
 use Cloudinary\\Asset\\Image;
 use Cloudinary\\Asset\\Video;
-use Cloudinary\\Test\\Unit\\UnitTestCase;
+use Cloudinary\\Configuration\\Configuration;
+use Cloudinary\\Tag\\ImageTag;
+use Cloudinary\\Tag\\VideoTag;
 use Cloudinary\\Transformation\\Argument\\Color;
 use Cloudinary\\Transformation\\Argument\\GradientDirection;
 use Cloudinary\\Transformation\\Argument\\RotationMode;
@@ -29,20 +32,23 @@ use Cloudinary\\Transformation\\Codec\\VideoCodecProfile;
 use Cloudinary\\Transformation\\Qualifier\\Dimensions\\Dpr;
 use Cloudinary\\Transformation\\Variable\\Variable;
 use Cloudinary\\Transformation\\Expression\\Expression;
+use PHPUnit\\Framework\\TestCase;
 
+Configuration::instance()->cloud->cloudName('demo');
 `;
 
     file += `/**
  * Class TransformationSanityTest
  */\n`;
-    file += `final class TransformationSanityTest extends UnitTestCase
+    file += `final class TransformationSanityTest extends TestCase
 {\n`;
 
     file += txs.map((txResult, index) => {
 
         let realCode = txResult.parsedCode;
 
-        realCode = realCode.replace("new ImageTag('sample')", "new Transformation()");
+        realCode = realCode.replace("new ImageTag('sample')", "new Image('sample')");
+        realCode = realCode.replace("new VideoTag('sample')", "new Video('sample')");
 
         let test = `    public function testTransformation${index}($tr='${txResult.txString}')
     {\n`;
@@ -51,7 +57,7 @@ use Cloudinary\\Transformation\\Expression\\Expression;
 
         test += `        $qualifiers = ${qualifiersStr};`;
         test += `\n\n`;
-        test += `        $tAsset = ${realCode};`;
+        test += `        $tAsset = ${realCode}`;
         test += `\n\n`;
 
         test += `        foreach ($qualifiers as $qualifier) {\n`;
