@@ -625,4 +625,12 @@ final class TransformationTest extends UnitTestCase
             (string)$transformation
         );
     }
+
+    public function testQualifiersAction()
+    {
+        self::assertStrEquals(
+            'vc_h264:basic:3.1',
+            Transformation::fromParams(['video_codec' => ['codec' => 'h264', 'profile' => 'basic', 'level' => '3.1']])
+        );
+    }
 }

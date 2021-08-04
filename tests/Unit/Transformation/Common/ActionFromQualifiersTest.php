@@ -721,4 +721,12 @@ final class ActionFromQualifiersTest extends AssetTestCase
     {
         self::assertEquals($expectedStr, (string)new QualifiersAction($options));
     }
+
+    public function testQualifiersAction()
+    {
+        self::assertEquals(
+            'c_crop,h_20,w_10',
+            new QualifiersAction(['crop' => 'crop', 'width' => 10, 'height' => 20])
+        );
+    }
 }
