@@ -10,7 +10,6 @@
 
 namespace Cloudinary\Test\Unit\Transformation\Common;
 
-use Cloudinary\Asset\AssetType;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Transformation\LayerQualifierFactory;
 use Cloudinary\Transformation\QualifiersAction;
@@ -21,250 +20,615 @@ use InvalidArgumentException;
  */
 final class ActionFromQualifiersTest extends AssetTestCase
 {
-
-    private static $customFunctionWasm    = ['function_type' => 'wasm', 'source' => 'blur.wasm'];
-    private static $customFunctionWasmStr = 'wasm:blur.wasm';
-
-    private static $customFunctionRemote    = [
+    const CUSTOM_FUNCTION_WASM_STR     = 'wasm:blur.wasm';
+    const CUSTOM_FUNCTION_WASM_ARRAY   = ['function_type' => 'wasm', 'source' => 'blur.wasm'];
+    const CUSTOM_FUNCTION_REMOTE_ARRAY = [
         'function_type' => 'remote',
         'source'        => 'https://df34ra4a.execute-api.us-west-2.amazonaws.com/default/cloudinaryFn',
     ];
-    private static $customFunctionRemoteStr =
+    const CUSTOM_FUNCTION_REMOTE_STR   =
         'remote:aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlGbg==';
 
-    public function testStreamingProfile()
-    {
-        // should support streaming profile
-        self::assertQualifiersAction("sp_some-profile", ["streaming_profile" => "some-profile"]);
-    }
-
-    public function testEffect()
-    {
-        // should support effect
-        self::assertQualifiersAction("e_sepia", ["effect" => "sepia"]);
-        // should support effect with array
-        $options = ["effect" => ["sepia", -10]];
-        self::assertQualifiersAction("e_sepia:-10", ["effect" => ["sepia", -10]]);
-    }
-
-    public function testDensity()
-    {
-        self::assertQualifiersAction("dn_150", ["density" => 150]);
-    }
-
-    public function testCustomFunction()
-    {
-        $wasmStr = self::$customFunctionWasmStr;
-
-        // should support custom function from string
-        $options = ['custom_function' => self::$customFunctionWasmStr];
-        self::assertQualifiersAction("fn_$wasmStr", $options);
-
-
-        // should support custom function from array
-        $options = ['custom_function' => self::$customFunctionWasm];
-        self::assertQualifiersAction("fn_$wasmStr", $options);
-
-        $remoteStr = self::$customFunctionRemoteStr;
-        // should encode custom function source for remote function
-        $options = ['custom_function' => self::$customFunctionRemote];
-        self::assertQualifiersAction("fn_$remoteStr", $options);
-    }
-
-    public function testCustomPreFunctionString()
-    {
-        $wasmStr = self::$customFunctionWasmStr;
-
-        // should support custom pre function from string
-        $options = ['custom_pre_function' => self::$customFunctionWasmStr];
-        self::assertQualifiersAction("fn_pre:$wasmStr", $options);
-    }
-
-    public function test_custom_pre_function_wasm_array()
-    {
-        $wasmStr = self::$customFunctionWasmStr;
-
-        // should support custom pre function from array
-        self::assertQualifiersAction("fn_pre:$wasmStr", ['custom_pre_function' => self::$customFunctionWasm]);
-    }
-
-    public function test_custom_pre_function_remote()
-    {
-        $remoteStr = self::$customFunctionRemoteStr;
-
-        // should encode custom pre function source for remote pre function
-        self::assertQualifiersAction("fn_pre:$remoteStr", ['custom_pre_function' => self::$customFunctionRemote]);
-    }
-
-    public function testPage()
-    {
-        self::assertQualifiersAction("pg_5", ["page" => 5]);
-    }
-
-    public function testBorder()
-    {
-        $tests = [
-            'bo_1px_solid_blue'         => '1px_solid_blue',
-            'bo_5px_solid_black'        => ['width' => 5],
-            'bo_5px_solid_rgb:ffaabbdd' => ['width' => 5, 'color' => '#ffaabbdd'],
-
-        ];
-
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['border' => $value]);
-        }
-    }
-
-    public function testFlags()
-    {
-        self::assertQualifiersAction('fl_abc', ['flags' => 'abc']);
-        self::assertQualifiersAction('fl_abc.def', ["flags" => ['abc', 'def']]);
-    }
-
-    public function testAspectRatio()
-    {
-        self::assertQualifiersAction("ar_1.0", ["aspect_ratio" => "1.0"]);
-        self::assertQualifiersAction("ar_3:2", ["aspect_ratio" => "3:2"]);
-    }
-
-    public function testEArtIncognito()
-    {
-        self::assertQualifiersAction("e_art:incognito", ["effect" => "art:incognito"]);
-    }
-
     /**
-     * Should support a positive number or a string
+     * Custom function data provider.
+     *
+     * @return array[]
      */
-    public function testKeyframeInterval()
+    public function customFunctionDataProvider()
     {
-        $tests = [
-            'ki_10.0'  => 10,
-            'ki_0.05'  => 0.05,
-            'ki_3.45'  => 3.45,
-            'ki_300.0' => 300,
-            'ki_10'    => '10',
+        return [
+            'Should support custom function from string'                       => [
+                'fn_' . self::CUSTOM_FUNCTION_WASM_STR,
+                ['custom_function' => self::CUSTOM_FUNCTION_WASM_STR]
+            ],
+            'Should support custom function from array'                        => [
+                'fn_' . self::CUSTOM_FUNCTION_WASM_STR,
+                ['custom_function' => self::CUSTOM_FUNCTION_WASM_ARRAY]
+            ],
+            'Should encode custom function source for remote function'         => [
+                'fn_' . self::CUSTOM_FUNCTION_REMOTE_STR,
+                ['custom_function' => self::CUSTOM_FUNCTION_REMOTE_ARRAY]
+            ],
+            'Should support custom pre function from string'                   => [
+                'fn_pre:' . self::CUSTOM_FUNCTION_WASM_STR,
+                ['custom_pre_function' => self::CUSTOM_FUNCTION_WASM_STR]
+            ],
+            'Should support custom pre function from array'                    => [
+                'fn_pre:' . self::CUSTOM_FUNCTION_WASM_STR,
+                ['custom_pre_function' => self::CUSTOM_FUNCTION_WASM_ARRAY]
+            ],
+            'Should encode custom pre function source for remote pre function' => [
+                'fn_pre:' . self::CUSTOM_FUNCTION_REMOTE_STR,
+                ['custom_pre_function' => self::CUSTOM_FUNCTION_REMOTE_ARRAY]
+            ],
         ];
-
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['keyframe_interval' => $value]);
-        }
-    }
-
-    public function testAudioCodec()
-    {
-        // should support a string value
-        self::assertQualifiersAction('ac_acc', ['audio_codec' => 'acc']);
-    }
-
-    public function testBitRate()
-    {
-        $tests = [
-            'br_2048' => 2048,
-            'br_44k'  => '44k',
-            'br_1m'   => '1m',
-        ];
-        foreach ($tests as $transformation => $startOffset) {
-            self::assertQualifiersAction($transformation, ['bit_rate' => $startOffset]);
-        }
-    }
-
-    public function testAudioFrequency()
-    {
-        // should support an integer value
-        self::assertQualifiersAction('af_44100', ['audio_frequency' => 44100]);
-    }
-
-    public function testVideoSampling()
-    {
-        $tests = [
-            'vs_20'   => 20,
-            'vs_2.3s' => '2.3s',
-        ];
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['video_sampling' => $value]);
-        }
-    }
-
-    public function testStartOffset()
-    {
-        $tests = [
-            'so_2.63' => 2.63,
-            'so_2.64' => '2.64',
-            'so_35p'  => '35p',
-            'so_36p'  => '36%',
-            'so_auto' => 'auto',
-        ];
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['start_offset' => $value]);
-        }
-    }
-
-    public function testEndOffset()
-    {
-        $tests = [
-            'eo_2.63' => 2.63,
-            'eo_2.64' => '2.64',
-            'eo_35p'  => '35p',
-            'eo_36p'  => '36%',
-        ];
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['end_offset' => $value]);
-        }
-    }
-
-    public function testDurationParameter()
-    {
-        $tests = [
-            'du_2.63' => 2.63,
-            'du_2.64' => '2.64',
-            'du_35p'  => '35p',
-            'du_36p'  => '36%',
-        ];
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['duration' => $value]);
-        }
-    }
-
-    public function testOffset()
-    {
-        $tests = [
-            'eo_3.21,so_2.66'   => '2.66..3.21',
-            'eo_3.22,so_2.67'   => [2.67, 3.22],
-            'eo_70p,so_35p'     => ['35%', '70%'],
-            'eo_71p,so_36p'     => ['36p', '71p'],
-            'eo_70.5p,so_35.5p' => ['35.5p', '70.5p'],
-        ];
-        foreach ($tests as $transformation => $value) {
-            self::assertQualifiersAction($transformation, ['offset' => $value]);
-        }
-    }
-
-    public function testLayerQualifierFactory()
-    {
-        $lp = LayerQualifierFactory::fromParams(self::IMAGE_NAME);
-
-        self::assertEquals(
-            'l_' . self::IMAGE_NAME,
-            (string)$lp
-        );
-
-        $lp = LayerQualifierFactory::fromParams('fetch:' . self::FETCH_IMAGE_URL);
-
-        self::assertEquals(
-            'l_fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vZGVtby9pbWFnZS91cGxvYWQvc2FtcGxlLnBuZw==',
-            (string)$lp
-        );
     }
 
     /**
+     * Border data provider.
+     *
+     * @return array[]
+     */
+    public function borderDataProvider()
+    {
+        return [
+            'Border as a string'                    => ['bo_1px_solid_blue', ['border' => '1px_solid_blue']],
+            'Border as an array'                    => ['bo_5px_solid_black', ['border' => ['width' => 5]]],
+            'Border as an array with few options'   => [
+                'bo_5px_solid_rgb:ffaabbdd',
+                ['border' => ['width' => 5, 'color' => '#ffaabbdd']]
+            ],
+        ];
+    }
+
+    /**
+     * Flags data provider.
+     *
+     * @return array[]
+     */
+    public function flagsDataProvider()
+    {
+        return [
+            'Should support flags as a string' => [
+                'fl_abc',
+                ['flags' => 'abc'],
+            ],
+            'Should support flags as an array' => [
+                'fl_abc.def',
+                ['flags' => ['abc', 'def']],
+            ],
+        ];
+    }
+
+    /**
+     * Effect data provider.
+     *
+     * @return array[]
+     */
+    public function effectDataProvider()
+    {
+        return [
+            'Should support an effect as a string'                => [
+                'e_sepia',
+                ['effect' => 'sepia'],
+            ],
+            'Should support an effect as an array'                => [
+                'e_sepia:-10',
+                ['effect' => ['sepia', -10]],
+            ],
+            'Should support an effect as a string with an option' => [
+                'e_art:incognito',
+                ['effect' => 'art:incognito'],
+            ],
+        ];
+    }
+
+    /**
+     * Keyframe interval data provider.
+     *
+     * @return array[]
+     */
+    public function keyframeIntervalDataProvider()
+    {
+        return [
+            'Keyframe interval as a positive integer'          => ['ki_10.0', ['keyframe_interval' => 10]],
+            'Keyframe interval as a big positive integer'      => ['ki_300.0', ['keyframe_interval' => 300]],
+            'Keyframe interval as a float with a zero integer' => ['ki_0.05', ['keyframe_interval' => 0.05]],
+            'Keyframe interval as a float'                     => ['ki_3.45', ['keyframe_interval' => 3.45]],
+            'Keyframe interval as a string'                    => ['ki_10', ['keyframe_interval' => '10']],
+        ];
+    }
+
+    /**
+     * Audio data provider.
+     *
+     * @return array[]
+     */
+    public function audioDataProvider()
+    {
+        return [
+            'Audio codec as a string value' => ['ac_acc', ['audio_codec' => 'acc']],
+            'Bit Rate as integer'           => ['br_2048', ['bit_rate' => 2048]],
+            'Bit Rate as a thousand'        => ['br_44k', ['bit_rate' => '44k']],
+            'Bit Rate as a million'         => ['br_1m', ['bit_rate' => '1m']],
+            'Audio frequency as an integer' => ['af_44100', ['audio_frequency' => 44100]],
+        ];
+    }
+
+    /**
+     * Video sampling data provider.
+     *
+     * @return array[]
+     */
+    public function videoSamplingDataProvider()
+    {
+        return [
+            'Video sampling as an integer' => ['vs_20', ['video_sampling' => 20]],
+            'Video sampling as a float'    => ['vs_2.3s', ['video_sampling' => '2.3s']],
+        ];
+    }
+
+    /**
+     * Start offset data provider.
+     *
+     * @return array[]
+     */
+    public function startOffsetDataProvider()
+    {
+        return [
+            'Start offset as a float'                             => ['so_2.63', ['start_offset' => 2.63]],
+            'Start offset as a string'                            => ['so_2.64', ['start_offset' => '2.64']],
+            'Start offset as a string with a percent as a letter' => ['so_35p', ['start_offset' => '35p']],
+            'Start offset as a string with a % sign'              => ['so_36p', ['start_offset' => '36%']],
+            'Start offset as auto'                                => ['so_auto', ['start_offset' => 'auto']],
+        ];
+    }
+
+    /**
+     * End offset data provider.
+     *
+     * @return array[]
+     */
+    public function endOffsetDataProvider()
+    {
+        return [
+            'End offset as a float'                             => ['eo_2.63', ['end_offset' => 2.63]],
+            'End offset as a string'                            => ['eo_2.64', ['end_offset' => '2.64']],
+            'End offset as a string with a percent as a letter' => ['eo_35p', ['end_offset' => '35p']],
+            'End offset as a string with a % sign'              => ['eo_36p', ['end_offset' => '36%']],
+        ];
+    }
+
+    /**
+     * Duration data provider.
+     *
+     * @return array[]
+     */
+    public function durationParameterDataProvider()
+    {
+        return [
+            'Duration parameter as a float'                             => ['du_2.63', ['duration' => 2.63]],
+            'Duration parameter as a string'                            => ['du_2.64', ['duration' => '2.64']],
+            'Duration parameter as a string with a percent as a letter' => ['du_35p', ['duration' => '35p']],
+            'Duration parameter as a string with a % sign'              => ['du_36p', ['duration' => '36%']],
+        ];
+    }
+
+    /**
+     * Offset data provider.
+     *
+     * @return array[]
+     */
+    public function offsetDataProvider()
+    {
+        return [
+            'Offset as a string separated by two points'                    => [
+                'eo_3.21,so_2.66',
+                ['offset' => '2.66..3.21']
+            ],
+            'Offset as an array of floats'                                  => [
+                'eo_3.22,so_2.67',
+                ['offset' => [2.67, 3.22]]
+            ],
+            'Offset as an array of strings with a % sign'                   => [
+                'eo_70p,so_35p',
+                ['offset' => ['35%', '70%']]
+            ],
+            'Offset as an array of strings and a percent as a letter'       => [
+                'eo_71p,so_36p',
+                ['offset' => ['36p', '71p']]
+            ],
+            'Offset as an array of float strings and a percent as a letter' => [
+                'eo_70.5p,so_35.5p',
+                ['offset' => ['35.5p', '70.5p']]
+            ],
+        ];
+    }
+
+    /**
+     * Operators data provider.
+     *
+     * @return array[]
+     */
+    public function operatorsDataProvider()
+    {
+        return [
+            'Should support and translate operators: ^, * and variables: initial_width, initial_height, crop' => [
+                'c_scale,h_ih_mul_2,w_iw_pow_2',
+                [
+                    'transformation' => [
+                        ['width' => 'initial_width ^ 2', 'height' => 'initial_height * 2', 'crop' => 'scale'],
+                    ],
+                ]
+            ],
+            'Should support and translate operator > and variables: duration, width, crop'                    => [
+                'if_du_gt_30,c_scale,w_100',
+                ['if' => 'duration > 30', 'width' => '100', 'crop' => 'scale']
+            ],
+            'Should support and translate operator > and variables: initial_duration, width, crop'            => [
+                'if_idu_gt_30,c_scale,w_100',
+                ['if' => 'initial_duration > 30', 'width' => '100', 'crop' => 'scale']
+            ],
+            'Should support and translate operators: <, > and variables: effect, aspect_ratio'                => [
+                'if_ar_gt_0.3_and_ar_lt_0.5,e_grayscale',
+                ['if' => 'aspect_ratio > 0.3 && aspect_ratio < 0.5', 'effect' => 'grayscale']
+            ],
+            'Should support and translate operators: =, !=, <, >, <=, >=, &&, ||'
+            . ' and variables: width, height, pages, faces, aspect_ratio'                                     => [
+                'if_w_eq_0_and_h_ne_0_or_ar_lt_0_and_pc_gt_0_and_fc_lte_0_and_w_gte_0,e_grayscale',
+                [
+                    'if'     => 'width = 0 && height != 0 || aspect_ratio < 0 && page_count > 0 and face_count <= 0 ' .
+                                'and width >= 0',
+                    'effect' => 'grayscale',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * User variable data provider.
+     *
+     * @return array[]
+     */
+    public function userVariableDataProvider()
+    {
+        return [
+            'Normalize expression should not convert user variables' => [
+                '$width_10/w_$width_add_10_add_w',
+                [
+                    'transformation' => [
+                        ['$width' => 10],
+                        ['width' => '$width + 10 + width'],
+                    ],
+                ]
+            ],
+            'Array should define set of variables'                   => [
+                'if_fc_gt_2,$z_5,$foo_$z_mul_2,c_scale,w_$foo_mul_200',
+                [
+                    'if'        => 'face_count > 2',
+                    'crop'      => 'scale',
+                    'width'     => '$foo * 200',
+                    'variables' => [
+                        '$z'   => 5,
+                        '$foo' => '$z * 2',
+                    ],
+                ]
+            ],
+            'Key should define variable'                             => [
+                '$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end',
+                [
+                    'transformation' => [
+                        ['$foo' => 10],
+                        ['if' => 'face_count > 2'],
+                        ['crop' => 'scale', 'width' => '$foo * 200 / face_count'],
+                        ['if' => 'end'],
+                    ],
+                ]
+            ],
+            'Should sort defined variable'                           => [
+                '$first_2,$second_1',
+                [
+                    '$second' => 1,
+                    '$first'  => 2,
+                ]
+            ],
+            'Should place defined variables before ordered'          => [
+                '$first_2,$second_1,$z_5,$foo_$z_mul_2',
+                [
+                    'variables' => [
+                        '$z'   => 5,
+                        '$foo' => '$z * 2',
+                    ],
+                    '$second'   => 1,
+                    '$first'    => 2,
+                ]
+            ],
+            'Should support text values'                             => [
+                '$efname_!blur!,e_$efname:100',
+                [
+                    'effect'  => '$efname:100',
+                    '$efname' => '!blur!',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * Gravity data provider.
+     *
+     * @return array[]
+     */
+    public function gravityDataProvider()
+    {
+        return [
+            'Should support gravity with x, y, radius, quality, prefix and opacity parameters' => [
+                'g_center,o_20,p_a,q_0.4,r_3,x_1,y_2',
+                [
+                    'x'       => 1,
+                    'y'       => 2,
+                    'radius'  => 3,
+                    'gravity' => 'center',
+                    'quality' => 0.4,
+                    'prefix'  => 'a',
+                    'opacity' => 20,
+                ]
+            ],
+            'Should support gravity with crop and width parameters'                            => [
+                'c_crop,g_auto,w_0.5',
+                ['gravity' => 'auto', 'crop' => 'crop', 'width' => 0.5]
+            ],
+            'Should support auto and ocr_text gravity with crop and width parameters'          => [
+                'c_crop,g_auto:ocr_text,w_0.5',
+                ['gravity' => 'auto:ocr_text', 'crop' => 'crop', 'width' => 0.5]
+            ],
+            'Should support ocr_text gravity with crop and width parameters'                   => [
+                'c_crop,g_ocr_text,w_0.5',
+                ['gravity' => 'ocr_text', 'crop' => 'crop', 'width' => 0.5]
+            ],
+        ];
+    }
+
+    /**
+     * Quality data provider.
+     *
+     * @return array[]
+     */
+    public function qualityDataProvider()
+    {
+        return [
+            'Quality as an integer'     => [
+                'g_center,p_a,q_80,r_3,x_1,y_2',
+                ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => 80, 'prefix' => 'a']
+            ],
+            'Quality as a multi string' => [
+                'g_center,p_a,q_80:444,r_3,x_1,y_2',
+                ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => '80:444', 'prefix' => 'a']
+            ],
+            'Quality as auto'           => [
+                'g_center,p_a,q_auto,r_3,x_1,y_2',
+                ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => 'auto', 'prefix' => 'a']
+            ],
+            'Quality as auto:good'      => [
+                'g_center,p_a,q_auto:good,r_3,x_1,y_2',
+                ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => 'auto:good', 'prefix' => 'a']
+            ],
+        ];
+    }
+
+    /**
+     * Radius data provider.
+     *
+     * @return array[]
+     */
+    public function radiusDataProvider()
+    {
+        return [
+            'Radius as an integer'                                           => ['r_10', ['radius' => 10]],
+            'Radius as a string'                                             => ['r_10', ['radius' => '10']],
+            'Radius as a user value'                                         => ['r_$v', ['radius' => '$v']],
+            'Radius as an array'                                             => [
+                'r_10:20:30',
+                ['radius' => [10, 20, 30]]
+            ],
+            'Radius as an array of mixed types'                              => [
+                'r_10:20:$v',
+                ['radius' => [10, 20, '$v']]
+            ],
+            'Radius as an array of integers with a user value in the middle' => [
+                'r_10:20:$v:40',
+                ['radius' => [10, 20, '$v', 40]]
+            ],
+            'Radius as a multi string'                                       => ['r_10:20', ['radius' => ['10:20']]],
+            'Radius as a multi string with a user value'                     => [
+                'r_10:20:$v:40',
+                ['radius' => ['10:20:$v:40']]
+            ],
+        ];
+    }
+
+    /**
+     * Transformation data provider.
+     *
+     * @return array[]
+     */
+    public function transformationDataProvider()
+    {
+        return [
+            'Should support a named transformation'              => ['t_blip', ['transformation' => 'blip']],
+            'Should support a named transformations as an array' => [
+                't_blip.blop',
+                [
+                    'transformation' => [
+                        'blip',
+                        'blop'
+                    ]
+                ]
+            ],
+            'Should support a base transformation'               => [
+                'c_fill,x_100,y_100/c_crop,w_100',
+                [
+                    'transformation' => ['x' => 100, 'y' => 100, 'crop' => 'fill'],
+                    'crop'           => 'crop',
+                    'width'          => 100,
+                ]
+            ],
+            'Should support an array of base transformations'    => [
+                'c_fill,w_200,x_100,y_100/r_10/c_crop,w_100',
+                [
+                    'transformation' => [
+                        ['x' => 100, 'y' => 100, 'width' => 200, 'crop' => 'fill'],
+                        ['radius' => 10],
+                    ],
+                    'crop'           => 'crop',
+                    'width'          => 100,
+                ]
+            ],
+            'Should not include an empty transformation'         => [
+                'c_fill,x_100,y_100',
+                ['transformation' => [[], ['x' => 100, 'y' => 100, 'crop' => 'fill'], []]]
+            ],
+        ];
+    }
+
+    /**
+     * Background data provider.
+     *
+     * @return array[]
+     */
+    public function backgroundDataProvider()
+    {
+        return [
+            'Should support a background as a constant'   => [
+                'b_red',
+                ['background' => 'red'],
+            ],
+            'Should support a background as an RGB value' => [
+                'b_rgb:112233',
+                ['background' => '#112233'],
+            ],
+        ];
+    }
+
+    /**
+     * Data provider for `testQualifiersAction()`.
+     *
+     * @return array[]
+     */
+    public function generalQualifiersActionDataProvider()
+    {
+        return [
+            'Should support size using width and height parameters'               => [
+                'c_crop,h_20,w_10',
+                ['crop' => 'crop', 'width' => 10, 'height' => 20],
+            ],
+            'Should support size as a string separated by x'                      => [
+                'c_crop,h_10,w_10',
+                ['size' => '10x10', 'crop' => 'crop'],
+            ],
+            'Should support a video codec with profile and level parameters'      => [
+                'vc_h264:basic:3.1',
+                ['video_codec' => ['codec' => 'h264', 'profile' => 'basic', 'level' => '3.1']],
+            ],
+            'Should support a video codec'                                        => [
+                'vc_h264',
+                ['video_codec' => 'h264'],
+            ],
+            'Should support streaming profile when value includes a hyphen'       => [
+                'sp_some-profile',
+                ['streaming_profile' => 'some-profile'],
+            ],
+            'Should support streaming profile when value includes an underscore'  => [
+                'sp_some_profile',
+                ['streaming_profile' => 'some_profile'],
+            ],
+            'Should support a page'                                               => [
+                'pg_5',
+                ['page' => 5],
+            ],
+            'Should support an aspect ratio as width divided by the height'       => [
+                'ar_1.0',
+                ['aspect_ratio' => '1.0'],
+            ],
+            'Should support an aspect ratio with the width and the height'        => [
+                'ar_3:2',
+                ['aspect_ratio' => '3:2'],
+            ],
+            'Should support density'                                              => [
+                'dn_150',
+                ['density' => 150],
+            ],
+            'Should support an angle as an integer'                               => [
+                'a_12',
+                ['angle' => 12],
+            ],
+            'Should support an angle as an array'                                 => [
+                'a_auto.12',
+                ['angle' => ['auto', 12]],
+            ],
+            'Should support a default image'                                      => [
+                'd_default',
+                ['default_image' => 'default'],
+            ],
+            'Should not include empty options'                                    => [
+                'x_0,y_0',
+                [
+                    'x'       => 0,
+                    'y'       => '0',
+                    'width'   => '',
+                    'height'  => '',
+                    'prefix'  => false,
+                    'opacity' => null,
+                ],
+            ],
+            'Should support string interpolation'                                 => [
+                'c_scale,l_text:Arial_18:$(start)Hello%20$(name)$(ext)%252C%20%24%28no%20%29%20%24%28%20no%29$(end)',
+                [
+                    'crop'    => 'scale',
+                    'overlay' => [
+                        'text'        => '$(start)Hello $(name)$(ext), $(no ) $( no)$(end)',
+                        'font_family' => 'Arial',
+                        'font_size'   => '18',
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider customFunctionDataProvider
+     * @dataProvider borderDataProvider
+     * @dataProvider keyframeIntervalDataProvider
+     * @dataProvider audioDataProvider
+     * @dataProvider videoSamplingDataProvider
+     * @dataProvider startOffsetDataProvider
+     * @dataProvider endOffsetDataProvider
+     * @dataProvider durationParameterDataProvider
+     * @dataProvider offsetDataProvider
+     * @dataProvider radiusDataProvider
+     * @dataProvider generalQualifiersActionDataProvider
+     * @dataProvider qualityDataProvider
+     * @dataProvider transformationDataProvider
+     * @dataProvider userVariableDataProvider
+     * @dataProvider operatorsDataProvider
+     * @dataProvider effectDataProvider
+     * @dataProvider flagsDataProvider
+     * @dataProvider gravityDataProvider
+     * @dataProvider backgroundDataProvider
+     *
+     * @param $transformation
+     * @param $options
+     */
+    public function testQualifiersAction($transformation, $options)
+    {
+        self::assertEquals($transformation, (string)new QualifiersAction($options));
+    }
+
+    /**
+     * Layers qualifiers data provider for `testOverlayOptions()`.
+     *
      * @return array
-     *
-     * @internal
-     *
-     * Data Provider for testOverlayOptions
-     *
      */
-    public function layersQualifiers()
+    public function layersQualifiersDataProvider()
     {
         return [
             'public_id'                           => [['public_id' => 'logo'], 'logo'],
@@ -317,7 +681,7 @@ final class ActionFromQualifiersTest extends AssetTestCase
                 ['resource_type' => 'subtitles', 'public_id' => 'sample_sub_en.srt'],
                 'subtitles:sample_sub_en.srt',
             ],
-            'lut'                           => [
+            'lut'                                 => [
                 ['resource_type' => 'lut', 'public_id' => 'public_id'],
                 'lut:public_id',
             ],
@@ -334,399 +698,76 @@ final class ActionFromQualifiersTest extends AssetTestCase
                 ['public_id' => 'logo', 'fetch' => 'https://cloudinary.com/images/old_logo.png'],
                 'fetch:aHR0cHM6Ly9jbG91ZGluYXJ5LmNvbS9pbWFnZXMvb2xkX2xvZ28ucG5n',
             ],
-
+            'fetch image url'                     => [
+                'fetch:' . self::FETCH_IMAGE_URL,
+                'fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vZGVtby9pbWFnZS91cGxvYWQvc2FtcGxlLnBuZw==',
+            ],
+            'logo'                                => [
+                ['public_id' => 'logo', 'type' => 'upload', 'resource_type' => 'image'],
+                'logo'
+            ],
+            'image name'                          => [
+                self::IMAGE_NAME,
+                self::IMAGE_NAME
+            ],
         ];
     }
 
     /**
-     * @dataProvider layersQualifiers
+     * @dataProvider layersQualifiersDataProvider
      *
      * @param $qualifiers
      * @param $expected
      */
-    public function testOverlayOptions($qualifiers, $expected)
+    public function testLayerQualifierFactory($qualifiers, $expected)
     {
         self::assertEquals("l_$expected", (string)LayerQualifierFactory::fromParams($qualifiers));
     }
 
-    public function testIgnoreDefaultValuesInOverlayOptions()
-    {
-        $options  = ['public_id' => 'logo', 'type' => 'upload', 'resource_type' => 'image'];
-        $expected = 'logo';
-        self::assertEquals("l_$expected", (string)LayerQualifierFactory::fromParams($options));
-    }
-
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Must supply either style qualifiers or a public_id
-     * when providing text qualifier in a text overlay
-     */
-    public function testTextRequirePublicIdOrStyle()
-    {
-        $options = ['text' => 'text'];
-        LayerQualifierFactory::fromParams($options);
-    }
-
-    /**
+     * Layer qualifier factory expect exception data provider.
+     *
      * @return array
      */
-    public function layerAssetTypes()
+    public function layerQualifierFactoryExpectExceptionDataProvider()
     {
         return [
-            AssetType::IMAGE => [AssetType::IMAGE],
-            AssetType::VIDEO => [AssetType::VIDEO],
-            AssetType::RAW   => [AssetType::RAW],
-            'subtitles'      => ['subtitles'],
+            'Underlay require a public id for non text for image layer'     => [
+                ['resource_type' => 'image'],
+                'Must supply public_id for image layer'
+            ],
+            'Underlay require a public id for non text for video layer'     => [
+                ['resource_type' => 'video'],
+                'Must supply public_id for video layer'
+            ],
+            'Underlay require a public id for non text for raw layer'       => [
+                ['resource_type' => 'raw'],
+                'Must supply public_id for raw layer'
+            ],
+            'Underlay require a public id for non text for subtitles layer' => [
+                ['resource_type' => 'subtitles'],
+                'Must supply public_id for subtitles layer'
+            ],
+            'Text require a public id or style'                             => [
+                ['text' => 'text'],
+                'Must supply either style qualifiers or a public_id when providing text qualifier in a text layer'
+            ],
         ];
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessageRegExp #Must supply public_id for .* layer#
-     * @dataProvider layerAssetTypes
+     * Should throws an exception for wrong layer qualifiers.
      *
-     * @param $resourceType
+     * @dataProvider layerQualifierFactoryExpectExceptionDataProvider
+     *
+     * @param $layerQualifiers
+     * @param $exceptionMessage
      */
-    public function testUnderlayRequirePublicIdForNonText($resourceType)
+    public function testLayerQualifierFactoryExpectException($layerQualifiers, $exceptionMessage)
     {
-        $options = ['resource_type' => $resourceType];
-        LayerQualifierFactory::fromParams($options);
-    }
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($exceptionMessage);
 
-    /**
-     * should support and translate operators: '=', '!=', '<', '>', '<=', '>=', '&&', '||'
-     * and variables: width, height, pages, faces, aspect_ratio
-     */
-    public function testTranslateIf()
-    {
-        $allOperators =
-            'if_' .
-            'w_eq_0_and' .
-            '_h_ne_0_or' .
-            '_ar_lt_0_and' .
-            '_pc_gt_0_and' .
-            '_fc_lte_0_and' .
-            '_w_gte_0' .
-            ',e_grayscale';
-
-        $cond = 'width = 0 && height != 0 || aspect_ratio < 0 && page_count > 0 and face_count <= 0 and width >= 0';
-
-        $options = ['if' => $cond, 'effect' => 'grayscale'];
-
-        self::assertQualifiersAction($allOperators, $options);
-
-        $options = ['if' => 'aspect_ratio > 0.3 && aspect_ratio < 0.5', 'effect' => 'grayscale'];
-
-        self::assertQualifiersAction('if_ar_gt_0.3_and_ar_lt_0.5,e_grayscale', $options);
-    }
-
-    public function testNormalizeExpressionShouldNotConvertUserVariables()
-    {
-        $options = [
-            'transformation' => [
-                ['$width' => 10],
-                ['width' => '$width + 10 + width'],
-            ],
-        ];
-
-        self::assertQualifiersAction('$width_10/w_$width_add_10_add_w', $options);
-    }
-
-    public function testArrayShouldDefineSetOfVariables()
-    {
-        $options = [
-            'if'        => 'face_count > 2',
-            'crop'      => 'scale',
-            'width'     => '$foo * 200',
-            'variables' => [
-                '$z'   => 5,
-                '$foo' => '$z * 2',
-            ],
-        ];
-
-        self::assertQualifiersAction('if_fc_gt_2,$z_5,$foo_$z_mul_2,c_scale,w_$foo_mul_200', $options);
-    }
-
-    public function testDurationVariable()
-    {
-        $options = ['if' => 'duration > 30', 'width' => '100', 'crop' => 'scale'];
-
-        self::assertQualifiersAction('if_du_gt_30,c_scale,w_100', $options);
-
-        $options = ['if' => 'initial_duration > 30', 'width' => '100', 'crop' => 'scale'];
-
-        self::assertQualifiersAction('if_idu_gt_30,c_scale,w_100', $options);
-    }
-
-    public function testKeyShouldDefineVariable()
-    {
-        $options = [
-            'transformation' => [
-                ['$foo' => 10],
-                ['if' => 'face_count > 2'],
-                ['crop' => 'scale', 'width' => '$foo * 200 / face_count'],
-                ['if' => 'end'],
-            ],
-        ];
-
-        self::assertQualifiersAction('$foo_10/if_fc_gt_2/c_scale,w_$foo_mul_200_div_fc/if_end', $options);
-    }
-
-    public function testUrlShouldConvertOperators()
-    {
-        $options = [
-            'transformation' => [
-                ['width' => 'initial_width ^ 2', 'height' => 'initial_height * 2', 'crop' => 'scale'],
-            ],
-        ];
-
-        self::assertQualifiersAction('c_scale,h_ih_mul_2,w_iw_pow_2', $options);
-    }
-
-    public function testShouldSupportStreamingProfile()
-    {
-        $options = [
-            'streaming_profile' => 'some_profile',
-        ];
-
-        self::assertQualifiersAction('sp_some_profile', $options);
-    }
-
-    public function testShouldSortDefinedVariable()
-    {
-        $options = [
-            '$second' => 1,
-            '$first'  => 2,
-        ];
-
-        self::assertQualifiersAction('$first_2,$second_1', $options);
-    }
-
-    public function testShouldPlaceDefinedVariablesBeforeOrdered()
-    {
-        $options = [
-            'variables' => [
-                '$z'   => 5,
-                '$foo' => '$z * 2',
-            ],
-            '$second'   => 1,
-            '$first'    => 2,
-        ];
-
-        self::assertQualifiersAction('$first_2,$second_1,$z_5,$foo_$z_mul_2', $options);
-    }
-
-    public function testShouldSupportTextValues()
-    {
-        $e = [
-            'effect'  => '$efname:100',
-            '$efname' => '!blur!',
-        ];
-
-        self::assertQualifiersAction('$efname_!blur!,e_$efname:100', $e);
-    }
-
-    public function testShouldSupportStringInterpolation()
-    {
-        $options =
-            [
-                'crop'    => 'scale',
-                'overlay' => [
-                    'text'        => '$(start)Hello $(name)$(ext), $(no ) $( no)$(end)',
-                    'font_family' => 'Arial',
-                    'font_size'   => '18',
-                ],
-            ];
-
-        self::assertQualifiersAction(
-            'c_scale,l_text:Arial_18:$(start)Hello%20$(name)$(ext)%252C%20%24%28no%20%29%20%24%28%20no%29$(end)',
-            $options
-        );
-    }
-
-
-    public function testVariousOptions()
-    {
-        // should use x, y, radius, prefix, gravity and quality from $options
-        $options = [
-            'x'       => 1,
-            'y'       => 2,
-            'radius'  => 3,
-            'gravity' => 'center',
-            'quality' => 0.4,
-            'prefix'  => 'a',
-            'opacity' => 20,
-        ];
-        self::assertQualifiersAction(
-            'g_center,o_20,p_a,q_0.4,r_3,x_1,y_2',
-            $options
-        );
-        $options = ['gravity' => 'auto', 'crop' => 'crop', 'width' => 0.5];
-        self::assertQualifiersAction(
-            'c_crop,g_auto,w_0.5',
-            $options
-        );
-        $options = ['gravity' => 'auto:ocr_text', 'crop' => 'crop', 'width' => 0.5];
-        self::assertQualifiersAction(
-            'c_crop,g_auto:ocr_text,w_0.5',
-            $options
-        );
-        $options = ['gravity' => 'ocr_text', 'crop' => 'crop', 'width' => 0.5];
-        self::assertQualifiersAction(
-            'c_crop,g_ocr_text,w_0.5',
-            $options
-        );
-    }
-
-    public function testQuality()
-    {
-        self::assertQualifiersAction(
-            'g_center,p_a,q_80,r_3,x_1,y_2',
-            ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => 80, 'prefix' => 'a']
-        );
-        self::assertQualifiersAction(
-            'g_center,p_a,q_80:444,r_3,x_1,y_2',
-            ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => '80:444', 'prefix' => 'a']
-        );
-        self::assertQualifiersAction(
-            'g_center,p_a,q_auto,r_3,x_1,y_2',
-            ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => 'auto', 'prefix' => 'a']
-        );
-        self::assertQualifiersAction(
-            'g_center,p_a,q_auto:good,r_3,x_1,y_2',
-            ['x' => 1, 'y' => 2, 'radius' => 3, 'gravity' => 'center', 'quality' => 'auto:good', 'prefix' => 'a']
-        );
-    }
-
-    /**
-     * Should support a string, integer and array of mixed types
-     */
-    public function testRadius()
-    {
-        $radiusTestValues = [
-            [10, "r_10"],
-            ['10', 'r_10'],
-            ['$v', 'r_$v'],
-            [[10, 20, 30], 'r_10:20:30'],
-            [[10, 20, '$v'], 'r_10:20:$v'],
-            [[10, 20, '$v', 40], 'r_10:20:$v:40'],
-            [['10:20'], 'r_10:20'],
-            [['10:20:$v:40'], 'r_10:20:$v:40'],
-        ];
-
-        foreach ($radiusTestValues as $value) {
-            self::assertQualifiersAction($value[1], ['radius' => $value[0]]);
-        }
-    }
-
-    public function testNoEmptyOptions()
-    {
-        // should use x, y, width, height, crop, prefix and opacity from $options
-        $options = [
-            'x'       => 0,
-            'y'       => '0',
-            'width'   => '',
-            'height'  => '',
-            #"crop"    => ' ',
-            'prefix'  => false,
-            'opacity' => null,
-        ];
-        self::assertQualifiersAction('x_0,y_0', $options);
-    }
-
-    public function testTransformationSimple()
-    {
-        // should support named transformation
-        $options = ['transformation' => 'blip'];
-        self::assertQualifiersAction('t_blip', $options);
-    }
-
-    public function testTransformationArray()
-    {
-        // should support array of named transformations
-        $options = ['transformation' => ['blip', 'blop']];
-        self::assertQualifiersAction('t_blip.blop', $options);
-    }
-
-    public function testBaseTransformations()
-    {
-        // should support base transformation
-        $options = [
-            'transformation' => ['x' => 100, 'y' => 100, 'crop' => 'fill'],
-            'crop'           => 'crop',
-            'width'          => 100,
-        ];
-        self::assertQualifiersAction('c_fill,x_100,y_100/c_crop,w_100', $options);
-    }
-
-    public function testBaseTransformationArray()
-    {
-        // should support array of base transformations
-        $options = [
-            'transformation' => [
-                ['x' => 100, 'y' => 100, 'width' => 200, 'crop' => 'fill'],
-                ['radius' => 10],
-            ],
-            'crop'           => 'crop',
-            'width'          => 100,
-        ];
-        self::assertQualifiersAction(
-            'c_fill,w_200,x_100,y_100/r_10/c_crop,w_100',
-            $options
-        );
-    }
-
-    public function testNoEmptyTransformation()
-    {
-        // should not include empty transformations
-        $options = ['transformation' => [[], ['x' => 100, 'y' => 100, 'crop' => 'fill'], []]];
-        self::assertQualifiersAction(
-            'c_fill,x_100,y_100',
-            $options
-        );
-    }
-
-    public function testSize()
-    {
-        // should support size
-        $options = ['size' => '10x10', 'crop' => 'crop'];
-        self::assertQualifiersAction('c_crop,h_10,w_10', $options);
-    }
-
-    public function testBackground()
-    {
-        // should support background
-        self::assertQualifiersAction('b_red', ["background" => "red"]);
-        self::assertQualifiersAction('b_rgb:112233', ["background" => "#112233"]);
-    }
-
-    public function testDefaultImage()
-    {
-        // should support default_image
-        self::assertQualifiersAction('d_default', ["default_image" => "default"]);
-    }
-
-    public function testAngle()
-    {
-        // should support angle
-        self::assertQualifiersAction('a_12', ['angle' => 12]);
-        self::assertQualifiersAction('a_auto.12', ["angle" => ["auto", 12]]);
-    }
-
-    /**
-     * @param $expectedStr
-     * @param $options
-     */
-    protected static function assertQualifiersAction($expectedStr, $options)
-    {
-        self::assertEquals($expectedStr, (string)new QualifiersAction($options));
-    }
-
-    public function testQualifiersAction()
-    {
-        self::assertEquals(
-            'c_crop,h_20,w_10',
-            new QualifiersAction(['crop' => 'crop', 'width' => 10, 'height' => 20])
-        );
+        LayerQualifierFactory::fromParams($layerQualifiers);
     }
 }
