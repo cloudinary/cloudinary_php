@@ -14,6 +14,7 @@ use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\ApiUtils;
 use Cloudinary\ArrayUtils;
+use Cloudinary\Asset\AssetType;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
@@ -202,5 +203,62 @@ trait CreativeTrait
     public function text($text, $options = [])
     {
         return $this->textAsync($text, $options)->wait();
+    }
+
+
+    /**
+     * Create auto-generated video slideshows.
+     *
+     * @param array $options The optional parameters.  See the upload API documentation.
+     *
+     * @return PromiseInterface
+     *
+     * @see https://cloudinary.com/documentation/video_slideshow_generation
+     */
+    public function createSlideshowAsync($options = [])
+    {
+        $params = ArrayUtils::whitelist(
+            $options,
+            [
+                'notification_url',
+                'public_id',
+                'overwrite',
+                'upload_preset',
+            ]
+        );
+
+        $complexParams = [
+            'manifest_transformation' => ApiUtils::serializeAssetTransformations(ArrayUtils::get(
+                $options,
+                'manifest_transformation'
+            )),
+            'manifest_json'           => ApiUtils::serializeJson(ArrayUtils::get($options, 'manifest_json')),
+            'tags'                    => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'tags')),
+            'transformation'          => ApiUtils::serializeAssetTransformations(ArrayUtils::get(
+                $options,
+                'transformation'
+            )),
+        ];
+        ArrayUtils::setDefaultValue($options, AssetType::KEY, AssetType::VIDEO);
+
+        return $this->callUploadApiAsync(
+            UploadEndPoint::CREATE_SLIDESHOW,
+            array_merge($params, $complexParams),
+            $options
+        );
+    }
+
+    /**
+     * Create auto-generated video slideshows.
+     *
+     * @param array $options The optional parameters.  See the upload API documentation.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/video_slideshow_generation
+     */
+    public function createSlideshow($options = [])
+    {
+        return $this->createSlideshowAsync($options)->wait();
     }
 }
