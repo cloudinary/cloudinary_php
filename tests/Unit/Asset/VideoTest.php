@@ -10,7 +10,6 @@
 
 namespace Cloudinary\Test\Unit\Asset;
 
-use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\Video;
 use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\Qualifier\Dimensions\Width;
@@ -35,7 +34,7 @@ final class VideoTest extends AssetTestCase
         );
 
         self::assertVideoUrl(
-            "{$t_expected}/".self::VIDEO_NAME,
+            "{$t_expected}/" . self::VIDEO_NAME,
             (string)$v
         );
     }
