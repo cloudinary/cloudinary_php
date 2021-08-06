@@ -175,26 +175,26 @@ trait MetadataFieldsTrait
      */
     public function restoreMetadataFieldDatasource($fieldExternalId, array $entriesExternalIds)
     {
-        $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource_restore'];
+        $uri                    = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource_restore'];
         $params['external_ids'] = $entriesExternalIds;
 
         return $this->apiClient->postJson($uri, $params);
     }
 
     /**
-     * Sorts metadata field datasource. Currently supports only value.
+     * Reorders metadata field datasource. Currently, supports only value.
      *
      * @param string $fieldExternalId The ID of the metadata field.
-     * @param string $sortBy          Criteria for the sort. Currently supports only value.
+     * @param string $orderBy         Criteria for the order. Currently, supports only value.
      * @param string $direction       Optional (gets either asc or desc).
      *
      * @return ApiResponse
      */
-    public function sortMetadataFieldDatasource($fieldExternalId, $sortBy, $direction = null)
+    public function reorderMetadataFieldDatasource($fieldExternalId, $orderBy, $direction = null)
     {
-        $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource', 'sort'];
+        $uri    = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource', 'order'];
         $params = [
-            'sort_by'   => $sortBy,
+            'order_by'  => $orderBy,
             'direction' => $direction,
         ];
 
