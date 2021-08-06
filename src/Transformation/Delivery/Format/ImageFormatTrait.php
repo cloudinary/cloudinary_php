@@ -178,6 +178,16 @@ trait ImageFormatTrait
     }
 
     /**
+     * Image format avif.
+     *
+     * @return static
+     */
+    public static function avif()
+    {
+        return static::createFormat(Format::AVIF);
+    }
+
+    /**
      * Image format flif.
      *
      * @return static
@@ -185,5 +195,15 @@ trait ImageFormatTrait
     public static function flif()
     {
         return static::createFormat(Format::FLIF);
+    }
+
+    /**
+     * Image format usdz.
+     *
+     * @return static
+     */
+    public static function usdz()
+    {
+        return static::createFormat(Format::USDZ);
     }
 }

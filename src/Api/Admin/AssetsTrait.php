@@ -268,7 +268,7 @@ trait AssetsTrait
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
         $uri       = [ApiEndPoint::ASSETS, $assetType, $type, $publicId];
 
-        $primitive_options = ArrayUtils::whitelist(
+        $primitiveOptions = ArrayUtils::whitelist(
             $options,
             [
                 ModerationStatus::KEY,
@@ -284,17 +284,18 @@ trait AssetsTrait
             ]
         );
 
-        $array_options = [
+        $arrayOptions = [
             'tags'               => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'tags')),
             'context'            => ApiUtils::serializeContext(ArrayUtils::get($options, 'context')),
+            'metadata'           => ApiUtils::serializeContext(ArrayUtils::get($options, 'metadata')),
             'face_coordinates'   => ApiUtils::serializeArrayOfArrays(ArrayUtils::get($options, 'face_coordinates')),
             'custom_coordinates' => ApiUtils::serializeArrayOfArrays(ArrayUtils::get($options, 'custom_coordinates')),
             'access_control'     => ApiUtils::serializeJson(ArrayUtils::get($options, 'access_control')),
         ];
 
-        $update_options = array_merge($primitive_options, $array_options);
+        $updateOptions = array_merge($primitiveOptions, $arrayOptions);
 
-        return $this->apiClient->postForm($uri, $update_options);
+        return $this->apiClient->postForm($uri, $updateOptions);
     }
 
     /**

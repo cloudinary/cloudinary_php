@@ -14,7 +14,7 @@ use Cloudinary\Api\ApiClient;
 use Cloudinary\Configuration\Configuration;
 use Psr\Http\Message\RequestInterface;
 
-use function GuzzleHttp\Psr7\parse_query;
+use GuzzleHttp\Psr7;
 
 /**
  * Trait RequestAssertionsTrait
@@ -23,6 +23,55 @@ use function GuzzleHttp\Psr7\parse_query;
  */
 trait RequestAssertionsTrait
 {
+    /**
+     * Assert the HTTP request method is GET.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestGet(RequestInterface $request, $message = 'HTTP method should be GET')
+    {
+        self::assertEquals('GET', $request->getMethod(), $message);
+    }
+
+    /**
+     * Assert the HTTP request method is POST.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestPost(RequestInterface $request, $message = 'HTTP method should be POST')
+    {
+        self::assertEquals('POST', $request->getMethod(), $message);
+    }
+
+    /**
+     * Assert the HTTP request method is DELETE.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestDelete(RequestInterface $request, $message = 'HTTP method should be DELETE')
+    {
+        self::assertEquals('DELETE', $request->getMethod(), $message);
+    }
+
+    /**
+     * Asserts that a request contains the expected fields and values.
+     *
+     * @param RequestInterface $request
+     * @param array|null       $fields
+     * @param string           $message
+     */
+    protected static function assertRequestFields(RequestInterface $request, $fields = null, $message = '')
+    {
+        self::assertEquals(
+            json_decode($request->getBody()->getContents(), true),
+            $fields,
+            $message
+        );
+    }
+
     /**
      * Assert that a request was made to the correct url.
      *
@@ -52,7 +101,7 @@ trait RequestAssertionsTrait
     {
         self::assertArraySubset(
             $fields,
-            parse_query($request->getUri()->getQuery()),
+            Psr7\Query::parse($request->getUri()->getQuery()),
             $message ?: 'The expected fields and values were not found in the request query string'
         );
     }
@@ -68,7 +117,7 @@ trait RequestAssertionsTrait
     {
         self::assertArraySubset(
             $fields,
-            parse_query($request->getBody()->getContents()),
+            Psr7\Query::parse($request->getBody()->getContents()),
             $message ?: 'The expected fields and values were not found in the request body'
         );
     }

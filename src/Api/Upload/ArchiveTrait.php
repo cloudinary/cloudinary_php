@@ -181,7 +181,7 @@ trait ArchiveTrait
      */
     public function downloadArchiveUrl($options = [])
     {
-        $options['mode'] = 'download';
+        $options['mode'] = self::MODE_DOWNLOAD;
         $params          = self::buildArchiveParams($options);
 
         ApiUtils::signRequest($params, $this->getCloud(), $this->getUrl());
@@ -228,7 +228,9 @@ trait ArchiveTrait
 
         ApiUtils::signRequest($params, $this->getCloud(), $this->getUrl());
 
-        return $this->getUploadUrl(AssetType::IMAGE, UploadEndPoint::DOWNLOAD, $params);
+        $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
+
+        return $this->getUploadUrl($assetType, UploadEndPoint::DOWNLOAD, $params);
     }
 
     /**

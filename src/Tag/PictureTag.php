@@ -55,9 +55,9 @@ class PictureTag extends BaseTag
      */
     public function __construct($source, $sources, $configuration = null)
     {
-        parent::__construct();
+        parent::__construct($configuration);
 
-        $this->image($source, $configuration);
+        $this->image($source);
 
         $this->setSources($sources);
     }
@@ -66,13 +66,12 @@ class PictureTag extends BaseTag
      * Sets the image of the picture.
      *
      * @param mixed         $image         The public ID or Image asset.
-     * @param Configuration $configuration The configuration instance.
      *
      * @return static
      */
-    public function image($image, $configuration = null)
+    public function image($image)
     {
-        $this->imageTag = new ImageTag(new Image($image, $configuration), $configuration);
+        $this->imageTag = new ImageTag(new Image($image, $this->config), $this->config);
 
         return $this;
     }
@@ -90,9 +89,9 @@ class PictureTag extends BaseTag
 
         foreach ($sourcesDefinitions as $source) {
             if (is_array($source)) {
-                $sourceTag = new PictureSourceTag($this->imageTag->image);
+                $sourceTag = new PictureSourceTag(ArrayUtils::get($source, 'image'), $this->config);
                 $sourceTag->media(ArrayUtils::get($source, 'min_width'), ArrayUtils::get($source, 'max_width'));
-                $sourceTag->additionalTransformation = ArrayUtils::get($source, 'transformation');
+                $sourceTag->sizes(ArrayUtils::get($source, 'sizes'));
 
                 $source = $sourceTag;
             }

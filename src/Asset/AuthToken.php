@@ -71,7 +71,7 @@ class AuthToken
     /**
      * Indicates whether according to the current configuration, AuthToken is enabled or not
      *
-     * @return mixed
+     * @return bool
      */
     public function isEnabled()
     {

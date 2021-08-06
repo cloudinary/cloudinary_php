@@ -3,7 +3,7 @@ name: Feature request
 about: Feature request for Cloudinary PHP SDK
 title: ''
 labels: ''
-assignees: const-cloudinary
+assignees: ''
 
 ---
 

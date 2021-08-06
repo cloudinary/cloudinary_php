@@ -12,8 +12,6 @@ namespace Cloudinary\Test\Unit\Tag;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\Media;
-use Cloudinary\Cache\Adapter\KeyValueCacheAdapter;
-use Cloudinary\Cache\ResponsiveBreakpointsCache;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Tag\ImageTag;
 use Cloudinary\Tag\SpriteTag;
@@ -21,7 +19,6 @@ use Cloudinary\Tag\Tag;
 use Cloudinary\Tag\UploadTag;
 use Cloudinary\Tag\VideoTag;
 use Cloudinary\Tag\VideoThumbnailTag;
-use Cloudinary\Test\Unit\Cache\Storage\DummyCacheStorage;
 use DOMDocument;
 
 /**
@@ -38,8 +35,8 @@ final class TagFromParamsTest extends ImageTagTestCase
 
     private static $publicId                = 'sample.jpg';
     private static $commonTransformationStr = 'e_sepia';
-    private static $minWidth                = 100;
-    private static $maxWidth                = 399;
+    private static $minWidth                = 375;
+    private static $maxWidth                = 3840;
     private static $maxImages;
     private static $customAttributes        = ['custom_attr1' => 'custom_value1', 'custom_attr2' => 'custom_value2'];
     private static $commonImageOptions      = [
@@ -47,30 +44,15 @@ final class TagFromParamsTest extends ImageTagTestCase
         'cloud_name'   => 'test123',
         'client_hints' => false,
     ];
-    private static $fillTransformation;
-    private static $fillTransStr;
     private static $commonSrcset;
     private static $breakpointsArr;
-    private static $sizesAttr;
+    private static $sizesAttr = '100vw';
 
     public static function setUpBeforeClass()
     {
-        self::$breakpointsArr = [self::$minWidth, 200, 300, self::$maxWidth];
+        self::$breakpointsArr = [828, 1366, 1536, 1920, 3840];
         self::$maxImages      = count(self::$breakpointsArr);
         self::$commonSrcset   = ['breakpoints' => self::$breakpointsArr];
-
-        self::$fillTransformation = ['width' => self::$maxWidth, 'height' => self::$maxWidth, 'crop' => 'fill'];
-        self::$fillTransStr       = 'c_fill,h_' . self::$maxWidth . ',w_' . self::$maxWidth;
-
-        self::$sizesAttr = implode(
-            ', ',
-            array_map(
-                static function ($w) {
-                    return "(max-width: ${w}px) ${w}px";
-                },
-                self::$breakpointsArr
-            )
-        );
     }
 
 
@@ -284,8 +266,9 @@ final class TagFromParamsTest extends ImageTagTestCase
                 [
                     'srcset' => [
                         'min_width'  => self::$minWidth,
-                        'max_width'  => $x = self::$maxWidth,
+                        'max_width'  => self::$maxWidth,
                         'max_images' => count(self::$breakpointsArr),
+                        'auto_optimal_breakpoints' => true
                     ],
                 ]
             )
@@ -314,6 +297,7 @@ final class TagFromParamsTest extends ImageTagTestCase
                         'min_width'  => self::$breakpointsArr[0],
                         'max_width'  => self::$maxWidth,
                         'max_images' => 1,
+                        'auto_optimal_breakpoints' => true
                     ],
                 ]
             )
@@ -336,32 +320,6 @@ final class TagFromParamsTest extends ImageTagTestCase
             )
         );
         self::assertStrEquals($expected1ImageTag, $tagOneImageByBreakpoints);
-
-        // Should support custom transformation for srcset items
-        $customTransformation = ['transformation' => ['crop' => 'crop', 'width' => 10, 'height' => 20]];
-
-        $tagCustomTransformation = ImageTag::fromParams(
-            self::$publicId,
-            array_merge(
-                self::$commonImageOptions,
-                [
-                    'srcset' => array_merge(
-                        self::$commonSrcset,
-                        $customTransformation
-                    ),
-                ]
-            )
-        );
-
-        $customTransformationStr = 'c_crop,h_20,w_10';
-        $customExpectedTag       = self::expectedImageTagFromParams(
-            self::$publicId,
-            self::$commonTransformationStr,
-            $customTransformationStr,
-            self::$breakpointsArr
-        );
-
-        self::assertStrEquals($customExpectedTag, $tagCustomTransformation);
 
         // Should populate sizes attribute
         $tagWithSizes = ImageTag::fromParams(
@@ -425,32 +383,6 @@ final class TagFromParamsTest extends ImageTagTestCase
             self::$breakpointsArr
         );
         self::assertStrEquals($expectedTagWithoutWidthAndHeight, $tagWithSizes);
-    }
-
-    public function testImageTagResponsiveBreakpointsCache()
-    {
-        $cache = ResponsiveBreakpointsCache::instance();
-        $cache->setCacheAdapter(new KeyValueCacheAdapter(new DummyCacheStorage()));
-
-        $asset = Media::fromParams(self::$publicId, self::$commonImageOptions);
-        $cache->set($asset, self::$breakpointsArr);
-
-        $expectedTag = self::expectedImageTagFromParams(
-            self::$publicId,
-            self::$commonTransformationStr,
-            '',
-            self::$breakpointsArr
-        );
-
-        $imageTag = ImageTag::fromParams(
-            self::$publicId,
-            array_merge(
-                self::$commonImageOptions,
-                ['srcset' => ['use_cache' => true]]
-            )
-        );
-
-        self::assertStrEquals($expectedTag, $imageTag);
     }
 
     public function testCreateATagWithCustomAttributesLegacyApproach()

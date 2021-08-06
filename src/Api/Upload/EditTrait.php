@@ -87,7 +87,14 @@ trait EditTrait
      */
     public function renameAsync($fromPublicId, $toPublicId, $options = [])
     {
-        $params                   = ArrayUtils::whitelist($options, ['type', 'to_type', 'invalidate', 'overwrite']);
+        $params                   = ArrayUtils::whitelist($options, [
+            'type',
+            'to_type',
+            'invalidate',
+            'overwrite',
+            'context',
+            'metadata'
+        ]);
         $params['from_public_id'] = $fromPublicId;
         $params['to_public_id']   = $toPublicId;
 

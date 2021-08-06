@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Transformation\Argument\Text;
 
+use Cloudinary\Transformation\BorderQualifier;
+
 /**
  * Class Stroke
  */
@@ -42,5 +44,15 @@ class Stroke
     public static function stroke()
     {
         return self::STROKE;
+    }
+
+    /**
+     * Include an outline stroke.
+     *
+     * @return BorderQualifier
+     */
+    public static function solid($width, $color)
+    {
+        return (new BorderQualifier())->style('solid')->width($width)->color($color);
     }
 }
