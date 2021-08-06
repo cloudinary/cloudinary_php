@@ -239,6 +239,7 @@ trait CreativeTrait
                 'transformation'
             )),
         ];
+
         ArrayUtils::setDefaultValue($options, AssetType::KEY, AssetType::VIDEO);
 
         return $this->callUploadApiAsync(

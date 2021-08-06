@@ -57,7 +57,7 @@ final class CreateSlideshowTest extends AssetTestCase
     const UPLOAD_PRESET    = 'create_slideshow_preset';
 
     /**
-     * Create an image of the text string
+     * Creates a slideshow from the specified manifest.
      */
     public function testCreateSlideshow()
     {
