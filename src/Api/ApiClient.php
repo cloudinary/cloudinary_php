@@ -143,6 +143,23 @@ class ApiClient extends BaseApiClient
     }
 
     /**
+     * Signs posted parameters using configured account credentials and posts as a JSON to the endpoint.
+     *
+     * @param string|array $endPoint The API endpoint path.
+     * @param array        $params   The parameters
+     *
+     * @return PromiseInterface
+     *
+     * @internal
+     */
+    public function postAndSignJsonAsync($endPoint, $params)
+    {
+        ApiUtils::signRequest($params, $this->cloud);
+
+        return $this->postJsonAsync($endPoint, $params);
+    }
+
+    /**
      * Helper method for posting multipart data asynchronously.
      *
      * @param string|array $endPoint The API endpoint path.
