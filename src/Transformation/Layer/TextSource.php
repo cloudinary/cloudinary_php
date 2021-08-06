@@ -99,7 +99,7 @@ class TextSource extends BaseSource implements ImageTransformationInterface
     /**
      * Sets the text style.
      *
-     * @param array|TextStyle $style The text style.
+     * @param string|array|TextStyle $style The text style.
      *
      * @return $this
      */
