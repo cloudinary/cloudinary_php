@@ -26,12 +26,11 @@ use Cloudinary\Test\Helpers\Addon;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
-
-use function GuzzleHttp\Psr7\parse_query;
 
 /**
  * Class IntegrationTestCase
@@ -44,7 +43,8 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     const TEST_DOCX_PATH      = self::TEST_ASSETS_DIR . AssetTestCase::DOCX_NAME;
     const TEST_VIDEO_PATH     = self::TEST_ASSETS_DIR . AssetTestCase::VIDEO_NAME;
     const TEST_LOGGING        = ['logging' => ['test' => ['level' => 'debug']]];
-    const TEST_EVAL_STR       = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
+    const TEST_EVAL_STR
+                              = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
                                 'upload_options["context"] = "width=" + resource_info["width"]';
 
     private static $TEST_ASSETS = [];
@@ -88,6 +88,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         if ($cldTestAddOns === Addon::ALL) {
             return true;
         }
+
         return ArrayUtils::inArrayI($addOn, explode(',', $cldTestAddOns));
     }
 
@@ -166,7 +167,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $options['tags'] = isset($options['tags']) && is_array($options['tags'])
             ? array_merge(self::$ASSET_TAGS, $options['tags'])
             : self::$ASSET_TAGS;
-        $asset = self::$uploadApi->upload($file, $options);
+        $asset           = self::$uploadApi->upload($file, $options);
 
         self::assertValidAsset(
             $asset,
@@ -269,7 +270,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      */
     protected static function getTestAssetPublicId($name)
     {
-        if (!self::$TEST_ASSETS[$name]) {
+        if (! self::$TEST_ASSETS[$name]) {
             return null;
         }
 
@@ -357,7 +358,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 [
                     'width'  => IsType::TYPE_INT,
                     'height' => IsType::TYPE_INT,
-                    'format' => IsType::TYPE_STRING
+                    'format' => IsType::TYPE_STRING,
                 ]
             );
         } elseif ($assetType === AssetType::IMAGE) {
@@ -372,13 +373,13 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                     'duration'   => IsType::TYPE_FLOAT,
                     'bit_rate'   => IsType::TYPE_INT,
                     'rotation'   => IsType::TYPE_INT,
-                    'nb_frames'  => IsType::TYPE_INT
+                    'nb_frames'  => IsType::TYPE_INT,
                 ]
             );
         }
 
         if ($deliveryType !== DeliveryType::PRIVATE_DELIVERY) {
-            $format = !empty($asset['format']) ? $asset['format'] : '';
+            $format = ! empty($asset['format']) ? $asset['format'] : '';
 
             self::assertAssetUrl($asset, 'url', $format, $deliveryType, $assetType);
             self::assertAssetUrl($asset, 'secure_url', $format, $deliveryType, $assetType);
@@ -404,7 +405,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             array_merge(
                 [
                     DeliveryType::KEY => DeliveryType::UPLOAD,
-                    AssetType::KEY    => AssetType::RAW
+                    AssetType::KEY    => AssetType::RAW,
                 ],
                 $values
             )
@@ -415,7 +416,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'tags'           => IsType::TYPE_ARRAY,
                 'bytes'          => IsType::TYPE_INT,
                 'resource_count' => IsType::TYPE_INT,
-                'file_count'     => IsType::TYPE_INT
+                'file_count'     => IsType::TYPE_INT,
             ]
         );
         self::assertRegexp('/\.' . $format . '$/', $archive['url']);
@@ -439,7 +440,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'bytes'          => IsType::TYPE_INT,
                 'format'         => IsType::TYPE_STRING,
                 'url'            => IsType::TYPE_STRING,
-                'secure_url'     => IsType::TYPE_STRING
+                'secure_url'     => IsType::TYPE_STRING,
             ]
         );
 
@@ -468,7 +469,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'bytes'          => IsType::TYPE_INT,
                 'format'         => IsType::TYPE_STRING,
                 'url'            => IsType::TYPE_STRING,
-                'secure_url'     => IsType::TYPE_STRING
+                'secure_url'     => IsType::TYPE_STRING,
             ]
         );
 
@@ -492,10 +493,10 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         self::assertObjectStructure(
             $resource,
             [
-                'url' => IsType::TYPE_STRING,
+                'url'        => IsType::TYPE_STRING,
                 'secure_url' => IsType::TYPE_STRING,
-                'version' => IsType::TYPE_INT,
-                'public_id' => IsType::TYPE_STRING,
+                'version'    => IsType::TYPE_INT,
+                'public_id'  => IsType::TYPE_STRING,
             ]
         );
 
@@ -516,15 +517,15 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         self::assertObjectStructure(
             $resource,
             [
-                'css_url' => IsType::TYPE_STRING,
-                'image_url' => IsType::TYPE_STRING,
-                'json_url' => IsType::TYPE_STRING,
-                'secure_css_url' => IsType::TYPE_STRING,
+                'css_url'          => IsType::TYPE_STRING,
+                'image_url'        => IsType::TYPE_STRING,
+                'json_url'         => IsType::TYPE_STRING,
+                'secure_css_url'   => IsType::TYPE_STRING,
                 'secure_image_url' => IsType::TYPE_STRING,
-                'secure_json_url' => IsType::TYPE_STRING,
-                'version' => IsType::TYPE_INT,
-                'public_id' => IsType::TYPE_STRING,
-                'image_infos' => IsType::TYPE_ARRAY,
+                'secure_json_url'  => IsType::TYPE_STRING,
+                'version'          => IsType::TYPE_INT,
+                'public_id'        => IsType::TYPE_STRING,
+                'image_infos'      => IsType::TYPE_ARRAY,
             ]
         );
 
@@ -565,10 +566,10 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     ) {
         $media = new Media($asset['public_id']);
         $media->secure(strpos($field, 'secure_') === 0)->assetType($assetType)->deliveryType($deliveryType);
-        if (!empty($asset['version'])) {
+        if (! empty($asset['version'])) {
             $media->version($asset['version']);
         }
-        if (!empty($format)) {
+        if (! empty($format)) {
             $media->extension($format);
         }
 
@@ -609,7 +610,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         if ($path) {
             self::assertEquals($path, $parseUrl['path']);
         }
-        if (!empty($values)) {
+        if (! empty($values)) {
             self::assertArraySubset($values, $query);
         }
     }
@@ -660,7 +661,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             [
                 'name'     => IsType::TYPE_STRING,
                 'unsigned' => IsType::TYPE_BOOL,
-                'settings' => IsType::TYPE_ARRAY
+                'settings' => IsType::TYPE_ARRAY,
             ]
         );
 
@@ -722,7 +723,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'display_name'    => [IsType::TYPE_STRING, IsType::TYPE_NULL],
                 'name'            => IsType::TYPE_STRING,
                 'predefined'      => IsType::TYPE_BOOL,
-                'representations' => IsType::TYPE_ARRAY
+                'representations' => IsType::TYPE_ARRAY,
             ]
         );
 
@@ -753,7 +754,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'allowed_for_strict' => IsType::TYPE_BOOL,
                 'used'               => IsType::TYPE_BOOL,
                 'named'              => IsType::TYPE_BOOL,
-                'name'               => IsType::TYPE_STRING
+                'name'               => IsType::TYPE_STRING,
             ]
         );
         self::assertNotEmpty($transformation['name']);
@@ -832,7 +833,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteAssetsByTag',
             'Asset with a tag ' . $tag . ' deletion failed during teardown',
             static function ($result) use ($tag) {
-                return !isset($result['deleted'][$tag]) || $result['deleted'][$tag] !== 'deleted';
+                return ! isset($result['deleted'][$tag]) || $result['deleted'][$tag] !== 'deleted';
             },
             $tag,
             $options
@@ -853,7 +854,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteAssets',
             'Asset ' . $publicId . ' deletion failed during teardown',
             static function ($result) use ($publicId) {
-                return !isset($result['deleted'][$publicId]) || $result['deleted'][$publicId] !== 'deleted';
+                return ! isset($result['deleted'][$publicId]) || $result['deleted'][$publicId] !== 'deleted';
             },
             $publicId,
             $options
@@ -890,7 +891,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteFolder',
             'Folder ' . $path . ' deletion failed during teardown',
             static function ($result) use ($path) {
-                return !isset($result['deleted']) || !in_array($path, $result['deleted'], true);
+                return ! isset($result['deleted']) || ! in_array($path, $result['deleted'], true);
             },
             $path
         );
@@ -910,7 +911,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteTransformation',
             'Transformation ' . $transformation . ' deletion failed during teardown',
             static function ($result) {
-                return !isset($result['message']) || $result['message'] !== 'deleted';
+                return ! isset($result['message']) || $result['message'] !== 'deleted';
             },
             $transformation,
             $options
@@ -930,7 +931,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteStreamingProfile',
             'Streaming profile ' . $name . ' deletion failed during teardown',
             static function ($result) {
-                return !isset($result['message']) || $result['message'] !== 'deleted';
+                return ! isset($result['message']) || $result['message'] !== 'deleted';
             },
             $name
         );
@@ -949,7 +950,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteUploadMapping',
             'Upload mapping ' . $name . ' deletion failed during teardown',
             static function ($result) {
-                return !isset($result['message']) || $result['message'] !== 'deleted';
+                return ! isset($result['message']) || $result['message'] !== 'deleted';
             },
             $name
         );
@@ -968,7 +969,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteUploadPreset',
             'Upload preset ' . $name . ' deletion failed during teardown',
             static function ($result) {
-                return !isset($result['message']) || $result['message'] !== 'deleted';
+                return ! isset($result['message']) || $result['message'] !== 'deleted';
             },
             $name
         );
@@ -987,7 +988,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             'deleteMetadataField',
             'Metadata field ' . $fieldId . ' deletion failed during teardown',
             static function ($result) {
-                return !isset($result['message']) || $result['message'] !== 'deleted';
+                return ! isset($result['message']) || $result['message'] !== 'deleted';
             },
             $fieldId
         );
@@ -1031,7 +1032,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      */
     private static function parseHttpQuery($httpQuery)
     {
-        $query = parse_query($httpQuery);
+        $query = Psr7\Query::parse($httpQuery);
 
         foreach ($query as $key => $value) {
             if (is_array($value) && strpos($key, '[]') === strlen($key) - 2) {
