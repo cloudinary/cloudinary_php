@@ -432,7 +432,7 @@ final class EffectTest extends TestCase
             ['sizzle', 'sizzle'],
             ['sonnet', 'sonnet'],
             ['ukulele', 'ukulele'],
-            ['zorro', 'zorro']
+            ['zorro', 'zorro'],
         ];
     }
 
@@ -539,7 +539,7 @@ final class EffectTest extends TestCase
         self::assertEquals(
             'e_vectorize:colors:2:corners:25:despeckle:50:detail:0.5:paths:100',
             (string)Effect::vectorize()->numOfColors(2)->detailsLevel(0.5)->despeckleLevel(50)->cornersLevel(25)
-                                                                                              ->paths(100)
+                          ->paths(100)
         );
     }
 
@@ -630,8 +630,13 @@ final class EffectTest extends TestCase
         );
 
         self::assertEquals(
-            'e_theme:color_#ff9900',
+            'e_theme:color_ff9900',
             (string)Effect::theme(Color::rgb('#ff9900'))
+        );
+
+        self::assertEquals(
+            'e_theme:color_ff9900',
+            (string)Effect::theme(Color::rgb('ff9900'))
         );
     }
 }

@@ -10,6 +10,10 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\ClassUtils;
+use Cloudinary\StringUtils;
+use Cloudinary\Transformation\Argument\ColorValue;
+
 /**
  * Changes the main background color to the one specified, as if a 'theme change' was applied
  * (e.g. dark mode vs light mode).
@@ -40,7 +44,8 @@ class ThemeQualifier extends EffectQualifier
      */
     public function color($color)
     {
-        $this->value->setSimpleNamedValue('color', $color);
+        $color = StringUtils::truncatePrefix((string)$color, '#');
+        $this->value->setSimpleNamedValue('color', ClassUtils::verifyInstance($color, ColorValue::class));
 
         return $this;
     }
