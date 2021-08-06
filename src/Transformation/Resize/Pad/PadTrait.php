@@ -33,7 +33,7 @@ trait PadTrait
      * @param int|float|null        $height     The required height of a transformed asset.
      * @param string|ColorValue     $background Sets the background color of the image.
      *
-     * @return static
+     * @return Pad
      */
     public static function pad(
         $width = null,
@@ -54,7 +54,7 @@ trait PadTrait
      * @param int|float|null        $height     The required height of a transformed asset.
      * @param string|ColorValue     $background Sets the background color of the image.
      *
-     * @return static
+     * @return Pad
      *
      * @see \Cloudinary\Transformation\Pad::pad
      */
@@ -77,7 +77,7 @@ trait PadTrait
      * @param int|float|null        $height     The required height of a transformed asset.
      * @param string|ColorValue     $background Sets the background color of the image.
      *
-     * @return static
+     * @return Pad
      *
      * @see \Cloudinary\Transformation\Pad::pad
      */
@@ -94,11 +94,11 @@ trait PadTrait
      *
      * @param mixed ...$args
      *
-     * @return static
+     * @return Pad
      */
     protected static function createPad(...$args)
     {
-        return new static(...$args);
+        return new Pad(...$args);
     }
 
     /**

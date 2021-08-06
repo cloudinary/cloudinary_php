@@ -10,12 +10,14 @@
 
 namespace Cloudinary\Configuration;
 
-use Cloudinary\Cache\Adapter\CacheAdapter;
-
 /**
  * Defines the global responsive breakpoints configuration.
  * **Learn more**:
  * <a href="https://cloudinary.com/documentation/image_upload_api_reference#responsive_breakpoints_parameter_request_settings" target="_blank">Responsive breakpoints</a>
+ *
+ * @property int $minWidth  The minimum width needed for the image. Default: 375.
+ * @property int $maxWidth  The maximum width needed for the image. Default 3840.
+ * @property int $maxImages The maximal number of breakpoints.
  *
  * @api
  */
@@ -23,23 +25,18 @@ class ResponsiveBreakpointsConfig extends BaseConfigSection
 {
     const CONFIG_NAME = 'responsive_breakpoints';
 
-    const DEFAULT_MIN_WIDTH  = 50;
-    const DEFAULT_MAX_WIDTH  = 1000;
-    const DEFAULT_BYTES_STEP = 20000;
-    const DEFAULT_MAX_IMAGES = 20;
+    const DEFAULT_MIN_WIDTH  = 375;
+    const DEFAULT_MAX_WIDTH  = 3840;
+    const DEFAULT_MAX_IMAGES = 5;
 
     // Supported parameters
     const BREAKPOINTS = 'breakpoints';
 
     const MIN_WIDTH      = 'min_width';
     const MAX_WIDTH      = 'max_width';
-    const BYTES_STEP     = 'bytes_step';
     const MAX_IMAGES     = 'max_images';
-    const TRANSFORMATION = 'transformation';
 
-    const USE_CACHE     = 'use_cache';
-    const FETCH_MISSING = 'fetch_missing';
-    const CACHE_ADAPTER = 'cache_adapter';
+    const AUTO_OPTIMAL_BREAKPOINTS = 'auto_optimal_breakpoints';
 
     /**
      * An array of static breakpoints to use (overrides Cloudinary-optimized breakpoints).
@@ -49,62 +46,31 @@ class ResponsiveBreakpointsConfig extends BaseConfigSection
     public $breakpoints;
 
     /**
-     * The minimum width needed for this image. Default: 50.
+     * The minimum width needed for the image. Default: 375.
      *
      * @var int
      */
-    public $minWidth;
+    protected $minWidth;
 
     /**
-     * The maximum width needed for this image. If specifying a width bigger than the original image,
-     * the width of the original image is used instead. Default: 1000.
+     * The maximum width needed for the image. If specifying a width bigger than the original image,
+     * the width of the original image is used instead. Default: 3840.
      *
      * @var int
      */
-    public $maxWidth;
+    protected $maxWidth;
 
     /**
-     * The minimum number of bytes between two consecutive breakpoints (images). Default: 20000.
+     * The number of breakpoints. Default: 5.
      *
      * @var int
      */
-    public $bytesStep;
+    protected $maxImages;
 
     /**
-     * The maximum number of breakpoints to find, between 3 and 200. This means that there might be size
-     * differences bigger than the given bytes_step value between consecutive images. Default: 20.
-     *
-     * @var int
-     */
-    public $maxImages;
-
-    /**
-     * (Optional) The base transformation to first apply to the image before finding the best breakpoints.
-     * The API accepts a string representation of a chained transformation (same as the regular transformation parameter
-     * of the upload API).
-     *
-     * @var array|string
-     */
-    public $transformation;
-
-    /**
-     * Defines whether to use responsive breakpoints cache or not.
+     * Defines whether to use auto optimal breakpoints.
      *
      * @var bool
      */
-    public $useCache;
-
-    /**
-     * Defines whether to fetch optimal breakpoints from Cloudinary in case of cache miss.
-     *
-     * @var bool
-     */
-    public $fetchMissing;
-
-    /**
-     * The cache adapter to use to store/retrieve responsive breakpoints.
-     *
-     * @var CacheAdapter
-     */
-    public $cacheAdapter;
+    public $autoOptimalBreakpoints;
 }

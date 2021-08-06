@@ -45,6 +45,10 @@ trait ToAnimatedActionTrait
      * @param Delay|int $delay
      *
      * @return static
+     *
+     * @deprecated use Animated::edit()->delay($delay) instead.
+     *
+     * @see AnimatedEdit
      */
     public function delay($delay)
     {

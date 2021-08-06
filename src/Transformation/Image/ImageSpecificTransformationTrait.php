@@ -39,7 +39,15 @@ trait ImageSpecificTransformationTrait
      */
     public function overlay($layer, $position = null, $blendMode = null)
     {
-        return $this->addAction(ClassUtils::verifyInstance($layer, ImageOverlay::class, null, $position, $blendMode));
+        return $this->addAction(
+            ClassUtils::verifyInstance(
+                $layer,
+                BaseSourceContainer::class,
+                ImageOverlay::class,
+                $position,
+                $blendMode
+            )
+        );
     }
 
     /**
@@ -172,5 +180,17 @@ trait ImageSpecificTransformationTrait
     public function prefix($prefix)
     {
         return $this->addAction(ClassUtils::verifyInstance($prefix, Prefix::class));
+    }
+
+    /**
+     * Applies animated image transformation action.
+     *
+     * @param AnimatedEdit $animated Animated image action.
+     *
+     * @return static
+     */
+    public function animated($animated)
+    {
+        return $this->addAction(ClassUtils::verifyInstance($animated, AnimatedEdit::class));
     }
 }

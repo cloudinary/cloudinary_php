@@ -239,11 +239,10 @@ class ApiUtils
      */
     public static function serializeQueryParams($parameters = [])
     {
-        return ArrayUtils::safeImplodeAssoc(
+        return ArrayUtils::implodeAssoc(
             $parameters,
             self::QUERY_STRING_OUTER_DELIMITER,
-            self::QUERY_STRING_INNER_DELIMITER,
-            true
+            self::QUERY_STRING_INNER_DELIMITER
         );
     }
 

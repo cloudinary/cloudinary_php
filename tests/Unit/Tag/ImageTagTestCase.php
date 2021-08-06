@@ -18,10 +18,12 @@ use Cloudinary\Asset\Image;
  */
 abstract class ImageTagTestCase extends TagTestCase
 {
-    const MIN_WIDTH       = 100;
-    const MAX_WIDTH       = 399;
-    const BREAKPOINTS_ARR = [self::MIN_WIDTH, 200, 300, self::MAX_WIDTH];
-    const MAX_IMAGES      = 4; // length of the self::BREAKPOINTS_ARR
+    const MIN_WIDTH            = 375;
+    const MAX_WIDTH            = 3840;
+    const BREAKPOINTS_ARR      = [828, 1366, 1536, 1920, 3840];
+    const BREAKPOINTS_ARR_HALF = [414, 683, 768, 960, 1920];
+    const MAX_IMAGES           = 5; // length of the self::BREAKPOINTS_ARR=
+    const SIZES_ATTR           = '100vw';
 
     /**
      * @var Image $src
@@ -152,8 +154,9 @@ abstract class ImageTagTestCase extends TagTestCase
             array_map(
                 static function ($k, $v) {
                     if (is_bool($v)) {
-                        return $v ? $k: '';
+                        return $v ? $k : '';
                     }
+
                     return "$k=\"$v\"";
                 },
                 array_keys($attributes),

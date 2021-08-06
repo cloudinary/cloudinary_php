@@ -10,9 +10,11 @@
 
 namespace Cloudinary\Test\Unit\Asset;
 
+use Cloudinary\Asset\AuthToken;
 use Cloudinary\Asset\Image;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Transformation\Scale;
+use UnexpectedValueException;
 
 /**
  * Class AuthTokenTest
@@ -146,5 +148,27 @@ class AssetAuthTokenTest extends AuthTokenTestCase
             ]
         );
     }
-}
 
+    public function testShouldThrowWhenAclAndUrlAreMissing()
+    {
+        $authToken = new AuthToken();
+        $authToken->config->startTime = self::START_TIME;
+        $authToken->config->duration = self::DURATION;
+        $authToken->config->acl = self::AUTH_TOKEN_TEST_CONFIG_ACL;
+        $authToken->generate();
+
+        $authToken = new AuthToken();
+        $authToken->config->startTime = self::START_TIME;
+        $authToken->config->duration = self::DURATION;
+        $authToken->generate(self::AUTH_TOKEN_TEST_PATH);
+
+        $authToken = new AuthToken();
+        $authToken->config->startTime = self::START_TIME;
+        $authToken->config->duration = self::DURATION;
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('AuthToken must contain either acl or url property');
+
+        $authToken->generate();
+    }
+}

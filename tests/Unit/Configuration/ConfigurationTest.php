@@ -18,6 +18,8 @@ use Cloudinary\Test\Unit\UnitTestCase;
  */
 class ConfigurationTest extends UnitTestCase
 {
+    const OAUTH_TOKEN = 'NTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZj17';
+    const URL_WITH_OAUTH_TOKEN = 'cloudinary://' . self::CLOUD_NAME . '?cloud[oauth_token]=' . self::OAUTH_TOKEN;
 
     public function testConfigFromUrl()
     {
@@ -41,6 +43,26 @@ class ConfigurationTest extends UnitTestCase
         self::assertEquals(self::API_SECRET, $config->cloud->apiSecret);
     }
 
+    public function testConfigFromUrlsWithoutKeyAndSecretButWithOAuthToken()
+    {
+        $config = new Configuration(self::URL_WITH_OAUTH_TOKEN);
+
+        self::assertEquals(self::CLOUD_NAME, $config->cloud->cloudName);
+        self::assertEquals(self::OAUTH_TOKEN, $config->cloud->oauthToken);
+        self::assertNull($config->cloud->apiKey);
+        self::assertNull($config->cloud->apiSecret);
+    }
+
+    public function testConfigFromUrlsWitKeyAndSecretAndOAuthToken()
+    {
+        $config = new Configuration($this->cloudinaryUrl . '?cloud[oauth_token]=' . self::OAUTH_TOKEN);
+
+        self::assertEquals(self::CLOUD_NAME, $config->cloud->cloudName);
+        self::assertEquals(self::API_KEY, $config->cloud->apiKey);
+        self::assertEquals(self::API_SECRET, $config->cloud->apiSecret);
+        self::assertEquals(self::OAUTH_TOKEN, $config->cloud->oauthToken);
+    }
+
     public function testConfigNoEnv()
     {
         self::clearEnvironment();
@@ -61,6 +83,35 @@ class ConfigurationTest extends UnitTestCase
 
         self::assertStrEquals(
             $this->cloudinaryUrl . '/my_distribution?url[cname]=my.domain.com',
+            $config
+        );
+    }
+
+    public function testConfigToStringWithOAuthToken()
+    {
+        $config = Configuration::fromCloudinaryUrl($this->cloudinaryUrl);
+
+        $config->cloud->oauthToken = self::OAUTH_TOKEN;
+
+        self::assertStrEquals(
+            $this->cloudinaryUrl . '?cloud[oauth_token]=' . self::OAUTH_TOKEN,
+            $config
+        );
+    }
+
+    public function testConfigToStringWithMultipleQueryParams()
+    {
+        $config = Configuration::fromCloudinaryUrl($this->cloudinaryUrl);
+
+        $config->url->secureCname = 'my_another_distribution';
+        $config->url->cname       = 'my.another-domain.com';
+
+        $config->cloud->oauthToken = self::OAUTH_TOKEN;
+
+        self::assertStrEquals(
+            $this->cloudinaryUrl . '/my_another_distribution' .
+                '?cloud[oauth_token]=' . self::OAUTH_TOKEN .
+                '&url[cname]=my.another-domain.com',
             $config
         );
     }

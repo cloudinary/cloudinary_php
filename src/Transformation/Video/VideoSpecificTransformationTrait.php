@@ -62,7 +62,15 @@ trait VideoSpecificTransformationTrait
      */
     public function overlay($videoLayer, $position = null, $timeline = null)
     {
-        return $this->addAction(new VideoOverlay($videoLayer, $position, $timeline));
+        return $this->addAction(
+            ClassUtils::verifyInstance(
+                $videoLayer,
+                BaseSourceContainer::class,
+                VideoOverlay::class,
+                $position,
+                $timeline
+            )
+        );
     }
 
     /**

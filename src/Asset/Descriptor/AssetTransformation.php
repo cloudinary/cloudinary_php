@@ -110,7 +110,7 @@ class AssetTransformation implements ComponentInterface
      *
      * @param array $params The asset transformation parameters.
      *
-     * @return mixed
+     * @return static
      */
     public static function fromParams($params)
     {

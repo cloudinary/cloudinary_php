@@ -71,7 +71,7 @@ class AuthToken
     /**
      * Indicates whether according to the current configuration, AuthToken is enabled or not
      *
-     * @return mixed
+     * @return bool
      */
     public function isEnabled()
     {
@@ -109,18 +109,18 @@ class AuthToken
     /**
      *  Generates an authorization token.
      *  Options:
-     *      number start_time - the start time of the token in seconds from epoch
-     *      string expiration - the expiration time of the token in seconds from epoch
-     *      string duration - the duration of the token (from start_time)
-     *      string ip - the IP address of the client
-     *      string acl - the ACL for the token
-     *      string url - the URL to authentication in case of a URL token
+     *      number start_time - the start time of the token in seconds from epoch.
+     *      string expiration - the expiration time of the token in seconds from epoch.
+     *      string duration - the duration of the token (from start_time).
+     *      string ip - the IP address of the client.
+     *      string acl - the ACL for the token.
+     *      string url - the URL to authentication in case of a URL token.
      *
-     * @param null|string $path url path to sign. Ignored if acl is set
+     * @param null|string $path url path to sign. Ignored if acl is set.
      *
-     * @return string The authorization token
+     * @return string The authorization token.
      *
-     * @throws UnexpectedValueException if neither expiration nor duration were provided
+     * @throws UnexpectedValueException if neither expiration nor duration nor one of acl or url were provided.
      */
     public function generate($path = null)
     {
@@ -129,6 +129,10 @@ class AuthToken
         }
 
         list($start, $expiration) = $this->handleLifetime();
+
+        if (empty($path) && empty($this->config->acl)) {
+            throw new UnexpectedValueException('AuthToken must contain either acl or url property');
+        }
 
         $tokenParts = [];
 
@@ -182,11 +186,11 @@ class AuthToken
     }
 
     /**
-     * Converts URL to lowercase and escapes it.
+     * Escapes a url using lowercase hex characters
      *
      * @param string $url The URL to escape
      *
-     * @return string|string[]|null escaped and lowered URL
+     * @return string|string[]|null escaped URL
      */
     private static function escapeToLower($url)
     {

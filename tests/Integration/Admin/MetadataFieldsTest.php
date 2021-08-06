@@ -23,7 +23,7 @@ use Cloudinary\Api\Metadata\Validators\AndValidator;
 use Cloudinary\Api\Metadata\Validators\DateGreaterThan;
 use Cloudinary\Api\Metadata\Validators\DateLessThan;
 use Cloudinary\Api\Metadata\Validators\IntLessThan;
-use Cloudinary\Test\Helpers\MockAdminApi;
+use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use DateInterval;
 use DateTime;
@@ -35,18 +35,16 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
  */
 class MetadataFieldsTest extends IntegrationTestCase
 {
+    use RequestAssertionsTrait;
+
     private static $METADATA_FIELDS = [];
     private static $EXTERNAL_ID_GENERAL;
-    private static $EXTERNAL_ID_STRING;
-    private static $EXTERNAL_ID_INT;
     private static $EXTERNAL_ID_DATE;
     private static $EXTERNAL_ID_ENUM;
-    private static $EXTERNAL_ID_ENUM_2;
     private static $EXTERNAL_ID_SET;
     private static $EXTERNAL_ID_SET_2;
     private static $EXTERNAL_ID_SET_3;
     private static $EXTERNAL_ID_DELETE;
-    private static $EXTERNAL_ID_DELETE_2;
     private static $EXTERNAL_ID_DATE_VALIDATION;
     private static $EXTERNAL_ID_DATE_VALIDATION_2;
     private static $EXTERNAL_ID_INT_VALIDATION;
@@ -62,20 +60,15 @@ class MetadataFieldsTest extends IntegrationTestCase
         $id = self::$UNIQUE_TEST_ID;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_GENERAL = 'metadata_external_id_general_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE = 'metadata_external_id_date_' . $id;
-        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_ENUM_2 = 'metadata_external_id_enum_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_ENUM = 'metadata_external_id_enum_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_SET = 'metadata_external_id_set_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_SET_2 = 'metadata_external_id_set_2_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_SET_3 = 'metadata_external_id_set_3_' . $id;
-        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DELETE_2 = 'metadata_deletion_test_2_' . $id;
+        self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DELETE = 'metadata_deletion_test_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE_VALIDATION = 'metadata_date_validation_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_DATE_VALIDATION_2 = 'metadata_date_validation_2_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_INT_VALIDATION = 'metadata_integer_validation_' . $id;
         self::$METADATA_FIELDS[] = self::$EXTERNAL_ID_INT_VALIDATION_2 = 'metadata_integer_validation_2_' . $id;
-        // External IDs for metadata fields that will be accessed through a mock (and should not be deleted or created)
-        self::$EXTERNAL_ID_DELETE = 'metadata_deletion_test_' . $id;
-        self::$EXTERNAL_ID_ENUM = 'metadata_external_id_enum_' . $id;
-        self::$EXTERNAL_ID_INT = 'metadata_external_id_int_' . $id;
-        self::$EXTERNAL_ID_STRING = 'metadata_external_id_string_' . $id;
         // Sample datasource data
         self::$DATASOURCE_ENTRY_EXTERNAL_ID = 'metadata_datasource_entry_external_id' . $id;
         self::$DATASOURCE_SINGLE = [
@@ -101,8 +94,8 @@ class MetadataFieldsTest extends IntegrationTestCase
         $stringMetadataField->setExternalId(self::$EXTERNAL_ID_GENERAL);
         self::$adminApi->addMetadataField($stringMetadataField);
 
-        $enumMetadataField = new EnumMetadataField(self::$EXTERNAL_ID_ENUM_2, self::$DATASOURCE_MULTIPLE);
-        $enumMetadataField->setExternalId(self::$EXTERNAL_ID_ENUM_2);
+        $enumMetadataField = new EnumMetadataField(self::$EXTERNAL_ID_ENUM, self::$DATASOURCE_MULTIPLE);
+        $enumMetadataField->setExternalId(self::$EXTERNAL_ID_ENUM);
         self::$adminApi->addMetadataField($enumMetadataField);
 
         $setMetadataField = new SetMetadataField(self::$EXTERNAL_ID_SET_2, self::$DATASOURCE_MULTIPLE);
@@ -113,8 +106,8 @@ class MetadataFieldsTest extends IntegrationTestCase
         $setMetadataField->setExternalId(self::$EXTERNAL_ID_SET_3);
         self::$adminApi->addMetadataField($setMetadataField);
 
-        $setMetadataField = new IntMetadataField(self::$EXTERNAL_ID_DELETE_2);
-        $setMetadataField->setExternalId(self::$EXTERNAL_ID_DELETE_2);
+        $setMetadataField = new IntMetadataField(self::$EXTERNAL_ID_DELETE);
+        $setMetadataField->setExternalId(self::$EXTERNAL_ID_DELETE);
         self::$adminApi->addMetadataField($setMetadataField);
     }
 
@@ -199,23 +192,6 @@ class MetadataFieldsTest extends IntegrationTestCase
     }
 
     /**
-     * Test getting a list of all metadata fields.
-     *
-     * @see https://cloudinary.com/documentation/admin_api#get_metadata_fields
-     */
-    public function testListMetadataFields()
-    {
-        $mockAdminApi = new MockAdminApi();
-        $mockAdminApi->listMetadataFields();
-
-        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
-
-        self::assertRequestUrl($lastRequest, '/metadata_fields');
-        self::assertRequestGet($lastRequest);
-        self::assertRequestFields($lastRequest, null);
-    }
-
-    /**
      * Test getting a metadata field by external id.
      *
      * @see https://cloudinary.com/documentation/admin_api#get_a_metadata_field_by_external_id
@@ -231,60 +207,6 @@ class MetadataFieldsTest extends IntegrationTestCase
                 'external_id' => self::$EXTERNAL_ID_GENERAL,
                 'label' => self::$EXTERNAL_ID_GENERAL,
                 'mandatory' => false
-            ]
-        );
-    }
-
-    /**
-     * Test creating a string metadata field.
-     *
-     * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field
-     */
-    public function testCreateStringMetadataField()
-    {
-        $mockAdminApi = new MockAdminApi();
-
-        $stringMetadataField = new StringMetadataField(self::$EXTERNAL_ID_STRING);
-        $stringMetadataField->setExternalId(self::$EXTERNAL_ID_STRING);
-
-        $mockAdminApi->addMetadataField($stringMetadataField);
-        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
-
-        self::assertRequestUrl($lastRequest, '/metadata_fields');
-        self::assertRequestPost($lastRequest);
-        self::assertRequestFields(
-            $lastRequest,
-            [
-                'type' => MetadataFieldType::STRING,
-                'external_id' => self::$EXTERNAL_ID_STRING,
-                'label' => self::$EXTERNAL_ID_STRING
-            ]
-        );
-    }
-
-    /**
-     * Test creating an integer metadata field.
-     *
-     * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field
-     */
-    public function testCreateIntMetadataField()
-    {
-        $mockAdminApi = new MockAdminApi();
-
-        $intMetadataField = new IntMetadataField(self::$EXTERNAL_ID_INT);
-        $intMetadataField->setExternalId(self::$EXTERNAL_ID_INT);
-
-        $mockAdminApi->addMetadataField($intMetadataField);
-        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
-
-        self::assertRequestUrl($lastRequest, '/metadata_fields');
-        self::assertRequestPost($lastRequest);
-        self::assertRequestFields(
-            $lastRequest,
-            [
-                'type' => MetadataFieldType::INTEGER,
-                'external_id' => self::$EXTERNAL_ID_INT,
-                'label' => self::$EXTERNAL_ID_INT
             ]
         );
     }
@@ -308,37 +230,6 @@ class MetadataFieldsTest extends IntegrationTestCase
                 'label' => self::$EXTERNAL_ID_DATE,
                 'external_id' => self::$EXTERNAL_ID_DATE,
                 'mandatory' => false
-            ]
-        );
-    }
-
-    /**
-     * Test creating an enum metadata field.
-     *
-     * @see https://cloudinary.com/documentation/admin_api#create_a_metadata_field
-     */
-    public function testCreateEnumMetadataField()
-    {
-        $mockAdminApi = new MockAdminApi();
-
-        $enumMetadataField = new EnumMetadataField(self::$EXTERNAL_ID_ENUM, self::$DATASOURCE_SINGLE);
-        $enumMetadataField->setDataSource(self::$DATASOURCE_SINGLE);
-        $enumMetadataField->setExternalId(self::$EXTERNAL_ID_ENUM);
-
-        $mockAdminApi->addMetadataField($enumMetadataField);
-        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
-
-        self::assertRequestUrl($lastRequest, '/metadata_fields');
-        self::assertRequestPost($lastRequest);
-        self::assertRequestFields(
-            $lastRequest,
-            [
-                'datasource' => [
-                    'values' => self::$DATASOURCE_SINGLE
-                ],
-                'external_id' => self::$EXTERNAL_ID_ENUM,
-                'label' => self::$EXTERNAL_ID_ENUM,
-                'type' => MetadataFieldType::ENUM
             ]
         );
     }
@@ -405,7 +296,7 @@ class MetadataFieldsTest extends IntegrationTestCase
     public function testUpdateMetadataFieldDataSource()
     {
         $result = self::$adminApi->updateMetadataFieldDatasource(
-            self::$EXTERNAL_ID_ENUM_2,
+            self::$EXTERNAL_ID_ENUM,
             self::$DATASOURCE_SINGLE
         );
 
@@ -416,28 +307,6 @@ class MetadataFieldsTest extends IntegrationTestCase
     }
 
     /**
-     * Test deleting a metadata field definition by its external id.
-     *
-     * @see https://cloudinary.com/documentation/admin_api#delete_a_metadata_field_by_external_id
-     *
-     * @throws ApiError
-     */
-    public function testDeleteMetadataField()
-    {
-        $mockAdminApi = new MockAdminApi();
-
-        $mockAdminApi->deleteMetadataField(self::$EXTERNAL_ID_DELETE);
-        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
-
-        self::assertRequestUrl(
-            $lastRequest,
-            '/metadata_fields/' . self::$EXTERNAL_ID_DELETE
-        );
-        self::assertRequestDelete($lastRequest);
-        self::assertRequestFields($lastRequest, null);
-    }
-
-    /**
      * Test deleting a metadata field definition then attempting to create a new one with the same external id which
      * should fail.
      *
@@ -445,15 +314,15 @@ class MetadataFieldsTest extends IntegrationTestCase
      */
     public function testDeleteMetadataFieldDoesNotReleaseExternalId()
     {
-        $result = self::$adminApi->deleteMetadataField(self::$EXTERNAL_ID_DELETE_2);
+        $result = self::$adminApi->deleteMetadataField(self::$EXTERNAL_ID_DELETE);
 
         self::assertDeleteMetadataField($result);
 
-        $intMetadataField = new IntMetadataField(self::$EXTERNAL_ID_DELETE_2);
-        $intMetadataField->setExternalId(self::$EXTERNAL_ID_DELETE_2);
+        $intMetadataField = new IntMetadataField(self::$EXTERNAL_ID_DELETE);
+        $intMetadataField->setExternalId(self::$EXTERNAL_ID_DELETE);
 
         $this->expectException(BadRequest::class);
-        $this->expectExceptionMessage('external id ' . self::$EXTERNAL_ID_DELETE_2 . ' already exists');
+        $this->expectExceptionMessage('external id ' . self::$EXTERNAL_ID_DELETE . ' already exists');
 
         self::$adminApi->addMetadataField($intMetadataField);
     }

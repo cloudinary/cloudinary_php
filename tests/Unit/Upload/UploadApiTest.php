@@ -31,9 +31,9 @@ final class UploadApiTest extends AssetTestCase
     {
         $mockUploadApi = new MockUploadApi();
         $mockUploadApi->upload(self::TEST_BASE64_IMAGE, ['accessibility_analysis' => true]);
-        $lastRequest = $mockUploadApi->getMockHandler()->getLastRequest();
+        $lastOptions = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
 
-        self::assertMultipartRequestHeadersSubset($lastRequest, ['accessibility_analysis' => '1']);
+        self::assertArraySubset(['accessibility_analysis' => '1'], $lastOptions);
     }
 
     /**

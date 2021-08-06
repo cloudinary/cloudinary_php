@@ -12,7 +12,6 @@ namespace Cloudinary\Test\Unit\Tag;
 
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Configuration\ResponsiveBreakpointsConfig;
 use Cloudinary\Tag\ImageTag;
 use Cloudinary\Test\Unit\Asset\ImageTest;
 use Cloudinary\Transformation\Scale;
@@ -35,6 +34,8 @@ final class ImageTagTest extends ImageTagTestCase
         $this->breakpointsConf->responsiveBreakpoints->minWidth  = self::MIN_WIDTH;
         $this->breakpointsConf->responsiveBreakpoints->maxWidth  = self::MAX_WIDTH;
         $this->breakpointsConf->responsiveBreakpoints->maxImages = self::MAX_IMAGES;
+
+        $this->breakpointsConf->responsiveBreakpoints->autoOptimalBreakpoints = true;
     }
 
     public function testImageTagFromPublicId()
@@ -89,8 +90,8 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagCustomConfiguration()
     {
-        $configuration                        = Configuration::instance();
-        $configuration->url->shorten          = true;
+        $configuration               = Configuration::instance();
+        $configuration->url->shorten = true;
 
         // Can reference this image, since its functionality it tested in another test
         $expectedImage = new Image(self::IMAGE_NAME, $configuration);
@@ -108,22 +109,27 @@ final class ImageTagTest extends ImageTagTestCase
         );
     }
 
-    public function testImageTagSrcSetStaticBreakpoints()
+    public function testImageTagSrcSetAutoOptimalBreakpointsFromConfig()
     {
-        $tag = new ImageTag(self::IMAGE_NAME);
-        $tag->srcset->staticBreakpoints(self::MIN_WIDTH, self::MAX_WIDTH, self::MAX_IMAGES);
+        $conf = new Configuration($this->breakpointsConf);
+
+        $conf->responsiveBreakpoints->autoOptimalBreakpoints = true;
 
         self::assertImageTag(
             [$this->src, self::BREAKPOINTS_ARR],
-            $tag
+            new ImageTag(self::IMAGE_NAME, $conf)
         );
     }
 
-    public function testImageTagSrcSetStaticBreakpointsFromConfig()
+    public function testImageTagBreakpointsRelativeWidth()
     {
+        $conf                                                = new Configuration($this->breakpointsConf);
+        $conf->responsiveBreakpoints->autoOptimalBreakpoints = true;
+        $conf->tag->relativeWidth                            = 0.5;
+
         self::assertImageTag(
-            [$this->src, self::BREAKPOINTS_ARR],
-            new ImageTag(self::IMAGE_NAME, $this->breakpointsConf)
+            [$this->src, self::BREAKPOINTS_ARR_HALF],
+            new ImageTag(self::IMAGE_NAME, $conf)
         );
     }
 
@@ -195,10 +201,12 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagStaticBreakpointsLoggingWrongWidth()
     {
-        $message = null;
-        $tag     = new ImageTag(self::IMAGE_NAME);
+        $message                                      = null;
+        $tag                                          = new ImageTag(self::IMAGE_NAME, $this->breakpointsConf);
+        $tag->config->responsiveBreakpoints->minWidth = self::MAX_WIDTH;
+        $tag->config->responsiveBreakpoints->maxWidth = self::MIN_WIDTH;
         try {
-            $tag->srcset->staticBreakpoints(self::MAX_WIDTH, self::MIN_WIDTH, self::MAX_IMAGES);
+            $tag->srcset->getBreakpoints();
         } catch (InvalidArgumentException $e) {
             $message = $e->getMessage();
         }
@@ -208,18 +216,22 @@ final class ImageTagTest extends ImageTagTestCase
     public function testImageTagStaticBreakpointsExceptionWrongWidth()
     {
         $this->expectException(InvalidArgumentException::class);
-        $tag = new ImageTag(self::IMAGE_NAME);
-        $tag->srcset->staticBreakpoints(self::MAX_WIDTH, self::MIN_WIDTH, self::MAX_IMAGES);
+
+        $tag                                          = new ImageTag(self::IMAGE_NAME, $this->breakpointsConf);
+        $tag->config->responsiveBreakpoints->minWidth = self::MAX_WIDTH;
+        $tag->config->responsiveBreakpoints->maxWidth = self::MIN_WIDTH;
+        $tag->srcset->getBreakpoints();
     }
 
     public function testImageTagStaticBreakpointsLoggingWrongMaxImage()
     {
-        $tag = new ImageTag(self::IMAGE_NAME);
+        $tag                                           = new ImageTag(self::IMAGE_NAME, $this->breakpointsConf);
+        $tag->config->responsiveBreakpoints->maxImages = -1;
 
         $message                  = null;
         $expectedExceptionMessage = 'maxImages must be a positive integer';
         try {
-            $tag->srcset->staticBreakpoints(self::MIN_WIDTH, self::MIN_WIDTH, -1);
+            $tag->srcset->getBreakpoints();
         } catch (InvalidArgumentException $e) {
             $message = $e->getMessage();
         }
@@ -229,20 +241,25 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagStaticBreakpointsExceptionWrongMaxImage()
     {
+        $tag                                           = new ImageTag(self::IMAGE_NAME, $this->breakpointsConf);
+        $tag->config->responsiveBreakpoints->maxImages = -1;
+
         $this->expectException(InvalidArgumentException::class);
-        $tag = new ImageTag(self::IMAGE_NAME);
-        $tag->srcset->staticBreakpoints(self::MIN_WIDTH, self::MIN_WIDTH, -1);
+        $tag->srcset->getBreakpoints();
     }
 
     public function testImageTagStaticBreakpointsLoggingWrongAttributes()
     {
-        $tag = new ImageTag(self::IMAGE_NAME);
+        $tag                                           = new ImageTag(self::IMAGE_NAME, $this->breakpointsConf);
+        $tag->config->responsiveBreakpoints->minWidth  = 0;
+        $tag->config->responsiveBreakpoints->maxWidth  = 0;
+        $tag->config->responsiveBreakpoints->maxImages = 0;
 
         $message                  = null;
         $expectedExceptionMessage = 'Either valid (minWidth, maxWidth, maxImages) or breakpointsmust be provided to ' .
                                     'the image srcset attribute';
         try {
-            $tag->srcset->staticBreakpoints(0, 0, 0);
+            $tag->srcset->getBreakpoints();
         } catch (InvalidArgumentException $e) {
             $message = $e->getMessage();
         }
@@ -252,8 +269,13 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagStaticBreakpointsExceptionAttributes()
     {
+        $tag                                           = new ImageTag(self::IMAGE_NAME, $this->breakpointsConf);
+        $tag->config->responsiveBreakpoints->minWidth  = 0;
+        $tag->config->responsiveBreakpoints->maxWidth  = 0;
+        $tag->config->responsiveBreakpoints->maxImages = 0;
+
         $this->expectException(InvalidArgumentException::class);
-        $tag = new ImageTag(self::IMAGE_NAME);
-        $tag->srcset->staticBreakpoints(0, 0, 0);
+
+        $tag->srcset->getBreakpoints();
     }
 }

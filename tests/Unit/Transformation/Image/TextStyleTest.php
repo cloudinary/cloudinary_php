@@ -39,7 +39,7 @@ final class TextStyleTest extends TestCase
                 ->textDecoration(TextDecoration::STRIKETHROUGH)
                 ->fontWeight(FontWeight::ULTRABOLD)
                 ->textAlignment(TextAlignment::JUSTIFY)
-                ->stroke(Stroke::STROKE)
+                ->stroke()
         );
     }
 }

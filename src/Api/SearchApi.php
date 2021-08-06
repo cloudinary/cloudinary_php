@@ -75,7 +75,7 @@ class SearchApi implements JsonSerializable
     /**
      * @var ApiClient $apiClient The HTTP API client instance.
      */
-    private $apiClient;
+    protected $apiClient;
 
     /**
      * SearchApi constructor.

@@ -71,7 +71,7 @@ class ConfigUtils
         ArrayUtils::addNonEmpty($cloud, CloudConfig::API_KEY, ArrayUtils::get($userPass, 0));
         ArrayUtils::addNonEmpty($cloud, CloudConfig::API_SECRET, ArrayUtils::get($userPass, 1));
 
-        $config = array_merge($qParams, [CloudConfig::CONFIG_NAME => $cloud]);
+        $config = array_merge_recursive($qParams, [CloudConfig::CONFIG_NAME => $cloud]);
 
         $isPrivateCdn = ! empty($uri->getPath()) && $uri->getPath() !== '/';
         if ($isPrivateCdn) {

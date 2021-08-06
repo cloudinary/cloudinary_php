@@ -64,7 +64,7 @@ trait AssetFinalizerTrait
      *
      * @param string $source The source.
      *
-     * @return int betwen 1 and 5
+     * @return int between 1 and 5
      */
     private static function domainShard($source)
     {

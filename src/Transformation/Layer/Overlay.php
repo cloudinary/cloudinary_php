@@ -23,7 +23,7 @@ abstract class Overlay
     /**
      * @param $source
      *
-     * @return ImageOverlay
+     * @return MediaOverlay
      */
     public static function source($source)
     {
@@ -43,7 +43,7 @@ abstract class Overlay
     /**
      * @param $source
      *
-     * @return ImageOverlay
+     * @return VideoOverlay
      */
     public static function videoSource($source)
     {

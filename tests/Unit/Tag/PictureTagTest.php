@@ -10,10 +10,11 @@
 
 namespace Cloudinary\Test\Unit\Tag;
 
+use Cloudinary\Asset\Image;
+use Cloudinary\Tag\PictureSourceTag;
 use Cloudinary\Tag\PictureTag;
 use Cloudinary\Transformation\Effect;
 use Cloudinary\Transformation\Fill;
-use Cloudinary\Transformation\ImageTransformation;
 use Cloudinary\Transformation\Scale;
 
 /**
@@ -25,63 +26,43 @@ final class PictureTagTest extends ImageTagTestCase
     {
         $this->src->resize(Fill::fill(self::MAX_WIDTH, self::MAX_WIDTH));
 
-        $t1 = (new ImageTransformation())
+        $i1 = (new Image($this->src))
             ->effect(Effect::sepia())
             ->rotate(17)
             ->resize(Scale::scale(self::MIN_WIDTH));
 
-        $t2 = (new ImageTransformation())
+        $i2 = (new Image($this->src))
             ->effect(Effect::colorize())
             ->rotate(18)
             ->resize(Scale::scale(self::MAX_WIDTH));
 
-        $t3 = (new ImageTransformation())
+        $i3 = (new Image($this->src))
             ->effect(Effect::blur())
             ->rotate(19)
             ->resize(Scale::scale(self::MAX_WIDTH));
 
-        $tag = new PictureTag(
-            $this->src,
-            [
-                [
-                    'max_width'      => self::MIN_WIDTH,
-                    'transformation' => $t1,
-                ],
-                [
-                    'min_width'      => self::MIN_WIDTH,
-                    'max_width'      => self::MAX_WIDTH,
-                    'transformation' => $t2,
-
-                ],
-                [
-                    'min_width'      => self::MAX_WIDTH,
-                    'transformation' => $t3,
-                ],
-            ]
-        );
-
         $expectedSource1 = self::expectedSourceTag(
-            $this->src->getPublicId(),
-            self::getAssetHostNameAndType($this->src),
-            $this->src->getTransformation()->toUrl($t1),
+            $i1,
+            null,
+            null,
             null,
             null,
             ['media' => '(max-width: ' . self::MIN_WIDTH . 'px)']
         );
 
         $expectedSource2 = self::expectedSourceTag(
-            $this->src->getPublicId(),
-            self::getAssetHostNameAndType($this->src),
-            $this->src->getTransformation()->toUrl($t2),
+            $i2,
+            null,
+            null,
             null,
             null,
             ['media' => '(min-width: ' . self::MIN_WIDTH . 'px) and (max-width: ' . self::MAX_WIDTH . 'px)']
         );
 
         $expectedSource3 = self::expectedSourceTag(
-            $this->src->getPublicId(),
-            self::getAssetHostNameAndType($this->src),
-            $this->src->getTransformation()->toUrl($t3),
+            $i3,
+            null,
+            null,
             null,
             null,
             ['media' => '(min-width: ' . self::MAX_WIDTH . 'px)']
@@ -98,9 +79,18 @@ final class PictureTagTest extends ImageTagTestCase
             ['<picture>', $expectedSource1, $expectedSource2, $expectedSource3, $expectedImage, '</picture>']
         );
 
-        self::assertEquals(
-            (string)$expected,
-            (string)$tag
+        $tag = new PictureTag(
+            $this->src,
+            [
+                new PictureSourceTag($i1, null, self::MIN_WIDTH),
+                new PictureSourceTag($i2, self::MIN_WIDTH, self::MAX_WIDTH),
+                new PictureSourceTag($i3, self::MAX_WIDTH)
+            ]
+        );
+
+        self::assertStrEquals(
+            $expected,
+            $tag
         );
     }
 }

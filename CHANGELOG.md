@@ -1,3 +1,66 @@
+2.3.0 / 2021-07-04
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `RemoveBackground` effect
+  * Add support for `ignoreMaskChannels` flag
+  * Add support for `Animated::edit` action
+  * Add support for `USDZ` format
+  * Add support for `AVIF` image format
+
+Other Changes
+-------------
+
+  * Fix `GuzzleHttp\Psr7` deprecation errors
+  * Fix video concatenation with `transition` transformation
+  * Fix support of `resource_type` in `privateDownloadUrl`
+  * Fix support of incoming transformation in `upload` API
+
+2.2.0 / 2021-05-12
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `context` and `metadata` in `rename` Upload API
+  * Add `OAuth` support to Admin Api
+  * Add support for `privateDownloadUrl`
+
+Other Changes
+-------------
+
+  * Fix `StyleTransfer` effect
+  * Fix `LoggerTest` class to work in PHP 8
+  * Fix unit and integration tests
+  * Fix return type in doc strings
+  * Fix notice in configuration serialization
+  * Update PHP SDK Reference copyright date
+
+
+2.1.1 / 2021-03-17
+==================
+
+  * Fix video overlay
+  * Improve `AuthToken` validation, require at least `url` or `acl`
+  * Improve unit tests, use a mock client to check multipart options
+  * Remove unused import in CreativeTest.php
+
+2.1.0 / 2021-03-10
+==================
+
+New functionality and features
+------------------------------
+
+  * Add `filename_override` upload parameter
+
+Other Changes
+-------------
+
+  * Fix Upload API signature
+  * Fix expression normalisation
+
 2.0.4 / 2021-02-25
 ==================
 

@@ -13,6 +13,7 @@ namespace Cloudinary\Tag;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetDescriptorTrait;
 use Cloudinary\Asset\Image;
+use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\AssetConfigTrait;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\StringUtils;
@@ -76,7 +77,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
+     * @return BaseImageTag
      */
     public static function fromParams($source, $params = [])
     {
@@ -157,7 +158,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
             $configuration = $this->config;
         }
 
-        $this->image = new Image($image, $configuration);
+        $this->image = ClassUtils::forceInstance($image, Image::class, null, $configuration);
 
         return $this;
     }
@@ -213,6 +214,36 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     public function breakpoints(array $breakpoints = null)
     {
         $this->srcset->breakpoints($breakpoints);
+
+        return $this;
+    }
+
+    /**
+     * Defines whether to use auto optimal breakpoints.
+     *
+     * @param bool $autoOptimalBreakpoints Indicates whether to use auto optimal breakpoints.
+     *
+     * @return $this
+     */
+    public function autoOptimalBreakpoints($autoOptimalBreakpoints = true)
+    {
+        $this->srcset->autoOptimalBreakpoints($autoOptimalBreakpoints);
+
+        return $this;
+    }
+
+    /**
+     * Sets the image relative width.
+     *
+     * @param float $relativeWidth The percentage of the screen that the image occupies..
+     *
+     * @return $this
+     */
+    public function relativeWidth($relativeWidth = 1.0)
+    {
+        $this->srcset->relativeWidth($relativeWidth);
+
+        $this->config->tag->relativeWidth = $relativeWidth;
 
         return $this;
     }

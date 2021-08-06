@@ -256,6 +256,16 @@ final class EffectTest extends TestCase
             'co_white,e_make_transparent:17',
             (string)PixelEffect::makeTransparent()->tolerance(17)->colorToReplace(Color::white())
         );
+
+        self::assertEquals(
+            'e_bgremoval:screen:aabbcc',
+            (string)PixelEffect::removeBackground()->colorToRemove(Color::rgb("#aabbcc"))->screen()
+        );
+
+        self::assertEquals(
+            'e_bgremoval:red',
+            (string)PixelEffect::removeBackground()->colorToRemove(Color::red())
+        );
     }
 
     public function testDither()
@@ -491,22 +501,22 @@ final class EffectTest extends TestCase
         );
 
         self::assertEquals(
-            'e_style_transfer,l_lighthouse/fl_layer_apply',
+            'l_lighthouse/e_style_transfer,fl_layer_apply',
             (string)Effect::styleTransfer('lighthouse')
         );
 
         self::assertEquals(
-            'e_style_transfer:40,l_lighthouse/fl_layer_apply',
+            'l_lighthouse/e_style_transfer:40,fl_layer_apply',
             (string)Effect::styleTransfer('lighthouse', 40)
         );
 
         self::assertEquals(
-            'e_style_transfer:40,l_lighthouse/fl_layer_apply',
+            'l_lighthouse/e_style_transfer:40,fl_layer_apply',
             (string)Effect::styleTransfer('lighthouse', 40, false)
         );
 
         self::assertEquals(
-            'e_style_transfer:preserve_color:40,l_lighthouse/fl_layer_apply',
+            'l_lighthouse/e_style_transfer:preserve_color:40,fl_layer_apply',
             (string)Effect::styleTransfer('lighthouse')->preserveColor()->strength(40)
         );
 
@@ -517,7 +527,7 @@ final class EffectTest extends TestCase
         $effect->source('source2');
 
         self::assertEquals(
-            'e_style_transfer:preserve_color:20,l_source2/fl_layer_apply',
+            'l_source2/e_style_transfer:preserve_color:20,fl_layer_apply',
             (string)$effect
         );
 

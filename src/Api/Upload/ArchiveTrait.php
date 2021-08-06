@@ -208,6 +208,32 @@ trait ArchiveTrait
     }
 
     /**
+     * Returns a URL that when invoked downloads the asset.
+     *
+     * @param string $publicId The public ID of the asset to download.
+     * @param string $format   The format of the asset to download.
+     * @param array  $options  Additional options.
+     *
+     * @return string
+     */
+    public function privateDownloadUrl($publicId, $format, $options = [])
+    {
+        $params = ApiUtils::finalizeUploadApiParams([
+            "public_id"  => $publicId,
+            "format"     => $format,
+            "type"       => ArrayUtils::get($options, "type"),
+            "attachment" => ArrayUtils::get($options, "attachment"),
+            "expires_at" => ArrayUtils::get($options, "expires_at"),
+        ]);
+
+        ApiUtils::signRequest($params, $this->getCloud());
+
+        $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
+
+        return $this->getUploadUrl($assetType, UploadEndPoint::DOWNLOAD, $params);
+    }
+
+    /**
      * Creates and returns a URL that when invoked creates an archive of a folder.
      *
      * @param string $folderPath Full path (from the root) of the folder to download.

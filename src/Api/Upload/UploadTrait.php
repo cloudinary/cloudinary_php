@@ -95,9 +95,7 @@ trait UploadTrait
                 ArrayUtils::get($options, 'responsive_breakpoints')
             ),
             'tags'                   => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
-            'transformation'         => ApiUtils::serializeAssetTransformations(
-                ArrayUtils::get($options, 'transformation')
-            ),
+            'transformation'         => ApiUtils::serializeAssetTransformations($options),
         ];
 
         return ApiUtils::finalizeUploadApiParams(
