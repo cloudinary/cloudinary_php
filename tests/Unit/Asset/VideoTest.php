@@ -39,24 +39,4 @@ final class VideoTest extends AssetTestCase
             (string)$v
         );
     }
-
-    /**
-     * Should support duration in video preview.
-     */
-    public function testVideoPreview()
-    {
-        $v = Video::fromParams(
-            'video_id',
-            [
-                'resource_type' => AssetType::VIDEO,
-                'effect' => 'preview:durations_2',
-                'secure' => true
-            ]
-        );
-
-        self::assertVideoUrl(
-            'e_preview:durations_2/video_id',
-            (string)$v
-        );
-    }
 }
