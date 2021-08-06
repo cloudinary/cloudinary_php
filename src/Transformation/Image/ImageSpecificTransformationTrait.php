@@ -181,4 +181,16 @@ trait ImageSpecificTransformationTrait
     {
         return $this->addAction(ClassUtils::verifyInstance($prefix, Prefix::class));
     }
+
+    /**
+     * Applies animated image transformation action.
+     *
+     * @param AnimatedEdit $animated Animated image action.
+     *
+     * @return static
+     */
+    public function animated($animated)
+    {
+        return $this->addAction(ClassUtils::verifyInstance($animated, AnimatedEdit::class));
+    }
 }

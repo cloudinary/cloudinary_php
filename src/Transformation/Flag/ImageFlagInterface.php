@@ -31,4 +31,5 @@ interface ImageFlagInterface
     const SANITIZE              = 'sanitize';
     const STRIP_PROFILE         = 'strip_profile';
     const TIFF8_LZW             = 'tiff8_lzw';
+    const IGNORE_MASK_CHANNELS  = 'ignore_mask_channels';
 }

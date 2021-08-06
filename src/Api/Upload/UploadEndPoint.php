@@ -26,6 +26,7 @@ class UploadEndPoint
     const CONTEXT          = 'context';
     const TEXT             = 'text';
     const GENERATE_ARCHIVE = 'generate_archive';
+    const CREATE_SLIDESHOW = 'create_slideshow';
     const METADATA         = 'metadata';
     const DOWNLOAD         = 'download';
     const DOWNLOAD_BACKUP  = 'download_backup';

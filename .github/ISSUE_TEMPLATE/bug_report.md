@@ -3,7 +3,7 @@ name: Bug report
 about: Bug report for Cloudinary PHP SDK
 title: ''
 labels: ''
-assignees: const-cloudinary
+assignees: ''
 
 ---
 

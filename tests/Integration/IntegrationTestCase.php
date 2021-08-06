@@ -11,7 +11,6 @@
 namespace Cloudinary\Test\Integration;
 
 use Cloudinary\Api\Admin\AdminApi;
-use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Upload\UploadApi;
@@ -28,7 +27,6 @@ use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
 use PHPUnit_Framework_Constraint_IsType as IsType;
-use Psr\Http\Message\RequestInterface;
 use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
@@ -40,12 +38,14 @@ use function GuzzleHttp\Psr7\parse_query;
  */
 abstract class IntegrationTestCase extends CloudinaryTestCase
 {
-    const TEST_ASSETS_DIR = __DIR__ . '/../assets/';
-    const TEST_IMAGE_PATH = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME;
+    const TEST_ASSETS_DIR     = __DIR__ . '/../assets/';
+    const TEST_IMAGE_PATH     = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME;
     const TEST_IMAGE_GIF_PATH = self::TEST_ASSETS_DIR . AssetTestCase::IMAGE_NAME_GIF;
-    const TEST_LOGGING = ['logging' => ['test' => ['level' => 'debug']]];
-    const TEST_EVAL_STR = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
-                          'upload_options["context"] = "width=" + resource_info["width"]';
+    const TEST_DOCX_PATH      = self::TEST_ASSETS_DIR . AssetTestCase::DOCX_NAME;
+    const TEST_VIDEO_PATH     = self::TEST_ASSETS_DIR . AssetTestCase::VIDEO_NAME;
+    const TEST_LOGGING        = ['logging' => ['test' => ['level' => 'debug']]];
+    const TEST_EVAL_STR       = 'if (resource_info["width"] < 450) { upload_options["quality_analysis"] = true }; ' .
+                                'upload_options["context"] = "width=" + resource_info["width"]';
 
     private static $TEST_ASSETS = [];
 
@@ -71,7 +71,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $config = array_merge(self::TEST_LOGGING, $config);
         Configuration::instance()->init($config);
 
-        self::$adminApi = new AdminApi();
+        self::$adminApi  = new AdminApi();
         self::$uploadApi = new UploadApi();
     }
 
@@ -129,7 +129,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             $publicId     = self::getUniquePublicId($key, $prefix);
             $options      = ArrayUtils::get($values, 'options', []);
             $assetOptions = ['public_id' => $publicId];
-            $assetOptions = is_array($options) ? array_merge($options, $assetOptions) : $assetOptions;
+            $assetOptions = is_array($options) ? array_merge($assetOptions, $options) : $assetOptions;
             $assetType    = ArrayUtils::get($assetOptions, AssetType::KEY, AssetType::IMAGE);
             $file         = ArrayUtils::get($assetOptions, 'file');
             $upload       = ArrayUtils::get($values, 'upload', true);
@@ -174,8 +174,8 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 DeliveryType::KEY => isset($options[DeliveryType::KEY])
                     ? $options[DeliveryType::KEY]
                     : DeliveryType::UPLOAD,
-                AssetType::KEY => $options[AssetType::KEY],
-                'tags' => $options['tags']
+                AssetType::KEY    => $options[AssetType::KEY],
+                'tags'            => $options['tags'],
             ]
         );
 
@@ -194,7 +194,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     protected static function uploadTestAssetImage($options = [], $file = null)
     {
         $options[AssetType::KEY] = AssetType::IMAGE;
-        $file = $file !== null ? $file : self::TEST_BASE64_IMAGE;
+        $file                    = $file !== null ? $file : self::TEST_BASE64_IMAGE;
 
         return self::uploadTestAsset($file, $options);
     }
@@ -211,7 +211,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     {
         $options[AssetType::KEY] = AssetType::RAW;
 
-        return self::uploadTestAsset(self::TEST_ASSETS_DIR . 'sample.docx', $options);
+        return self::uploadTestAsset(self::TEST_DOCX_PATH, $options);
     }
 
     /**
@@ -263,7 +263,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     /**
      * Return a public id of a test asset.
      *
-     * @param string $name        The key used to save the test asset.
+     * @param string $name The key used to save the test asset.
      *
      * @return string|null
      */
@@ -333,18 +333,18 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     protected static function assertValidAsset($asset, $values = [])
     {
         $deliveryType = ArrayUtils::get($values, DeliveryType::KEY, DeliveryType::UPLOAD);
-        $assetType = ArrayUtils::get($values, AssetType::KEY, AssetType::IMAGE);
+        $assetType    = ArrayUtils::get($values, AssetType::KEY, AssetType::IMAGE);
 
         self::assertEquals($deliveryType, $asset[DeliveryType::KEY]);
         self::assertEquals($assetType, $asset[AssetType::KEY]);
         self::assertObjectStructure(
             $asset,
             [
-                'public_id' => IsType::TYPE_STRING,
+                'public_id'  => IsType::TYPE_STRING,
                 'created_at' => IsType::TYPE_STRING,
-                'url' => IsType::TYPE_STRING,
+                'url'        => IsType::TYPE_STRING,
                 'secure_url' => IsType::TYPE_STRING,
-                'bytes' => IsType::TYPE_INT,
+                'bytes'      => IsType::TYPE_INT,
             ]
         );
 
@@ -355,7 +355,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             self::assertObjectStructure(
                 $asset,
                 [
-                    'width' => IsType::TYPE_INT,
+                    'width'  => IsType::TYPE_INT,
                     'height' => IsType::TYPE_INT,
                     'format' => IsType::TYPE_STRING
                 ]
@@ -366,13 +366,13 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             self::assertObjectStructure(
                 $asset,
                 [
-                    'audio' => IsType::TYPE_ARRAY,
-                    'video' => IsType::TYPE_ARRAY,
+                    'audio'      => IsType::TYPE_ARRAY,
+                    'video'      => IsType::TYPE_ARRAY,
                     'frame_rate' => IsType::TYPE_FLOAT,
-                    'duration' => IsType::TYPE_FLOAT,
-                    'bit_rate' => IsType::TYPE_INT,
-                    'rotation' => IsType::TYPE_INT,
-                    'nb_frames' => IsType::TYPE_INT
+                    'duration'   => IsType::TYPE_FLOAT,
+                    'bit_rate'   => IsType::TYPE_INT,
+                    'rotation'   => IsType::TYPE_INT,
+                    'nb_frames'  => IsType::TYPE_INT
                 ]
             );
         }
@@ -404,7 +404,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             array_merge(
                 [
                     DeliveryType::KEY => DeliveryType::UPLOAD,
-                    AssetType::KEY => AssetType::RAW
+                    AssetType::KEY    => AssetType::RAW
                 ],
                 $values
             )
@@ -412,10 +412,10 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         self::assertObjectStructure(
             $archive,
             [
-                'tags' => IsType::TYPE_ARRAY,
-                'bytes' => IsType::TYPE_INT,
+                'tags'           => IsType::TYPE_ARRAY,
+                'bytes'          => IsType::TYPE_INT,
                 'resource_count' => IsType::TYPE_INT,
-                'file_count' => IsType::TYPE_INT
+                'file_count'     => IsType::TYPE_INT
             ]
         );
         self::assertRegexp('/\.' . $format . '$/', $archive['url']);
@@ -434,12 +434,12 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             $asset,
             [
                 'transformation' => IsType::TYPE_STRING,
-                'width' => IsType::TYPE_INT,
-                'height' => IsType::TYPE_INT,
-                'bytes' => IsType::TYPE_INT,
-                'format' => IsType::TYPE_STRING,
-                'url' => IsType::TYPE_STRING,
-                'secure_url' => IsType::TYPE_STRING
+                'width'          => IsType::TYPE_INT,
+                'height'         => IsType::TYPE_INT,
+                'bytes'          => IsType::TYPE_INT,
+                'format'         => IsType::TYPE_STRING,
+                'url'            => IsType::TYPE_STRING,
+                'secure_url'     => IsType::TYPE_STRING
             ]
         );
 
@@ -464,11 +464,11 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             $asset,
             [
                 'transformation' => IsType::TYPE_STRING,
-                'id' => IsType::TYPE_STRING,
-                'bytes' => IsType::TYPE_INT,
-                'format' => IsType::TYPE_STRING,
-                'url' => IsType::TYPE_STRING,
-                'secure_url' => IsType::TYPE_STRING
+                'id'             => IsType::TYPE_STRING,
+                'bytes'          => IsType::TYPE_INT,
+                'format'         => IsType::TYPE_STRING,
+                'url'            => IsType::TYPE_STRING,
+                'secure_url'     => IsType::TYPE_STRING
             ]
         );
 
@@ -572,7 +572,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             $media->extension($format);
         }
 
-        $assetUrl = parse_url($asset[$field]);
+        $assetUrl    = parse_url($asset[$field]);
         $expectedUrl = parse_url($media->toUrl());
 
         self::assertEquals(
@@ -658,7 +658,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         self::assertObjectStructure(
             $uploadPreset,
             [
-                'name' => IsType::TYPE_STRING,
+                'name'     => IsType::TYPE_STRING,
                 'unsigned' => IsType::TYPE_BOOL,
                 'settings' => IsType::TYPE_ARRAY
             ]
@@ -719,9 +719,9 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         self::assertObjectStructure(
             $streamingProfile['data'],
             [
-                'display_name' => [IsType::TYPE_STRING, IsType::TYPE_NULL],
-                'name' => IsType::TYPE_STRING,
-                'predefined' => IsType::TYPE_BOOL,
+                'display_name'    => [IsType::TYPE_STRING, IsType::TYPE_NULL],
+                'name'            => IsType::TYPE_STRING,
+                'predefined'      => IsType::TYPE_BOOL,
                 'representations' => IsType::TYPE_ARRAY
             ]
         );
@@ -751,9 +751,9 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             $transformation,
             [
                 'allowed_for_strict' => IsType::TYPE_BOOL,
-                'used' => IsType::TYPE_BOOL,
-                'named' => IsType::TYPE_BOOL,
-                'name' => IsType::TYPE_STRING
+                'used'               => IsType::TYPE_BOOL,
+                'named'              => IsType::TYPE_BOOL,
+                'name'               => IsType::TYPE_STRING
             ]
         );
         self::assertNotEmpty($transformation['name']);
@@ -786,55 +786,6 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         foreach ($values as $key => $value) {
             self::assertEquals($value, $uploadMapping[$key]);
         }
-    }
-
-    /**
-     * Assert the HTTP request method is GET.
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     */
-    protected static function assertRequestGet(RequestInterface $request, $message = 'HTTP method should be GET')
-    {
-        self::assertEquals('GET', $request->getMethod(), $message);
-    }
-
-    /**
-     * Assert the HTTP request method is POST.
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     */
-    protected static function assertRequestPost(RequestInterface $request, $message = 'HTTP method should be POST')
-    {
-        self::assertEquals('POST', $request->getMethod(), $message);
-    }
-
-    /**
-     * Assert the HTTP request method is DELETE.
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     */
-    protected static function assertRequestDelete(RequestInterface $request, $message = 'HTTP method should be DELETE')
-    {
-        self::assertEquals('DELETE', $request->getMethod(), $message);
-    }
-
-    /**
-     * Asserts that a request contains the expected fields and values.
-     *
-     * @param RequestInterface $request
-     * @param array|null       $fields
-     * @param string           $message
-     */
-    protected static function assertRequestFields(RequestInterface $request, $fields = null, $message = '')
-    {
-        self::assertEquals(
-            json_decode($request->getBody()->getContents(), true),
-            $fields,
-            $message
-        );
     }
 
     /**

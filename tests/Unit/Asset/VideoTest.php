@@ -34,7 +34,7 @@ final class VideoTest extends AssetTestCase
         );
 
         self::assertVideoUrl(
-            "{$t_expected}/".self::VIDEO_NAME,
+            "{$t_expected}/" . self::VIDEO_NAME,
             (string)$v
         );
     }

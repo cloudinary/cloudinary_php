@@ -42,5 +42,10 @@ final class FlagTest extends TestCase
             'fl_my_flag:17',
             (string)Flag::generic('my_flag', 17)
         );
+
+        self::assertEquals(
+            'fl_ignore_mask_channels',
+            (string)Flag::ignoreMaskChannels()
+        );
     }
 }

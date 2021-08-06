@@ -133,6 +133,14 @@ final class ActionFromQualifiersTest extends AssetTestCase
     }
 
     /**
+     * Should not normalize "duration" named value as "du_" parameter.
+     */
+    public function testPreviewDuration()
+    {
+        self::assertQualifiersAction("e_preview:duration_2", ["effect" => "preview:duration_2"]);
+    }
+
+    /**
      * Should support a positive number or a string
      */
     public function testKeyframeInterval()

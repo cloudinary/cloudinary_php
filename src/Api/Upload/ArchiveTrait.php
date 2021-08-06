@@ -228,7 +228,9 @@ trait ArchiveTrait
 
         ApiUtils::signRequest($params, $this->getCloud());
 
-        return $this->getUploadUrl(AssetType::IMAGE, UploadEndPoint::DOWNLOAD, $params);
+        $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
+
+        return $this->getUploadUrl($assetType, UploadEndPoint::DOWNLOAD, $params);
     }
 
     /**

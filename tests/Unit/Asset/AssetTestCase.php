@@ -40,6 +40,9 @@ abstract class AssetTestCase extends UnitTestCase
     const FILE_EXT  = 'bin';
     const FILE_NAME = self::ASSET_ID . '.' . self::FILE_EXT;
 
+    const DOCX_EXT  = 'docx';
+    const DOCX_NAME = self::ASSET_ID . '.' . self::DOCX_EXT;
+
     const FOLDER          = 'test_folder';
     const IMAGE_IN_FOLDER = self::FOLDER . '/' . self::IMAGE_NAME;
 

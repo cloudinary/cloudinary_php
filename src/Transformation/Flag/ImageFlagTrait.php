@@ -211,4 +211,16 @@ trait ImageFlagTrait
     {
         return new FlagQualifier(self::TIFF8_LZW);
     }
+
+    /**
+     * A qualifier that ensures that an alpha channel is not applied to a TIFF image if it is a mask channel.
+     *
+     * @see https://cloudinary.com/documentation/transformation_reference#fl_ignore_mask_channels
+     *
+     * @return FlagQualifier
+     */
+    public static function ignoreMaskChannels()
+    {
+        return new FlagQualifier(self::IGNORE_MASK_CHANNELS);
+    }
 }

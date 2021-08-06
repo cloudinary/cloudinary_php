@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\Transformation\Argument\Text\Stroke;
 use Cloudinary\Transformation\Argument\Text\TextStyleTrait;
 
 /**
@@ -98,7 +99,7 @@ class TextSource extends BaseSource implements ImageTransformationInterface
     /**
      * Sets the text style.
      *
-     * @param array|TextStyle $style The text style.
+     * @param string|array|TextStyle $style The text style.
      *
      * @return $this
      */
@@ -147,6 +148,27 @@ class TextSource extends BaseSource implements ImageTransformationInterface
     protected function setStyleProperty($styleName, $value, $named = false)
     {
         $this->getSourceQualifier()->setStyleProperty($styleName, $value, $named);
+
+        return $this;
+    }
+
+    /**
+     * Sets whether to include an outline stroke.
+     *
+     * @param string|BorderQualifier $stroke The text outline stroke.
+     *
+     * @return static
+     *
+     * @see \Cloudinary\Transformation\Argument\Text\Stroke
+     */
+    public function stroke($stroke = Stroke::STROKE)
+    {
+        if ($stroke instanceof BorderQualifier) {
+            $this->addQualifier($stroke);
+            $stroke = Stroke::STROKE;
+        }
+
+        $this->getSourceQualifier()->setStyleProperty('stroke', $stroke);
 
         return $this;
     }

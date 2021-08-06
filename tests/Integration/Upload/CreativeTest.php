@@ -26,7 +26,9 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
  */
 final class CreativeTest extends IntegrationTestCase
 {
-    const TRANSFORMATION = ['width' => '0.5', 'crop' => 'crop'];
+    const EXPLODE_GIF = 'explode_gif';
+
+    const TRANSFORMATION   = ['width' => '0.5', 'crop' => 'crop'];
     const TRANSFORMATION_2 = ['width' => '100'];
 
     const URL_1 = 'https://res.cloudinary.com/demo/image/upload/sample';
@@ -39,7 +41,6 @@ final class CreativeTest extends IntegrationTestCase
 
     private static $TAG_TO_MULTI;
     private static $TAG_TO_GENERATE_SPRITE;
-    private static $EXPLODE_GIF_PUBLIC_ID;
 
     private static $TRANSFORMATION_STRING;
 
@@ -52,7 +53,6 @@ final class CreativeTest extends IntegrationTestCase
 
         self::$TAG_TO_MULTI           = 'upload_creative_multi_' . self::$UNIQUE_TEST_TAG;
         self::$TAG_TO_GENERATE_SPRITE = 'upload_creative_generate_sprite_' . self::$UNIQUE_TEST_TAG;
-        self::$EXPLODE_GIF_PUBLIC_ID  = 'upload_creative_explode_gif_' . self::$UNIQUE_TEST_ID;
 
         self::$TRANSFORMATION_STRING = (string)(new Transformation(self::TRANSFORMATION));
 
@@ -61,11 +61,11 @@ final class CreativeTest extends IntegrationTestCase
             self::$TAG_TO_MULTI,
         ];
 
-        self::uploadTestAssetImage(['tags' => $tags, 'public_id' => self::$UNIQUE_TEST_ID]);
-        self::uploadTestAssetImage(['tags' => $tags]);
-        self::uploadTestAssetImage(['public_id' => self::$EXPLODE_GIF_PUBLIC_ID], self::TEST_IMAGE_GIF_PATH);
         self::createTestAssets(
             [
+                ['options' => ['tags' => $tags]],
+                ['options' => ['tags' => $tags]],
+                self::EXPLODE_GIF => ['options' => ['file' => self::TEST_IMAGE_GIF_PATH]],
                 self::SPRITE_TEST_1 => ['option' => ['tags' => self::$TAG_TO_GENERATE_SPRITE]],
                 self::SPRITE_TEST_2 => ['option' => ['tags' => self::$TAG_TO_GENERATE_SPRITE]],
                 self::MULTI_TEST_1  => ['option' => ['tags' => self::$TAG_TO_MULTI]],
@@ -108,7 +108,7 @@ final class CreativeTest extends IntegrationTestCase
         $asset = self::$uploadApi->generateSprite(
             self::$TAG_TO_GENERATE_SPRITE,
             [
-                'transformation' => self::TRANSFORMATION_2
+                'transformation' => self::TRANSFORMATION_2,
             ]
         );
         self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
@@ -151,7 +151,7 @@ final class CreativeTest extends IntegrationTestCase
             '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/sprite',
             [
                 'mode' => UploadApi::MODE_DOWNLOAD,
-                'tag' => self::$TAG_TO_GENERATE_SPRITE,
+                'tag'  => self::$TAG_TO_GENERATE_SPRITE,
             ]
         );
         self::assertDownloadSignUrl(
@@ -159,11 +159,11 @@ final class CreativeTest extends IntegrationTestCase
             ApiConfig::DEFAULT_UPLOAD_PREFIX,
             '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/sprite',
             [
-                'mode' => UploadApi::MODE_DOWNLOAD,
+                'mode'    => UploadApi::MODE_DOWNLOAD,
                 'api_key' => self::$uploadApi->getCloud()->apiKey,
-                'urls' => [
+                'urls'    => [
                     self::URL_1,
-                    self::URL_2
+                    self::URL_2,
                 ],
             ]
         );
@@ -176,7 +176,7 @@ final class CreativeTest extends IntegrationTestCase
     {
         $asset = self::$uploadApi->multi(
             [
-                'urls' => [
+                'urls'           => [
                     self::getTestAsset(self::MULTI_TEST_1)['url'],
                     self::getTestAsset(self::MULTI_TEST_2)['url'],
                 ],
@@ -192,7 +192,7 @@ final class CreativeTest extends IntegrationTestCase
         $asset = self::$uploadApi->multi(
             self::$TAG_TO_MULTI,
             [
-                'transformation' => self::TRANSFORMATION
+                'transformation' => self::TRANSFORMATION,
             ]
         );
         self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::MULTI]);
@@ -236,9 +236,9 @@ final class CreativeTest extends IntegrationTestCase
             ApiConfig::DEFAULT_UPLOAD_PREFIX,
             '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/multi',
             [
-                'mode' => UploadApi::MODE_DOWNLOAD,
+                'mode'    => UploadApi::MODE_DOWNLOAD,
                 'api_key' => self::$uploadApi->getCloud()->apiKey,
-                'tag' => self::$TAG_TO_MULTI,
+                'tag'     => self::$TAG_TO_MULTI,
             ]
         );
         self::assertDownloadSignUrl(
@@ -246,11 +246,11 @@ final class CreativeTest extends IntegrationTestCase
             ApiConfig::DEFAULT_UPLOAD_PREFIX,
             '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/multi',
             [
-                'mode' => UploadApi::MODE_DOWNLOAD,
+                'mode'    => UploadApi::MODE_DOWNLOAD,
                 'api_key' => self::$uploadApi->getCloud()->apiKey,
-                'urls' => [
+                'urls'    => [
                     self::URL_1,
-                    self::URL_2
+                    self::URL_2,
                 ],
             ]
         );
@@ -262,7 +262,7 @@ final class CreativeTest extends IntegrationTestCase
     public function testExplodeGIF()
     {
         $result = self::$uploadApi->explode(
-            self::$EXPLODE_GIF_PUBLIC_ID,
+            self::getTestAssetPublicId(self::EXPLODE_GIF),
             [
                 'transformation' => Extract::getPage()->all(),
             ]

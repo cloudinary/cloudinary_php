@@ -59,4 +59,40 @@ final class SearchApiTest extends UnitTestCase
             'Should use right headers for execution of advanced search api'
         );
     }
+
+    /**
+     * Duplicates in `aggregate` and `with_field` fields should be deleted.
+     * Duplicates in a `sort_by` field should be deleted, and if a duplicate exists, the value (asc/desc) should be
+     * updated.
+     *
+     * @throws GeneralError
+     */
+    public function testShouldNotDuplicateValues()
+    {
+        $mockSearchApi = new MockSearchApi();
+        $mockSearchApi
+            ->sortBy('created_at', 'asc')
+            ->sortBy('created_at')
+            ->sortBy('public_id', 'asc')
+            ->aggregate('format')
+            ->aggregate('format')
+            ->aggregate('resource_type')
+            ->withField('context')
+            ->withField('context')
+            ->withField('tags')
+            ->execute();
+        $lastRequest = $mockSearchApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            [
+                'sort_by' => [
+                    ['created_at' => 'desc'],
+                    ['public_id' => 'asc'],
+                ],
+                'aggregate' => ['format', 'resource_type'],
+                'with_field' => ['context', 'tags'],
+            ]
+        );
+    }
 }
