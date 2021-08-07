@@ -89,11 +89,15 @@ final class ActionFromQualifiersTest extends AssetTestCase
     public function flagsDataProvider()
     {
         return [
-            'Should support flags as a string' => [
+            'Should support flags as a string'                => [
                 'fl_abc',
                 ['flags' => 'abc'],
             ],
-            'Should support flags as an array' => [
+            'Should support flags as a string with an option' => [
+                'fl_attachment:pretty_flower',
+                ['flags' => 'attachment:pretty_flower'],
+            ],
+            'Should support flags as an array'                => [
                 'fl_abc.def',
                 ['flags' => ['abc', 'def']],
             ],
@@ -136,6 +140,7 @@ final class ActionFromQualifiersTest extends AssetTestCase
             'Keyframe interval as a float with a zero integer' => ['ki_0.05', ['keyframe_interval' => 0.05]],
             'Keyframe interval as a float'                     => ['ki_3.45', ['keyframe_interval' => 3.45]],
             'Keyframe interval as a string'                    => ['ki_10', ['keyframe_interval' => '10']],
+            'Keyframe interval as a user variable'             => ['ki_$ki', ['keyframe_interval' => '$ki']],
         ];
     }
 
@@ -533,6 +538,14 @@ final class ActionFromQualifiersTest extends AssetTestCase
                 'vc_h264',
                 ['video_codec' => 'h264'],
             ],
+            'Should support underlay'                                             => [
+                'u_text',
+                ['underlay' => 'text'],
+            ],
+            'Should support fps'                                                  => [
+                'fps_22',
+                ['fps' => 22],
+            ],
             'Should support streaming profile when value includes a hyphen'       => [
                 'sp_some-profile',
                 ['streaming_profile' => 'some-profile'],
@@ -579,6 +592,10 @@ final class ActionFromQualifiersTest extends AssetTestCase
                     'prefix'  => false,
                     'opacity' => null,
                 ],
+            ],
+            'Should not support a nonexistent value'                              => [
+                '',
+                ['nonexistent' => 'value'],
             ],
             'Should support string interpolation'                                 => [
                 'c_scale,l_text:Arial_18:$(start)Hello%20$(name)$(ext)%252C%20%24%28no%20%29%20%24%28%20no%29$(end)',
