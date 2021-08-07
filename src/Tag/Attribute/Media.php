@@ -10,6 +10,10 @@
 
 namespace Cloudinary\Tag;
 
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Log\LoggerTrait;
+use \InvalidArgumentException;
+
 /**
  * Class Media
  *
@@ -17,6 +21,8 @@ namespace Cloudinary\Tag;
  */
 class Media
 {
+    use LoggerTrait;
+
     /**
      * @var int $minWidth The minimum width of the screen.
      */
@@ -30,13 +36,16 @@ class Media
     /**
      * Media constructor.
      *
-     * @param int $minWidth The minimum width of the screen.
-     * @param int $maxWidth The maximum width of the screen.
+     * @param int           $minWidth The minimum width of the screen.
+     * @param int           $maxWidth The maximum width of the screen.
+     * @param Configuration $configuration
      */
-    public function __construct($minWidth = null, $maxWidth = null)
+    public function __construct($minWidth = null, $maxWidth = null, $configuration = null)
     {
         $this->minWidth = $minWidth;
         $this->maxWidth = $maxWidth;
+
+        $this->logging = $configuration->logging;
     }
 
     /**
@@ -46,6 +55,20 @@ class Media
      */
     public function __toString()
     {
+        if ($this->minWidth === null && $this->maxWidth === null) {
+            $message = 'either minWidth or maxWidth is required';
+            $this->getLogger()->critical($message);
+
+            return '';
+        }
+
+        if (is_int($this->minWidth) && is_int($this->maxWidth) && $this->minWidth > $this->maxWidth) {
+            $message = 'minWidth must be less than maxWidth';
+            $this->getLogger()->critical($message);
+
+            return '';
+        }
+
         $mediaQueryConditions = [];
 
         if (! empty($this->minWidth)) {

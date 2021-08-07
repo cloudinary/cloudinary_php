@@ -112,17 +112,21 @@ final class ActionFromQualifiersTest extends AssetTestCase
     public function effectDataProvider()
     {
         return [
-            'Should support an effect as a string'                => [
+            'Should support an effect as a string'                 => [
                 'e_sepia',
                 ['effect' => 'sepia'],
             ],
-            'Should support an effect as an array'                => [
+            'Should support an effect as an array'                 => [
                 'e_sepia:-10',
                 ['effect' => ['sepia', -10]],
             ],
-            'Should support an effect as a string with an option' => [
+            'Should support an effect as a string with an option'  => [
                 'e_art:incognito',
                 ['effect' => 'art:incognito'],
+            ],
+            'Should not normalize value named "duration" as "du_"' => [
+                'e_preview:duration_2',
+                ['effect' => 'preview:duration_2'],
             ],
         ];
     }

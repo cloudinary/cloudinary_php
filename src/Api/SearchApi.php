@@ -13,6 +13,7 @@ namespace Cloudinary\Api\Search;
 use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\ArrayUtils;
 use GuzzleHttp\Promise\PromiseInterface;
 use JsonSerializable;
 
@@ -62,6 +63,10 @@ class SearchApi implements JsonSerializable
      * @internal
      */
     const NEXT_CURSOR = 'next_cursor';
+    /**
+     * @internal
+     */
+    const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD];
 
     /**
      * @var array query object that includes the search query
@@ -145,7 +150,7 @@ class SearchApi implements JsonSerializable
      *
      * @param string $fieldName The field to sort by. You can specify more than one sort_by parameter;
      *                          results will be sorted according to the order of the fields provided.
-     * @param string $dir       Sort direction. Valid sort directions are 'asc' or 'desc'. Default: 'desc'
+     * @param string $dir       Sort direction. Valid sort directions are 'asc' or 'desc'. Default: 'desc'.
      *
      * @return $this
      *
@@ -153,7 +158,7 @@ class SearchApi implements JsonSerializable
      */
     public function sortBy($fieldName, $dir = 'desc')
     {
-        $this->query[self::SORT_BY][] = [$fieldName => $dir];
+        $this->query[self::SORT_BY][$fieldName] = [$fieldName => $dir];
 
         return $this;
     }
@@ -161,14 +166,14 @@ class SearchApi implements JsonSerializable
     /**
      * The name of a field (attribute) for which an aggregation count should be calculated and returned in the response.
      *
-     * (Tier 2 only)
+     * (Tier 2 only).
      *
-     * You can specify more than one aggregate parameter
+     * You can specify more than one aggregate parameter.
      *
-     * @param mixed $value Supported values: resource_type, type, pixels (only the image assets in the response are
-     *                     aggregated), duration (only the video assets in the response are aggregated), format, and
-     *                     bytes. For aggregation fields without discrete values, the results are divided into
-     *                     categories
+     * @param string $value Supported values: resource_type, type, pixels (only the image assets in the response are
+     *                      aggregated), duration (only the video assets in the response are aggregated), format, and
+     *                      bytes. For aggregation fields without discrete values, the results are divided into
+     *                      categories.
      *
      * @return $this
      *
@@ -176,7 +181,7 @@ class SearchApi implements JsonSerializable
      */
     public function aggregate($value)
     {
-        $this->query[self::AGGREGATE][] = $value;
+        $this->query[self::AGGREGATE][$value] = $value;
 
         return $this;
     }
@@ -184,7 +189,7 @@ class SearchApi implements JsonSerializable
     /**
      * The name of an additional asset attribute to include for each asset in the response.
      *
-     * @param mixed $value Possible value: context, tags, and for Tier 2 also image_metadata, and image_analysis.
+     * @param string $value Possible value: context, tags, and for Tier 2 also image_metadata, and image_analysis.
      *
      * @return $this
      *
@@ -192,7 +197,7 @@ class SearchApi implements JsonSerializable
      */
     public function withField($value)
     {
-        $this->query[self::WITH_FIELD][] = $value;
+        $this->query[self::WITH_FIELD][$value] = $value;
 
         return $this;
     }
@@ -224,7 +229,7 @@ class SearchApi implements JsonSerializable
     }
 
     /**
-     * Returns the query as an array
+     * Returns the query as an array.
      *
      * @return array
      *
@@ -232,12 +237,17 @@ class SearchApi implements JsonSerializable
      */
     public function asArray()
     {
-        return array_filter(
-            $this->query,
-            static function ($value) {
-                /** @noinspection TypeUnsafeComparisonInspection */
-                return ((is_array($value) && ! empty($value)) || ($value != null));
-            }
+        return ArrayUtils::mapAssoc(
+            static function ($key, $value) {
+                return in_array($key, self::KEYS_WITH_UNIQUE_VALUES) ? array_values($value) : $value;
+            },
+            array_filter(
+                $this->query,
+                static function ($value) {
+                    /** @noinspection TypeUnsafeComparisonInspection */
+                    return ((is_array($value) && ! empty($value)) || ($value != null));
+                }
+            )
         );
     }
 

@@ -34,6 +34,8 @@ class UploadApi
     use TagTrait;
     use UploadTrait;
 
+    const MODE_DOWNLOAD = 'download';
+
     /**
      * @var ApiClient $apiClient The HTTP API client instance.
      */
@@ -109,6 +111,25 @@ class UploadApi
     protected function callUploadApiAsync($endPoint = UploadEndPoint::UPLOAD, $params = [], $options = [])
     {
         return $this->apiClient->postAndSignFormAsync(
+            self::getUploadApiEndPoint($endPoint, $options),
+            ApiUtils::finalizeUploadApiParams($params)
+        );
+    }
+
+    /**
+     * Internal method for performing all Upload API calls as a json.
+     *
+     * @param string $endPoint The relative endpoint.
+     * @param array  $params   Parameters to pass to the endpoint.
+     * @param array  $options  Additional options.
+     *
+     * @return PromiseInterface
+     *
+     * @internal
+     */
+    protected function callUploadApiJsonAsync($endPoint = UploadEndPoint::UPLOAD, $params = [], $options = [])
+    {
+        return $this->apiClient->postAndSignJsonAsync(
             self::getUploadApiEndPoint($endPoint, $options),
             ApiUtils::finalizeUploadApiParams($params)
         );
