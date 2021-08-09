@@ -71,7 +71,7 @@ trait MediaAssetFinalizerTrait
                 $toSign,
                 $this->cloud->apiSecret,
                 true,
-                $this->urlConfig->signatureAlgorithm()
+                $this->getSignatureAlgorithm()
             )
         );
 

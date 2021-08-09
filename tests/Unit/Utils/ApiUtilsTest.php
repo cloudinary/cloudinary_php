@@ -262,7 +262,7 @@ final class ApiUtilsTest extends UnitTestCase
             [
                 'value'  => ['p1' => 'v1'],
                 'result' => '4cdcfc973f12ab6a9a6ba56595a9c2897bdb8f32',
-                'signatureAlgorithm' => 'sha1',
+                'signatureAlgorithm' => 'SHA1',
             ],
             [
                 'value'  => ['p1' => 'v1,v2'],
@@ -307,32 +307,32 @@ final class ApiUtilsTest extends UnitTestCase
     /**
      * Verifies that correct sha256 and sha1 hashes are produced based on signature algorithm from global config.
      */
-    public function testApiSignRequestWithGlobalUrlConfig()
+    public function testApiSignRequestWithGlobalConfig()
     {
-        $initial_params = [
+        $initialParams = [
             'cloud_name' => 'dn6ot3ged',
             'timestamp' => 1568810420,
             'username' => 'user@cloudinary.com'
         ];
 
-        $params = $initial_params;
+        $params = $initialParams;
         Configuration::instance()->cloud->apiSecret = 'hdcixPpR2iKERPwqvH6sHdK9cyac';
-        Configuration::instance()->url->signatureAlgorithm = Utils::ALGO_SHA256;
+        Configuration::instance()->cloud->signatureAlgorithm = Utils::ALGO_SHA256;
         ApiUtils::signRequest($params, Configuration::instance()->cloud);
         $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
         self::assertEquals($expected, $params['signature']);
 
-        $params = $initial_params;
-        Configuration::instance()->url->signatureAlgorithm = null;
+        $params = $initialParams;
+        Configuration::instance()->cloud->signatureAlgorithm = null;
         ApiUtils::signRequest($params, Configuration::instance()->cloud);
-        $expected_sha1 = '14c00ba6d0dfdedbc86b316847d95b9e6cd46d94';
-        self::assertEquals($expected_sha1, $params['signature']);
+        $expectedSha1 = '14c00ba6d0dfdedbc86b316847d95b9e6cd46d94';
+        self::assertEquals($expectedSha1, $params['signature']);
     }
 
     /**
      * Verifies that correct sha256 and sha1 hashes are produced based on explicitly passed signature algorithm.
      */
-    public function testApiSignRequestWithExplicitUrlConfig()
+    public function testApiSignRequestWithExplicitConfig()
     {
         $params = [
             'cloud_name' => 'dn6ot3ged',
@@ -341,8 +341,8 @@ final class ApiUtilsTest extends UnitTestCase
         ];
 
         $config = new Configuration('cloudinary://key:hdcixPpR2iKERPwqvH6sHdK9cyac@test123');
-        $config->url->signatureAlgorithm = Utils::ALGO_SHA256;
-        ApiUtils::signRequest($params, $config->cloud, $config->url);
+        $config->cloud->signatureAlgorithm = Utils::ALGO_SHA256;
+        ApiUtils::signRequest($params, $config->cloud);
         $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
         self::assertEquals($expected, $params['signature']);
     }

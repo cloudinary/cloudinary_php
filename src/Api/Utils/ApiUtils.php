@@ -14,7 +14,6 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetTransformation;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\CloudConfig;
-use Cloudinary\Configuration\Configuration;
 use Cloudinary\Utils;
 
 /**
@@ -274,14 +273,16 @@ class ApiUtils
      *
      * @param array|null  $parameters
      * @param CloudConfig $cloudConfig
-     * @param Configuration $urlConfig
      *
      * @internal
      */
-    public static function signRequest(&$parameters, $cloudConfig, $urlConfig = null)
+    public static function signRequest(&$parameters, $cloudConfig)
     {
-        $urlConfig = $urlConfig ?: Configuration::instance()->url;
-        $parameters['signature'] = self::signParameters($parameters, $cloudConfig->apiSecret, $urlConfig->signatureAlgorithm());
+        $parameters['signature'] = self::signParameters(
+            $parameters,
+            $cloudConfig->apiSecret,
+            $cloudConfig->signatureAlgorithm
+        );
         $parameters['api_key']   = $cloudConfig->apiKey;
     }
 }
