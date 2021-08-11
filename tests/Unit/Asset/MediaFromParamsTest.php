@@ -17,6 +17,7 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
+use Cloudinary\Utils;
 use InvalidArgumentException;
 
 /**
@@ -428,6 +429,14 @@ final class MediaFromParamsTest extends AssetTestCase
                     'source'             => 'sample.jpg',
                 ],
                 's--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--',
+            ],
+            'Should sign a URL with a short signature by default and use SHA256 when configured' => [
+                [
+                    'sign_url' => true,
+                    'signature_algorithm' => Utils::ALGO_SHA256,
+                    'source' => 'sample.jpg',
+                ],
+                's--2hbrSMPO--'
             ],
         ];
     }
