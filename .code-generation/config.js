@@ -7,7 +7,7 @@
  * @param payload
  * @constructor
  */
-export function CanonicalColorQualifier(payload) {
+function CanonicalColorQualifier(payload) {
     const {qualifierDTO, langConfig} = payload;
     // This case supports two types of qualifiers
     // TODO this structure needs to be aligned
@@ -15,9 +15,9 @@ export function CanonicalColorQualifier(payload) {
 
     if (qualifierDTO.qualifiers && qualifierDTO.name === 'rgb') {
         return [
-            formatClassOrEnum(qualifierDTO.group, langConfig),
+            payload.formatClassOrEnum(qualifierDTO.group, langConfig),
             langConfig.groupDelimiter,
-            formatMethod(qualifierDTO.name, langConfig),
+            payload.formatMethod(qualifierDTO.name, langConfig),
             '(',
             `'${qualifierDTO.qualifiers[0].value}'`.replace('#', ''),
             ')'
@@ -25,7 +25,7 @@ export function CanonicalColorQualifier(payload) {
     } else {
         const simpleColorName = qualifierDTO.qualifiers ? qualifierDTO.qualifiers[0].name : qualifierDTO.name;
         return [
-            formatClassOrEnum(qualifierDTO.group, langConfig),
+            payload.formatClassOrEnum(qualifierDTO.group, langConfig),
             langConfig.groupDelimiter,
             simpleColorName.toUpperCase()
         ].join('');
