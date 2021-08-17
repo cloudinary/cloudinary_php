@@ -605,6 +605,12 @@ final class UsageTest extends TestCase
             'pg_name:record_cover;Shadow',
             (string)(new Transformation())->psdTools(PsdTools::getLayer()->byNames('record_cover', 'Shadow'))
         );
+
+        self::assertEquals(
+            'pg_name:record_cover;Shadow;record_cover2;Shadow2',
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byNames('record_cover', 'Shadow')
+                                                             ->byName('record_cover2')->byName('Shadow2'))
+        );
     }
 
     public function testExpressions()
