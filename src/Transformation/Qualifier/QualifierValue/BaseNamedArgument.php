@@ -67,6 +67,16 @@ abstract class BaseNamedArgument extends BaseComponent
     }
 
     /**
+     * Gets the multi value of the argument.
+     *
+     * @return array
+     */
+    public function getMultiValue()
+    {
+        return $this->argMultiValue;
+    }
+
+    /**
      * Serializes to string.
      *
      * @return string
