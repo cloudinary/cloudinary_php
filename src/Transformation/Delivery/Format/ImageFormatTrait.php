@@ -198,6 +198,16 @@ trait ImageFormatTrait
     }
 
     /**
+     * Image format glb.
+     *
+     * @return static
+     */
+    public static function glb()
+    {
+        return static::createFormat(Format::GLB);
+    }
+
+    /**
      * Image format usdz.
      *
      * @return static
