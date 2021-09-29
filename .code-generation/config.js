@@ -1,38 +1,3 @@
-/**
- * TODO: This function should be embedded in the framework itself
- * A canonical Color formatter, Supports the following inputs:
- * {name:color, is_required:true qualifiers: [{group:'color', name: 'red', is_required:true}]}
- * {group:'color', name: 'red', is_required:true}
- * {group:'color', name: 'rgb', qualifiers: [{ "name": "color", "value": "#d5d2ca", "is_required": true, "value_type": "string" }]}
- * @param payload
- * @constructor
- */
-function CanonicalColorQualifier(payload) {
-    const {qualifierDTO, langConfig} = payload;
-    // This case supports two types of qualifiers
-    // TODO this structure needs to be aligned
-
-
-    if (qualifierDTO.qualifiers && qualifierDTO.name === 'rgb') {
-        return [
-            payload.formatClassOrEnum(qualifierDTO.group, langConfig),
-            langConfig.groupDelimiter,
-            payload.formatMethod(qualifierDTO.name, langConfig),
-            '(',
-            `'${qualifierDTO.qualifiers[0].value}'`.replace('#', ''),
-            ')'
-        ].join('');
-    } else {
-        const simpleColorName = qualifierDTO.qualifiers ? qualifierDTO.qualifiers[0].name : qualifierDTO.name;
-        return [
-            payload.formatClassOrEnum(qualifierDTO.group, langConfig),
-            langConfig.groupDelimiter,
-            simpleColorName.toUpperCase()
-        ].join('');
-    }
-}
-
-
 module.exports = {
     "SDKSpecVersion": {},
     "langConfig": {
@@ -99,8 +64,7 @@ module.exports = {
 
                 // TODO this should be streamlined with how we de. al with color.
                 return `->colorOverride(Color::${colorName.toUpperCase()})`
-            },
-            color: CanonicalColorQualifier // TODO this functionality should be embeded in the framework itself
+            }
         }
     }
 }
