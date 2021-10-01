@@ -1,3 +1,29 @@
+2.4.0 / 2021-10-01
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `glb` format
+  * Add support for `SHA-256` signature algorithm
+  * Add support for `downloadGeneratedSprite` and `downloadMulti` helpers
+  * Add support for `urls` in `multi` and `sprite` Upload APIs
+  * Add support for `createSlideshow` Upload API
+  * Add support for variables in text style
+  * Add support for `theme` effect
+  * Add support for `reorderMetadataFieldDatasource` Admin API
+  * Add support for `metadata` in `update` Admin API
+  * Add support for stroke manipulation in text source
+
+Other Changes
+-------------
+
+  * Refactor integration tests
+  * Improve auto optimal breakpoints generation
+  * Remove duplicates in Search API fields
+  * Add test for expression normalization
+  * Fix grouping of the layer names
+
 2.3.0 / 2021-07-04
 ==================
 
