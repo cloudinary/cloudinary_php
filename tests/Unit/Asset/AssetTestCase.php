@@ -43,7 +43,12 @@ abstract class AssetTestCase extends UnitTestCase
     const DOCX_EXT  = 'docx';
     const DOCX_NAME = self::ASSET_ID . '.' . self::DOCX_EXT;
 
+    const FD_PID_PREFIX      = 'fd_public_id_prefix';
+    const ASSET_DISPLAY_NAME = 'test';
+
+    const ASSET_FOLDER    = 'asset_folder';
     const FOLDER          = 'test_folder';
+    const NESTED_FOLDER   = 'folder/test';
     const IMAGE_IN_FOLDER = self::FOLDER . '/' . self::IMAGE_NAME;
 
     const FETCH_IMAGE_URL = 'https://res.cloudinary.com/demo/image/upload/' . self::IMAGE_NAME;

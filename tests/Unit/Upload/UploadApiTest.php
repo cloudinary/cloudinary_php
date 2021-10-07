@@ -109,4 +109,26 @@ final class UploadApiTest extends AssetTestCase
 
         self::assertArraySubset(['chunk_size' => self::TEST_CHUNK_SIZE], $lastOptions);
     }
+
+    /**
+     * Should pass folder decoupling params.
+     *
+     * @throws ApiError
+     */
+    public function testUploadFolderDecoupling()
+    {
+        $options = [
+            'public_id_prefix'             => self::FD_PID_PREFIX,
+            'asset_folder'                 => self::ASSET_FOLDER,
+            'display_name'                 => self::ASSET_DISPLAY_NAME,
+            'use_filename_as_display_name' => true,
+            'folder'                       => self::NESTED_FOLDER,
+        ];
+
+        $mockUploadApi = new MockUploadApi();
+        $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $options);
+        $lastOptions = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
+
+        self::assertArraySubset($options, $lastOptions);
+    }
 }
