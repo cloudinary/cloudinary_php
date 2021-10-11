@@ -19,6 +19,11 @@ final class ContextTest extends IntegrationTestCase
 {
     const CONTEXT_DATA = ['k1' => 'v2', 'k2' => 'vשаß = & | ? !@#$%^&*()_+{}:">?/.,\']['];
 
+    const ADDING_CONTEXT_TO_IMAGE = 'adding_context_to_image';
+    const REMOVING_ALL_CONTEXT_1  = 'removing_all_context_1';
+    const REMOVING_ALL_CONTEXT_2  = 'removing_all_context_2';
+    const REMOVING_ALL_CONTEXT_3  = 'removing_all_context_3';
+
     /**
      * @throws ApiError
      */
@@ -26,8 +31,14 @@ final class ContextTest extends IntegrationTestCase
     {
         parent::setUpBeforeClass();
 
-        self::uploadTestAssetImage(['public_id' => self::$UNIQUE_TEST_ID]);
-        self::uploadTestAssetImage(['public_id' => self::$UNIQUE_TEST_ID2]);
+        self::createTestAssets(
+            [
+                self::ADDING_CONTEXT_TO_IMAGE,
+                self::REMOVING_ALL_CONTEXT_1 => ['options' => ['context' => self::CONTEXT_DATA]],
+                self::REMOVING_ALL_CONTEXT_2 => ['options' => ['context' => self::CONTEXT_DATA]],
+                self::REMOVING_ALL_CONTEXT_3 => ['options' => ['context' => self::CONTEXT_DATA]],
+            ]
+        );
     }
 
     public static function tearDownAfterClass()
@@ -38,50 +49,95 @@ final class ContextTest extends IntegrationTestCase
     }
 
     /**
-     * Add a context to images by Public IDs
+     * Add a context to images by Public IDs.
      */
     public function testAddContextToImagesByPublicID()
     {
-        $result = self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID]);
+        $result = self::$uploadApi->addContext(
+            self::CONTEXT_DATA,
+            [
+                self::getTestAssetPublicId(self::ADDING_CONTEXT_TO_IMAGE)
+            ]
+        );
 
-        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        self::assertEquals(
+            [
+                self::getTestAssetPublicId(self::ADDING_CONTEXT_TO_IMAGE)
+            ],
+            $result['public_ids']
+        );
 
-        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
+        $asset = self::$adminApi->asset(self::getTestAssetPublicId(self::ADDING_CONTEXT_TO_IMAGE));
 
         self::assertEquals(self::CONTEXT_DATA, $asset['context']['custom']);
     }
 
     /**
-     * Remove all context from images by Public IDs array
+     * Remove all context from images by Public IDs array.
      */
     public function testRemoveAllContextFromImagesByPublicIDsArray()
     {
-        self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID]);
-        self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID2]);
+        $asset1 = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_1)
+        );
+        $asset2 = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_2)
+        );
 
-        $result = self::$uploadApi->removeAllContext([self::$UNIQUE_TEST_ID, self::$UNIQUE_TEST_ID2]);
+        self::assertArrayHasKey('context', $asset1);
+        self::assertArrayHasKey('context', $asset2);
 
-        self::assertEquals([self::$UNIQUE_TEST_ID, self::$UNIQUE_TEST_ID2], $result['public_ids']);
+        $result = self::$uploadApi->removeAllContext(
+            [
+                self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_1),
+                self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_2),
+            ]
+        );
 
-        $resource = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
-        $resource2 = self::$adminApi->asset(self::$UNIQUE_TEST_ID2);
+        self::assertEquals(
+            [
+                self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_1),
+                self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_2),
+            ],
+            $result['public_ids']
+        );
 
-        self::assertArrayNotHasKey('context', $resource);
-        self::assertArrayNotHasKey('context', $resource2);
+        $asset1 = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_1)
+        );
+        $asset2 = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_2)
+        );
+
+        self::assertArrayNotHasKey('context', $asset1);
+        self::assertArrayNotHasKey('context', $asset2);
     }
 
     /**
-     * Remove all context from image by Public ID string
+     * Remove all context from image by Public ID string.
      */
     public function testRemoveAllContextFromImagesByPublicIDString()
     {
-        self::$uploadApi->addContext(self::CONTEXT_DATA, [self::$UNIQUE_TEST_ID]);
+        $asset = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_3)
+        );
 
-        $result = self::$uploadApi->removeAllContext(self::$UNIQUE_TEST_ID);
+        self::assertArrayHasKey('context', $asset);
 
-        self::assertEquals([self::$UNIQUE_TEST_ID], $result['public_ids']);
+        $result = self::$uploadApi->removeAllContext(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_3)
+        );
 
-        $asset = self::$adminApi->asset(self::$UNIQUE_TEST_ID);
+        self::assertEquals(
+            [
+                self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_3)
+            ],
+            $result['public_ids']
+        );
+
+        $asset = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::REMOVING_ALL_CONTEXT_3)
+        );
 
         self::assertArrayNotHasKey('context', $asset);
     }

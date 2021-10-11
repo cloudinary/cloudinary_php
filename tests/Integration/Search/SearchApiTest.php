@@ -23,15 +23,15 @@ use Cloudinary\Transformation\Transformation;
  */
 class SearchApiTest extends IntegrationTestCase
 {
-    const CONTEXT_KEY = 'key';
+    const CONTEXT_KEY    = 'key';
+    const SEARCH_ASSET_1 = 'search_asset_1';
+    const SEARCH_ASSET_2 = 'search_asset_2';
+    const SEARCH_ASSET_3 = 'search_asset_3';
 
     private static $STRING_WITH_UNDERSCORE;
     private static $STRING_1;
     private static $STRING_2;
     private static $MULTI_STRING;
-    private static $PUBLIC_ID_1;
-    private static $PUBLIC_ID_2;
-    private static $PUBLIC_ID_3;
 
     /**
      * @var SearchApi
@@ -50,38 +50,40 @@ class SearchApiTest extends IntegrationTestCase
         self::$STRING_1 = '1stString' . self::$SUFFIX;
         self::$STRING_2 = '2ndString' . self::$SUFFIX;
         self::$MULTI_STRING = self::$STRING_1 . '_' . self::$STRING_2;
-        self::$PUBLIC_ID_1 = 'search_public_id_1_' . self::$UNIQUE_TEST_ID;
-        self::$PUBLIC_ID_2 = 'search_public_id_2_' . self::$UNIQUE_TEST_ID;
-        self::$PUBLIC_ID_3 = 'search_public_id_3_' . self::$UNIQUE_TEST_ID;
 
-        foreach (range(1, 3) as $i) {
-            self::uploadTestAssetImage(
+        $assets = [
+            'options' => [
+                'context' => ['stage' => 'value'],
+                'eager' => (new Transformation())->resize(Scale::scale(100)),
+            ],
+        ];
+
+        self::createTestAssets(
+            [
+                self::SEARCH_ASSET_1 => $assets,
+                self::SEARCH_ASSET_2 => $assets,
+                self::SEARCH_ASSET_3 => $assets,
                 [
-                    'public_id' => self::${'PUBLIC_ID_' . $i},
-                    'context' => ['stage' => 'value'],
-                    'eager' => (new Transformation())->resize(Scale::scale(100)),
-                ]
-            );
-        }
-        self::uploadTestAssetImage(
-            [
-                'tags' => [self::$STRING_WITH_UNDERSCORE, self::$STRING_1],
-                'public_id' => self::$STRING_1
-            ]
-        );
-        self::uploadTestAssetImage(
-            [
-                'tags' => [self::$STRING_2],
-                'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
-            ]
-        );
-        self::uploadTestAssetImage(
-            [
-                'tags' => [
-                    self::$STRING_WITH_UNDERSCORE,
-                    self::$MULTI_STRING
+                    'options' => [
+                        'tags' => [self::$STRING_WITH_UNDERSCORE, self::$STRING_1],
+                        'public_id' => self::$STRING_1
+                    ],
                 ],
-                'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
+                [
+                    'options' => [
+                        'tags' => [self::$STRING_2],
+                        'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
+                    ],
+                ],
+                [
+                    'options' => [
+                        'tags' => [
+                            self::$STRING_WITH_UNDERSCORE,
+                            self::$MULTI_STRING
+                        ],
+                        'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
+                    ],
+                ],
             ]
         );
         sleep(3); // FIXME
@@ -208,7 +210,9 @@ class SearchApiTest extends IntegrationTestCase
      */
     public function testShouldReturnResource()
     {
-        $results = $this->search->expression('public_id:' . self::$PUBLIC_ID_1)->execute();
+        $results = $this->search->expression(
+            'public_id:' . self::getTestAssetPublicId(self::SEARCH_ASSET_1)
+        )->execute();
 
         self::assertCount(1, $results['resources']);
     }

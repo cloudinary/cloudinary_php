@@ -111,7 +111,8 @@ final class ImageTagTest extends ImageTagTestCase
 
     public function testImageTagSrcSetAutoOptimalBreakpointsFromConfig()
     {
-        $conf                                                = new Configuration($this->breakpointsConf);
+        $conf = new Configuration($this->breakpointsConf);
+
         $conf->responsiveBreakpoints->autoOptimalBreakpoints = true;
 
         self::assertImageTag(

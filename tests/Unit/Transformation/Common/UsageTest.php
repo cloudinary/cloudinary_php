@@ -18,6 +18,7 @@ use Cloudinary\Transformation\Argument\GradientDirection;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontStyle;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
+use Cloudinary\Transformation\Argument\Text\Stroke;
 use Cloudinary\Transformation\Argument\Text\TextDecoration;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\AudioFrequency;
@@ -45,9 +46,9 @@ use Cloudinary\Transformation\LayerFlag;
 use Cloudinary\Transformation\ObjectGravity;
 use Cloudinary\Transformation\OutlineMode;
 use Cloudinary\Transformation\Pad;
-use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\PsdTools;
+use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Quality;
 use Cloudinary\Transformation\Reshape;
 use Cloudinary\Transformation\Resize;
@@ -562,12 +563,17 @@ final class UsageTest extends TestCase
         );
 
         self::assertEquals(
-            'b_red,co_green,l_text:Impact_150:Your%20Logo%20Here/e_distort:arc:-120/fl_layer_apply,g_south,y_840',
+            'b_red,bo_2px_solid_white,co_green,l_text:Impact_150_stroke:Your%20Logo%20Here/e_distort:arc:-120' .
+            '/fl_layer_apply,g_south,y_840',
             (string)(new Transformation())->overlay(
                 ImageSource::text(
                     'Your Logo Here',
                     new TextStyle(FontFamily::IMPACT, 150)
-                )->textColor(Color::GREEN)->backgroundColor(Color::RED)->reshape(Reshape::distortArc(-120)),
+                )
+                           ->stroke(Stroke::solid(2, Color::WHITE))
+                           ->textColor(Color::GREEN)
+                           ->backgroundColor(Color::RED)
+                           ->reshape(Reshape::distortArc(-120)),
                 Position::south(null, 840)
             )
         );
@@ -598,6 +604,12 @@ final class UsageTest extends TestCase
         self::assertEquals(
             'pg_name:record_cover;Shadow',
             (string)(new Transformation())->psdTools(PsdTools::getLayer()->byNames('record_cover', 'Shadow'))
+        );
+
+        self::assertEquals(
+            'pg_name:record_cover;Shadow;record_cover2;Shadow2',
+            (string)(new Transformation())->psdTools(PsdTools::getLayer()->byNames('record_cover', 'Shadow')
+                                                             ->byName('record_cover2')->byName('Shadow2'))
         );
     }
 

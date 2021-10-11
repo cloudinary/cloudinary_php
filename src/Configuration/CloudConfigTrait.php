@@ -46,6 +46,20 @@ trait CloudConfigTrait
     }
 
     /**
+     * Sets the signature algorithm.
+     *
+     * @param string $signatureAlgorithm The algorithm to use. (Can be SHA1 or SHA256).
+     *
+     * @return $this
+     *
+     * @api
+     */
+    public function signatureAlgorithm($signatureAlgorithm)
+    {
+        return $this->setCloudConfig(CloudConfig::SIGNATURE_ALGORITHM, $signatureAlgorithm);
+    }
+
+    /**
      * Sets the Cloud configuration key with the specified value.
      *
      * @param string $configKey   The configuration key.

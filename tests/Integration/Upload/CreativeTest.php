@@ -10,10 +10,15 @@
 
 namespace Cloudinary\Test\Integration\Upload;
 
+use Cloudinary\Api\ApiClient;
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Asset\DeliveryType;
+use Cloudinary\Configuration\ApiConfig;
+use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Transformation\Extract;
+use Cloudinary\Transformation\Transformation;
 use PHPUnit_Framework_Constraint_IsType as IsType;
 
 /**
@@ -21,9 +26,23 @@ use PHPUnit_Framework_Constraint_IsType as IsType;
  */
 final class CreativeTest extends IntegrationTestCase
 {
+    const EXPLODE_GIF = 'explode_gif';
+
+    const TRANSFORMATION   = ['width' => '0.5', 'crop' => 'crop'];
+    const TRANSFORMATION_2 = ['width' => '100'];
+
+    const URL_1 = 'https://res.cloudinary.com/demo/image/upload/sample';
+    const URL_2 = 'https://res.cloudinary.com/demo/image/upload/car';
+
+    const SPRITE_TEST_1 = 'sprite_test_1';
+    const SPRITE_TEST_2 = 'sprite_test_2';
+    const MULTI_TEST_1  = 'multi_test_1';
+    const MULTI_TEST_2  = 'multi_test_2';
+
     private static $TAG_TO_MULTI;
     private static $TAG_TO_GENERATE_SPRITE;
-    private static $EXPLODE_GIF_PUBLIC_ID;
+
+    private static $TRANSFORMATION_STRING;
 
     /**
      * @throws ApiError
@@ -34,16 +53,25 @@ final class CreativeTest extends IntegrationTestCase
 
         self::$TAG_TO_MULTI           = 'upload_creative_multi_' . self::$UNIQUE_TEST_TAG;
         self::$TAG_TO_GENERATE_SPRITE = 'upload_creative_generate_sprite_' . self::$UNIQUE_TEST_TAG;
-        self::$EXPLODE_GIF_PUBLIC_ID  = 'upload_creative_explode_gif_' . self::$UNIQUE_TEST_ID;
+
+        self::$TRANSFORMATION_STRING = (string)(new Transformation(self::TRANSFORMATION));
 
         $tags = [
             self::$TAG_TO_GENERATE_SPRITE,
             self::$TAG_TO_MULTI,
         ];
 
-        self::uploadTestAssetImage(['tags' => $tags, 'public_id' => self::$UNIQUE_TEST_ID]);
-        self::uploadTestAssetImage(['tags' => $tags]);
-        self::uploadTestAssetImage(['public_id' => self::$EXPLODE_GIF_PUBLIC_ID], self::TEST_IMAGE_GIF_PATH);
+        self::createTestAssets(
+            [
+                ['options' => ['tags' => $tags]],
+                ['options' => ['tags' => $tags]],
+                self::EXPLODE_GIF => ['options' => ['file' => self::TEST_IMAGE_GIF_PATH]],
+                self::SPRITE_TEST_1 => ['option' => ['tags' => self::$TAG_TO_GENERATE_SPRITE]],
+                self::SPRITE_TEST_2 => ['option' => ['tags' => self::$TAG_TO_GENERATE_SPRITE]],
+                self::MULTI_TEST_1  => ['option' => ['tags' => self::$TAG_TO_MULTI]],
+                self::MULTI_TEST_2  => ['option' => ['tags' => self::$TAG_TO_MULTI]],
+            ]
+        );
     }
 
     public static function tearDownAfterClass()
@@ -54,49 +82,178 @@ final class CreativeTest extends IntegrationTestCase
     }
 
     /**
-     * Generating a sprite from all images tagged with a certain tag
+     * Generating a sprite from given image urls or all images tagged with a certain tag.
      */
     public function testGenerateSprite()
     {
+        $asset = self::$uploadApi->generateSprite(
+            [
+                'urls' => [
+                    self::getTestAsset(self::SPRITE_TEST_1)['url'],
+                    self::getTestAsset(self::SPRITE_TEST_2)['url'],
+                ],
+            ]
+        );
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
+
+        self::assertValidSprite($asset);
+        self::assertCount(2, $asset['image_infos']);
+
         $asset = self::$uploadApi->generateSprite(self::$TAG_TO_GENERATE_SPRITE);
         self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
 
-        self::assertAssetUrl($asset, 'css_url', 'css', DeliveryType::SPRITE);
-        self::assertAssetUrl($asset, 'image_url', 'png', DeliveryType::SPRITE);
-        self::assertAssetUrl($asset, 'json_url', 'json', DeliveryType::SPRITE);
-        self::assertAssetUrl($asset, 'secure_css_url', 'css', DeliveryType::SPRITE);
-        self::assertAssetUrl($asset, 'secure_image_url', 'png', DeliveryType::SPRITE);
-        self::assertAssetUrl($asset, 'secure_json_url', 'json', DeliveryType::SPRITE);
-        self::assertEquals(self::$TAG_TO_GENERATE_SPRITE, $asset['public_id']);
-
+        self::assertValidSprite($asset);
         self::assertCount(2, $asset['image_infos']);
 
-        foreach ($asset['image_infos'] as $imageInfo) {
-            self::assertObjectStructure(
-                $imageInfo,
-                [
-                    'width'  => IsType::TYPE_INT,
-                    'height' => IsType::TYPE_INT,
-                    'x'      => IsType::TYPE_INT,
-                    'y'      => IsType::TYPE_INT,
-                ]
-            );
-            self::assertNotEmpty($imageInfo['width']);
-            self::assertNotEmpty($imageInfo['height']);
-        }
+        $asset = self::$uploadApi->generateSprite(
+            self::$TAG_TO_GENERATE_SPRITE,
+            [
+                'transformation' => self::TRANSFORMATION_2,
+            ]
+        );
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
+
+        self::assertValidSprite($asset);
+        self::assertContains('w_100', $asset['css_url']);
+
+        $asset = self::$uploadApi->generateSprite(
+            self::$TAG_TO_GENERATE_SPRITE,
+            [
+                'transformation' => new Transformation(['width' => 100]),
+                'format'         => 'jpg',
+            ]
+        );
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
+
+        self::assertValidSprite($asset);
+        self::assertContains('w_100/f_jpg', $asset['css_url']);
     }
 
     /**
-     * Creates a single animated image from all image assets that have been assigned a certain tag
+     * Generating an url to download a sprite from a provided array of URLs and from all images that have been assigned
+     * a specified tag.
+     */
+    public function testDownloadGeneratedSprite()
+    {
+        $urlFromTag  = self::$uploadApi->downloadGeneratedSprite(self::$TAG_TO_GENERATE_SPRITE);
+        $urlFromUrls = self::$uploadApi->downloadGeneratedSprite(
+            [
+                'urls' => [
+                    self::URL_1,
+                    self::URL_2,
+                ],
+            ]
+        );
+
+        self::assertDownloadSignUrl(
+            $urlFromTag,
+            ApiConfig::DEFAULT_UPLOAD_PREFIX,
+            '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/sprite',
+            [
+                'mode' => UploadApi::MODE_DOWNLOAD,
+                'tag'  => self::$TAG_TO_GENERATE_SPRITE,
+            ]
+        );
+        self::assertDownloadSignUrl(
+            $urlFromUrls,
+            ApiConfig::DEFAULT_UPLOAD_PREFIX,
+            '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/sprite',
+            [
+                'mode'    => UploadApi::MODE_DOWNLOAD,
+                'api_key' => self::$uploadApi->getCloud()->apiKey,
+                'urls'    => [
+                    self::URL_1,
+                    self::URL_2,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Creates a single animated image from given image urls or all image assets that have been assigned a certain tag.
      */
     public function testCreateMulti()
     {
-        $asset = self::$uploadApi->multi(self::$TAG_TO_MULTI);
+        $asset = self::$uploadApi->multi(
+            [
+                'urls'           => [
+                    self::getTestAsset(self::MULTI_TEST_1)['url'],
+                    self::getTestAsset(self::MULTI_TEST_2)['url'],
+                ],
+                'transformation' => self::TRANSFORMATION,
+            ]
+        );
         self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::MULTI]);
 
-        self::assertAssetUrl($asset, 'url', 'gif', DeliveryType::MULTI);
-        self::assertAssetUrl($asset, 'secure_url', 'gif', DeliveryType::MULTI);
-        self::assertEquals(self::$TAG_TO_MULTI, $asset['public_id']);
+        self::assertValidMulti($asset);
+        self::assertStringEndsWith('.gif', $asset['url']);
+        self::assertContains('w_0.5', $asset['url']);
+
+        $asset = self::$uploadApi->multi(
+            self::$TAG_TO_MULTI,
+            [
+                'transformation' => self::TRANSFORMATION,
+            ]
+        );
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::MULTI]);
+
+        self::assertValidMulti($asset);
+        self::assertStringEndsWith('.gif', $asset['url']);
+        self::assertContains('w_0.5', $asset['url']);
+
+        $asset = self::$uploadApi->multi(
+            self::$TAG_TO_MULTI,
+            [
+                'transformation' => new Transformation(['width' => 111]),
+                'format'         => 'pdf',
+            ]
+        );
+        self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::MULTI]);
+
+        self::assertValidMulti($asset);
+        self::assertStringEndsWith('.pdf', $asset['url']);
+        self::assertContains('w_111', $asset['url']);
+    }
+
+    /**
+     * Generating an url to download an animated image from a provided array of URLs or from all images that have been
+     * assigned a specified tag.
+     */
+    public function testDownloadMulti()
+    {
+        $urlFromTag  = self::$uploadApi->downloadMulti(self::$TAG_TO_MULTI);
+        $urlFromUrls = self::$uploadApi->downloadMulti(
+            [
+                'urls' => [
+                    self::URL_1,
+                    self::URL_2,
+                ],
+            ]
+        );
+
+        self::assertDownloadSignUrl(
+            $urlFromTag,
+            ApiConfig::DEFAULT_UPLOAD_PREFIX,
+            '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/multi',
+            [
+                'mode'    => UploadApi::MODE_DOWNLOAD,
+                'api_key' => self::$uploadApi->getCloud()->apiKey,
+                'tag'     => self::$TAG_TO_MULTI,
+            ]
+        );
+        self::assertDownloadSignUrl(
+            $urlFromUrls,
+            ApiConfig::DEFAULT_UPLOAD_PREFIX,
+            '/' . ApiClient::apiVersion() . '/' . Configuration::instance()->cloud->cloudName . '/image/multi',
+            [
+                'mode'    => UploadApi::MODE_DOWNLOAD,
+                'api_key' => self::$uploadApi->getCloud()->apiKey,
+                'urls'    => [
+                    self::URL_1,
+                    self::URL_2,
+                ],
+            ]
+        );
     }
 
     /**
@@ -105,7 +262,7 @@ final class CreativeTest extends IntegrationTestCase
     public function testExplodeGIF()
     {
         $result = self::$uploadApi->explode(
-            self::$EXPLODE_GIF_PUBLIC_ID,
+            self::getTestAssetPublicId(self::EXPLODE_GIF),
             [
                 'transformation' => Extract::getPage()->all(),
             ]

@@ -181,7 +181,7 @@ trait ArchiveTrait
      */
     public function downloadArchiveUrl($options = [])
     {
-        $options['mode'] = 'download';
+        $options['mode'] = self::MODE_DOWNLOAD;
         $params          = self::buildArchiveParams($options);
 
         ApiUtils::signRequest($params, $this->getCloud());

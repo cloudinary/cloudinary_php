@@ -10,19 +10,22 @@
 
 namespace Cloudinary\Test\Unit\Transformation\Image;
 
+use Cloudinary\Asset\Image;
+use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Transformation\Argument\Text\FontAntialias;
 use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
-use Cloudinary\Transformation\Argument\Text\Stroke;
 use Cloudinary\Transformation\Argument\Text\TextAlignment;
 use Cloudinary\Transformation\Argument\Text\TextDecoration;
+use Cloudinary\Transformation\Expression\Expression;
+use Cloudinary\Transformation\ImageSource;
 use Cloudinary\Transformation\TextStyle;
-use PHPUnit\Framework\TestCase;
+use Cloudinary\Transformation\Transformation;
 
 /**
  * Class TextStyleTest
  */
-final class TextStyleTest extends TestCase
+final class TextStyleTest extends AssetTestCase
 {
     public function testTextStyle()
     {
@@ -39,7 +42,38 @@ final class TextStyleTest extends TestCase
                 ->textDecoration(TextDecoration::STRIKETHROUGH)
                 ->fontWeight(FontWeight::ULTRABOLD)
                 ->textAlignment(TextAlignment::JUSTIFY)
-                ->stroke(Stroke::STROKE)
+                ->stroke()
+        );
+    }
+
+    public function testTextLayerStyleIdentifierVariables()
+    {
+        $image = new Image(self::IMAGE_NAME);
+        $image->addTransformation(
+            (new Transformation())
+                ->addVariable('$style', '!Arial_12!')
+                ->overlay(
+                    ImageSource::text('hello-world')->textStyle('$style')
+                )
+        );
+
+        self::assertImageUrl(
+            '$style_!Arial_12!/l_text:$style:hello-world/fl_layer_apply/' . self::IMAGE_NAME,
+            $image->toUrl()
+        );
+
+        $image = new Image(self::IMAGE_NAME);
+        $image->addTransformation(
+            (new Transformation())
+                ->addVariable('$style', '!Arial_12!')
+                ->overlay(
+                    ImageSource::text('hello-world')->textStyle(new Expression('$style'))
+                )
+        );
+
+        self::assertImageUrl(
+            '$style_!Arial_12!/l_text:$style:hello-world/fl_layer_apply/' . self::IMAGE_NAME,
+            $image->toUrl()
         );
     }
 }
