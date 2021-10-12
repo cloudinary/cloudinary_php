@@ -13,7 +13,7 @@ module.exports = {
             openSyntaxString: {
                 image: '(new ImageTag(\'#publicID\'))',
                 video: '(new VideoTag(\'#publicID\'))',
-                media: '(new MediaTag(\'#publicID\'))'
+                media: '(new Media(\'#publicID\'))'
             },
             closeSyntaxString: ';'
         },
@@ -50,7 +50,7 @@ module.exports = {
                 close: '',
             },
             media: {
-                open: "(new MediaTransformation())",// TODO Seems like we should reuse the newInstanceSyntax
+                open: "(new Transformation())",// TODO Seems like we should reuse the newInstanceSyntax
                 close: '',
             }
         },

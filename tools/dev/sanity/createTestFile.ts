@@ -1,10 +1,11 @@
-import {ITxResult} from "./index";
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable require-jsdoc */
 
-const fs = require('fs');
 
+import {IFrameworkResponse} from "sdk-sanity-generator/dist/interfaces";
 const prettier = require('prettier');
 
-function createTestFile(txs: ITxResult[]) {
+function createTestFile(txs: IFrameworkResponse[]){
     let file = `<?php
 
 namespace Cloudinary\\Transformation;
@@ -45,14 +46,14 @@ Configuration::instance()->cloud->cloudName('demo');
 
     file += txs.map((txResult, index) => {
 
-        let realCode = txResult.parsedCode;
+        let realCode = txResult.codeSnippet;
 
         realCode = realCode.replace("new ImageTag('sample')", "new Image('sample')");
         realCode = realCode.replace("new VideoTag('sample')", "new Video('sample')");
 
-        let test = `    public function testTransformation${index}($tr='${txResult.txString}')
+        let test = `    public function testTransformation${index}($tr='${txResult.transformation}')
     {\n`;
-        const qualifiers = txResult.txString.replace(/\//g, ',').split(',').filter(n => n);
+        const qualifiers = txResult.transformation.replace(/\//g, ',').split(',').filter(n => n);
         const qualifiersStr = JSON.stringify(qualifiers).replace(/"/g,"'");
 
         test += `        $qualifiers = ${qualifiersStr};`;
