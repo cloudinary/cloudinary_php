@@ -14,6 +14,7 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetTransformation;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\CloudConfig;
+use Cloudinary\Transformation\Transformation;
 use Cloudinary\Utils;
 
 /**
@@ -175,6 +176,20 @@ class ApiUtils
         }
 
         return ArrayUtils::implodeFiltered(self::ASSET_TRANSFORMATIONS_DELIMITER, $serializedTransformations);
+    }
+
+    /**
+     * Serializes incoming transformation.
+     *
+     * @param array|string $transformationParams
+     *
+     * @return string The resulting serialized parameter.
+     *
+     * @internal
+     */
+    public static function serializeTransformation($transformationParams)
+    {
+        return (string)ClassUtils::forceInstance($transformationParams, Transformation::class);
     }
 
     /**
