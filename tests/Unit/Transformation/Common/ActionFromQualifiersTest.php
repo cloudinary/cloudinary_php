@@ -106,6 +106,7 @@ final class ActionFromQualifiersTest extends AssetTestCase
         $tests = [
             'bo_1px_solid_blue'         => '1px_solid_blue',
             'bo_5px_solid_black'        => ['width' => 5],
+            'bo_$width_solid_black'     => ['width' => '$width'],
             'bo_5px_solid_rgb:ffaabbdd' => ['width' => 5, 'color' => '#ffaabbdd'],
 
         ];

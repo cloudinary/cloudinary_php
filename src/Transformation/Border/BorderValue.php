@@ -56,13 +56,13 @@ class BorderValue extends QualifierMultiValue
     /**
      * Sets the width of the border.
      *
-     * @param int $width The width of the border in pixels.
+     * @param int|string $width The width of the border in pixels.
      *
      * @return $this
      */
     public function width($width)
     {
-        return $this->setSimpleValue('width', $width ? "{$width}px" : $width);
+        return $this->setSimpleValue('width', $width && is_numeric($width) ? "{$width}px" : $width);
     }
 
     /**
