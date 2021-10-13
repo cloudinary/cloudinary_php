@@ -383,6 +383,15 @@ final class UsageTest extends TestCase
                 )
             )
         );
+
+        self::assertEquals(
+            'bo_$width_solid_hotpink,r_max',
+            (string)(new Transformation())->border(
+                Border::solid()->width('$width')->color(Color::HOTPINK)->roundCorners(
+                    RoundCorners::max()
+                )
+            )
+        );
     }
 
     /**

@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\ClassUtils;
 use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
@@ -40,7 +39,7 @@ class BorderQualifier extends BaseQualifier
     /**
      * Sets the width of the border.
      *
-     * @param int $width The width in pixels.
+     * @param int|string $width The width in pixels.
      *
      * @return $this
      */
