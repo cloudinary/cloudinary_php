@@ -1,3 +1,10 @@
+2.4.1 / 2021-10-15
+==================
+
+  * Limit `psr/log` to version 1 for backwards compatibility
+  * Fix incoming transformation serialization
+  * Fix border width with user variables
+
 2.4.0 / 2021-10-01
 ==================
 
