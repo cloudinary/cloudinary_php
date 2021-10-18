@@ -45,7 +45,7 @@ class MockApiClient extends ApiClient
             ]
         );
 
-        $config = $this->httpClient->getConfig();
+        $config            = $this->httpClient->getConfig();
         $config['handler'] = HandlerStack::create($this->mockHandler);
 
         $this->httpClient = new Client($config);
@@ -66,6 +66,16 @@ class MockApiClient extends ApiClient
     }
 
     /**
+     * Returns request options.
+     *
+     * @return array
+     */
+    public function getRequestOptions()
+    {
+        return $this->requestOptions;
+    }
+
+    /**
      * Returns request multipart options.
      *
      * @return array
@@ -82,6 +92,7 @@ class MockApiClient extends ApiClient
                 $options[$item['name']] = $item['contents'] instanceof Stream
                     ? $item['contents']->getContents()
                     : $item['contents'];
+
                 return $options;
             }
         );
