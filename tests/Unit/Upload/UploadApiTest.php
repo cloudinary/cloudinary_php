@@ -11,6 +11,8 @@
 namespace Cloudinary\Test\Unit\Upload;
 
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Configuration\ApiConfig;
+use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Helpers\MockUploadApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
@@ -20,6 +22,8 @@ use Cloudinary\Test\Unit\Asset\AssetTestCase;
  */
 final class UploadApiTest extends AssetTestCase
 {
+    const TEST_CHUNK_SIZE = 7357;
+
     use RequestAssertionsTrait;
 
     /**
@@ -60,5 +64,49 @@ final class UploadApiTest extends AssetTestCase
 
         self::assertContains('asset_id', $url);
         self::assertContains('version_id', $url);
+    }
+
+    /**
+     * Should use default chunk size.
+     *
+     * @throws ApiError
+     */
+    public function testUploadDefaultChunkSize()
+    {
+        $mockUploadApi = new MockUploadApi();
+        $mockUploadApi->upload(self::TEST_BASE64_IMAGE);
+        $lastOptions = $mockUploadApi->getApiClient()->getRequestOptions();
+
+        self::assertArraySubset(['chunk_size' => ApiConfig::DEFAULT_CHUNK_SIZE], $lastOptions);
+    }
+
+    /**
+     * Should support setting custom chunk size.
+     *
+     * @throws ApiError
+     */
+    public function testUploadCustomChunkSizeOptions()
+    {
+        $mockUploadApi = new MockUploadApi();
+        $mockUploadApi->upload(self::TEST_BASE64_IMAGE, ['chunk_size' => self::TEST_CHUNK_SIZE]);
+        $lastOptions = $mockUploadApi->getApiClient()->getRequestOptions();
+
+        self::assertArraySubset(['chunk_size' => self::TEST_CHUNK_SIZE], $lastOptions);
+    }
+
+    /**
+     * Should support setting custom chunk size in config.
+     *
+     * @throws ApiError
+     */
+    public function testUploadCustomChunkSizeConfig()
+    {
+        Configuration::instance()->api->chunkSize = self::TEST_CHUNK_SIZE;
+
+        $mockUploadApi = new MockUploadApi();
+        $mockUploadApi->upload(self::TEST_BASE64_IMAGE);
+        $lastOptions = $mockUploadApi->getApiClient()->getRequestOptions();
+
+        self::assertArraySubset(['chunk_size' => self::TEST_CHUNK_SIZE], $lastOptions);
     }
 }

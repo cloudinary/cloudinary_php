@@ -265,10 +265,7 @@ class ApiClient extends BaseApiClient
 
         $size = $fileHandle->getSize();
 
-        $options[ApiConfig::CHUNK_SIZE] = min(
-            $this->api->chunkSize,
-            ArrayUtils::get($options, ApiConfig::CHUNK_SIZE, ApiConfig::DEFAULT_CHUNK_SIZE)
-        );
+        $options[ApiConfig::CHUNK_SIZE] = ArrayUtils::get($options, ApiConfig::CHUNK_SIZE, $this->api->chunkSize);
 
         $options[ApiConfig::TIMEOUT] = ArrayUtils::get($options, ApiConfig::TIMEOUT, $this->api->uploadTimeout);
 
