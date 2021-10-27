@@ -28,7 +28,7 @@ use Cloudinary\Transformation\Argument\RotationModeTrait;
  *
  * @api
  */
-class Rotate extends BaseAction implements RotationDegreeInterface
+class Rotate extends BaseAction implements RotationDegreeInterface, RotationModeInterface
 {
     use AngleTrait;
     use RotationModeTrait;
@@ -62,5 +62,17 @@ class Rotate extends BaseAction implements RotationDegreeInterface
     public static function createWithDegree(...$degree)
     {
         return new self(Angle::byAngle(...$degree));
+    }
+
+    /**
+     * Named constructor.
+     *
+     * @param mixed $mode The rotation mode.
+     *
+     * @return Rotate
+     */
+    public static function createWithMode(...$mode)
+    {
+        return new self(Angle::mode(...$mode));
     }
 }

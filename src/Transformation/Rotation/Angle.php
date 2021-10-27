@@ -13,13 +13,14 @@ namespace Cloudinary\Transformation;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Transformation\Argument\AngleTrait;
 use Cloudinary\Transformation\Argument\Degree;
+use Cloudinary\Transformation\Argument\RotationMode;
 use Cloudinary\Transformation\Argument\RotationModeTrait;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
  * Class Angle
  */
-class Angle extends BaseQualifier implements RotationDegreeInterface
+class Angle extends BaseQualifier implements RotationDegreeInterface, RotationModeInterface
 {
     const VALUE_CLASS = Degree::class;
 
@@ -58,5 +59,19 @@ class Angle extends BaseQualifier implements RotationDegreeInterface
     public static function createWithDegree(...$degree)
     {
         return new self(...$degree);
+    }
+
+    /**
+     * Creates the instance.
+     *
+     * @param string|RotationMode|array $mode Given mode.
+     *
+     * @return Angle
+     *
+     * @internal
+     */
+    public static function createWithMode(...$mode)
+    {
+        return new self(...$mode);
     }
 }

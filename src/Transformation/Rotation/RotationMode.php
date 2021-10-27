@@ -11,6 +11,7 @@
 namespace Cloudinary\Transformation\Argument;
 
 use Cloudinary\Transformation\QualifierMultiValue;
+use Cloudinary\Transformation\RotationModeInterface;
 
 /**
  * Defines how to rotate an image.
@@ -21,7 +22,7 @@ use Cloudinary\Transformation\QualifierMultiValue;
  *
  * @api
  */
-class RotationMode extends QualifierMultiValue
+class RotationMode extends QualifierMultiValue implements RotationModeInterface
 {
     const VALUE_DELIMITER = '.';
 
@@ -32,4 +33,18 @@ class RotationMode extends QualifierMultiValue
     const VERTICAL_FLIP   = 'vflip';
     const HORIZONTAL_FLIP = 'hflip';
     const IGNORE          = 'ignore';
+
+    /**
+     * Creates the instance.
+     *
+     * @param string|RotationMode|array $mode Given mode.
+     *
+     * @return RotationMode
+     *
+     * @internal
+     */
+    public static function createWithMode(...$mode)
+    {
+        return new self(...$mode);
+    }
 }
