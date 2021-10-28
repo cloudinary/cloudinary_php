@@ -270,15 +270,40 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      */
     protected static function getTestAssetPublicId($name)
     {
-        if (! self::$TEST_ASSETS[$name]) {
+        return self::getTestAssetProperty($name, 'public_id');
+    }
+
+    /**
+     * Return an asset id of a test asset.
+     *
+     * @param string $name The key used to save the test asset.
+     *
+     * @return string|null
+     */
+    protected static function getTestAssetAssetId($name)
+    {
+        return self::getTestAssetProperty($name, 'asset_id');
+    }
+
+    /**
+     * Return a property of a test asset.
+     *
+     * @param string $assetName    The key used to save the test asset.
+     * @param string $propertyName The name of the property of the test asset.
+     *
+     * @return string|null
+     */
+    protected static function getTestAssetProperty($assetName, $propertyName)
+    {
+        if (! self::$TEST_ASSETS[$assetName]) {
             return null;
         }
 
-        if (self::$TEST_ASSETS[$name]['asset']) {
-            return self::$TEST_ASSETS[$name]['asset']['public_id'];
+        if (self::$TEST_ASSETS[$assetName]['asset']) {
+            return self::$TEST_ASSETS[$assetName]['asset'][$propertyName];
         }
 
-        return self::$TEST_ASSETS[$name]['options']['public_id'];
+        return self::$TEST_ASSETS[$assetName]['options'][$propertyName];
     }
 
     /**
