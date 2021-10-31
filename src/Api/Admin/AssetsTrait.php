@@ -249,7 +249,7 @@ trait AssetsTrait
      */
     public function assetByAssetId($assetId, $options = [])
     {
-        $uri = [ApiEndPoint::ASSETS, 'by_asset_ids'];
+        $uri = [ApiEndPoint::ASSETS, $assetId];
 
         $params = self::prepareAssetDetailsParams($options);
 
