@@ -182,6 +182,27 @@ trait AssetsTrait
     }
 
     /**
+     * Lists assets with the specified asset IDs.
+     *
+     * @param string|array $assetIds  The requested asset IDs.
+     * @param array        $options   The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/admin_api#get_resources
+     */
+    public function assetsByAssetIds($assetIds, $options = [])
+    {
+        $uri = [ApiEndPoint::ASSETS, 'by_asset_ids'];
+
+        $params              = ArrayUtils::whitelist($options, ['public_ids', 'tags', 'moderations', 'context']);
+        $params['asset_ids'] = $assetIds;
+
+        return $this->apiClient->get($uri, $params);
+    }
+
+    /**
      * Returns the details of the specified asset and all its derived assets.
      *
      *
