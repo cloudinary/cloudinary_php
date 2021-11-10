@@ -1,3 +1,18 @@
+2.5.0 / 2021-11-10
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for folder decoupling
+  * Add support for `assetsByAssetIds` Admin API
+  * Add support for `assetByAssetId` Admin API
+
+Other Changes
+-------------
+
+  * Fix upload chunk size configuration handling
+
 2.4.1 / 2021-10-15
 ==================
 
