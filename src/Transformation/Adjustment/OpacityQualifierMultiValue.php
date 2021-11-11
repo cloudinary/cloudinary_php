@@ -10,14 +10,13 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\NormalizeQualifierMultiValueTrait;
+use Cloudinary\Transformation\QualifierMultiValue;
 
 /**
- * Class Zoom
- *
- * @internal
+ * Class OpacityQualifierMultiValue.
  */
-class Zoom extends BaseQualifier
+class OpacityQualifierMultiValue extends QualifierMultiValue
 {
-    const VALUE_CLASS = ZoomQualifierMultiValue::class;
+    use NormalizeQualifierMultiValueTrait;
 }

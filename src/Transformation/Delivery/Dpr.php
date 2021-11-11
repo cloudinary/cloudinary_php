@@ -26,6 +26,8 @@ class Dpr extends BaseQualifier
 
     const AUTO = 'auto';
 
+    const VALUE_CLASS = DprQualifierMultiValue::class;
+
     /**
      * @return static
      */

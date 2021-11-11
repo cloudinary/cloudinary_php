@@ -11,6 +11,7 @@
 namespace Cloudinary\Transformation\Argument;
 
 use Cloudinary\Transformation\RotationDegreeInterface;
+use Cloudinary\Transformation\NormalizeQualifierMultiValueTrait;
 use Cloudinary\Transformation\QualifierMultiValue;
 
 /**
@@ -27,6 +28,7 @@ class Degree extends QualifierMultiValue implements RotationDegreeInterface
     const VALUE_DELIMITER = '.';
 
     use AngleTrait;
+    use NormalizeQualifierMultiValueTrait;
 
     const DEG_90          = '90';
     const DEG_180         = '180';

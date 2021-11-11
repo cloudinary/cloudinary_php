@@ -18,6 +18,7 @@ class Corners extends QualifierMultiValue
     const MAX_ARGUMENTS = 4;
 
     use CornersTrait;
+    use NormalizeQualifierMultiValueTrait;
 
     /**
      * @var array $argumentOrder The order of the arguments.

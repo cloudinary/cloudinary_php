@@ -181,7 +181,7 @@ abstract class BaseQualifier extends BaseComponent
      */
     public function __toString()
     {
-        $value = ExpressionUtils::normalize((string)$this->value);
+        $value = (string)$this->value;
 
         /** @noinspection TypeUnsafeComparisonInspection */
         return $value == '' ? '' : self::getKey() . static::KEY_VALUE_DELIMITER . $value;

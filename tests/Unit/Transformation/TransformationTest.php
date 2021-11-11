@@ -42,6 +42,7 @@ use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\PsdTools;
 use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\QualifierMultiValue;
+use Cloudinary\Transformation\QualifiersAction;
 use Cloudinary\Transformation\Quality;
 use Cloudinary\Transformation\Resize;
 use Cloudinary\Transformation\Rotate;
@@ -58,6 +59,46 @@ use InvalidArgumentException;
  */
 final class TransformationTest extends UnitTestCase
 {
+    const SOURCE_VALUE          = "width * 2";
+    const NORMALIZED_VALUE      = "w_mul_2";
+    const NORMALIZED_PARAMETERS = [
+        'angle',
+        'aspect_ratio',
+        'dpr',
+        'effect',
+        'height',
+        'opacity',
+        'quality',
+        'radius',
+        'width',
+        'x',
+        'y',
+        'end_offset',
+        'start_offset',
+        'zoom',
+    ];
+    const NON_NORMALIZED_PARAMETERS = [
+        'audio_codec',
+        'audio_frequency',
+        'border',
+        'bit_rate',
+        'color_space',
+        'default_image',
+        'delay',
+        'density',
+        'fetch_format',
+        'custom_function',
+        'fps',
+        'gravity',
+        'overlay',
+        'prefix',
+        'page',
+        'underlay',
+        'video_sampling',
+        'streaming_profile',
+        'keyframe_interval'
+    ];
+
     public function testTransformation()
     {
         $t = new Transformation();
@@ -732,5 +773,65 @@ final class TransformationTest extends UnitTestCase
             'vc_h264:basic:3.1',
             Transformation::fromParams(['video_codec' => ['codec' => 'h264', 'profile' => 'basic', 'level' => '3.1']])
         );
+    }
+
+    /**
+     * Data provider of `testNormalizationPredefinedParameters()` method.
+     *
+     * @return array[]
+     */
+    public function normalizationParametersDataProvider()
+    {
+        return array_map(
+            static function ($value) {
+                return ['param' => $value];
+            },
+            self::NORMALIZED_PARAMETERS
+        );
+    }
+
+    /**
+     * Data provider of `testNonNormalizationPredefinedParameters()` method.
+     *
+     * @return array[]
+     */
+    public function nonNormalizationParametersDataProvider()
+    {
+        return array_map(
+            static function ($value) {
+                return ['param' => $value];
+            },
+            self::NON_NORMALIZED_PARAMETERS
+        );
+    }
+
+    /**
+     * Tests verify that normalize predefined parameters.
+     *
+     * @dataProvider normalizationParametersDataProvider
+     *
+     * @param $param
+     */
+    public function testNormalizationPredefinedParameters($param)
+    {
+        $transformation = (string)new Transformation([$param => self::SOURCE_VALUE, 'crop' => 'scale']);
+
+        self::assertContains(self::NORMALIZED_VALUE, $transformation, 'should normalize value in #' . $param);
+        self::assertNotContains(self::SOURCE_VALUE, $transformation, 'should normalize value in #' . $param);
+    }
+
+    /**
+     * Tests verify that doesn't normalize predefined parameters.
+     *
+     * @dataProvider nonNormalizationParametersDataProvider
+     *
+     * @param $param
+     */
+    public function testNonNormalizationPredefinedParameters($param)
+    {
+        $transformation = (string)new Transformation([$param => self::SOURCE_VALUE]);
+
+        self::assertContains(self::SOURCE_VALUE, $transformation, 'should not normalize value in #' . $param);
+        self::assertNotContains(self::NORMALIZED_VALUE, $transformation, 'should not normalize value in #' . $param);
     }
 }

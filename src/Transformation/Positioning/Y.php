@@ -17,4 +17,5 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  */
 class Y extends BaseQualifier
 {
+    const VALUE_CLASS = YQualifierMultiValue::class;
 }

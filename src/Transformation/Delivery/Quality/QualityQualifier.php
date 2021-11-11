@@ -20,6 +20,8 @@ class QualityQualifier extends BaseQualifier
     use QualityTrait;
     use QualityBuilderTrait;
 
+    const VALUE_CLASS = QualityQualifierMultiValue::class;
+
     /**
      * Automatically calculate the optimal quality for an image: the smallest file size without affecting its
      * perceptual quality (same as GOOD).

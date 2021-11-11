@@ -21,4 +21,5 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  */
 class Width extends BaseQualifier
 {
+    const VALUE_CLASS = WidthQualifierMultiValue::class;
 }

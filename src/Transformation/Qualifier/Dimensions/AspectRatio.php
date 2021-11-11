@@ -17,6 +17,8 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  */
 class AspectRatio extends BaseQualifier
 {
+    const VALUE_CLASS = AspectRatioQualifierMultiValue::class;
+
     const MAX_VALUES = 2;
 
     const AR_1X1         = '1:1';

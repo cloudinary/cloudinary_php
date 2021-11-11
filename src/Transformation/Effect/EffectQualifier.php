@@ -18,6 +18,8 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  */
 class EffectQualifier extends BaseQualifier
 {
+    const VALUE_CLASS = EffectQualifierMultiValue::class;
+
     /**
      * @var string $key Serialization key, force it here for derived classes usage
      */

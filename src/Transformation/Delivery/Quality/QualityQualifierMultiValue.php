@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Cloudinary\Transformation\Qualifier\Dimensions;
-
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+namespace Cloudinary\Transformation;
 
 /**
- * Class Height
+ * Class QualityQualifierMultiValue.
+ *
+ * @api
  */
-class Height extends BaseQualifier
+class QualityQualifierMultiValue extends QualifierMultiValue
 {
-    const VALUE_CLASS = HeightQualifierMultiValue::class;
+    use NormalizeQualifierMultiValueTrait;
 }

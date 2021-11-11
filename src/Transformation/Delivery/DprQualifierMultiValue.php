@@ -10,12 +10,15 @@
 
 namespace Cloudinary\Transformation\Qualifier\Dimensions;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\NormalizeQualifierMultiValueTrait;
+use Cloudinary\Transformation\QualifierMultiValue;
 
 /**
- * Class Height
+ * Class DprQualifierMultiValue.
+ *
+ * @api
  */
-class Height extends BaseQualifier
+class DprQualifierMultiValue extends QualifierMultiValue
 {
-    const VALUE_CLASS = HeightQualifierMultiValue::class;
+    use NormalizeQualifierMultiValueTrait;
 }
