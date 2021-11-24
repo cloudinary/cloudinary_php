@@ -1,3 +1,10 @@
+2.5.1 / 2021-11-24
+==================
+
+  * Fix PHP 8.1 deprecation warnings
+  * Fix return type of `toUrl`
+  * Add syntax to code blocks in `README`
+
 2.5.0 / 2021-11-10
 ==================
 
