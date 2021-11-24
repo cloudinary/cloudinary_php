@@ -67,6 +67,7 @@ class AccessControlRule implements JsonSerializable
      *
      * @return array|mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return ArrayUtils::safeFilter(

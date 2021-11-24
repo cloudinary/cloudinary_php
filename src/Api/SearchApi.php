@@ -254,8 +254,9 @@ class SearchApi implements JsonSerializable
     /**
      * Serializes to JSON.
      *
-     * @return mixed data which can be serialized by <b>json_encode</b>
+     * @return array data which can be serialized by <b>json_encode</b>
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->asArray();

@@ -374,6 +374,7 @@ abstract class BaseAsset implements AssetInterface
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize($includeEmptyKeys = false, $includeEmptySections = false)
     {
         $json = $this->asset->jsonSerialize($includeEmptyKeys);
