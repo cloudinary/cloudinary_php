@@ -19,6 +19,7 @@ use Cloudinary\Transformation\ImageTransformation;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\VideoTransformation;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class BaseMediaAsset
@@ -155,7 +156,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * @param CommonTransformation|string $withTransformation Optional transformation that can be appended/used instead.
      * @param bool                        $append             Whether to append or use the provided transformation.
      *
-     * @return string
+     * @return string|UriInterface
      */
     public function toUrl($withTransformation = null, $append = true)
     {
