@@ -77,6 +77,10 @@ class StringUtils
      */
     public static function startsWith($haystack, $needle)
     {
+        if (empty($haystack)) {
+            return false;
+        }
+
         return strpos($haystack, $needle) === 0;
     }
 
@@ -129,6 +133,10 @@ class StringUtils
      */
     public static function contains($haystack, $needle)
     {
+        if (empty($haystack)) {
+            return false;
+        }
+
         return strpos($haystack, $needle) !== false;
     }
 
@@ -270,7 +278,9 @@ class StringUtils
     public static function parseQueryString($query)
     {
         $params = [];
-        parse_str($query, $params);
+        if (! empty($query)) {
+            parse_str($query, $params);
+        }
 
         return $params;
     }

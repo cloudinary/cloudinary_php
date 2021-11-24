@@ -76,5 +76,6 @@ interface ConfigurableInterface extends JsonSerializable
      *
      * @return mixed data which can be serialized by json_encode.
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize($includeSensitive = true, $includeEmptyKeys = false, $includeEmptySections = false);
 }

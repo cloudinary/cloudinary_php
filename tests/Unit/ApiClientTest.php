@@ -35,7 +35,7 @@ final class ApiClientTest extends UnitTestCase
 
         $message = null;
         $expectedLogMessage = 'Error while attempting to upload a file';
-        $expectedExceptionMessage = 'fopen(): Filename cannot be empty';
+        $expectedExceptionMessage = 'Path cannot be empty';
         try {
             $apiClient->postFileAsync('/', '', []);
         } catch (Exception $e) {

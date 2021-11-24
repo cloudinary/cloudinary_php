@@ -90,7 +90,7 @@ abstract class AssetTestCase extends UnitTestCase
         $actualUrl,
         $options = []
     ) {
-        $message    = ArrayUtils::get($options, 'message');
+        $message    = ArrayUtils::get($options, 'message', '');
         $protocol   = ArrayUtils::get($options, 'protocol', 'https');
         $hostname   = ArrayUtils::get($options, 'hostname', UrlConfig::DEFAULT_SHARED_HOST);
         $cloudName  = ArrayUtils::get($options, 'cloud_name', self::CLOUD_NAME);

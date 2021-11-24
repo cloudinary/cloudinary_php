@@ -41,13 +41,13 @@ class TagUtils
         ArrayUtils::addNonEmpty($params, 'height', ArrayUtils::pop($params, 'html_height'));
 
         $width = ArrayUtils::get($params, 'width');
-        if (! (strlen($width) == 0 || ($width && (StringUtils::startsWith($width, 'auto')
+        if (! (is_null($width) || strlen($width) == 0 || ($width && (StringUtils::startsWith($width, 'auto')
                                                   || (float)$width < 1 || $noHtmlSizes)))) {
             ArrayUtils::addNonEmptyFromOther($tagAttributes, 'width', $params);
         }
 
         $height = ArrayUtils::get($params, 'height');
-        if (! (strlen($height) == 0 || (float)$height < 1 || $noHtmlSizes)) {
+        if (! (is_null($height) || strlen($height) == 0 || (float)$height < 1 || $noHtmlSizes)) {
             ArrayUtils::addNonEmptyFromOther($tagAttributes, 'height', $params);
         }
     }

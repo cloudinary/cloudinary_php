@@ -202,6 +202,10 @@ class ArrayUtils
             return false;
         }
 
+        if (is_null($value)) {
+            return 0;
+        }
+
         return strlen($value);
     }
 
@@ -320,6 +324,10 @@ class ArrayUtils
         }
 
         if (is_array($array) && array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+
+        if ($array instanceof \ArrayObject && $array->offsetExists($key)) {
             return $array[$key];
         }
 

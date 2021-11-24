@@ -100,7 +100,7 @@ class ApiUtils
         }
 
         // Avoid extra double quotes around strings.
-        if (is_string($jsonParam) || method_exists($jsonParam, '__toString')) {
+        if (is_string($jsonParam) || (is_object($jsonParam) && method_exists($jsonParam, '__toString'))) {
             return $jsonParam;
         }
 
