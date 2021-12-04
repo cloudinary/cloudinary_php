@@ -24,4 +24,5 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  */
 class Opacity extends BaseQualifier implements AdjustmentInterface
 {
+    const VALUE_CLASS = OpacityValue::class;
 }

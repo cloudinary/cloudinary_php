@@ -42,6 +42,7 @@ use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\PsdTools;
 use Cloudinary\Transformation\Qualifier;
+use Cloudinary\Transformation\QualifiersAction;
 use Cloudinary\Transformation\Quality;
 use Cloudinary\Transformation\Resize;
 use Cloudinary\Transformation\Rotate;
@@ -58,6 +59,23 @@ use InvalidArgumentException;
  */
 final class TransformationTest extends UnitTestCase
 {
+    const SOURCE_VALUE          = "width * 2";
+    const NORMALIZED_VALUE      = "w_mul_2";
+    const NORMALIZED_PARAMETERS = [
+        'angle',
+        'aspect_ratio',
+        'dpr',
+        'effect',
+        'height',
+        'opacity',
+        'quality',
+        'radius',
+        'width',
+        'x',
+        'y',
+        'zoom',
+    ];
+
     public function testTransformation()
     {
         $t = new Transformation();
@@ -625,4 +643,77 @@ final class TransformationTest extends UnitTestCase
             (string)$transformation
         );
     }
+
+    /**
+     * Data provider of `testNormalizationPredefinedParameters()` method.
+     *
+     * @return array[]
+     */
+    public function normalizationParametersDataProvider()
+    {
+        return array_map(
+            static function ($value) {
+                return ['param' => $value];
+            },
+            self::NORMALIZED_PARAMETERS
+        );
+    }
+
+    /**
+     * Data provider of `testNonNormalizationPredefinedParameters()` method.
+     *
+     * @return array[]
+     */
+    public function nonNormalizationParametersDataProvider()
+    {
+        return array_map(
+            static function ($value) {
+                return ['param' => $value];
+            },
+            array_diff(
+                array_merge(
+                    array_keys(QualifiersAction::SIMPLE_QUALIFIERS),
+                    [
+                        'video_codec',
+                        'overlay',
+                        'underlay',
+                    ]
+                ),
+                array_merge(
+                    self::NORMALIZED_PARAMETERS,
+                    ['if']
+                )
+            )
+        );
+    }
+
+    /**
+     * Tests verify that normalize predefined parameters.
+     *
+     * @dataProvider normalizationParametersDataProvider
+     *
+     * @param $param
+     */
+    public function testNormalizationPredefinedParameters($param)
+    {
+        $transformation = (string)new Transformation([$param => self::SOURCE_VALUE, 'crop' => 'scale']);
+
+        self::assertContains(self::NORMALIZED_VALUE, $transformation, 'should normalize value of #' . $param);
+        self::assertNotContains(self::SOURCE_VALUE, $transformation, 'should normalize value of #' . $param);
+    }
+
+    /**
+     * Tests verify that doesn't normalize predefined parameters.
+     *
+     * @dataProvider nonNormalizationParametersDataProvider
+     *
+     * @param $param
+     */
+    public function testNonNormalizationPredefinedParameters($param)
+    {
+        $transformation = (string)new Transformation([$param => self::SOURCE_VALUE]);
+        self::assertContains(self::SOURCE_VALUE, $transformation, 'should not normalize value of #' . $param);
+        self::assertNotContains(self::NORMALIZED_VALUE, $transformation, 'should not normalize value of #' . $param);
+    }
+
 }
