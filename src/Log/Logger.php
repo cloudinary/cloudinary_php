@@ -96,7 +96,7 @@ class Logger
 
             if (is_array($config->file)) {
                 foreach ($config->file as $loggingFileConfig) {
-                    if (empty($loggingFileConfig['path']) || !is_string($loggingFileConfig['path'])) {
+                    if (empty($loggingFileConfig['path']) || ! is_string($loggingFileConfig['path'])) {
                         continue;
                     }
                     $logLevel = ArrayUtils::get($loggingFileConfig, 'level', $defaultLogLevel);
@@ -123,6 +123,7 @@ class Logger
             }
         } catch (Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
+
             return null;
         }
 
@@ -138,10 +139,12 @@ class Logger
     {
         foreach ($this->entity->getHandlers() as $entityHandler) {
             if ($entityHandler instanceof HandlerInterface
-                && $entityHandler->getLevel() === $handler->getLevel()) {
+                && $entityHandler->getLevel() === $handler->getLevel()
+            ) {
                 return $this->entity;
             }
         }
+
         return $this->entity->pushHandler($handler);
     }
 
@@ -174,11 +177,11 @@ class Logger
      * @param       $message
      * @param array $context
      *
-     * @return bool
+     * @return void
      */
     public function log($level, $message, array $context = [])
     {
-        return $this->entity->log($level, $message, $context);
+        $this->entity->log($level, $message, $context);
     }
 
     /**
@@ -200,6 +203,7 @@ class Logger
 
         if ($phpErrorReportingLevel === E_ALL) {
             $this->defaultLogLevel = Monolog::NOTICE;
+
             return $this->defaultLogLevel;
         }
 
