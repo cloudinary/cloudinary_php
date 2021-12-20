@@ -20,7 +20,7 @@ class SensitiveKeysSerializationTest extends UnitTestCase
 {
     private $cloud;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

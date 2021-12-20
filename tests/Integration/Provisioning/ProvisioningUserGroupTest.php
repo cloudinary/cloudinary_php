@@ -34,7 +34,7 @@ final class ProvisioningUserGroupTest extends ProvisioningIntegrationTestCase
     private static $USERS        = [];
     private static $USERS_GROUPS = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -76,7 +76,7 @@ final class ProvisioningUserGroupTest extends ProvisioningIntegrationTestCase
         self::$accountApi->addUserToGroup(self::$USER_GROUP_GET_ID, self::$USER_GET_ID);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$USERS as $userId) {
             self::cleanupUser($userId);

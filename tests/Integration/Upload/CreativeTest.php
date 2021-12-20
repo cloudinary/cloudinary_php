@@ -47,7 +47,7 @@ final class CreativeTest extends IntegrationTestCase
     /**
      * @throws ApiError
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -74,7 +74,7 @@ final class CreativeTest extends IntegrationTestCase
         );
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanupTestAssets();
 

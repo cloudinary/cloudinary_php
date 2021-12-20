@@ -50,7 +50,7 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
 
     private static $SUB_ACCOUNT_ID_NON_EXISTENT;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -118,7 +118,7 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
         self::$accountApi->addUserToGroup(self::$USER_GROUP_GET_ID, self::$USER_GET_ID);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$USERS as $userId) {
             self::cleanupUser($userId);

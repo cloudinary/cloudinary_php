@@ -25,7 +25,7 @@ final class ImageTagTest extends ImageTagTestCase
 {
     protected $breakpointsConf;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

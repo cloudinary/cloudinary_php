@@ -53,7 +53,7 @@ class MetadataFieldsTest extends IntegrationTestCase
     private static $DATASOURCE_SINGLE;
     private static $DATASOURCE_MULTIPLE;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -111,7 +111,7 @@ class MetadataFieldsTest extends IntegrationTestCase
         self::$adminApi->addMetadataField($setMetadataField);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanupAssetsByTag(self::$UNIQUE_TEST_TAG);
         foreach (self::$METADATA_FIELDS as $externalId) {

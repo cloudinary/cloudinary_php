@@ -24,7 +24,7 @@ final class OAuthTest extends IntegrationTestCase
 
     private static $UNIQUE_IMAGE_PUBLIC_ID;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

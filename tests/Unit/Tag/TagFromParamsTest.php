@@ -48,7 +48,7 @@ final class TagFromParamsTest extends ImageTagTestCase
     private static $breakpointsArr;
     private static $sizesAttr = '100vw';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$breakpointsArr = [828, 1366, 1536, 1920, 3840];
         self::$maxImages      = count(self::$breakpointsArr);

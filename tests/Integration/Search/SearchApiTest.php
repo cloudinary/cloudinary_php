@@ -41,7 +41,7 @@ class SearchApiTest extends IntegrationTestCase
     /**
      * @throws ApiError
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -89,7 +89,7 @@ class SearchApiTest extends IntegrationTestCase
         sleep(3); // FIXME
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 //        if (!\Cloudinary::config_get('api_secret')) {
@@ -98,7 +98,7 @@ class SearchApiTest extends IntegrationTestCase
         $this->search = new SearchApi();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanupTestAssets();
     }

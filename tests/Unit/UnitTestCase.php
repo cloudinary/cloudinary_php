@@ -33,7 +33,7 @@ abstract class UnitTestCase extends CloudinaryTestCase
 
     private $cldUrlEnvBackup;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -52,7 +52,7 @@ abstract class UnitTestCase extends CloudinaryTestCase
         Configuration::instance()->url->analytics(false); // disable analytics for all unit tests
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

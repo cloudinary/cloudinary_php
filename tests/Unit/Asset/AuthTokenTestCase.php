@@ -27,7 +27,7 @@ class AuthTokenTestCase extends AssetTestCase
     const AUTH_TOKEN_TEST_CONFIG_ACL = '/*/t_foobar';
     const AUTH_TOKEN_TEST_PATH       = 'http://res.cloudinary.com/test123/image/upload/v1486020273/sample.jpg';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -44,7 +44,7 @@ abstract class CloudinaryTestCase extends TestCase
     protected static $skipAllTests = false;
     protected static $skipReason;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

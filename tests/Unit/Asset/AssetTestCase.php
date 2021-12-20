@@ -73,7 +73,7 @@ abstract class AssetTestCase extends UnitTestCase
     const URL_SUFFIXED_ASSET_ID   = self::ASSET_ID . '/' . self::URL_SUFFIX;
     const URL_SUFFIXED_IMAGE_NAME = self::URL_SUFFIXED_ASSET_ID . '.' . self::IMG_EXT;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

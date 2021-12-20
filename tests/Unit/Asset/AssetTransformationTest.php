@@ -25,7 +25,7 @@ final class AssetTransformationTest extends TestCase
 
     protected static $expectedTStr = 'c_fill,h_400,w_300';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

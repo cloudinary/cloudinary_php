@@ -35,7 +35,7 @@ final class FoldersTest extends IntegrationTestCase
     /**
      * @throws ApiError
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -58,7 +58,7 @@ final class FoldersTest extends IntegrationTestCase
         self::createTestFolder(self::$FOLDER2_NAME);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanupTestAssets();
         self::cleanupFolder(self::$FOLDER_NAME);

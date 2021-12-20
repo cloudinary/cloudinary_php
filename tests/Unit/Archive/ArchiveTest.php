@@ -26,7 +26,7 @@ class ArchiveTest extends AssetTestCase
      */
     private static $uploadApi;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$uploadApi = new UploadApi();
     }

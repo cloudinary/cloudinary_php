@@ -27,7 +27,7 @@ abstract class ProvisioningUnitTestCase extends CloudinaryTestCase
 
     private $accountUrlEnvBackup;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ abstract class ProvisioningUnitTestCase extends CloudinaryTestCase
         putenv(ProvisioningConfiguration::CLOUDINARY_ACCOUNT_URL_ENV_VAR . '=' . $this->accountUrl);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

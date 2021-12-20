@@ -62,7 +62,7 @@ final class UploadApiTest extends IntegrationTestCase
     private static $INCOMING_TRANSFORMATION_ARR;
     private static $INCOMING_TRANSFORMATION_OBJ;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -121,7 +121,7 @@ final class UploadApiTest extends IntegrationTestCase
         self::$INCOMING_TRANSFORMATION_OBJ = Resize::scale(self::INCOMING_TRANSFORMATION_WIDTH);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanupTestAssets();
         self::cleanupUploadPreset(self::$UNIQUE_UPLOAD_PRESET);

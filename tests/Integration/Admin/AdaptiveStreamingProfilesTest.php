@@ -51,7 +51,7 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
     /**
      * @throws ApiError
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -79,7 +79,7 @@ final class AdaptiveStreamingProfilesTest extends IntegrationTestCase
         );
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$STREAMING_PROFILES as $streamingProfile) {
             self::cleanupStreamingProfile($streamingProfile);

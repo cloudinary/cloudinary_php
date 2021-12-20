@@ -27,7 +27,7 @@ abstract class ProvisioningIntegrationTestCase extends CloudinaryTestCase
      */
     protected static $accountApi;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -39,7 +39,7 @@ abstract class ProvisioningIntegrationTestCase extends CloudinaryTestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

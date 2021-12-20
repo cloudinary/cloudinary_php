@@ -28,7 +28,7 @@ final class UploadPresetsTest extends IntegrationTestCase
 
     private static $UPLOAD_PRESETS = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -48,7 +48,7 @@ final class UploadPresetsTest extends IntegrationTestCase
         );
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$UPLOAD_PRESETS as $preset) {
             self::cleanupUploadPreset($preset);

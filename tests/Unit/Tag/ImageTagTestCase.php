@@ -30,7 +30,7 @@ abstract class ImageTagTestCase extends TagTestCase
      */
     protected $src;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

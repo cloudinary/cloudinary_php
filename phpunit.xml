@@ -11,6 +11,7 @@
         processIsolation            = "false"
         stopOnFailure               = "false"
         syntaxCheck                 = "false"
+        bootstrap = "tests/bootstrap.php"
 >
 
     <testsuites>
@@ -31,4 +32,7 @@
         </whitelist>
     </filter>
 
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+    </listeners>
 </phpunit>

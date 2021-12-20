@@ -29,7 +29,7 @@ final class UploadMappingsTest extends IntegrationTestCase
 
     private static $FOLDERS = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -41,7 +41,7 @@ final class UploadMappingsTest extends IntegrationTestCase
         self::$adminApi->createUploadMapping(self::$FOLDER_NAME, ['template' => self::TEMPLATE]);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$FOLDERS as $folderName) {
             self::cleanupUploadMapping($folderName);

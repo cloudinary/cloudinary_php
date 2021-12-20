@@ -42,21 +42,21 @@ class SignatureVerifierTest extends AssetTestCase
     protected static $publicId             = self::TEST_IMG;
     protected static $apiResponseSignature = '08d3107a5b2ad82e7d82c0b972218fbf20b5b1e0';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
         self::$mockedNow = 1549533574;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
 
         self::$mockedNow = null;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

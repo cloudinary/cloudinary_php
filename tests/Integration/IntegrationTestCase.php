@@ -61,7 +61,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
      */
     protected static $uploadApi;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

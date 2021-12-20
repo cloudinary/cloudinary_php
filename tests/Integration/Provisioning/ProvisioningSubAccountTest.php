@@ -36,7 +36,7 @@ final class ProvisioningSubAccountTest extends ProvisioningIntegrationTestCase
 
     private static $SUB_ACCOUNTS = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -84,7 +84,7 @@ final class ProvisioningSubAccountTest extends ProvisioningIntegrationTestCase
         self::assertValidSubAccountUser($subAccount, ['name' => self::$SUB_ACCOUNT_UPDATE_NAME]);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$SUB_ACCOUNTS as $subAccountId) {
             self::cleanupSubAccount($subAccountId);

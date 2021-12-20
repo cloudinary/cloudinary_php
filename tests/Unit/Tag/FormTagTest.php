@@ -29,7 +29,7 @@ final class FormTagTest extends TagTestCase
      */
     private $uploadParams;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->configuration = new Configuration();

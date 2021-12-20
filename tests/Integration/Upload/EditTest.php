@@ -58,7 +58,7 @@ final class EditTest extends IntegrationTestCase
     /**
      * @throws ApiError
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -109,7 +109,7 @@ final class EditTest extends IntegrationTestCase
     /**
      * @throws ApiError
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanupTestAssets();
         self::$adminApi->deleteMetadataField(self::$RENAME_RETURN_METADATA_EXTERNAL_ID);

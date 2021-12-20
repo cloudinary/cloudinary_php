@@ -26,7 +26,7 @@ class AuthTokenTest extends AuthTokenTestCase
      */
     protected $authToken;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

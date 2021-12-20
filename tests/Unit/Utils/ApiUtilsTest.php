@@ -22,7 +22,7 @@ use Cloudinary\Utils;
  */
 final class ApiUtilsTest extends UnitTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

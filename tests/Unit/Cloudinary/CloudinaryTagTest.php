@@ -38,7 +38,7 @@ class CloudinaryTagTest extends AssetTestCase
      */
     private $src;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
