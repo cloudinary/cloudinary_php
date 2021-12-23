@@ -10,12 +10,12 @@
 
 namespace Cloudinary\Test\Helpers;
 
-use Cloudinary\Api\ApiClient;
+use Cloudinary\Api\UploadApiClient;
 
 /**
  * Class MockApiClient
  */
-class MockApiClient extends ApiClient
+class MockUploadApiClient extends UploadApiClient
 {
     use MockApiClientTrait;
 }
