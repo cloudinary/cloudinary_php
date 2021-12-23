@@ -11,7 +11,11 @@
 namespace Cloudinary\Test\Unit\Transformation\Common;
 
 use Cloudinary\StringUtils;
+use Cloudinary\Test\CloudinaryTestCase;
+use Cloudinary\Transformation\AccessoryObjectGravityInterface;
 use Cloudinary\Transformation\Adjust;
+use Cloudinary\Transformation\AnimalObjectGravityInterface;
+use Cloudinary\Transformation\ApplianceObjectGravityInterface;
 use Cloudinary\Transformation\Argument\Color;
 use Cloudinary\Transformation\Argument\ColorValue;
 use Cloudinary\Transformation\Argument\GradientDirection;
@@ -34,18 +38,25 @@ use Cloudinary\Transformation\Conditional;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\CustomFunction;
 use Cloudinary\Transformation\Effect;
+use Cloudinary\Transformation\ElectronicObjectGravityInterface;
 use Cloudinary\Transformation\Expression\PVar;
 use Cloudinary\Transformation\Extract;
 use Cloudinary\Transformation\Fill;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\FocusOn;
+use Cloudinary\Transformation\FoodObjectGravityInterface;
 use Cloudinary\Transformation\Format;
+use Cloudinary\Transformation\FurnitureObjectGravityInterface;
 use Cloudinary\Transformation\Gravity;
 use Cloudinary\Transformation\ImageSource;
+use Cloudinary\Transformation\IndoorObjectGravityInterface;
+use Cloudinary\Transformation\KitchenObjectGravityInterface;
 use Cloudinary\Transformation\LayerFlag;
 use Cloudinary\Transformation\ObjectGravity;
+use Cloudinary\Transformation\OutdoorObjectGravityInterface;
 use Cloudinary\Transformation\OutlineMode;
 use Cloudinary\Transformation\Pad;
+use Cloudinary\Transformation\PersonObjectGravityInterface;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\PsdTools;
 use Cloudinary\Transformation\Qualifier;
@@ -59,15 +70,17 @@ use Cloudinary\Transformation\TextSource;
 use Cloudinary\Transformation\TextStyle;
 use Cloudinary\Transformation\Timeline;
 use Cloudinary\Transformation\Transformation;
+use Cloudinary\Transformation\VehicleObjectGravityInterface;
 use Cloudinary\Transformation\VideoCodec;
 use Cloudinary\Transformation\VideoSource;
 use Cloudinary\Transformation\VideoTransformation;
-use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * Class UsageTest
  */
-final class UsageTest extends TestCase
+final class UsageTest extends CloudinaryTestCase
 {
     public function testScale()
     {
@@ -173,6 +186,59 @@ final class UsageTest extends TestCase
         );
     }
 
+    /**
+     * The data provider for `testObjectGravityMethods()`.
+     *
+     * @return array
+     * @throws ReflectionException
+     */
+    public function objectGravityDataProvider()
+    {
+        $classes = [
+            AccessoryObjectGravityInterface::class,
+            AnimalObjectGravityInterface::class,
+            ApplianceObjectGravityInterface::class,
+            ElectronicObjectGravityInterface::class,
+            FoodObjectGravityInterface::class,
+            FurnitureObjectGravityInterface::class,
+            IndoorObjectGravityInterface::class,
+            KitchenObjectGravityInterface::class,
+            OutdoorObjectGravityInterface::class,
+            PersonObjectGravityInterface::class,
+            VehicleObjectGravityInterface::class,
+        ];
+
+        $gravities = [];
+
+        foreach ($classes as $class) {
+            $reflectionClass = new ReflectionClass($class);
+            $constants = array_merge($gravities, array_values($reflectionClass->getConstants()));
+            $gravities = $constants;
+        }
+
+        return self::generateDataProvider($gravities);
+    }
+
+    /**
+     * Test object gravity methods.
+     *
+     * @dataProvider objectGravityDataProvider
+     *
+     * @param string $value
+     * @param string $method
+     */
+    public function testObjectGravityMethods($value, $method)
+    {
+        self::assertEquals(
+            "c_thumb,g_$value,h_5,w_8",
+            (string)(new Transformation())->resize(Crop::thumbnail(8, 5, Gravity::object()->{$method}()))
+        );
+        self::assertEquals(
+            "c_thumb,g_$value,h_80,w_80",
+            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::{$method}()))
+        );
+    }
+
     public function testObjectGravity()
     {
         self::assertEquals(
@@ -194,61 +260,6 @@ final class UsageTest extends TestCase
         );
 
         self::assertEquals(
-            'c_thumb,g_accessory,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::accessory()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_animal,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::animal()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_appliance,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::appliance()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_electronic,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::electronic()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_food,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::food()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_furniture,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::furniture()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_indoor,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::indoor()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_kitchen,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::kitchen()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_outdoor,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::outdoor()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_person,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::person()))
-        );
-
-        self::assertEquals(
-            'c_thumb,g_vehicle,h_80,w_80',
-            (string)(new Transformation())->resize(Crop::thumbnail(80, 80, FocusOn::vehicle()))
-        );
-
-        self::assertEquals(
             'c_thumb,g_person:kitchen,h_80,w_80',
             (string)(new Transformation())->resize(
                 Crop::thumbnail(80, 80, Gravity::focusOn(FocusOn::person(), FocusOn::kitchen()))
@@ -261,6 +272,33 @@ final class UsageTest extends TestCase
                 Crop::crop(80, 80, Gravity::focusOn(FocusOn::person(), FocusOn::kitchen(), FocusOn::cup()))
             )
         );
+
+        self::assertEquals(
+            'c_thumb,g_person:kitchen:g_focus_1,h_80,w_80',
+            (string)(new Transformation())->resize(
+                Crop::thumbnail(
+                    80,
+                    80,
+                    Gravity::focusOn(FocusOn::person(), FocusOn::kitchen(), (new ObjectGravity())->focus(1))
+                )
+            )
+        );
+
+        self::assertEquals(
+            'c_crop,g_person:kitchen:cup:g_center_1,h_80,w_80',
+            (string)(new Transformation())->resize(
+                Crop::crop(
+                    80,
+                    80,
+                    Gravity::focusOn(
+                        FocusOn::person(),
+                        FocusOn::kitchen(),
+                        FocusOn::cup(),
+                        (new ObjectGravity())->center(1)
+                    )
+                )
+            )
+        );
     }
 
     public function testCustomFunction()
@@ -268,6 +306,7 @@ final class UsageTest extends TestCase
         $wasmSource          = 'blur.wasm';
         $remoteSource        = 'https://df34ra4a.execute-api.us-west-2.amazonaws.com/default/cloudinaryFn';
         $encodedRemoteSource = StringUtils::base64UrlEncode($remoteSource);
+        $params              = ['function_type' => CustomFunction::WASM, 'source' => $wasmSource];
 
         self::assertEquals(
             "fn_wasm:$wasmSource",
@@ -282,6 +321,21 @@ final class UsageTest extends TestCase
         self::assertEquals(
             "fn_pre:remote:$encodedRemoteSource",
             (string)(new Transformation())->customFunction(CustomFunction::remote($remoteSource)->preprocess())
+        );
+
+        self::assertEquals(
+            "fn_pre:wasm:$wasmSource",
+            (string)(new Transformation())->customFunction(CustomFunction::fromParams($params, true))
+        );
+
+        self::assertEquals(
+            "fn_aHR0cHM6Ly9kZjM0cmE0YS5leGVjdXRlLWFwaS51cy13ZXN0LTIuYW1hem9uYXdzLmNvbS9kZWZhdWx0L2Nsb3VkaW5hcnlGbg==",
+            (string)(new Transformation())->customFunction(CustomFunction::fromParams($encodedRemoteSource))
+        );
+
+        self::assertEquals(
+            "fn_wasm:$wasmSource",
+            (string)Qualifier::customFunction($wasmSource, CustomFunction::WASM)
         );
     }
 

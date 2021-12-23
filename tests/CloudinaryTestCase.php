@@ -11,6 +11,7 @@
 namespace Cloudinary\Test;
 
 use Cloudinary\Cloudinary;
+use Cloudinary\StringUtils;
 use Exception;
 use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\TestCase;
@@ -260,5 +261,34 @@ abstract class CloudinaryTestCase extends TestCase
                 self::assertInternalType($type, $asset[$key], $message);
             }
         }
+    }
+
+    /**
+     * Generate a data provider.
+     *
+     * @param        $array
+     * @param string $prefixValue
+     * @param string $suffixValue
+     * @param string $prefixMethod
+     * @param string $suffixMethod
+     *
+     * @return array[]
+     */
+    protected static function generateDataProvider(
+        $array,
+        $prefixValue = '',
+        $suffixValue = '',
+        $prefixMethod = '',
+        $suffixMethod = ''
+    ) {
+        return array_map(
+            static function ($value) use ($prefixValue, $suffixValue, $prefixMethod, $suffixMethod) {
+                return [
+                    'value' => $prefixValue . $value . $suffixValue,
+                    'method' => StringUtils::snakeCaseToCamelCase($prefixMethod . $value . $suffixMethod),
+                ];
+            },
+            $array
+        );
     }
 }
