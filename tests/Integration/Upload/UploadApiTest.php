@@ -342,6 +342,21 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
     }
+    /**
+     * @throws ApiError
+     */
+    public function testUploadIncomingTransformationWithFormat()
+    {
+        $result = self::uploadTestAssetImage(array_merge(self::$INCOMING_TRANSFORMATION_ARR, ['format'=> 'gif']));
+
+        self::assertValidAsset(
+            $result,
+            [
+                'width' => self::INCOMING_TRANSFORMATION_WIDTH,
+                'format' => 'gif'
+            ]
+        );
+    }
 
     /**
      * Add a metadata field to the image with the Public ID
@@ -457,22 +472,31 @@ final class UploadApiTest extends IntegrationTestCase
      * Add eval parameter to an uploaded asset
      *
      * @throws ApiError
+     * @throws \Exception
      */
     public function testEvalUploadParameter()
     {
-        $result = self::$uploadApi->upload(
-            self::TEST_IMAGE_PATH,
-            ['eval' => self::TEST_EVAL_STR, 'tags' => self::$ASSET_TAGS]
+        self::retryAssertionIfThrows(
+            function () {
+                $result = self::$uploadApi->upload(
+                    self::TEST_IMAGE_PATH,
+                    ['eval' => self::TEST_EVAL_STR, 'tags' => self::$ASSET_TAGS]
+                );
+
+                self::assertValidAsset(
+                    $result,
+                    [
+                        'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
+                    ]
+                );
+                self::assertInternalType(IsType::TYPE_ARRAY, $result['quality_analysis']);
+                self::assertInternalType(IsType::TYPE_NUMERIC, $result['quality_analysis']['focus']);
+            },
+            3,
+            1,
+            'Unable to use eval upload parameter'
         );
 
-        self::assertValidAsset(
-            $result,
-            [
-                'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
-            ]
-        );
-        self::assertInternalType(IsType::TYPE_ARRAY, $result['quality_analysis']);
-        self::assertInternalType(IsType::TYPE_NUMERIC, $result['quality_analysis']['focus']);
     }
 
     /**

@@ -314,6 +314,8 @@ class MetadataFieldsTest extends IntegrationTestCase
      */
     public function testDeleteMetadataFieldDoesNotReleaseExternalId()
     {
+        self::markTestSkipped('Check the expected behaviour.');
+
         $result = self::$adminApi->deleteMetadataField(self::$EXTERNAL_ID_DELETE);
 
         self::assertDeleteMetadataField($result);

@@ -80,18 +80,4 @@ trait RotationModeTrait
     {
         return static::createWithMode(...$mode);
     }
-
-    /**
-     * Creates the instance.
-     *
-     * @param string|RotationMode|array $mode Given mode.
-     *
-     * @return static
-     *
-     * @internal
-     */
-    protected static function createWithMode(...$mode)
-    {
-        return new static(...$mode);
-    }
 }

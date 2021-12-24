@@ -211,6 +211,7 @@ class AssetTransformation implements ComponentInterface
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize($includeEmptyKeys = false)
     {
         $dataArr = [

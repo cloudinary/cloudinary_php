@@ -226,6 +226,40 @@ final class ListAssetsTest extends IntegrationTestCase
     }
 
     /**
+     * Get a single uploaded asset with a given Asset ID passed as a string.
+     */
+    public function testListUploadedAssetsByAssetId()
+    {
+        $result = self::$adminApi->assetsByAssetIds(self::getTestAssetAssetId(self::$UNIQUE_PREFIX));
+
+        self::assertValidAsset(
+            $result['resources'][0],
+            [
+                'public_id'    => self::getTestAssetPublicId(self::$UNIQUE_PREFIX),
+                AssetType::KEY => AssetType::IMAGE,
+            ]
+        );
+        self::assertCount(1, $result['resources']);
+    }
+
+    /**
+     * Get uploaded assets matching the Asset IDs passed as an array.
+     */
+    public function testListUploadedAssetsByAssetIds()
+    {
+        $result = self::$adminApi->assetsByAssetIds(
+            [
+                self::getTestAssetAssetId(self::$UNIQUE_PREFIX),
+                self::getTestAssetAssetId(self::TEST_ASSET)
+            ]
+        );
+
+        self::assertValidAsset($result['resources'][0]);
+        self::assertValidAsset($result['resources'][1]);
+        self::assertCount(2, $result['resources']);
+    }
+
+    /**
      * Get images by tag.
      */
     public function testListImagesByTag()

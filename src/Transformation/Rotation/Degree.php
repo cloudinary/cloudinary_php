@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation\Argument;
 
+use Cloudinary\Transformation\RotationDegreeInterface;
 use Cloudinary\Transformation\QualifierMultiValue;
 
 /**
@@ -21,7 +22,7 @@ use Cloudinary\Transformation\QualifierMultiValue;
  *
  * @api
  */
-class Degree extends QualifierMultiValue
+class Degree extends QualifierMultiValue implements RotationDegreeInterface
 {
     const VALUE_DELIMITER = '.';
 
@@ -30,4 +31,18 @@ class Degree extends QualifierMultiValue
     const DEG_90          = '90';
     const DEG_180         = '180';
     const DEG_270         = '270';
+
+    /**
+     * Creates the instance.
+     *
+     * @param int|array $degree Given degrees or mode.
+     *
+     * @return Degree
+     *
+     * @internal
+     */
+    public static function createWithDegree(...$degree)
+    {
+        return new self(...$degree);
+    }
 }

@@ -12,13 +12,14 @@ namespace Cloudinary\Test\Unit\Configuration;
 
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Unit\UnitTestCase;
+use Cloudinary\Utils;
 
 /**
  * Class ConfigTest
  */
 class ConfigurationTest extends UnitTestCase
 {
-    const OAUTH_TOKEN = 'NTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZj17';
+    const OAUTH_TOKEN          = 'NTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZj17';
     const URL_WITH_OAUTH_TOKEN = 'cloudinary://' . self::CLOUD_NAME . '?cloud[oauth_token]=' . self::OAUTH_TOKEN;
 
     public function testConfigFromUrl()
@@ -81,8 +82,10 @@ class ConfigurationTest extends UnitTestCase
         $config->url->secureCname = 'my_distribution';
         $config->url->cname       = 'my.domain.com';
 
+        $config->cloud->signatureAlgorithm(Utils::ALGO_SHA256);
+
         self::assertStrEquals(
-            $this->cloudinaryUrl . '/my_distribution?url[cname]=my.domain.com',
+            $this->cloudinaryUrl . '/my_distribution?cloud[signature_algorithm]=sha256&url[cname]=my.domain.com',
             $config
         );
     }
@@ -110,8 +113,8 @@ class ConfigurationTest extends UnitTestCase
 
         self::assertStrEquals(
             $this->cloudinaryUrl . '/my_another_distribution' .
-                '?cloud[oauth_token]=' . self::OAUTH_TOKEN .
-                '&url[cname]=my.another-domain.com',
+            '?cloud[oauth_token]=' . self::OAUTH_TOKEN .
+            '&url[cname]=my.another-domain.com',
             $config
         );
     }

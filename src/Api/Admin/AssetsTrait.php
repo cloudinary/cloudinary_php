@@ -182,6 +182,27 @@ trait AssetsTrait
     }
 
     /**
+     * Lists assets with the specified asset IDs.
+     *
+     * @param string|array $assetIds  The requested asset IDs.
+     * @param array        $options   The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/admin_api#get_resources
+     */
+    public function assetsByAssetIds($assetIds, $options = [])
+    {
+        $uri = [ApiEndPoint::ASSETS, 'by_asset_ids'];
+
+        $params              = ArrayUtils::whitelist($options, ['public_ids', 'tags', 'moderations', 'context']);
+        $params['asset_ids'] = $assetIds;
+
+        return $this->apiClient->get($uri, $params);
+    }
+
+    /**
      * Returns the details of the specified asset and all its derived assets.
      *
      *
@@ -203,24 +224,34 @@ trait AssetsTrait
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
         $uri       = [ApiEndPoint::ASSETS, $assetType, $type, $publicId];
 
-        $params = ArrayUtils::whitelist(
-            $options,
-            [
-                'exif',
-                'colors',
-                'faces',
-                'quality_analysis',
-                'image_metadata',
-                'phash',
-                'pages',
-                'cinemagraph_analysis',
-                'coordinates',
-                'max_results',
-                'derived_next_cursor',
-                'accessibility_analysis',
-                'versions',
-            ]
-        );
+        $params = self::prepareAssetDetailsParams($options);
+
+        return $this->apiClient->get($uri, $params);
+    }
+
+    /**
+     * Returns the details of the specified asset and all its derived assets by asset id.
+     *
+     *
+     * Note that if you only need details about the original asset,
+     * you can also use the Uploader::upload or Uploader::explicit methods, which return the same information and
+     * are not rate limited.
+     *
+     * @param string $assetId The Asset ID of the asset.
+     * @param array  $options The optional parameters. See the
+     *                        <a
+     *                        href=https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource
+     *                        target="_blank"> Admin API</a> documentation.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource
+     */
+    public function assetByAssetId($assetId, $options = [])
+    {
+        $uri = [ApiEndPoint::ASSETS, $assetId];
+
+        $params = self::prepareAssetDetailsParams($options);
 
         return $this->apiClient->get($uri, $params);
     }
@@ -317,7 +348,7 @@ trait AssetsTrait
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
         $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
-        $params = $this->prepareDeleteAssetParams($options, ['public_ids' => $publicIds]);
+        $params = self::prepareDeleteAssetParams($options, ['public_ids' => $publicIds]);
 
         return $this->apiClient->delete($uri, $params);
     }
@@ -344,7 +375,7 @@ trait AssetsTrait
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
         $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
-        $params = $this->prepareDeleteAssetParams($options, ['prefix' => $prefix]);
+        $params = self::prepareDeleteAssetParams($options, ['prefix' => $prefix]);
 
         return $this->apiClient->delete($uri, $params);
     }
@@ -368,7 +399,7 @@ trait AssetsTrait
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
         $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
-        $params    = $this->prepareDeleteAssetParams($options, ['all' => true]);
+        $params    = self::prepareDeleteAssetParams($options, ['all' => true]);
 
         return $this->apiClient->delete($uri, $params);
     }
@@ -392,7 +423,7 @@ trait AssetsTrait
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType, 'tags', $tag];
-        $params    = $this->prepareDeleteAssetParams($options);
+        $params    = self::prepareDeleteAssetParams($options);
 
         return $this->apiClient->delete($uri, $params);
     }
@@ -457,7 +488,7 @@ trait AssetsTrait
      *
      * @internal
      */
-    protected function prepareDeleteAssetParams($options, $params = [])
+    protected static function prepareDeleteAssetParams($options, $params = [])
     {
         $filtered = ArrayUtils::whitelist($options, ['keep_original', 'next_cursor', 'invalidate']);
         if (isset($options['transformations'])) {
@@ -465,5 +496,36 @@ trait AssetsTrait
         }
 
         return array_merge($params, $filtered);
+    }
+
+    /**
+     * Prepares optional parameters for asset/assetByAssetId API calls.
+     *
+     * @param array $options Additional options.
+     *
+     * @return array    Optional parameters
+     *
+     * @internal
+     */
+    protected static function prepareAssetDetailsParams($options)
+    {
+        return ArrayUtils::whitelist(
+            $options,
+            [
+                'exif',
+                'colors',
+                'faces',
+                'quality_analysis',
+                'image_metadata',
+                'phash',
+                'pages',
+                'cinemagraph_analysis',
+                'coordinates',
+                'max_results',
+                'derived_next_cursor',
+                'accessibility_analysis',
+                'versions',
+            ]
+        );
     }
 }

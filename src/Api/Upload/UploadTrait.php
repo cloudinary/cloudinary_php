@@ -40,6 +40,7 @@ trait UploadTrait
     {
         $simpleParams = [
             'accessibility_analysis',
+            'asset_folder',
             'async',
             'auto_tagging',
             'background_removal',
@@ -51,6 +52,7 @@ trait UploadTrait
             'context',
             'detection',
             'discard_original_filename',
+            'display_name',
             'eager_async',
             'eager_notification_url',
             'eval',
@@ -68,6 +70,7 @@ trait UploadTrait
             'phash',
             'proxy',
             'public_id',
+            'public_id_prefix',
             'quality_analysis',
             'quality_override',
             'raw_convert',
@@ -77,6 +80,7 @@ trait UploadTrait
             'unique_filename',
             'upload_preset',
             'use_filename',
+            'use_filename_as_display_name',
         ];
 
         $complexParams = [
@@ -95,7 +99,7 @@ trait UploadTrait
                 ArrayUtils::get($options, 'responsive_breakpoints')
             ),
             'tags'                   => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
-            'transformation'         => ApiUtils::serializeAssetTransformations($options),
+            'transformation'         => ApiUtils::serializeTransformation($options),
         ];
 
         return ApiUtils::finalizeUploadApiParams(

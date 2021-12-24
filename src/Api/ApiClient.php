@@ -54,6 +54,11 @@ class ApiClient extends BaseApiClient
 
         $this->baseUri = "{$this->api->uploadPrefix}/" . self::apiVersion() . "/{$this->cloud->cloudName}/";
 
+        $this->createHttpClient();
+    }
+
+    protected function createHttpClient()
+    {
         $this->httpClient = new Client($this->buildHttpClientConfig());
     }
 
@@ -81,8 +86,6 @@ class ApiClient extends BaseApiClient
     public function configuration($configuration)
     {
         $tempConfiguration = new Configuration($configuration); // TODO: improve performance here
-
-        self::validateAuthorization($tempConfiguration->cloud);
 
         $this->cloud   = $tempConfiguration->cloud;
         $this->api     = $tempConfiguration->api;
@@ -137,7 +140,9 @@ class ApiClient extends BaseApiClient
      */
     public function postAndSignFormAsync($endPoint, $formParams)
     {
-        ApiUtils::signRequest($formParams, $this->cloud);
+        if (!$this->cloud->oauthToken) {
+            ApiUtils::signRequest($formParams, $this->cloud);
+        }
 
         return $this->postFormAsync($endPoint, $formParams);
     }
@@ -235,7 +240,7 @@ class ApiClient extends BaseApiClient
     {
         $unsigned = ArrayUtils::get($options, 'unsigned');
 
-        if (! $unsigned) {
+        if (!$this->cloud->oauthToken && !$unsigned) {
             ApiUtils::signRequest($parameters, $this->cloud);
         }
 
@@ -265,10 +270,7 @@ class ApiClient extends BaseApiClient
 
         $size = $fileHandle->getSize();
 
-        $options[ApiConfig::CHUNK_SIZE] = min(
-            $this->api->chunkSize,
-            ArrayUtils::get($options, ApiConfig::CHUNK_SIZE, ApiConfig::DEFAULT_CHUNK_SIZE)
-        );
+        $options[ApiConfig::CHUNK_SIZE] = ArrayUtils::get($options, ApiConfig::CHUNK_SIZE, $this->api->chunkSize);
 
         $options[ApiConfig::TIMEOUT] = ArrayUtils::get($options, ApiConfig::TIMEOUT, $this->api->uploadTimeout);
 
@@ -278,6 +280,24 @@ class ApiClient extends BaseApiClient
         }
 
         return $this->postLargeFileAsync($endPoint, $fileHandle, $parameters, $options);
+    }
+
+    /**
+     * Performs an HTTP call asynchronously.
+     *
+     * @param string       $method   An HTTP method.
+     * @param string|array $endPoint An API endpoint path.
+     * @param array        $options  An array containing request body and additional options passed to the HTTP Client.
+     *
+     * @return PromiseInterface
+     *
+     * @internal
+     */
+    protected function callAsync($method, $endPoint, $options)
+    {
+        static::validateAuthorization($this->cloud, $options);
+
+        return parent::callAsync($method, $endPoint, $options);
     }
 
     /**
@@ -380,9 +400,8 @@ class ApiClient extends BaseApiClient
      * @return array
      *
      * @internal
-     *
      */
-    private function buildHttpClientConfig()
+    protected function buildHttpClientConfig()
     {
         $clientConfig = [
             'base_uri'        => $this->baseUri,
@@ -430,13 +449,15 @@ class ApiClient extends BaseApiClient
     /**
      * Validates if all required authorization params are passed.
      *
-     * @param CloudConfig $cloudConfig Config to validate
+     * @param CloudConfig $cloudConfig A config to validate.
+     * @param array       $options     An array containing request body and additional options passed to the HTTP
+     *                                 Client.
      *
-     * @throws InvalidArgumentException In case not all required keys are set.
+     * @throws InvalidArgumentException In a case not all required keys are set.
      *
      * @internal
      */
-    private static function validateAuthorization($cloudConfig)
+    protected static function validateAuthorization($cloudConfig, $options)
     {
         $keysToValidate = ['cloudName'];
 

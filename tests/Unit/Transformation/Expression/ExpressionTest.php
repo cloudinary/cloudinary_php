@@ -161,7 +161,7 @@ final class ExpressionTest extends TestCase
     /**
      * Check expression normalization
      *
-     * @dataProvider testNormalizationDataProvider
+     * @dataProvider normalizationDataProvider
      *
      * @param mixed       $input          Value to normalize
      * @param null|string $expectedOutput Expected normalized output
@@ -177,7 +177,7 @@ final class ExpressionTest extends TestCase
      *
      * @return array[]
      */
-    public static function testNormalizationDataProvider()
+    public static function normalizationDataProvider()
     {
         return [
             'null is not affected' => [null, null],

@@ -158,7 +158,6 @@ final class ActionFromQualifiersTest extends AssetTestCase
         return [
             'Audio codec as a string value' => ['ac_acc', ['audio_codec' => 'acc']],
             'Bit Rate as integer'           => ['br_2048', ['bit_rate' => 2048]],
-            'Bit Rate as a thousand'        => ['br_44k', ['bit_rate' => '44k']],
             'Bit Rate as a million'         => ['br_1m', ['bit_rate' => '1m']],
             'Audio frequency as an integer' => ['af_44100', ['audio_frequency' => 44100]],
         ];

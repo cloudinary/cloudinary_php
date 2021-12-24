@@ -246,7 +246,7 @@ trait AssetFinalizerTrait
                 $toSign,
                 $this->cloud->apiSecret,
                 true,
-                $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
+                $this->getSignatureAlgorithm()
             )
         );
 
@@ -254,6 +254,24 @@ trait AssetFinalizerTrait
             $signature,
             $this->urlConfig->longUrlSignature ? Utils::LONG_URL_SIGNATURE_LENGTH : Utils::SHORT_URL_SIGNATURE_LENGTH
         );
+    }
+
+    /**
+     * Check if passed signatureAlgorithm is supported otherwise return SHA1.
+     *
+     * @return string
+     */
+    protected function getSignatureAlgorithm()
+    {
+        if ($this->urlConfig->longUrlSignature) {
+            return Utils::ALGO_SHA256;
+        }
+
+        if (ArrayUtils::inArrayI($this->cloud->signatureAlgorithm, Utils::SUPPORTED_SIGNATURE_ALGORITHMS)) {
+            return $this->cloud->signatureAlgorithm;
+        }
+
+        return Utils::ALGO_SHA1;
     }
 
     /**

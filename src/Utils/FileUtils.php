@@ -11,10 +11,9 @@
 namespace Cloudinary;
 
 use Cloudinary\Api\Exception\GeneralError;
+use GuzzleHttp\Psr7;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
-
-use GuzzleHttp\Psr7;
 
 /**
  * Class Utils
@@ -54,6 +53,10 @@ class FileUtils
      */
     public static function splitPathFilenameExtension($fullPath)
     {
+        if (empty($fullPath)) {
+            return ['', '', ''];
+        }
+
         $path = self::dirName($fullPath);
 
         $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
@@ -131,6 +134,10 @@ class FileUtils
      */
     public static function safeFileOpen($filename, $mode, $useIncludePath = null)
     {
+        if (empty($filename)) {
+            throw new GeneralError('Path cannot be empty');
+        }
+
         $fp = @fopen($filename, $mode, $useIncludePath);
 
         if (! $fp) {

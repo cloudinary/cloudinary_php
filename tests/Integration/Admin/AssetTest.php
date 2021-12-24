@@ -47,14 +47,14 @@ final class AssetTest extends IntegrationTestCase
                 self::ASSET_IMAGE => [
                     'options' => [
                         ModerationType::KEY => ModerationType::MANUAL,
-                    ]
+                    ],
                 ],
                 self::ASSET_DOCX  => [
                     'options' => [
                         ModerationType::KEY => ModerationType::MANUAL,
                         AssetType::KEY      => AssetType::RAW,
                         'file'              => self::TEST_DOCX_PATH,
-                    ]
+                    ],
                 ],
             ]
         );
@@ -102,6 +102,37 @@ final class AssetTest extends IntegrationTestCase
     }
 
     /**
+     * Get uploaded image details by asset_id without extra info
+     */
+    public function testGetUploadedImageDetailsByAssetId()
+    {
+        $result = self::$adminApi->assetByAssetId(self::getTestAssetAssetId(self::ASSET_IMAGE));
+
+        self::assertValidAsset($result);
+        self::assertArrayNotHasKey('accessibility_analysis', $result);
+        self::assertArrayNotHasKey('colors', $result);
+        self::assertArrayNotHasKey('exif', $result);
+        self::assertArrayNotHasKey('faces', $result);
+    }
+
+    /**
+     * Get uploaded image details by asset_id including faces, colors and Exif info
+     */
+    public function testGetUploadedImageDetailsByAssetIdWithExtraInfo()
+    {
+        $result = self::$adminApi->assetByAssetId(self::getTestAssetAssetId(self::ASSET_IMAGE), self::EXTRA_INFO);
+
+        self::assertValidAsset(
+            $result,
+            [
+                'colors' => [],
+                'exif'   => [],
+                'faces'  => [],
+            ]
+        );
+    }
+
+    /**
      * Get accessibility analysis of an an uploaded image
      */
     public function testGetUploadedImageAccessibilityAnalysis()
@@ -109,7 +140,7 @@ final class AssetTest extends IntegrationTestCase
         $result = self::$adminApi->asset(
             self::getTestAssetPublicId(self::ASSET_IMAGE),
             [
-                'accessibility_analysis' => true
+                'accessibility_analysis' => true,
             ]
         );
 

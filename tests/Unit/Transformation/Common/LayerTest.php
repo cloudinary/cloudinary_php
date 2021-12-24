@@ -19,6 +19,7 @@ use Cloudinary\Transformation\Argument\Text\FontFamily;
 use Cloudinary\Transformation\Argument\Text\FontHinting;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\BlendMode;
+use Cloudinary\Transformation\Border;
 use Cloudinary\Transformation\Crop;
 use Cloudinary\Transformation\FocalGravity;
 use Cloudinary\Transformation\Gravity;
@@ -43,19 +44,29 @@ final class LayerTest extends AssetTestCase
     public function testImageLayer()
     {
         $t = new Transformation();
-
         $t->resize(Crop::thumbnail(100, 200, Gravity::auto(FocalGravity::ADVANCED_EYES)))
           ->adjust(Adjust::hue(99))
           ->adjust(Adjust::replaceColor(Color::PINK, 50, Color::CYAN));
 
-        $t_expected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan';
+        $t2 = new Transformation();
+        $t2->border(Border::solid());
+
+        $t_expected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan/bo_solid';
 
         $publicId = 'some/asset/in/path/test';
 
+        $imageLayer = (new ImageSource($publicId))->transformation($t)->addTransformation($t2);
+
+        $t_t2_expected = "l_some:asset:in:path:test/$t_expected/fl_layer_apply";
         self::assertEquals(
-            "l_some:asset:in:path:test/$t_expected/fl_layer_apply",
-            (string)(new ImageSource($publicId))->transformation($t)
+            $t_t2_expected,
+            (string)$imageLayer
         );
+
+        $imageLayerJson = $imageLayer->jsonSerialize();
+
+        self::assertEquals('image_source', $imageLayerJson['source']);
+        self::assertInstanceOf(Transformation::class, $imageLayerJson['transformation']);
     }
 
     public function testImageLayerWithPosition()
@@ -91,6 +102,7 @@ final class LayerTest extends AssetTestCase
         $style         = (new TextStyle('Arial', 14))->fontAntialias(FontAntialias::FAST)->letterSpacing(17);
         $styleExpected = 'Arial_14_demibold_antialias_fast_letter_spacing_17';
         $flagsExpected = 'fl_text_no_trim/fl_text_disallow_overflow';
+
         self::assertEquals(
             "b_violet,co_orchid,l_text:$styleExpected:$textExpected/$tExpected/$flagsExpected/fl_layer_apply",
             (string)(new TextSource($text, $style))
@@ -100,6 +112,11 @@ final class LayerTest extends AssetTestCase
                 ->transformation($t)
                 ->noTrim()
                 ->disallowOverflow()
+        );
+
+        self::assertEquals(
+            "l_text:demibold/fl_layer_apply",
+            (string)(new TextSource())->fontWeight(FontWeight::DEMIBOLD)
         );
     }
 

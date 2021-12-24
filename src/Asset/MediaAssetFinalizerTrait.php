@@ -71,7 +71,7 @@ trait MediaAssetFinalizerTrait
                 $toSign,
                 $this->cloud->apiSecret,
                 true,
-                $this->urlConfig->longUrlSignature ? Utils::ALGO_SHA256 : Utils::ALGO_SHA1
+                $this->getSignatureAlgorithm()
             )
         );
 

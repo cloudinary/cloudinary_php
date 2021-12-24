@@ -19,3 +19,8 @@ script: vendor/bin/phpunit
 branches:
   except:
     - staging-test
+
+notifications:
+  email:
+    recipients:
+      - sdk_developers@cloudinary.com

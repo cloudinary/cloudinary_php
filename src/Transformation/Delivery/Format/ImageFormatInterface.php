@@ -44,6 +44,7 @@ interface ImageFormatInterface
     const HEIC = 'heic';
     const GLTZ = 'gltz';
     const GLTF = 'gltf';
+    const GLB  = 'glb';
     const FBXZ = 'fbxz';
     const INDD = 'indd';
     const IDML = 'idml';

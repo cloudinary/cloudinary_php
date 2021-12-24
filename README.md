@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/cloudinary/cloudinary_php.svg)](https://travis-ci.com/cloudinary/cloudinary_php) [![license](https://img.shields.io/github/license/cloudinary/cloudinary_php.svg?maxAge=2592000)]() [![Packagist](https://img.shields.io/packagist/v/cloudinary/cloudinary_php.svg?maxAge=2592000)]() [![Packagist](https://img.shields.io/packagist/dt/cloudinary/cloudinary_php.svg?maxAge=2592000)]()
+[![Build Status](https://app.travis-ci.com/cloudinary/cloudinary_php.svg)](https://app.travis-ci.com/cloudinary/cloudinary_php) [![license](https://img.shields.io/github/license/cloudinary/cloudinary_php.svg?maxAge=2592000)]() [![Packagist](https://img.shields.io/packagist/v/cloudinary/cloudinary_php.svg?maxAge=2592000)]() [![Packagist](https://img.shields.io/packagist/dt/cloudinary/cloudinary_php.svg?maxAge=2592000)]()
 
 Cloudinary PHP SDK
 ==================
@@ -26,7 +26,7 @@ For PHP, Cloudinary provides an extension for simplifying the integration even f
 
 You can install through composer with:
 
-```
+```bash
 composer require "cloudinary/cloudinary_php:^2"
 ```
 
@@ -75,7 +75,9 @@ $cloudinary = new Cloudinary(
 
 Another example of setting the configuration parameters by providing the CLOUDINARY_URL value to the constructor:
 
+```php
     $cloudinary = new Cloudinary('cloudinary://123456789012345:abcdeghijklmnopqrstuvwxyz12@n07t21i7');
+```
 
 ### Embedding and transforming images
 
@@ -84,14 +86,14 @@ Any image uploaded to Cloudinary can be transformed and embedded using powerful 
 The following example generates the url for accessing an uploaded `sample` image while transforming it to fill a 100x150
 rectangle:
 
-```
+```php
 $cloudinary->image('sample.jpg')->resize(Resize::fill()->width(100)->height(150);
 ```
 
 Another example, embedding a smaller version of an uploaded image while generating a 90x90 face detection based
 thumbnail:
 
-```
+```php
 $cloudinary->image('woman.jpg')->resize(Resize::thumbnail()->width(90)->height(90)->gravity(Gravity::face());
 ```
 
@@ -104,14 +106,14 @@ Cloudinary is very simple.
 
 The following example uploads a local JPG to the cloud:
 
-```
+```php
 $cloudinary->uploadApi->upload('my_picture.jpg');
 ```
 
 The uploaded image is assigned a randomly generated public ID. The image is immediately available for a download through
 a CDN:
 
-```
+```php
 $cloudinary->image('abcfrmo8zul1mafopawefg.jpg');
 
 # http://res.cloudinary.com/demo/image/upload/abcfrmo8zul1mafopawefg.jpg
@@ -119,7 +121,7 @@ $cloudinary->image('abcfrmo8zul1mafopawefg.jpg');
 
 You can also specify your own public ID:
 
-```
+```php
 $cloudinary->uploadApi->upload('my_picture.jpg', ['public_id' => 'sample_remote']);
 
 $cloudinary->image('sample_remote.jpg');
@@ -133,7 +135,7 @@ Returns an html image tag pointing to Cloudinary.
 
 Usage:
 
-```
+```php
 $cloudinary->imageTag('sample.png')->fill(100, 100);
 
 # <img src='http://res.cloudinary.com/cloud_name/image/upload/c_fill,h_100,w_100/sample.png'/>
@@ -148,7 +150,7 @@ parameters for a direct upload.
 
 Usage:
 
-```
+```php
 $cloudinary->tag->uploadTag('image', $cloudinary->configuration);
 ```
 

@@ -27,9 +27,8 @@ use ReflectionClass;
  */
 final class QualifiersTest extends TestCase
 {
-
     /**
-     * Data provider for `testColorConstants()`
+     * Data provider for `testColorConstants()`.
      *
      * @return array
      */

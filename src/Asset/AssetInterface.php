@@ -75,5 +75,6 @@ interface AssetInterface extends JsonSerializable
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize();
 }

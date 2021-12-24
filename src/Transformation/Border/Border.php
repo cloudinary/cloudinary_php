@@ -31,7 +31,7 @@ class Border extends BaseAction
     /**
      * Sets the width of the border.
      *
-     * @param int $width The width in pixels.
+     * @param int|string $width The width in pixels.
      *
      * @return $this
      */

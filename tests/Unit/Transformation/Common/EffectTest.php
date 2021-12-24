@@ -520,6 +520,15 @@ final class EffectTest extends TestCase
             (string)Effect::styleTransfer('lighthouse')->preserveColor()->strength(40)
         );
 
+        $effect = new StyleTransfer('source', 40);
+        $effect->preserveColor(true);
+        $effect->strength(20);
+
+        self::assertEquals(
+            'l_source/e_style_transfer:preserve_color:20,fl_layer_apply',
+            (string)$effect
+        );
+
         // Test instantiating an Effect and overwriting values passed to constructor
         $effect = new StyleTransfer('source1', 40);
         $effect->preserveColor(true);

@@ -33,6 +33,7 @@ abstract class Metadata implements JsonSerializable
      *
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $propertyKeys = $this->getPropertyKeys();

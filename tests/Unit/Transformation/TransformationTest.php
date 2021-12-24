@@ -14,14 +14,13 @@ use Cloudinary\Test\Unit\UnitTestCase;
 use Cloudinary\Transformation\Action;
 use Cloudinary\Transformation\Adjust;
 use Cloudinary\Transformation\Animated;
-use Cloudinary\Transformation\AnimatedEdit;
 use Cloudinary\Transformation\Argument\Color;
+use Cloudinary\Transformation\Argument\PointValue;
 use Cloudinary\Transformation\Argument\Text\FontWeight;
 use Cloudinary\Transformation\AspectRatio;
 use Cloudinary\Transformation\AudioCodec;
 use Cloudinary\Transformation\ChromaSubSampling;
 use Cloudinary\Transformation\ColorSpace;
-use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\Compass;
 use Cloudinary\Transformation\CompassGravity;
 use Cloudinary\Transformation\Conditional;
@@ -42,6 +41,7 @@ use Cloudinary\Transformation\Pad;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\PsdTools;
 use Cloudinary\Transformation\Qualifier;
+use Cloudinary\Transformation\QualifierMultiValue;
 use Cloudinary\Transformation\Quality;
 use Cloudinary\Transformation\Resize;
 use Cloudinary\Transformation\Rotate;
@@ -89,12 +89,17 @@ final class TransformationTest extends UnitTestCase
            ->adjust(Adjust::replaceColor(Color::PINK, 50, Color::CYAN));
 
         $t2_expected = 'c_thumb,g_auto:adv_eyes,h_200,w_100/e_hue:99/e_replace_color:pink:50:cyan';
+
         self::assertEquals(
             $t2_expected,
             (string)$t2
         );
-        $t->addTransformation($t2)
-          ->addTransformation($t2);
+        self::assertEquals(
+            $t2_expected,
+            (new Transformation())->toUrl($t2)
+        );
+
+        $t->addTransformation($t2)->addTransformation($t2);
 
         self::assertEquals(
             "$t_expected/$t2_expected/$t2_expected",
@@ -107,6 +112,44 @@ final class TransformationTest extends UnitTestCase
         self::assertEquals(
             'dpr_2.0',
             (string)Delivery::dpr(2.0)
+        );
+    }
+
+    public function testTransformationGeneric()
+    {
+        $t = new Transformation();
+        $t->scale(100, 200);
+
+        $tGeneric = Transformation::generic($t)->crop('10');
+        $tGenericJson = $tGeneric->jsonSerialize();
+
+        self::assertEquals(
+            'c_scale,h_200,w_100',
+            (string)$t
+        );
+        self::assertEquals(
+            'c_scale,h_200,w_100/c_crop,w_10',
+            (string)$tGeneric
+        );
+        self::assertEquals(
+            'transformation',
+            $tGenericJson['name']
+        );
+        self::assertInstanceOf(
+            Transformation::class,
+            $tGenericJson['actions'][0]
+        );
+        self::assertInstanceOf(
+            Crop::class,
+            $tGenericJson['actions'][1]
+        );
+    }
+
+    public function testTransformationFromParams()
+    {
+        self::assertStrEquals(
+            'vc_h264:basic:3.1',
+            Transformation::fromParams(['video_codec' => ['codec' => 'h264', 'profile' => 'basic', 'level' => '3.1']])
         );
     }
 
@@ -302,19 +345,65 @@ final class TransformationTest extends UnitTestCase
             (string)(new Transformation())
                 ->addAction(
                     Action::generic()
-                          ->setFlag(Flag::animated())
-                          ->setFlag(Flag::tiff8Lzw())
-                          ->setFlag(Flag::attachment('my_file.bin'))
+                        ->setFlag(Flag::animated())
+                        ->setFlag(Flag::tiff8Lzw())
+                        ->setFlag(Flag::attachment('my_file.bin'))
 
                 )
         );
+
+        self::assertEquals(
+            'fl_apng,fl_png8,fl_strip_profile',
+            (string)(new Transformation())
+                ->addAction(
+                    Action::generic()
+                        ->setFlag(Flag::animatedPng())
+                        ->setFlag(Flag::png8())
+                        ->setFlag(Flag::stripProfile())
+                )
+        );
+
+        self::assertEquals(
+            'fl_png24,fl_rasterize',
+            (string)(new Transformation())
+                ->addAction(
+                    Action::generic()
+                        ->setFlag(Flag::png24())
+                        ->setFlag(Flag::rasterize())
+                )
+        );
+
+        self::assertEquals(
+            'fl_animated,fl_png32',
+            (string)(new Transformation())
+                ->addAction(
+                    Action::generic()
+                        ->setFlag(Flag::png32())
+                        ->setFlag(Flag::animated())
+                )
+        );
+    }
+
+    public function testSerializeFlag()
+    {
+        $flag = Flag::animatedWebP()->jsonSerialize();
+
+        self::assertEquals(Flag::ANIMATED_WEBP, $flag['flag_qualifier']);
+        self::assertInstanceOf(QualifierMultiValue::class, $flag['value']);
     }
 
     public function testSetFlagsWithBuilders()
     {
         self::assertEquals(
-            'fl_attachment:my_file%252Ebin/fl_sanitize/fl_mono',
-            (string)(new Transformation())->attachment('my_file.bin')->sanitize()->mono()
+            'fl_attachment:my_file%252Ebin/fl_force_icc/fl_force_strip/fl_sanitize/fl_mono/fl_strip_profile',
+            (string)(new Transformation())->attachment('my_file.bin')->forceIcc()->forceStrip()->sanitize()->mono()
+                ->stripProfile()
+        );
+        self::assertEquals(
+            'fl_attachment:my_file%252Ebin/fl_getinfo/fl_immutable_cache/fl_keep_attribution/fl_keep_iptc' .
+            '/fl_strip_profile',
+            (string)(new Transformation())->attachment('my_file.bin')->getInfo()->immutableCache()->keepAttribution()
+                ->keepIptc()->addFlag(Qualifier::flag(Flag::STRIP_PROFILE))
         );
     }
 
@@ -623,6 +712,17 @@ final class TransformationTest extends UnitTestCase
         self::assertEquals(
             '$mywidth_100/$aheight_300/h_3_mul_ih_add_$aheight,w_3_add_$mywidth_mul_3_add_4_div_2_mul_iw_mul_$mywidth',
             (string)$transformation
+        );
+    }
+
+    public function testPointValue()
+    {
+        self::assertEquals(
+            [
+                'x' => 1,
+                'y' => 2,
+            ],
+            (new PointValue(1, 2))->jsonSerialize()
         );
     }
 

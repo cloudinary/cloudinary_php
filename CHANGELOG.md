@@ -1,3 +1,58 @@
+2.5.1 / 2021-11-24
+==================
+
+  * Fix PHP 8.1 deprecation warnings
+  * Fix return type of `toUrl`
+  * Add syntax to code blocks in `README`
+
+2.5.0 / 2021-11-10
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for folder decoupling
+  * Add support for `assetsByAssetIds` Admin API
+  * Add support for `assetByAssetId` Admin API
+
+Other Changes
+-------------
+
+  * Fix upload chunk size configuration handling
+
+2.4.1 / 2021-10-15
+==================
+
+  * Limit `psr/log` to version 1 for backwards compatibility
+  * Fix incoming transformation serialization
+  * Fix border width with user variables
+
+2.4.0 / 2021-10-01
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `glb` format
+  * Add support for `SHA-256` signature algorithm
+  * Add support for `downloadGeneratedSprite` and `downloadMulti` helpers
+  * Add support for `urls` in `multi` and `sprite` Upload APIs
+  * Add support for `createSlideshow` Upload API
+  * Add support for variables in text style
+  * Add support for `theme` effect
+  * Add support for `reorderMetadataFieldDatasource` Admin API
+  * Add support for `metadata` in `update` Admin API
+  * Add support for stroke manipulation in text source
+
+Other Changes
+-------------
+
+  * Refactor integration tests
+  * Improve auto optimal breakpoints generation
+  * Remove duplicates in Search API fields
+  * Add test for expression normalization
+  * Fix grouping of the layer names
+
 2.3.0 / 2021-07-04
 ==================
 
