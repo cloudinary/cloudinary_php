@@ -1,3 +1,18 @@
+2.6.0 / 2022-01-10
+==================
+
+New functionality and features
+------------------------------
+
+  * Add `OAuth` support for Upload API
+  * Add support for `psr/log` v3
+
+Other Changes
+-------------
+
+  * Improve action from qualifiers tests
+  * Improve transformations tests coverage
+
 2.5.1 / 2021-11-24
 ==================
 
