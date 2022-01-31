@@ -1,6 +1,9 @@
-samples/PhotoAlbumCake/Config/CloudinaryPrivate.php
-.project
 vendor/
-coverage/
-phpdocs/
-*.bak
+composer.lock
+tests/coverage
+output/
+.idea
+composer.phar
+docs/sami.phar
+docs/cache/
+docs/build/
