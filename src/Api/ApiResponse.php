@@ -57,7 +57,7 @@ class ApiResponse extends ArrayObject
     public function __construct($responseJson, $headers)
     {
         $this->headers = $headers;
-
+        // According to RFC 2616, header names are case-insensitive.
         $lcHeaders = array_change_key_case($headers, CASE_LOWER);
 
         $this->rateLimitResetAt   = strtotime(ArrayUtils::get($lcHeaders, ['x-featureratelimit-reset', 0], 0));
