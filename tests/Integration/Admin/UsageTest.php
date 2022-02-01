@@ -70,6 +70,10 @@ final class UsageTest extends IntegrationTestCase
                     'rateLimitRemaining' => IsType::TYPE_INT
                 ]
             );
+
+            self::assertGreaterThan(0, $result->rateLimitAllowed);
+            self::assertGreaterThan(0, $result->rateLimitRemaining);
+            self::assertGreaterThan(0, $result->rateLimitResetAt);
         }
     }
 

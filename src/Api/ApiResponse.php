@@ -57,10 +57,12 @@ class ApiResponse extends ArrayObject
     public function __construct($responseJson, $headers)
     {
         $this->headers = $headers;
+        // According to RFC 2616, header names are case-insensitive.
+        $lcHeaders = array_change_key_case($headers, CASE_LOWER);
 
-        $this->rateLimitResetAt   = strtotime(ArrayUtils::get($headers, ['X-FeatureRateLimit-Reset', 0], 0));
-        $this->rateLimitAllowed   = (int)ArrayUtils::get($headers, ['X-FeatureRateLimit-Limit', 0], 0);
-        $this->rateLimitRemaining = (int)ArrayUtils::get($headers, ['X-FeatureRateLimit-Remaining', 0], 0);
+        $this->rateLimitResetAt   = strtotime(ArrayUtils::get($lcHeaders, ['x-featureratelimit-reset', 0], 0));
+        $this->rateLimitAllowed   = (int)ArrayUtils::get($lcHeaders, ['x-featureratelimit-limit', 0], 0);
+        $this->rateLimitRemaining = (int)ArrayUtils::get($lcHeaders, ['x-featureratelimit-remaining', 0], 0);
 
         parent::__construct($responseJson);
     }
