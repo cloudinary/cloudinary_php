@@ -34,8 +34,9 @@ For the complete documentation, see the [PHP SDK Guide](https://cloudinary.com/d
 
 | SDK Version | PHP 5.4 | PHP 5.5 | PHP 5.6 | PHP 7.x | PHP 8.x |
 |-------------|---------|---------|---------|---------|---------|
-| 1.x         | v       | v       | v       | v       | x       |
 | 2.x         | x       | x       | v       | v       | v       |
+| 1.x         | v       | v       | v       | v       | x       |
+
 
 ## Installation
 ```bash
