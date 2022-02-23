@@ -218,6 +218,34 @@ class SearchApiTest extends IntegrationTestCase
     }
 
     /**
+     * Finds assets by asset id using a colon.
+     *
+     * @throws ApiError
+     */
+    public function testShouldReturnResourceByAssetIdUsingColon()
+    {
+        $results = $this->search->expression(
+            'asset_id:' . self::getTestAssetAssetId(self::SEARCH_ASSET_1)
+        )->execute();
+
+        self::assertCount(1, $results['resources']);
+    }
+
+    /**
+     * Finds assets by asset id using an equal sign.
+     *
+     * @throws ApiError
+     */
+    public function testShouldReturnResourceByAssetIdUsingEqualSign()
+    {
+        $results = $this->search->expression(
+            'asset_id=' . self::getTestAssetAssetId(self::SEARCH_ASSET_1)
+        )->execute();
+
+        self::assertCount(1, $results['resources']);
+    }
+
+    /**
      * Find assets without limiting expression to certain fields
      * Shows results containing given text in any string field
      * This test will match two results where the expression is matched in tags and public_id
