@@ -9,6 +9,7 @@ module.exports = {
         closeQualifiersChar: '',
         closeTransformationChar: '',
         unsupportedTxParams: [],
+        unsupportedSyntaxList: ['->textFit(', ],
         mainTransformationString: {
             openSyntaxString: {
                 image: '(new ImageTag(\'#publicID\'))',
