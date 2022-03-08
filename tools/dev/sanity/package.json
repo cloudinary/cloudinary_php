@@ -1,0 +1,15 @@
+{
+  "name": "sanity-test-creator",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node ./index.ts"
+  },
+  "dependencies": {
+    "@types/node": "^15.12.4",
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.3.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3",
+    "sdk-sanity-generator": "git+ssh://git@github.com/CloudinaryLtd/sdk-sanity-generator.git"
+  }
+}
