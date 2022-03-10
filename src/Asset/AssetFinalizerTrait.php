@@ -326,7 +326,7 @@ trait AssetFinalizerTrait
      */
     protected function finalizeUrlWithAnalytics($urlParts)
     {
-        if (! $this->urlConfig->analytics) {
+        if (! $this->urlConfig->analytics || ArrayUtils::get($urlParts, 'query') !== null) {
             return $urlParts;
         }
 

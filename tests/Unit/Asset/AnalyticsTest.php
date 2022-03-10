@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Unit\Asset;
 
 use Cloudinary\Asset\Analytics;
+use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Helpers\MockAnalytics;
@@ -21,6 +22,8 @@ use OutOfRangeException;
  */
 final class AnalyticsTest extends AssetTestCase
 {
+    const AUTH_TOKEN_KEY = '00112233FF99';
+
     public function testEncodeVersion()
     {
         self::assertStrEquals(
@@ -65,6 +68,29 @@ final class AnalyticsTest extends AssetTestCase
         self::assertContains(
             '?'. Analytics::QUERY_KEY. '=',
             (string)new Image(self::ASSET_ID, $config)
+        );
+    }
+
+    /**
+     * Disable analytics if public IDs contain query parameters ?key=value.
+     */
+    public function testUrlNoAnalyticsWithQueryParams()
+    {
+        $config = new Configuration(Configuration::instance());
+        $config->url->analytics();
+        $config->url->privateCdn();
+        $config->url->signUrl();
+        $config->authToken->key = self::AUTH_TOKEN_KEY;
+        $config->authToken->startTime = 11111111;
+        $config->authToken->duration = 300;
+
+        $img = new Image('test', $config);
+        $img->asset->deliveryType = DeliveryType::AUTHENTICATED;
+
+        self::assertEquals(
+            'https://test123-res.cloudinary.com/image/authenticated/test?__cld_token__' .
+            '=st=11111111~exp=11111411~hmac=735a49389a72ac0b90d1a84ac5d43facd1a9047f153b39e914747ef6ed195e53',
+            (string)$img
         );
     }
 }
