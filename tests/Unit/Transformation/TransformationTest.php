@@ -733,4 +733,26 @@ final class TransformationTest extends UnitTestCase
             Transformation::fromParams(['video_codec' => ['codec' => 'h264', 'profile' => 'basic', 'level' => '3.1']])
         );
     }
+
+    public function testSupportStartOffset()
+    {
+        $transformation = (new Transformation(['width' => 100, 'start_offset' => 'idu - 5']));
+
+        self::assertContains('so_idu_sub_5', (string)$transformation);
+
+        $transformation = (new Transformation(['width' => 100, 'start_offset' => '$logotime']));
+
+        self::assertContains('so_$logotime', (string)$transformation);
+    }
+
+    public function testSupportEndOffset()
+    {
+        $transformation = (new Transformation(['width' => 100, 'end_offset' => 'idu - 5']));
+
+        self::assertContains('eo_idu_sub_5', (string)$transformation);
+
+        $transformation = (new Transformation(['width' => 100, 'end_offset' => '$logotime']));
+
+        self::assertContains('eo_$logotime', (string)$transformation);
+    }
 }

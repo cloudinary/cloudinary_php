@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\Transformation\Expression\ExpressionUtils;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
@@ -47,7 +48,7 @@ abstract class BaseOffsetQualifier extends BaseQualifier
         preg_match(self::RANGE_VALUE_RE, $value, $matches);
 
         if (empty($matches)) {
-            return null;
+            return !empty((string)$value) ? ExpressionUtils::normalize($value) : null;
         }
 
         $modifier = '';
