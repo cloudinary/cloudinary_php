@@ -14,6 +14,7 @@ use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\ApiUtils;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
+use DateTime;
 
 /**
  * Class AccountApi
@@ -58,17 +59,29 @@ class AccountApi
     /**
      * Gets a list of the users according to filters.
      *
-     * @param bool   $pending      Whether to fetch pending users. Default all.
-     * @param array  $userIds      List of user IDs. Up to 100.
-     * @param string $prefix       Search by prefix of the user's name or email. Case-insensitive.
-     * @param string $subAccountId Return only users who have access to the given sub-account.
+     * @param bool     $pending           Optional. Whether to fetch pending users. Default all.
+     * @param array    $userIds           Optional. List of user IDs. Up to 100.
+     * @param string   $prefix            Optional. Search by prefix of the user's name or email. Case-insensitive.
+     * @param string   $subAccountId      Optional. Return only users who have access to the given sub-account.
+     * @param bool     $lastLogin         Optional. Return only users that last logged in in the specified range of
+     *                                    dates (true), users that didn’t last logged in in that range (false), or all
+     *                                    users (null).
+     * @param DateTime $from              Optional. Last login start date.
+     * @param DateTime $to                Optional. Last login end date.
      *
      * @return ApiResponse List of users associated with the account.
      *
      * @api
      */
-    public function users($pending = null, array $userIds = [], $prefix = null, $subAccountId = null)
-    {
+    public function users(
+        $pending = null,
+        array $userIds = [],
+        $prefix = null,
+        $subAccountId = null,
+        $lastLogin = null,
+        DateTime $from = null,
+        DateTime $to = null
+    ) {
         $uri = [AccountEndPoint::USERS];
 
         $params = [
@@ -77,6 +90,15 @@ class AccountApi
             'prefix'         => $prefix,
             'sub_account_id' => $subAccountId,
         ];
+        if ($lastLogin !== null) {
+            $params['last_login'] = $lastLogin ? 'true' : 'false';
+        }
+        if ($from !== null) {
+            $params['from'] = $from->format("Y-m-d'T'H:i:s.u");
+        }
+        if ($to !== null) {
+            $params['to'] = $to->format("Y-m-d'T'H:i:s.u");
+        }
 
         return $this->accountApiClient->get($uri, $params);
     }
