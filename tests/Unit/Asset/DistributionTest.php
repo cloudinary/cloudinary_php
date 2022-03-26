@@ -10,6 +10,8 @@
 
 namespace Cloudinary\Test\Unit\Asset;
 
+use Cloudinary\Asset\Analytics;
+use Cloudinary\Asset\AuthToken;
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
@@ -222,7 +224,7 @@ final class DistributionTest extends AssetTestCase
      */
     public function testLongSignature()
     {
-        $this->image->urlConfig->signUrl = true;
+        $this->image->urlConfig->signUrl          = true;
         $this->image->urlConfig->longUrlSignature = true;
 
         self::assertImageUrl('s--RVsT3IpYGITMIc0RjCpde9T9Uujc2c1X--/' . self::IMAGE_NAME, $this->image);
@@ -238,6 +240,50 @@ final class DistributionTest extends AssetTestCase
         self::assertImageUrl(
             self::IMAGE_IN_FOLDER,
             (new Image(self::IMAGE_IN_FOLDER))->forceVersion(false)
+        );
+    }
+
+    public function testAnalytics()
+    {
+        $config = new Configuration(Configuration::instance());
+
+        $config->url->analytics();
+
+        self::assertContains(
+            '?' . Analytics::QUERY_KEY . '=',
+            (string)new Image(self::ASSET_ID, $config)
+        );
+    }
+
+    public function testNoAnalyticsPublicIDWithQuery()
+    {
+        $config = new Configuration(Configuration::instance());
+
+        $config->url->analytics();
+
+        self::assertNotContains(
+            '?' . Analytics::QUERY_KEY . '=',
+            (string)new Image(self::FETCH_IMAGE_URL_WITH_QUERY, $config)
+        );
+    }
+
+    public function testNoAnalyticsWithAuthToken()
+    {
+        $config = new Configuration(Configuration::instance());
+
+        $config->authToken->key      = AuthTokenTestCase::AUTH_TOKEN_KEY;
+        $config->authToken->duration = AuthTokenTestCase::DURATION;
+
+        $config->url->signUrl()->analytics();
+
+        self::assertNotContains(
+            '?' . Analytics::QUERY_KEY . '=',
+            (string)new Image(self::ASSET_ID, $config)
+        );
+
+        self::assertContains(
+            AuthToken::AUTH_TOKEN_NAME,
+            (string)new Image(self::ASSET_ID, $config)
         );
     }
 }

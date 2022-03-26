@@ -55,16 +55,4 @@ final class AnalyticsTest extends AssetTestCase
             MockAnalytics::sdkAnalyticsSignature()
         );
     }
-
-    public function testAssetWithAnalytics()
-    {
-        $config = new Configuration(Configuration::instance());
-
-        $config->url->analytics();
-
-        self::assertContains(
-            '?'. Analytics::QUERY_KEY. '=',
-            (string)new Image(self::ASSET_ID, $config)
-        );
-    }
 }
