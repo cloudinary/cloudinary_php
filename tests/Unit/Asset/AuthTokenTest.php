@@ -21,6 +21,8 @@ class AuthTokenTest extends AuthTokenTestCase
 {
     const START_TIME = 1111111111;
 
+    const KEY = '00112233FF99';
+
     /**
      * @var AuthToken $authToken  The authentication token.
      */
@@ -90,6 +92,50 @@ class AuthTokenTest extends AuthTokenTestCase
         self::assertEquals(
             'Encode%20these%20%3a%7e%40%23%25%5e%26%7b%7d%5b%5d%5c%22%27%3b%2f%22,%20but%20not%20those%20$!()_.*',
             $method->invoke(null, 'Encode these :~@#%^&{}[]\\"\';/", but not those $!()_.*')
+        );
+    }
+
+    /**
+     * Should create a token from a multiple patterns in acl.
+     */
+    public function testMultiplePatternsInAcl()
+    {
+        $authToken = new AuthToken();
+
+        $authToken->config->key       = self::KEY;
+        $authToken->config->startTime = self::START_TIME;
+        $authToken->config->duration  = self::DURATION;
+        $authToken->config->acl       = [
+            '/image/authenticated/*',
+            '/image2/authenticated/*',
+            '/image3/authenticated/*'
+        ];
+
+        self::assertNotFalse(
+            strpos(
+                $authToken->generate(),
+                "~acl=%2fimage%2fauthenticated%2f*!%2fimage2%2fauthenticated%2f*!%2fimage3%2fauthenticated%2f*~"
+            )
+        );
+    }
+
+    /**
+     * Should create a token from parameters in an array.
+     */
+    public function testPublicAclInitializationFromArray()
+    {
+        $authToken = new AuthToken(
+            [
+                'acl'        => 'foo',
+                'expiration' => 100,
+                'key'        => self::KEY,
+                'tokenName'  => 'token'
+            ]
+        );
+
+        self::assertEquals(
+            $authToken->generate(),
+            "token=exp=100~acl=foo~hmac=88be250f3a912add862959076ee74f392fa0959a953fddd9128787d5c849efd9"
         );
     }
 }

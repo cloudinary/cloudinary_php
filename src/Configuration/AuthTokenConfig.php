@@ -27,6 +27,7 @@ class AuthTokenConfig extends BaseConfigSection
     const START_TIME = 'start_time';
     const EXPIRATION = 'expiration';
     const DURATION   = 'duration';
+    const TOKEN_NAME = 'tokenName';
 
     /**
      * (Required) – the token must be signed with the encryption key received from Cloudinary.
@@ -52,7 +53,7 @@ class AuthTokenConfig extends BaseConfigSection
      * that can be added to a number of different URLs that share a common transformation. Without this parameter,
      * the pattern defaults to the full URL path of the requested asset.
      *
-     * @var string
+     * @var string|array
      */
     public $acl;
 
@@ -76,4 +77,11 @@ class AuthTokenConfig extends BaseConfigSection
      * @var int
      */
     public $duration;
+
+    /**
+     * (Optional) – the name of the token. must be supported by the server.
+     *
+     * @var string
+     */
+    public $tokenName;
 }

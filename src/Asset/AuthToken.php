@@ -35,6 +35,7 @@ class AuthToken
     const AUTH_TOKEN_NAME       = '__cld_token__';
     const TOKEN_SEPARATOR       = '~';
     const TOKEN_INNER_SEPARATOR = '=';
+    const TOKEN_ACL_SEPARATOR   = '!';
 
     /**
      * @var AuthTokenConfig $config The configuration of the authentication token.
@@ -139,6 +140,9 @@ class AuthToken
         ArrayUtils::addNonEmpty($tokenParts, 'ip', $this->config->ip);
         ArrayUtils::addNonEmpty($tokenParts, 'st', $start);
         ArrayUtils::addNonEmpty($tokenParts, 'exp', $expiration);
+        if (is_array($this->config->acl)) {
+            $this->config->acl = implode(self::TOKEN_ACL_SEPARATOR, $this->config->acl);
+        }
         ArrayUtils::addNonEmpty($tokenParts, 'acl', self::escapeToLower($this->config->acl));
 
         $toSign = $tokenParts;
@@ -152,7 +156,7 @@ class AuthToken
         return implode(
             self::TOKEN_INNER_SEPARATOR,
             [
-                self::AUTH_TOKEN_NAME,
+                !empty($this->config->tokenName) ? $this->config->tokenName : self::AUTH_TOKEN_NAME,
                 ArrayUtils::implodeAssoc($tokenParts, self::TOKEN_SEPARATOR, self::TOKEN_INNER_SEPARATOR),
             ]
         );
