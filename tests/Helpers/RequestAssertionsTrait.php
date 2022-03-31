@@ -57,6 +57,17 @@ trait RequestAssertionsTrait
     }
 
     /**
+     * Assert the HTTP request method is PUT.
+     *
+     * @param RequestInterface $request
+     * @param string           $message
+     */
+    protected static function assertRequestPut(RequestInterface $request, $message = 'HTTP method should be PUT')
+    {
+        self::assertEquals('PUT', $request->getMethod(), $message);
+    }
+
+    /**
      * Asserts that a request contains the expected fields and values.
      *
      * @param RequestInterface $request

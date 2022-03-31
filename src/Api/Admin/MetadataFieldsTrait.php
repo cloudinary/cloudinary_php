@@ -200,4 +200,23 @@ trait MetadataFieldsTrait
 
         return $this->apiClient->postJson($uri, $params);
     }
+
+    /**
+     * Reorders metadata fields.
+     *
+     * @param string $orderBy   Criteria for the order (one of the fields 'label', 'external_id', 'created_at').
+     * @param string $direction Optional (gets either asc or desc).
+     *
+     * @return ApiResponse
+     */
+    public function reorderMetadataFields($orderBy, $direction = null)
+    {
+        $uri    = [ApiEndPoint::METADATA_FIELDS, 'order'];
+        $params = [
+            'order_by'  => $orderBy,
+            'direction' => $direction,
+        ];
+
+        return $this->apiClient->putJson($uri, $params);
+    }
 }
