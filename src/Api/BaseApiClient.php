@@ -67,7 +67,7 @@ class BaseApiClient
     /**
      * @var Client The Http client instance. Performs actual network calls.
      */
-    protected $httpClient;
+    public $httpClient;
 
     /**
      * @var ApiConfig $api The API configuration.
