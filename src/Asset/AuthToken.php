@@ -140,10 +140,11 @@ class AuthToken
         ArrayUtils::addNonEmpty($tokenParts, 'ip', $this->config->ip);
         ArrayUtils::addNonEmpty($tokenParts, 'st', $start);
         ArrayUtils::addNonEmpty($tokenParts, 'exp', $expiration);
+        $acl = $this->config->acl;
         if (is_array($this->config->acl)) {
-            $this->config->acl = implode(self::TOKEN_ACL_SEPARATOR, $this->config->acl);
+            $acl = implode(self::TOKEN_ACL_SEPARATOR, $this->config->acl);
         }
-        ArrayUtils::addNonEmpty($tokenParts, 'acl', self::escapeToLower($this->config->acl));
+        ArrayUtils::addNonEmpty($tokenParts, 'acl', self::escapeToLower($acl));
 
         $toSign = $tokenParts;
         if (! empty($path) && empty($this->config->acl)) {
@@ -156,7 +157,7 @@ class AuthToken
         return implode(
             self::TOKEN_INNER_SEPARATOR,
             [
-                !empty($this->config->tokenName) ? $this->config->tokenName : self::AUTH_TOKEN_NAME,
+                self::AUTH_TOKEN_NAME,
                 ArrayUtils::implodeAssoc($tokenParts, self::TOKEN_SEPARATOR, self::TOKEN_INNER_SEPARATOR),
             ]
         );

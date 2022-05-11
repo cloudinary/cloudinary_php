@@ -27,7 +27,6 @@ class AuthTokenConfig extends BaseConfigSection
     const START_TIME = 'start_time';
     const EXPIRATION = 'expiration';
     const DURATION   = 'duration';
-    const TOKEN_NAME = 'tokenName';
 
     /**
      * (Required) – the token must be signed with the encryption key received from Cloudinary.
@@ -77,11 +76,4 @@ class AuthTokenConfig extends BaseConfigSection
      * @var int
      */
     public $duration;
-
-    /**
-     * (Optional) – the name of the token. must be supported by the server.
-     *
-     * @var string
-     */
-    public $tokenName;
 }

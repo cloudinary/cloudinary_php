@@ -129,13 +129,12 @@ class AuthTokenTest extends AuthTokenTestCase
                 'acl'        => 'foo',
                 'expiration' => 100,
                 'key'        => self::KEY,
-                'tokenName'  => 'token'
             ]
         );
 
         self::assertEquals(
             $authToken->generate(),
-            "token=exp=100~acl=foo~hmac=88be250f3a912add862959076ee74f392fa0959a953fddd9128787d5c849efd9"
+            "__cld_token__=exp=100~acl=foo~hmac=88be250f3a912add862959076ee74f392fa0959a953fddd9128787d5c849efd9"
         );
     }
 }
