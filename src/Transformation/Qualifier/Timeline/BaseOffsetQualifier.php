@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
+use Cloudinary\Transformation\Expression\ExpressionUtils;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 
 /**
@@ -47,7 +48,7 @@ abstract class BaseOffsetQualifier extends BaseQualifier
         preg_match(self::RANGE_VALUE_RE, $value, $matches);
 
         if (empty($matches)) {
-            return null;
+            return ExpressionUtils::normalize($value);
         }
 
         $modifier = '';
@@ -91,6 +92,7 @@ abstract class BaseOffsetQualifier extends BaseQualifier
             $value = self::normAutoRangeValue($this->value);
         }
 
-        return $value !== null ? self::getKey() . "_{$value}" : '';
+        /** @noinspection TypeUnsafeComparisonInspection */
+        return (string)$value == '' ? '' : self::getKey() . static::KEY_VALUE_DELIMITER . $value;
     }
 }
