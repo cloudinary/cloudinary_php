@@ -52,7 +52,7 @@ class AuthTokenConfig extends BaseConfigSection
      * that can be added to a number of different URLs that share a common transformation. Without this parameter,
      * the pattern defaults to the full URL path of the requested asset.
      *
-     * @var string
+     * @var string|array
      */
     public $acl;
 
