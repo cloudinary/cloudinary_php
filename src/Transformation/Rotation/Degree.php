@@ -10,8 +10,8 @@
 
 namespace Cloudinary\Transformation\Argument;
 
+use Cloudinary\Transformation\ExpressionQualifierMultiValue;
 use Cloudinary\Transformation\RotationDegreeInterface;
-use Cloudinary\Transformation\QualifierMultiValue;
 
 /**
  * Defines how to rotate an image.
@@ -22,15 +22,15 @@ use Cloudinary\Transformation\QualifierMultiValue;
  *
  * @api
  */
-class Degree extends QualifierMultiValue implements RotationDegreeInterface
+class Degree extends ExpressionQualifierMultiValue implements RotationDegreeInterface
 {
     const VALUE_DELIMITER = '.';
 
     use AngleTrait;
 
-    const DEG_90          = '90';
-    const DEG_180         = '180';
-    const DEG_270         = '270';
+    const DEG_90  = '90';
+    const DEG_180 = '180';
+    const DEG_270 = '270';
 
     /**
      * Creates the instance.

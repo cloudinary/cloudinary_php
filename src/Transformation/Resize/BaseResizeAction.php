@@ -12,6 +12,7 @@ namespace Cloudinary\Transformation;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
+use Cloudinary\Transformation\Expression\ExpressionUtils;
 use Cloudinary\Transformation\Qualifier\Dimensions\Dimensions;
 use Cloudinary\Transformation\Qualifier\Dimensions\DimensionsTrait;
 
@@ -126,7 +127,9 @@ abstract class BaseResizeAction extends BaseAction
             $this->addQualifier(new Dimensions());
         }
 
-        if ($value instanceof AspectRatio && (string)$value->getValue() === AspectRatio::IGNORE_INITIAL) {
+        if ($value instanceof AspectRatio
+            && (string)$value->getValue() === ExpressionUtils::normalize(AspectRatio::IGNORE_INITIAL)
+        ) {
             $this->ignoreAspectRatio();
         }
 

@@ -13,7 +13,7 @@ namespace Cloudinary\Transformation;
 /**
  * Class Corners
  */
-class Corners extends QualifierMultiValue
+class Corners extends ExpressionQualifierMultiValue
 {
     const MAX_ARGUMENTS = 4;
 

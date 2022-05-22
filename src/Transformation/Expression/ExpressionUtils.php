@@ -41,7 +41,7 @@ class ExpressionUtils
      *
      * @param mixed $expression The expression to normalize.
      *
-     * @return string|mixed The normalized expression.
+     * @return string The normalized expression.
      *
      * @uses translateIf()
      *

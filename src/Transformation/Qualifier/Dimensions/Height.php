@@ -10,11 +10,11 @@
 
 namespace Cloudinary\Transformation\Qualifier\Dimensions;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class Height
  */
-class Height extends BaseQualifier
+class Height extends BaseExpressionQualifier
 {
 }

@@ -11,7 +11,6 @@
 namespace Cloudinary\Transformation\Qualifier;
 
 use Cloudinary\ArrayUtils;
-use Cloudinary\Transformation\Expression\ExpressionUtils;
 
 /**
  * Class GenericQualifier
@@ -67,7 +66,7 @@ class GenericQualifier extends BaseQualifier
      */
     public function __toString()
     {
-        $value = ExpressionUtils::normalize((string)$this->value);
+        $value = (string)$this->value;
 
         return $value === '' ? '' : $this->genericKey . static::KEY_VALUE_DELIMITER . $value;
     }

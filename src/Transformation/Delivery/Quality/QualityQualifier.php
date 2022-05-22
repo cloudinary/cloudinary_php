@@ -10,12 +10,12 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class QualityQualifier
  */
-class QualityQualifier extends BaseQualifier
+class QualityQualifier extends BaseExpressionQualifier
 {
     use QualityTrait;
     use QualityBuilderTrait;
