@@ -19,7 +19,6 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Test\Unit\UnitTestCase;
 use Exception;
-use Throwable;
 
 /**
  * Class AssetTestCase
@@ -51,7 +50,8 @@ abstract class AssetTestCase extends UnitTestCase
     const NESTED_FOLDER   = 'folder/test';
     const IMAGE_IN_FOLDER = self::FOLDER . '/' . self::IMAGE_NAME;
 
-    const FETCH_IMAGE_URL = 'https://res.cloudinary.com/demo/image/upload/' . self::IMAGE_NAME;
+    const FETCH_IMAGE_URL            = 'https://res.cloudinary.com/demo/image/upload/' . self::IMAGE_NAME;
+    const FETCH_IMAGE_URL_WITH_QUERY = 'https://res.cloudinary.com/demo/image/upload/' . self::IMAGE_NAME . '?q=a';
 
     const PROTOCOL_HTTP  = 'http';
     const PROTOCOL_HTTPS = 'https';

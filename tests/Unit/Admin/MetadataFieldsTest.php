@@ -160,4 +160,67 @@ class MetadataFieldsTest extends UnitTestCase
         self::assertRequestDelete($lastRequest);
         self::assertRequestFields($lastRequest);
     }
+
+    /**
+     * Test the reorder of metadata fields for label order by asc.
+     */
+    public function testReorderMetadataFieldsByLabel()
+    {
+        $mockAdminApi = new MockAdminApi();
+
+        $mockAdminApi->reorderMetadataFields('label', 'asc');
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl(
+            $lastRequest,
+            '/metadata_fields/order'
+        );
+        self::assertRequestPut($lastRequest);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            ['order_by' => 'label', 'direction' => 'asc']
+        );
+    }
+
+    /**
+     * Test the reorder of metadata fields for external_id order by desc.
+     */
+    public function testReorderMetadataFieldsByExternalId()
+    {
+        $mockAdminApi = new MockAdminApi();
+
+        $mockAdminApi->reorderMetadataFields('external_id', 'asc');
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl(
+            $lastRequest,
+            '/metadata_fields/order'
+        );
+        self::assertRequestPut($lastRequest);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            ['order_by' => 'external_id', 'direction' => 'asc']
+        );
+    }
+
+    /**
+     * Test the reorder of metadata fields for created_at order by asc.
+     */
+    public function testReorderMetadataFieldsByCreatedAt()
+    {
+        $mockAdminApi = new MockAdminApi();
+
+        $mockAdminApi->reorderMetadataFields('created_at', 'asc');
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl(
+            $lastRequest,
+            '/metadata_fields/order'
+        );
+        self::assertRequestPut($lastRequest);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            ['order_by' => 'created_at', 'direction' => 'asc']
+        );
+    }
 }

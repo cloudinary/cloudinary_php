@@ -12,7 +12,6 @@ namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\UrlConfig;
-use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
 use Cloudinary\Utils;
 use GuzzleHttp\Psr7\Uri;
@@ -155,19 +154,19 @@ trait AssetFinalizerTrait
      */
     protected function finalizeAssetType()
     {
-        if (!empty($this->asset->suffix)) {
+        if (! empty($this->asset->suffix)) {
             $suffixSupportedDeliveryTypes = static::getSuffixSupportedDeliveryTypes();
-            if (!isset($suffixSupportedDeliveryTypes[$this->asset->assetType][$this->asset->deliveryType])) {
+            if (! isset($suffixSupportedDeliveryTypes[$this->asset->assetType][$this->asset->deliveryType])) {
                 $message = "URL Suffix is only supported in {$this->asset->assetType} " .
-                    implode(
-                        ',',
-                        array_keys(ArrayUtils::get($suffixSupportedDeliveryTypes, [$this->asset->assetType], []))
-                    );
+                           implode(
+                               ',',
+                               array_keys(ArrayUtils::get($suffixSupportedDeliveryTypes, [$this->asset->assetType], []))
+                           );
                 $this->getLogger()->critical(
                     $message,
                     [
-                        'suffix' => $this->asset->suffix,
-                        'assetType' => $this->asset->assetType,
+                        'suffix'       => $this->asset->suffix,
+                        'assetType'    => $this->asset->assetType,
                         'deliveryType' => $this->asset->deliveryType,
                     ]
                 );
@@ -216,10 +215,10 @@ trait AssetFinalizerTrait
     {
         $version = $this->asset->version;
 
-        if (empty($version) && $this->urlConfig->forceVersion &&
-            ! empty($this->asset->location) &&
-            ! preg_match("/^https?:\//", $this->asset->publicId()) &&
-            ! preg_match('/^v\d+/', $this->asset->publicId())
+        if (empty($version) && $this->urlConfig->forceVersion
+            && ! empty($this->asset->location)
+            && ! preg_match("/^https?:\//", $this->asset->publicId())
+            && ! preg_match('/^v\d+/', $this->asset->publicId())
         ) {
             $version = '1';
         }
@@ -304,7 +303,7 @@ trait AssetFinalizerTrait
             return $urlParts;
         }
 
-        $token    = $this->authToken->generate($urlParts['path']);
+        $token = $this->authToken->generate($urlParts['path']);
 
         $urlParts['query'] = ArrayUtils::implodeAssoc(
             ArrayUtils::mergeNonEmpty(
@@ -327,6 +326,11 @@ trait AssetFinalizerTrait
     protected function finalizeUrlWithAnalytics($urlParts)
     {
         if (! $this->urlConfig->analytics) {
+            return $urlParts;
+        }
+
+        // Disable analytics for public IDs containing query params.
+        if (! empty($urlParts['query']) || StringUtils::contains($this->asset->publicId(), "?")) {
             return $urlParts;
         }
 
