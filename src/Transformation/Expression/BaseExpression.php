@@ -67,7 +67,7 @@ abstract class BaseExpression extends BaseExpressionComponent
      */
     public function __toString()
     {
-        return (string)ExpressionUtils::normalize($this->exprValue);
+        return ExpressionUtils::normalize($this->exprValue);
     }
 
 

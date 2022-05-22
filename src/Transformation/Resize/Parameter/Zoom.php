@@ -10,14 +10,13 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class Zoom
  *
  * @internal
  */
-class Zoom extends BaseQualifier
+class Zoom extends BaseExpressionQualifier
 {
-    const VALUE_CLASS = ZoomQualifierMultiValue::class;
 }

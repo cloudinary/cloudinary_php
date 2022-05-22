@@ -10,23 +10,21 @@
 
 namespace Cloudinary\Transformation\Qualifier\Dimensions;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class Dpr
  *
  * @api
  */
-class Dpr extends BaseQualifier
+class Dpr extends BaseExpressionQualifier
 {
     /**
      * @var string $key Serialization key.
      */
-    protected static $key  = 'dpr';
+    protected static $key = 'dpr';
 
     const AUTO = 'auto';
-
-    const VALUE_CLASS = DprQualifierMultiValue::class;
 
     /**
      * @return static

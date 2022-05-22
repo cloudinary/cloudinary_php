@@ -10,17 +10,15 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class QualityQualifier
  */
-class QualityQualifier extends BaseQualifier
+class QualityQualifier extends BaseExpressionQualifier
 {
     use QualityTrait;
     use QualityBuilderTrait;
-
-    const VALUE_CLASS = QualityQualifierMultiValue::class;
 
     /**
      * Automatically calculate the optimal quality for an image: the smallest file size without affecting its

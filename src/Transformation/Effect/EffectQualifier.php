@@ -11,15 +11,13 @@
 namespace Cloudinary\Transformation;
 
 use Cloudinary\ClassUtils;
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class EffectQualifier
  */
-class EffectQualifier extends BaseQualifier
+class EffectQualifier extends BaseExpressionQualifier
 {
-    const VALUE_CLASS = EffectQualifierMultiValue::class;
-
     /**
      * @var string $key Serialization key, force it here for derived classes usage
      */

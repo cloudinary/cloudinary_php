@@ -10,15 +10,14 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Expression\ExpressionUtils;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class AspectRatio
  */
-class AspectRatio extends BaseQualifier
+class AspectRatio extends BaseExpressionQualifier
 {
-    const VALUE_CLASS = AspectRatioQualifierMultiValue::class;
-
     const MAX_VALUES = 2;
 
     const AR_1X1         = '1:1';
@@ -106,7 +105,7 @@ class AspectRatio extends BaseQualifier
      */
     public function __toString()
     {
-        if ((string)$this->value === self::IGNORE_INITIAL) {
+        if ((string)$this->value === ExpressionUtils::normalize(self::IGNORE_INITIAL)) {
             return "";
         }
 

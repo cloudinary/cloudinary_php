@@ -10,12 +10,11 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class Y
  */
-class Y extends BaseQualifier
+class Y extends BaseExpressionQualifier
 {
-    const VALUE_CLASS = YQualifierMultiValue::class;
 }

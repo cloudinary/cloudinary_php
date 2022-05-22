@@ -271,21 +271,7 @@ class QualifierMultiValue extends BaseComponent
             static::KEY_VALUE_DELIMITER
         );
 
-        return $this->normalize(ArrayUtils::implodeFiltered(static::VALUE_DELIMITER, [$values, $namedValues]));
-    }
-
-    /**
-     * Normalize a given string.
-     *
-     * This method do nothing, but give an opportunity to rewrite it.
-     *
-     * @param $value
-     *
-     * @return string
-     */
-    public function normalize($value)
-    {
-        return $value;
+        return ArrayUtils::implodeFiltered(static::VALUE_DELIMITER, [$values, $namedValues]);
     }
 
     /**

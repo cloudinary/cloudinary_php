@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation\Qualifier\Dimensions;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Class Width
@@ -19,7 +19,6 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  * value. To set the width of the image to the initial width of the original image use the value 'iw' ('ow' has been
  * deprecated).
  */
-class Width extends BaseQualifier
+class Width extends BaseExpressionQualifier
 {
-    const VALUE_CLASS = WidthQualifierMultiValue::class;
 }

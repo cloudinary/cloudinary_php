@@ -10,7 +10,7 @@
 
 namespace Cloudinary\Transformation;
 
-use Cloudinary\Transformation\Qualifier\BaseQualifier;
+use Cloudinary\Transformation\Qualifier\BaseExpressionQualifier;
 
 /**
  * Adjusts the opacity of the image to the specified percentage of opaqueness, making it semi-transparent.
@@ -22,7 +22,6 @@ use Cloudinary\Transformation\Qualifier\BaseQualifier;
  *
  * @api
  */
-class Opacity extends BaseQualifier implements AdjustmentInterface
+class Opacity extends BaseExpressionQualifier implements AdjustmentInterface
 {
-    const VALUE_CLASS = OpacityQualifierMultiValue::class;
 }
