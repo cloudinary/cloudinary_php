@@ -1,3 +1,20 @@
+2.7.0 / 2022-05-23
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `TextFit` in text layers
+  * Add support for multiple ACLs in `AuthToken`
+  * Add support for `reorderMetadataFields` Admin API
+  * Expose HTTP Client in APIs
+
+Other Changes
+-------------
+
+  * Fix qualifier normalization
+  * Fix analytics signature with query parameters
+
 2.6.1 / 2022-02-01
 ==================
 
