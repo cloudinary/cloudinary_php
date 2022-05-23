@@ -31,6 +31,7 @@ class TextSource extends BaseSource implements ImageTransformationInterface
     use BackgroundColorTrait {
         BackgroundColorTrait::backgroundColor insteadof ImageTransformationTrait;
     }
+    use TextFitTrait;
 
     /**
      * TextLayer constructor.

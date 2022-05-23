@@ -28,6 +28,7 @@ use Cloudinary\Transformation\LutLayer;
 use Cloudinary\Transformation\MediaOverlay;
 use Cloudinary\Transformation\Position;
 use Cloudinary\Transformation\SubtitlesSource;
+use Cloudinary\Transformation\TextFit;
 use Cloudinary\Transformation\TextSource;
 use Cloudinary\Transformation\TextSourceQualifier;
 use Cloudinary\Transformation\TextStyle;
@@ -117,6 +118,39 @@ final class LayerTest extends AssetTestCase
         self::assertEquals(
             "l_text:demibold/fl_layer_apply",
             (string)(new TextSource())->fontWeight(FontWeight::DEMIBOLD)
+        );
+    }
+
+    public function testTextLayerTextFit()
+    {
+        $textSource = ImageSource::text('Your Logo Here', new TextStyle(FontFamily::IMPACT, 100));
+
+        self::assertStrEquals(
+            'c_fit,l_text:Impact_100:Your%20Logo%20Here,w_200/fl_layer_apply',
+            $textSource->textFit(TextFit::size(200))
+
+        );
+
+        self::assertStrEquals(
+            'c_fit,h_301,l_text:Impact_100:Your%20Logo%20Here,w_201/fl_layer_apply',
+            $textSource->textFit(TextFit::size(201, 301))
+
+        );
+
+        self::assertStrEquals(
+            'c_fit,h_302,l_text:Impact_100:Your%20Logo%20Here,w_202/fl_layer_apply',
+            $textSource->textFit(TextFit::size(1)->width(202)->height(302))
+
+        );
+
+        self::assertStrEquals(
+            'c_fit,l_text:Impact_100:Your%20Logo%20Here,w_203/fl_layer_apply',
+            $textSource->textFit(203)
+        );
+
+        self::assertStrEquals(
+            'c_fit,h_304,l_text:Impact_100:Your%20Logo%20Here,w_204/fl_layer_apply',
+            $textSource->textFit(204, 304)
         );
     }
 
