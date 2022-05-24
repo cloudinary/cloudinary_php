@@ -25,6 +25,7 @@
   },
   "require": {
     "php": ">=5.6.0",
+    "cloudinary/transformation-builder-sdk":  "^1",
     "guzzlehttp/guzzle": "^6|^7",
     "shrikeh/teapot": "^1|^2",
     "ext-json": "*",
