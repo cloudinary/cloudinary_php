@@ -124,7 +124,7 @@ class FileUtils
      *
      * @param string $filename       The file to open.
      * @param string $mode           Access mode.
-     * @param null   $useIncludePath Set to true if you want to search for the file in the include_path
+     * @param bool   $useIncludePath Set to true if you want to search for the file in the include_path.
      *
      * @return resource
      *
@@ -132,7 +132,7 @@ class FileUtils
      *
      * @see fopen
      */
-    public static function safeFileOpen($filename, $mode, $useIncludePath = null)
+    public static function safeFileOpen($filename, $mode, $useIncludePath = false)
     {
         if (empty($filename)) {
             throw new GeneralError('Path cannot be empty');
