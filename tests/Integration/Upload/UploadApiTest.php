@@ -23,7 +23,7 @@ use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\Resize;
 use GuzzleHttp\Psr7\Uri;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Psr7;
 
@@ -489,8 +489,8 @@ final class UploadApiTest extends IntegrationTestCase
                         'context' => ['custom' => ['width' => self::TEST_IMAGE_WIDTH]],
                     ]
                 );
-                self::assertInternalType(IsType::TYPE_ARRAY, $result['quality_analysis']);
-                self::assertInternalType(IsType::TYPE_NUMERIC, $result['quality_analysis']['focus']);
+                self::assertIsArray($result['quality_analysis']);
+                self::assertIsNumeric($result['quality_analysis']['focus']);
             },
             3,
             1,
@@ -525,8 +525,8 @@ final class UploadApiTest extends IntegrationTestCase
         self::assertValidAsset($asset);
         self::assertArrayHasKey('responsive_breakpoints', $asset);
         self::assertEquals('a_90', $asset['responsive_breakpoints'][0]['transformation']);
-        self::assertRegExp('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['url']);
-        self::assertRegExp('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
+        self::assertMatchesRegularExpression('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['url']);
+        self::assertMatchesRegularExpression('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
     }
 
     /**

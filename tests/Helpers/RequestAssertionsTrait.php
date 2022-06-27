@@ -110,7 +110,7 @@ trait RequestAssertionsTrait
      */
     protected static function assertRequestQueryStringSubset(RequestInterface $request, $fields = null, $message = '')
     {
-        self::assertArraySubset(
+        self::assertSubset(
             $fields,
             Psr7\Query::parse($request->getUri()->getQuery()),
             $message ?: 'The expected fields and values were not found in the request query string'
@@ -126,7 +126,7 @@ trait RequestAssertionsTrait
      */
     protected static function assertRequestBodySubset(RequestInterface $request, $fields = null, $message = '')
     {
-        self::assertArraySubset(
+        self::assertSubset(
             $fields,
             Psr7\Query::parse($request->getBody()->getContents()),
             $message ?: 'The expected fields and values were not found in the request body'
@@ -142,10 +142,9 @@ trait RequestAssertionsTrait
      */
     protected static function assertRequestJsonBodySubset(RequestInterface $request, $fields = null, $message = '')
     {
-        self::assertArraySubset(
+        self::assertSubset(
             $fields,
             json_decode($request->getBody()->getContents(), true),
-            false,
             $message ?: 'The expected fields and values were not found in the request body'
         );
     }
@@ -159,7 +158,7 @@ trait RequestAssertionsTrait
      */
     protected static function assertRequestHeaderSubset(RequestInterface $request, $fields = null, $message = '')
     {
-        self::assertArraySubset(
+        self::assertSubset(
             $fields,
             $request->getHeaders(),
             $message ?: 'The expected fields and values were not found in the request header'

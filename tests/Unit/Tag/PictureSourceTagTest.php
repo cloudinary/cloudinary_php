@@ -118,7 +118,7 @@ final class PictureSourceTagTest extends ImageTagTestCase
 
     public function testPictureSourceTagInvalidMedia()
     {
-        self::assertNotContains(
+        self::assertStringNotContainsString(
             'media',
             (new PictureSourceTag($this->src))->media(self::MAX_WIDTH, self::MIN_WIDTH)->toTag()
         );
@@ -126,7 +126,7 @@ final class PictureSourceTagTest extends ImageTagTestCase
 
     public function testPictureSourceTagNoMedia()
     {
-        self::assertNotContains(
+        self::assertStringNotContainsString(
             'media',
             (new PictureSourceTag($this->src))->media()->toTag()
         );

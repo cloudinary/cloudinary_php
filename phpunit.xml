@@ -11,8 +11,11 @@
         processIsolation            = "false"
         stopOnFailure               = "false"
         syntaxCheck                 = "false"
+        bootstrap="vendor/autoload.php"
 >
-
+    <php>
+        <server name="SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT" value="1"/>
+    </php>
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>

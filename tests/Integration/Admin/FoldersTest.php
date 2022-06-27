@@ -14,7 +14,7 @@ use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\NotFound;
 use Cloudinary\Test\Integration\IntegrationTestCase;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 
 /**
  * Class FoldersTest

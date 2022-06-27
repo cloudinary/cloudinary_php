@@ -102,11 +102,9 @@ final class OAuthTest extends AssetTestCase
         $uploadApi = new MockUploadApi($config);
         $uploadApi->unsignedUpload(self::TEST_BASE64_IMAGE, self::API_TEST_PRESET);
 
-        self::assertArraySubset(
-            [
-                'upload_preset' => self::API_TEST_PRESET
-            ],
-            $uploadApi->getApiClient()->getRequestMultipartOptions()
+        self::assertSame(
+            self::API_TEST_PRESET,
+            $uploadApi->getApiClient()->getRequestMultipartOptions()['upload_preset']
         );
     }
 }

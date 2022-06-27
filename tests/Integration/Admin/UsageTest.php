@@ -12,7 +12,7 @@ namespace Cloudinary\Test\Integration\Admin;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Test\Integration\IntegrationTestCase;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 
 /**
  * Class UsageTest

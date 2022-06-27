@@ -19,6 +19,7 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Utils;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 /**
  * Class MediaFromParamsTest
@@ -67,12 +68,11 @@ final class MediaFromParamsTest extends AssetTestCase
         );
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testNoConfigThrowsException()
     {
         self::clearEnvironment();
+
+        $this->expectException(InvalidArgumentException::class);
 
         self::assertMediaFromParamsUrl(
             self::IMAGE_NAME
@@ -563,13 +563,13 @@ final class MediaFromParamsTest extends AssetTestCase
 
     /**
      * Should disallow url_suffix with '.'
-     *
-     * @expectedException \UnexpectedValueException
      */
     public function testDisallowSuffixWithDot()
     {
         //
         $options = ['url_suffix' => 'hello.world', 'private_cdn' => true];
+
+        $this->expectException(UnexpectedValueException::class);
         self::assertMediaFromParamsUrl(
             self::IMAGE_NAME,
             $options
@@ -578,13 +578,12 @@ final class MediaFromParamsTest extends AssetTestCase
 
     /**
      * Should disallow url_suffix with '/'
-     *
-     * @expectedException \UnexpectedValueException
      */
     public function testDisallowSuffixWithSlash()
     {
         $options = ['url_suffix' => 'hello/world', 'private_cdn' => true];
 
+        $this->expectException(UnexpectedValueException::class);
         self::assertMediaFromParamsUrl(
             self::IMAGE_NAME,
             $options
