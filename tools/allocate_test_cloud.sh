@@ -6,4 +6,4 @@ SDK_NAME="${1}"
 
 CLOUD_DETAILS=$(curl -sS -d "{\"prefix\" : \"${SDK_NAME}\"}" "${API_ENDPOINT}")
 
-echo ${CLOUD_DETAILS} | python -c 'import json,sys;c=json.load(sys.stdin)["payload"];print("cloudinary://%s:%s@%s" % (c["cloudApiKey"], c["cloudApiSecret"], c["cloudName"]))'
+echo ${CLOUD_DETAILS} | php -r '$c = json_decode(stream_get_contents(STDIN))->payload; printf("cloudinary://%s:%s@%s", $c->cloudApiKey, $c->cloudApiSecret, $c->cloudName);'
