@@ -49,14 +49,12 @@ class AuthTokenTest extends AuthTokenTestCase
         );
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testMustProvideExpirationOrDuration()
     {
         $message                             = 'Should throw if expiration and duration are not provided';
         $this->authToken->config->expiration = null;
         $this->authToken->config->duration   = null;
+        $this->expectException(InvalidArgumentException::class);
         $this->authToken->generate();
         $this->fail($message);
     }

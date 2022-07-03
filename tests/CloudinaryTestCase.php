@@ -14,9 +14,9 @@ use Cloudinary\Cloudinary;
 use Cloudinary\StringUtils;
 use Exception;
 use Monolog\Handler\TestHandler;
+use PHPUnit\Framework\Constraint\LogicalOr;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_Constraint_IsType;
-use PHPUnit_Framework_Constraint_Or;
+use PHPUnit\Framework\Constraint\IsType;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -122,10 +122,10 @@ abstract class CloudinaryTestCase extends TestCase
 
         $constraints = [];
         foreach ($expected as $expectedType) {
-            $constraints[] = new PHPUnit_Framework_Constraint_IsType($expectedType);
+            $constraints[] = new IsType($expectedType);
         }
 
-        $orConstraint = new PHPUnit_Framework_Constraint_Or();
+        $orConstraint = new LogicalOr();
         $orConstraint->setConstraints($constraints);
 
         static::assertThat($actual, $orConstraint, $message);
@@ -251,15 +251,24 @@ abstract class CloudinaryTestCase extends TestCase
     protected static function assertObjectStructure($asset, array $keys, $message = '')
     {
         foreach ($keys as $key => $type) {
-            if (is_object($asset) && property_exists($asset, $key) && is_array($type)) {
-                self::assertOneOfInternalTypes($type, $asset->{$key}, $message);
-            } elseif (is_object($asset) && property_exists($asset, $key)) {
-                self::assertInternalType($type, $asset->{$key}, $message);
-            } elseif (is_array($type)) {
-                self::assertOneOfInternalTypes($type, $asset[$key], $message);
-            } else {
-                self::assertInternalType($type, $asset[$key], $message);
-            }
+            $value = is_object($asset) && property_exists($asset, $key) ? $asset->{$key} : $asset[$key];
+
+            self::assertOneOfInternalTypes((array) $type, $value, $message);
+        }
+    }
+
+    /**
+     * Backward compatibility layer for deprecated assertArraySubset function.
+     *
+     * @param array  $subset
+     * @param array  $array
+     * @param string $message
+     */
+    public static function assertSubset(array $subset, array $array, $message = '')
+    {
+        foreach ($subset as $key => $value) {
+            self::assertArrayHasKey($key, $array);
+            self::assertEquals($value, $array[$key], $message);
         }
     }
 

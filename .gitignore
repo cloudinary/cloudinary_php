@@ -11,3 +11,4 @@ tools/dev/sanity/node_modules
 tools/dev/sanity/package-lock.json
 tools/dev/sanity/results.json
 tools/dev/sanity/TransformationSanityTest.php
+/.phpunit.result.cache

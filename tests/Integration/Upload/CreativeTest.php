@@ -19,7 +19,7 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Transformation\Extract;
 use Cloudinary\Transformation\Transformation;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 
 /**
  * Class CreativeTest
@@ -114,7 +114,7 @@ final class CreativeTest extends IntegrationTestCase
         self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
 
         self::assertValidSprite($asset);
-        self::assertContains('w_100', $asset['css_url']);
+        self::assertStringContainsString('w_100', $asset['css_url']);
 
         $asset = self::$uploadApi->generateSprite(
             self::$TAG_TO_GENERATE_SPRITE,
@@ -126,7 +126,7 @@ final class CreativeTest extends IntegrationTestCase
         self::addAssetToCleanupList($asset, [DeliveryType::KEY => DeliveryType::SPRITE]);
 
         self::assertValidSprite($asset);
-        self::assertContains('w_100/f_jpg', $asset['css_url']);
+        self::assertStringContainsString('w_100/f_jpg', $asset['css_url']);
     }
 
     /**
@@ -187,7 +187,7 @@ final class CreativeTest extends IntegrationTestCase
 
         self::assertValidMulti($asset);
         self::assertStringEndsWith('.gif', $asset['url']);
-        self::assertContains('w_0.5', $asset['url']);
+        self::assertStringContainsString('w_0.5', $asset['url']);
 
         $asset = self::$uploadApi->multi(
             self::$TAG_TO_MULTI,
@@ -199,7 +199,7 @@ final class CreativeTest extends IntegrationTestCase
 
         self::assertValidMulti($asset);
         self::assertStringEndsWith('.gif', $asset['url']);
-        self::assertContains('w_0.5', $asset['url']);
+        self::assertStringContainsString('w_0.5', $asset['url']);
 
         $asset = self::$uploadApi->multi(
             self::$TAG_TO_MULTI,
@@ -212,7 +212,7 @@ final class CreativeTest extends IntegrationTestCase
 
         self::assertValidMulti($asset);
         self::assertStringEndsWith('.pdf', $asset['url']);
-        self::assertContains('w_111', $asset['url']);
+        self::assertStringContainsString('w_111', $asset['url']);
     }
 
     /**

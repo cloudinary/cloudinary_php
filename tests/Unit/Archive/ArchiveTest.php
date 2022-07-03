@@ -38,23 +38,23 @@ class ArchiveTest extends AssetTestCase
     {
         // should return url with resource_type image.
         $url = self::$uploadApi->downloadFolder('samples/', ['resource_type' => AssetType::IMAGE]);
-        self::assertContains('image', $url);
+        self::assertStringContainsString('image', $url);
 
         // should return valid url.
         $url = self::$uploadApi->downloadFolder('folder/');
-        self::assertContains('generate_archive', $url);
+        self::assertStringContainsString('generate_archive', $url);
 
         // should flatten folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['flatten_folders' => true]);
-        self::assertContains('flatten_folders', $url);
+        self::assertStringContainsString('flatten_folders', $url);
 
         // should expire_at folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['expires_at' => time() + 60]);
-        self::assertContains('expires_at', $url);
+        self::assertStringContainsString('expires_at', $url);
 
         // should use original file_name of folder.
         $url = self::$uploadApi->downloadFolder('folder/', ['use_original_filename' => true]);
-        self::assertContains('use_original_filename', $url);
+        self::assertStringContainsString('use_original_filename', $url);
     }
 
     public function testPrivateDownloadUrl()
@@ -85,7 +85,7 @@ class ArchiveTest extends AssetTestCase
         ];
 
         foreach ($expectedParts as $expectedPart) {
-            self::assertContains($expectedPart, $url);
+            self::assertStringContainsString($expectedPart, $url);
         }
     }
 
@@ -99,6 +99,6 @@ class ArchiveTest extends AssetTestCase
             ]
         );
 
-        self::assertContains(AssetType::VIDEO . '/' . UploadEndPoint::DOWNLOAD, $videoUrl);
+        self::assertStringContainsString(AssetType::VIDEO . '/' . UploadEndPoint::DOWNLOAD, $videoUrl);
     }
 }

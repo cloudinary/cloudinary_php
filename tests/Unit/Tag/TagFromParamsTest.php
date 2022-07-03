@@ -818,7 +818,7 @@ final class TagFromParamsTest extends ImageTagTestCase
                    "data-url='http[^']+\/v1_1\/test123\/auto\/upload' " .
                    "name='file' type='file'\/>/";
 
-        self::assertRegExp($pattern, (string)UploadTag::fromParams('image'));
+        self::assertMatchesRegularExpression($pattern, (string)UploadTag::fromParams('image'));
 
         $pattern = "/<input class='cloudinary-fileupload' " .
                    "data-cloudinary-field='image' " .
@@ -827,7 +827,7 @@ final class TagFromParamsTest extends ImageTagTestCase
                    "data-max-chunk-size='5000000' " .
                    "data-url='http[^']+\/v1_1\/test123\/auto\/upload' " .
                    "name='file' type='file'\/>/";
-        self::assertRegExp($pattern, (string)UploadTag::fromParams('image', ['chunk_size' => 5000000]));
+        self::assertMatchesRegularExpression($pattern, (string)UploadTag::fromParams('image', ['chunk_size' => 5000000]));
 
         $pattern = "/<input class='cloudinary-fileupload classy' " .
                    "data-cloudinary-field='image' " .
@@ -836,7 +836,7 @@ final class TagFromParamsTest extends ImageTagTestCase
                    "data-max-chunk-size='\d+' " .
                    "data-url='http[^']+\/v1_1\/test123\/auto\/upload' " .
                    "name='file' type='file'\/>/";
-        self::assertRegExp($pattern, (string)UploadTag::fromParams('image', ['html' => ['class' => 'classy']]));
+        self::assertMatchesRegularExpression($pattern, (string)UploadTag::fromParams('image', ['html' => ['class' => 'classy']]));
     }
 
     /**

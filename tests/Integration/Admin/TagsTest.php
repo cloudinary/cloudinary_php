@@ -12,7 +12,7 @@ namespace Cloudinary\Test\Integration\Admin;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Test\Integration\IntegrationTestCase;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 
 /**
  * Class TagsTest
@@ -59,7 +59,7 @@ final class TagsTest extends IntegrationTestCase
 
         self::assertObjectStructure($result, ['tags' => IsType::TYPE_ARRAY]);
         self::assertCount(2, $result['tags']);
-        self::assertInternalType(IsType::TYPE_STRING, $result['tags'][0]);
+        self::assertIsString($result['tags'][0]);
     }
 
     /**

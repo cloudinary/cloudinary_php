@@ -64,11 +64,9 @@ final class MediaTest extends AssetTestCase
         );
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testMediaAssetSuffixValidation()
     {
+        $this->expectException(UnexpectedValueException::class);
         $this->media->suffix('../illegal_suffix.//');
     }
 

@@ -140,13 +140,12 @@ class SignatureVerifierTest extends AssetTestCase
         self::assertFalse($result);
     }
 
-    /**
-     * @expectedException           InvalidArgumentException
-     * @expectedExceptionMessage    API Secret is invalid
-     */
     public function testNotificationMissingApiSecret()
     {
         Configuration::instance()->cloud->apiSecret = null;
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('API Secret is invalid');
 
         SignatureVerifier::verifyNotificationSignature(
             self::$notificationBody,
@@ -251,13 +250,12 @@ class SignatureVerifierTest extends AssetTestCase
         }
     }
 
-    /**
-     * @expectedException           InvalidArgumentException
-     * @expectedExceptionMessage    API Secret is invalid
-     */
     public function testApiResponseMissingApiSecret()
     {
         Configuration::instance()->cloud->apiSecret = null;
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('API Secret is invalid');
 
         SignatureVerifier::verifyApiResponseSignature(
             self::$publicId,

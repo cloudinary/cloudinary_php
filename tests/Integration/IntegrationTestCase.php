@@ -27,7 +27,7 @@ use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
@@ -444,7 +444,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'file_count'     => IsType::TYPE_INT,
             ]
         );
-        self::assertRegexp('/\.' . $format . '$/', $archive['url']);
+        self::assertMatchesRegularExpression('/\.' . $format . '$/', $archive['url']);
     }
 
     /**
@@ -635,8 +635,9 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         if ($path) {
             self::assertEquals($path, $parseUrl['path']);
         }
-        if (! empty($values)) {
-            self::assertArraySubset($values, $query);
+
+        foreach ($values as $key => $value) {
+            self::assertSame($value, $query[$key]);
         }
     }
 

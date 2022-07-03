@@ -61,7 +61,7 @@ class CloudinaryTagTest extends AssetTestCase
 
         $expectedImage = $this->c->image(self::IMAGE_NAME);
 
-        self::assertContains(self::TEST_HOSTNAME, (string)$expectedImage);
+        self::assertStringContainsString(self::TEST_HOSTNAME, (string)$expectedImage);
 
         self::assertStrEquals(
             '<img src="'.$expectedImage.'">',

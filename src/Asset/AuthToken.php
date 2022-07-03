@@ -174,7 +174,7 @@ class AuthToken
         $expiration = $this->config->expiration;
         $duration   = $this->config->duration;
 
-        if (! strcasecmp($start, 'now')) {
+        if (! strcasecmp((string) $start, 'now')) {
             $start = Utils::unixTimeNow();
         } elseif (is_numeric($start)) {
             $start = (int)$start;

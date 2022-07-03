@@ -15,7 +15,7 @@ use Cloudinary\Api\Exception\NotFound;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Transformation\Qualifier;
 use Cloudinary\Transformation\Transformation;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 
 /**
  * Class AdaptiveStreamingProfilesTest

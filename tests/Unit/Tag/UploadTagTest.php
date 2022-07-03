@@ -42,7 +42,7 @@ final class UploadTagTest extends TagTestCase
             '\&quot;api_key\&quot;:\&quot;\w+\&quot;}" ' .
             'data-url="http[^\']+\/v1_1\/test123\/auto\/upload"' .
             '>/';
-        self::assertRegExp($pattern, (string)$tag);
+        self::assertMatchesRegularExpression($pattern, (string)$tag);
     }
 
 
@@ -60,7 +60,7 @@ final class UploadTagTest extends TagTestCase
             'data-url="http[^\']+\/v1_1\/test123\/auto\/upload"' .
             '>/';
 
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             $pattern,
             (string)$tag
         );
@@ -80,7 +80,7 @@ final class UploadTagTest extends TagTestCase
             '\&quot;api_key\&quot;:\&quot;\w+\&quot;}" ' .
             'data-url="http[^\']+\/v1_1\/test123\/auto\/upload"' .
             '>/';
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             $pattern,
             (string)$tag
         );
@@ -98,7 +98,7 @@ final class UploadTagTest extends TagTestCase
             '\&quot;timestamp\&quot;:\d+}" ' .
             'data-url="http[^\']+\/v1_1\/test123\/auto\/upload"' .
             '>/';
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             $pattern,
             (string)$tag
         );
