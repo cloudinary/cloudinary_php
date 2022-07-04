@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
  * Backwards compatibility with PSR Log v1.
  */
 $r = new \ReflectionClass(LoggerInterface::class);
-if ( PHP_MAJOR_VERSION < 7 || !$r->getMethod('log')->hasReturnType()) {
+if (PHP_MAJOR_VERSION < 7 || !$r->getMethod('log')->hasReturnType()) {
     /**
      * Logger decorator trait that exposes PSR-3 Logger methods.
      */

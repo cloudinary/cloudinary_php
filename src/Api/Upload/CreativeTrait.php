@@ -293,8 +293,7 @@ trait CreativeTrait
             $params['tag'] = $tag;
         }
         return $params;
-
-     }
+    }
     /**
      * Create auto-generated video slideshows.
      *

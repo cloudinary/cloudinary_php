@@ -14,12 +14,13 @@ use Cloudinary\Cloudinary;
 use Cloudinary\StringUtils;
 use Exception;
 use Monolog\Handler\TestHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use PHPUnit\Framework\Constraint\LogicalOr;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Constraint\IsType;
 use ReflectionException;
 use ReflectionMethod;
-
 
 if (! defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
     //PHP < 7.2 Define it as 0 so it does nothing
@@ -235,6 +236,11 @@ abstract class CloudinaryTestCase extends TestCase
         $testHandler = $logger->getTestHandler();
 
         self::assertInstanceOf(TestHandler::class, $testHandler);
+
+        if (3 === Logger::API) {
+            $level = is_string($level) ? Level::fromName($level) : Level::fromValue($level);
+        }
+
         self::assertTrue(
             $testHandler->hasRecordThatContains($message, $level),
             sprintf('Object %s did not log the message or logged it with a different level', get_class($obj))
