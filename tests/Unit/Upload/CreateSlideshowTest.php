@@ -96,7 +96,5 @@ final class CreateSlideshowTest extends AssetTestCase
                 'upload_preset'           => self::UPLOAD_PRESET,
             ]
         );
-
     }
-
 }

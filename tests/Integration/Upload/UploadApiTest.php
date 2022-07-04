@@ -496,7 +496,6 @@ final class UploadApiTest extends IntegrationTestCase
             1,
             'Unable to use eval upload parameter'
         );
-
     }
 
     /**

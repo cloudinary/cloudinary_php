@@ -232,7 +232,6 @@ class SrcSet
                 if (! $count) {
                     break;
                 }
-
             }
         }
 

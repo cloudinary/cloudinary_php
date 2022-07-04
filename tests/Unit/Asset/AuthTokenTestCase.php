@@ -41,4 +41,3 @@ class AuthTokenTestCase extends AssetTestCase
         );
     }
 }
-

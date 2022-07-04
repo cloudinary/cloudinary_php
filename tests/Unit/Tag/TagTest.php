@@ -12,7 +12,6 @@ namespace Cloudinary\Test\Unit\Tag;
 
 use PHPUnit\Framework\TestCase;
 
-
 /**
  * Class TagTest
  */
