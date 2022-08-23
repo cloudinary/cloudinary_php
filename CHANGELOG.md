@@ -1,3 +1,18 @@
+2.8.0 / 2022-08-23
+==================
+
+New functionality and features
+------------------------------
+
+  * Allow Monolog v3
+
+Other Changes
+-------------
+
+  * Use PHP in scripts
+  * Drop Travis in favor of GitHub Actions
+  * Test on PHP 8.x
+
 2.7.1 / 2022-05-26
 ==================
 
