@@ -23,6 +23,7 @@ use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\StringUtils;
 use Cloudinary\Test\CloudinaryTestCase;
 use Cloudinary\Test\Helpers\Addon;
+use Cloudinary\Test\Helpers\Feature;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
@@ -102,7 +103,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     protected static function shouldTestFeature($feature)
     {
         $cldTestFeatures = strtolower(getenv('CLD_TEST_FEATURES'));
-        if ($cldTestFeatures === Addon::ALL) {
+        if ($cldTestFeatures === Feature::ALL) {
             return true;
         }
 
