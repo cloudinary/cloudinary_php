@@ -203,6 +203,31 @@ trait AssetsTrait
     }
 
     /**
+     * Lists assets in the specified asset folder.
+     *
+     * @param string $assetFolder The asset folder.
+     * @param array  $options     The optional parameters. See the
+     *                            <a href=https://cloudinary.com/documentation/dynamic_folders target="_blank"> Admin
+     *                            API</a> documentation.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/dynamic_folders
+     */
+    public function assetsByAssetFolder($assetFolder, $options = [])
+    {
+        $uri = [ApiEndPoint::ASSETS, 'by_asset_folder'];
+
+        $params                 = ArrayUtils::whitelist(
+            $options,
+            ['next_cursor', 'max_results', 'tags', 'moderations', 'context']
+        );
+        $params['asset_folder'] = $assetFolder;
+
+        return $this->apiClient->get($uri, $params);
+    }
+
+    /**
      * Returns the details of the specified asset and all its derived assets.
      *
      *
@@ -312,6 +337,8 @@ trait AssetsTrait
                 'background_removal',
                 'quality_override',
                 'notification_url',
+                'asset_folder',
+                'unique_display_name',
             ]
         );
 

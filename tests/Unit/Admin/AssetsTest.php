@@ -77,10 +77,23 @@ final class AssetsTest extends UnitTestCase
     public function testUpdateAssetFields()
     {
         $mockAdminApi = new MockAdminApi();
-        $mockAdminApi->update(self::$UNIQUE_TEST_ID, ['metadata' => ['key'=>'value']]);
+        $mockAdminApi->update(self::$UNIQUE_TEST_ID,
+            [
+                'metadata'            => ['key' => 'value'],
+                'asset_folder'        => 'asset_folder',
+                'unique_display_name' => true,
+            ]
+        );
         $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
 
         self::assertRequestUrl($lastRequest, '/resources/image/upload/' . self::$UNIQUE_TEST_ID);
-        self::assertRequestBodySubset($lastRequest, ['metadata'=>'key=value']);
+        self::assertRequestBodySubset(
+            $lastRequest,
+            [
+                'metadata'            => 'key=value',
+                'asset_folder'        => 'asset_folder',
+                'unique_display_name' => true,
+            ]
+        );
     }
 }
