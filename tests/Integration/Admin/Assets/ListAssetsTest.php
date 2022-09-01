@@ -16,6 +16,7 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
 use Cloudinary\Asset\ModerationType;
 use Cloudinary\Test\Helpers\Addon;
+use Cloudinary\Test\Helpers\Feature;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
@@ -268,6 +269,9 @@ final class ListAssetsTest extends IntegrationTestCase
      */
     public function testListUploadedAssetsByAssetFolder()
     {
+        if (! self::shouldTestFeature(Feature::DYNAMIC_FOLDERS)) {
+            self::markTestSkipped('Skipping ListUploadedAssetsByAssetFolder test.');
+        }
         $result = self::$adminApi->assetsByAssetFolder(self::$UNIQUE_ASSET_FOLDER);
 
         self::assertValidAsset($result['resources'][0], [AssetType::KEY => AssetType::VIDEO]);

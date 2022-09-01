@@ -93,6 +93,23 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
     }
 
     /**
+     * Should a certain feature be tested?
+     *
+     * @param string $feature The feature to test.
+     *
+     * @return bool
+     */
+    protected static function shouldTestFeature($feature)
+    {
+        $cldTestFeatures = strtolower(getenv('CLD_TEST_FEATURES'));
+        if ($cldTestFeatures === Addon::ALL) {
+            return true;
+        }
+
+        return ArrayUtils::inArrayI($feature, explode(',', $cldTestFeatures));
+    }
+
+    /**
      * @return bool
      */
     protected static function shouldRunDestructiveTests()
