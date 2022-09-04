@@ -16,6 +16,7 @@ use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
 use Cloudinary\Asset\ModerationType;
 use Cloudinary\Test\Helpers\Addon;
+use Cloudinary\Test\Helpers\Feature;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
@@ -34,6 +35,7 @@ final class ListAssetsTest extends IntegrationTestCase
     private static $UNIQUE_TEST_TAG_TO_ONE_IMAGE_ASSET;
     private static $UNIQUE_PREFIX;
     private static $FULL_UNIQUE_PREFIX;
+    private static $UNIQUE_ASSET_FOLDER;
 
     /**
      * @throws ApiError
@@ -49,6 +51,7 @@ final class ListAssetsTest extends IntegrationTestCase
         self::$UNIQUE_CONTEXT                     = self::$UNIQUE_CONTEXT_KEY . '=' . self::$UNIQUE_CONTEXT_VALUE;
         self::$UNIQUE_TEST_TAG_TO_ONE_IMAGE_ASSET = self::CLASS_PREFIX . 'unique_tag_to_one_image_asset_' .
                                                     self::$UNIQUE_TEST_TAG;
+        self::$UNIQUE_ASSET_FOLDER                = self::$FULL_UNIQUE_PREFIX . '_asset_folder';
 
         self::createTestAssets(
             [
@@ -57,7 +60,7 @@ final class ListAssetsTest extends IntegrationTestCase
                         'tags'              => [self::$UNIQUE_TEST_TAG_TO_ONE_IMAGE_ASSET],
                         'context'           => self::$UNIQUE_CONTEXT,
                         ModerationType::KEY => ModerationType::MANUAL,
-                    ]
+                    ],
                 ],
                 self::TEST_ASSET,
                 [
@@ -65,6 +68,7 @@ final class ListAssetsTest extends IntegrationTestCase
                         'context'      => self::$UNIQUE_CONTEXT,
                         'file'         => self::TEST_DOCX_PATH,
                         AssetType::KEY => AssetType::RAW,
+                        'asset_folder' => self::$UNIQUE_ASSET_FOLDER,
                     ],
                 ],
                 [
@@ -72,6 +76,7 @@ final class ListAssetsTest extends IntegrationTestCase
                         'context'      => self::$UNIQUE_CONTEXT,
                         'file'         => self::TEST_VIDEO_PATH,
                         AssetType::KEY => AssetType::VIDEO,
+                        'asset_folder' => self::$UNIQUE_ASSET_FOLDER,
                     ],
                 ],
             ],
@@ -216,7 +221,7 @@ final class ListAssetsTest extends IntegrationTestCase
         $result = self::$adminApi->assetsByIds(
             [
                 self::getTestAssetPublicId(self::$UNIQUE_PREFIX),
-                self::getTestAssetPublicId(self::TEST_ASSET)
+                self::getTestAssetPublicId(self::TEST_ASSET),
             ]
         );
 
@@ -250,12 +255,27 @@ final class ListAssetsTest extends IntegrationTestCase
         $result = self::$adminApi->assetsByAssetIds(
             [
                 self::getTestAssetAssetId(self::$UNIQUE_PREFIX),
-                self::getTestAssetAssetId(self::TEST_ASSET)
+                self::getTestAssetAssetId(self::TEST_ASSET),
             ]
         );
 
         self::assertValidAsset($result['resources'][0]);
         self::assertValidAsset($result['resources'][1]);
+        self::assertCount(2, $result['resources']);
+    }
+
+    /**
+     * Get uploaded assets in the Asset folder.
+     */
+    public function testListUploadedAssetsByAssetFolder()
+    {
+        if (! self::shouldTestFeature(Feature::DYNAMIC_FOLDERS)) {
+            self::markTestSkipped('Skipping ListUploadedAssetsByAssetFolder test.');
+        }
+        $result = self::$adminApi->assetsByAssetFolder(self::$UNIQUE_ASSET_FOLDER);
+
+        self::assertValidAsset($result['resources'][0], [AssetType::KEY => AssetType::VIDEO]);
+        self::assertValidAsset($result['resources'][1], [AssetType::KEY => AssetType::RAW]);
         self::assertCount(2, $result['resources']);
     }
 

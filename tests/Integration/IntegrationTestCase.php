@@ -23,6 +23,7 @@ use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\StringUtils;
 use Cloudinary\Test\CloudinaryTestCase;
 use Cloudinary\Test\Helpers\Addon;
+use Cloudinary\Test\Helpers\Feature;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
@@ -90,6 +91,23 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         }
 
         return ArrayUtils::inArrayI($addOn, explode(',', $cldTestAddOns));
+    }
+
+    /**
+     * Should a certain feature be tested?
+     *
+     * @param string $feature The feature to test.
+     *
+     * @return bool
+     */
+    protected static function shouldTestFeature($feature)
+    {
+        $cldTestFeatures = strtolower(getenv('CLD_TEST_FEATURES'));
+        if ($cldTestFeatures === Feature::ALL) {
+            return true;
+        }
+
+        return ArrayUtils::inArrayI($feature, explode(',', $cldTestFeatures));
     }
 
     /**
