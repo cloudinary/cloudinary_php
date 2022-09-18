@@ -1,3 +1,11 @@
+2.9.0 / 2022-09-18
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `assetsByAssetFolder` Admin API
+
 2.8.0 / 2022-08-23
 ==================
 
