@@ -33,8 +33,8 @@ use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
-use Teapot\StatusCode;
-use Teapot\StatusCode\Vendor\Twitter;
+use Teapot\StatusCode\Http as HttpStatusCode;
+use Teapot\StatusCode\Vendor\Twitter as TwitterStatusCode;
 
 /**
  * Class BaseApiClient
@@ -55,13 +55,13 @@ class BaseApiClient
      */
     const CLOUDINARY_API_ERROR_CLASSES
         = [
-            StatusCode::BAD_REQUEST           => BadRequest::class,
-            StatusCode::UNAUTHORIZED          => AuthorizationRequired::class,
-            StatusCode::FORBIDDEN             => NotAllowed::class,
-            StatusCode::NOT_FOUND             => NotFound::class,
-            StatusCode::CONFLICT              => AlreadyExists::class,
-            Twitter::ENHANCE_YOUR_CALM        => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
-            StatusCode::INTERNAL_SERVER_ERROR => GeneralError::class,
+            HttpStatusCode::BAD_REQUEST           => BadRequest::class,
+            HttpStatusCode::UNAUTHORIZED          => AuthorizationRequired::class,
+            HttpStatusCode::FORBIDDEN             => NotAllowed::class,
+            HttpStatusCode::NOT_FOUND             => NotFound::class,
+            HttpStatusCode::CONFLICT              => AlreadyExists::class,
+            TwitterStatusCode::ENHANCE_YOUR_CALM  => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
+            HttpStatusCode::INTERNAL_SERVER_ERROR => GeneralError::class,
         ];
 
     /**
@@ -393,7 +393,7 @@ class BaseApiClient
     {
         $statusCode = $response->getStatusCode();
 
-        if ($statusCode !== StatusCode::OK) {
+        if ($statusCode !== HttpStatusCode::OK) {
             if (array_key_exists($statusCode, self::CLOUDINARY_API_ERROR_CLASSES)) {
                 $errorClass   = self::CLOUDINARY_API_ERROR_CLASSES[$statusCode];
                 $responseJson = $this->parseJsonResponse($response);
