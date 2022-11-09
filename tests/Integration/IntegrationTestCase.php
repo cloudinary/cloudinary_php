@@ -31,7 +31,7 @@ use GuzzleHttp\Psr7;
 use PHPUnit\Framework\Constraint\IsType;
 use ReflectionClass;
 use RuntimeException;
-use Teapot\StatusCode;
+use Teapot\StatusCode\Http as HttpStatusCode;
 
 /**
  * Class IntegrationTestCase
@@ -353,7 +353,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
 
         $res = (new Client())->head($assetUrl);
 
-        self::assertEquals(StatusCode::OK, $res->getStatusCode());
+        self::assertEquals(HttpStatusCode::OK, $res->getStatusCode());
     }
 
     /**
