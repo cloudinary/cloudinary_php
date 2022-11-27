@@ -12,6 +12,7 @@ namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\CommonTransformationInterface;
@@ -38,7 +39,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     /**
      * BaseMediaAsset constructor.
      *
-     * @param      $source
+     * @param                                 $source
      * @param Configuration|string|array|null $configuration The Configuration source.
      */
     public function __construct($source, $configuration = null)
@@ -157,6 +158,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * @param bool                        $append             Whether to append or use the provided transformation.
      *
      * @return string|UriInterface
+     * @throws ConfigurationException
      */
     public function toUrl($withTransformation = null, $append = true)
     {
