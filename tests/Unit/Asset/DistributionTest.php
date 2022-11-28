@@ -15,6 +15,7 @@ use Cloudinary\Asset\AuthToken;
 use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
+use Cloudinary\Exception\ConfigurationException;
 
 /**
  * Class DistributionTest
@@ -228,6 +229,21 @@ final class DistributionTest extends AssetTestCase
         $this->image->urlConfig->longUrlSignature = true;
 
         self::assertImageUrl('s--RVsT3IpYGITMIc0RjCpde9T9Uujc2c1X--/' . self::IMAGE_NAME, $this->image);
+    }
+
+    public function testSignatureNoApiSecret()
+    {
+        $this->image->cloud->apiSecret   = null;
+        $this->image->urlConfig->signUrl = true;
+
+        $expectedExceptionMessage = 'Must supply apiSecret';
+        try {
+            $this->image->toUrl();
+        } catch (ConfigurationException $e) {
+            $message = $e->getMessage();
+        }
+
+        self::assertStrEquals($expectedExceptionMessage, $message);
     }
 
     public function testForceVersion()

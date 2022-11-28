@@ -17,6 +17,7 @@ use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\LoggingConfig;
 use Cloudinary\Configuration\UrlConfig;
+use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\JsonUtils;
 use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
@@ -345,6 +346,7 @@ abstract class BaseAsset implements AssetInterface
      * Serializes to URL string.
      *
      * @return string
+     * @throws ConfigurationException
      */
     public function toUrl()
     {
