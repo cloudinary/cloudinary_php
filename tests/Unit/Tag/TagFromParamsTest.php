@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Unit\Tag;
 
 use Cloudinary\ArrayUtils;
+use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Media;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Tag\ImageTag;
@@ -31,7 +32,9 @@ final class TagFromParamsTest extends ImageTagTestCase
 
     const DEFAULT_PATH        = 'http://res.cloudinary.com/test123';
     const DEFAULT_UPLOAD_PATH = 'http://res.cloudinary.com/test123/image/upload/';
-    const VIDEO_UPLOAD_PATH   = 'http://res.cloudinary.com/test123/video/upload/';
+    const VIDEO_PATH   = 'http://res.cloudinary.com/test123/video/';
+    const VIDEO_UPLOAD_PATH   = self::VIDEO_PATH . 'upload/';
+    const VIDEO_FETCH_PATH   = self::VIDEO_PATH . 'fetch/';
 
     private static $publicId                = 'sample.jpg';
     private static $commonTransformationStr = 'e_sepia';
@@ -514,6 +517,21 @@ final class TagFromParamsTest extends ImageTagTestCase
             "<source src='$expectedUrl.ogv' type='video/ogg'>" .
             '</video>',
             VideoTag::fromParams('movie')
+        );
+    }
+
+    public function testVideoTagFetch()
+    {
+        $videoUrl = self::FETCH_VIDEO_URL;
+        $prefixUrl = self::VIDEO_FETCH_PATH;
+
+        self::assertStrEquals(
+            "<video poster='${prefixUrl}f_jpg/$videoUrl'>" .
+            "<source src='${prefixUrl}f_webm/$videoUrl' type='video/webm'>" .
+            "<source src='${prefixUrl}f_mp4/$videoUrl' type='video/mp4'>" .
+            "<source src='${prefixUrl}f_ogv/$videoUrl' type='video/ogg'>" .
+            '</video>',
+            VideoTag::fromParams($videoUrl, [DeliveryType::KEY => DeliveryType::FETCH])
         );
     }
 

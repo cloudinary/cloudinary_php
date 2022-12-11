@@ -36,7 +36,7 @@ class VideoThumbnailTag extends ImageTag
     {
         parent::image(new Video($source, $configuration), $configuration);
 
-        $this->image->asset->extension = $configuration->tag->videoPosterFormat;
+        $this->image->setFormat($configuration->tag->videoPosterFormat);
 
         return $this;
     }

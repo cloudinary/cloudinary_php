@@ -301,7 +301,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
 
         if (! array_key_exists('poster', $this->attributes)) {
             $poster                   = new Image($this->video);
-            $poster->asset->extension = $this->config->tag->videoPosterFormat;
+            $poster->setFormat($this->config->tag->videoPosterFormat);
 
             $attributes['poster'] = $poster;
         }

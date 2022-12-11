@@ -23,6 +23,7 @@ use Cloudinary\Transformation\Transformation;
  */
 final class VideoTagTest extends TagTestCase
 {
+    const FETCH_VIDEO_URL_PREFIX = 'https://res.cloudinary.com/test123/video/fetch/';
     protected $video;
 
     protected $defaultSourcesStr =
@@ -56,6 +57,29 @@ final class VideoTagTest extends TagTestCase
         self::assertEquals(
             (string)$expected,
             (string)VideoTag::upload(self::VIDEO_NAME)
+        );
+    }
+
+    public function testVideoTagFetchVideo()
+    {
+        $videoUrl  = self::FETCH_VIDEO_URL;
+        $prefixUrl = self::FETCH_VIDEO_URL_PREFIX;
+
+        $expected = "<video poster=\"${prefixUrl}f_jpg/$videoUrl\">" . "\n" .
+                    "<source src=\"${prefixUrl}f_mp4/vc_h265/$videoUrl\" type=\"video/mp4; codecs=hev1\">" . "\n" .
+                    "<source src=\"${prefixUrl}f_webm/vc_vp9/$videoUrl\" type=\"video/webm; codecs=vp9\">" . "\n" .
+                    "<source src=\"${prefixUrl}f_mp4/vc_auto/$videoUrl\" type=\"video/mp4\">" . "\n" .
+                    "<source src=\"${prefixUrl}f_webm/vc_auto/$videoUrl\" type=\"video/webm\">" . "\n" .
+                    '</video>';
+
+        self::assertStrEquals(
+            $expected,
+            VideoTag::fetch(self::FETCH_VIDEO_URL)
+        );
+
+        self::assertStrEquals(
+            $expected,
+            new VideoTag(Video::fetch(self::FETCH_VIDEO_URL))
         );
     }
 
