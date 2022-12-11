@@ -10,9 +10,12 @@
 
 namespace Cloudinary\Tag;
 
+use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Video;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Transformation\Delivery;
+use Cloudinary\Transformation\Format;
 use Cloudinary\Transformation\VideoTransformation;
 
 /**
@@ -94,8 +97,7 @@ class VideoSourceTag extends BaseTag
     public function type($type, $codecs = null)
     {
         $this->sourceType = ClassUtils::verifyInstance($type, VideoSourceType::class, null, $codecs);
-
-        $this->video->asset->extension = $this->sourceType->type;
+        $this->video->setFormat($this->sourceType->type);
 
         return $this;
     }

@@ -307,6 +307,24 @@ final class MediaFromParamsTest extends AssetTestCase
     }
 
     /**
+     * Should set format as transformation parameter for fetched URLs.
+     */
+    public function testFetchWithFormat()
+    {
+        $options = ['type' => DeliveryType::FETCH, 'format' => 'jpg'];
+
+        self::assertMediaFromParamsUrl(
+            self::FETCH_IMAGE_URL,
+            $options,
+            [
+                'delivery_type' => DeliveryType::FETCH,
+                'source'        => self::FETCH_IMAGE_URL,
+                'path'          => 'f_jpg',
+            ]
+        );
+    }
+
+    /**
      * Tests force_version parameter under different conditions.
      */
     public function testForceVersion()

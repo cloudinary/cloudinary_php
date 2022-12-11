@@ -16,6 +16,7 @@ use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\CommonTransformationInterface;
+use Cloudinary\Transformation\Delivery;
 use Cloudinary\Transformation\ImageTransformation;
 use Cloudinary\Transformation\Qualifier\BaseQualifier;
 use Cloudinary\Transformation\Transformation;
@@ -67,6 +68,8 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      */
     public static function fromParams($source, $params = [])
     {
+        $params = self::setFormatParameter($params);
+
         $asset = parent::fromParams($source, $params);
 
         $asset->setTransformation(Transformation::fromParams($params));
@@ -128,6 +131,27 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     }
 
     /**
+     * Sets the asset format.
+     *
+     * For non-fetched assets sets the filename extension.
+     * For remotely fetched assets sets the 'f_' transformation parameter.
+     *
+     * @param string $format The format to set.
+     *
+     * @return static
+     */
+    public function setFormat($format)
+    {
+        if ($this->asset->deliveryType == DeliveryType::FETCH) {
+            $this->addTransformation(Delivery::format($format));
+        } else {
+            $this->asset->extension = $format;
+        }
+
+        return $this;
+    }
+
+    /**
      * Internal pre-serialization helper.
      *
      * @param CommonTransformation|string $withTransformation Optional transformation that can be appended/used instead.
@@ -165,5 +189,28 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
         return $this->finalizeUrl(
             ArrayUtils::implodeUrl($this->prepareUrlParts($withTransformation, $append))
         );
+    }
+
+    /**
+     * Helper for `fromParams` method.
+     *
+     * When user specifies the `format` parameter, it is usually set as a file extension.
+     * When fetching remote URLs, this is converted to a `fetch_format` transformation parameter(f_) instead.
+     *
+     * @param array $params The parameters to check.
+     *
+     * @return array the resulting parameters.
+     */
+    private static function setFormatParameter($params)
+    {
+        if (ArrayUtils::get($params, DeliveryType::KEY) !== DeliveryType::FETCH) {
+            return $params;
+        }
+
+        if (array_key_exists('format', $params)) {
+            ArrayUtils::setDefaultValue($params, 'fetch_format', ArrayUtils::pop($params, 'format'));
+        }
+
+        return $params;
     }
 }
