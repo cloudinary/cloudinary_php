@@ -544,6 +544,7 @@ trait AssetsTrait
                 'faces',
                 'quality_analysis',
                 'image_metadata',
+                'media_metadata',
                 'phash',
                 'pages',
                 'cinemagraph_analysis',
