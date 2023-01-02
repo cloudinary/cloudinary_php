@@ -243,6 +243,7 @@ class MetadataFieldsTest extends IntegrationTestCase
     {
         $setMetadataField = new SetMetadataField(self::$EXTERNAL_ID_SET, self::$DATASOURCE_MULTIPLE);
         $setMetadataField->setExternalId(self::$EXTERNAL_ID_SET);
+        $setMetadataField->setDefaultValue([self::$DATASOURCE_ENTRY_EXTERNAL_ID, 'v4']);
 
         $result = self::$adminApi->addMetadataField($setMetadataField);
 
@@ -252,7 +253,8 @@ class MetadataFieldsTest extends IntegrationTestCase
             [
                 'label' => self::$EXTERNAL_ID_SET,
                 'external_id' => self::$EXTERNAL_ID_SET,
-                'mandatory' => false
+                'mandatory' => false,
+                'default_value' => [self::$DATASOURCE_ENTRY_EXTERNAL_ID, 'v4']
             ]
         );
     }

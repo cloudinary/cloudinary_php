@@ -53,6 +53,8 @@ abstract class Metadata implements JsonSerializable
                 foreach ($value as $subArrayValue) {
                     if (method_exists($subArrayValue, 'jsonSerialize')) {
                         $subArray[] = $subArrayValue->jsonSerialize();
+                    } else {
+                        $subArray[] = $subArrayValue;
                     }
                 }
                 $snakeCaseProperties[StringUtils::camelCaseToSnakeCase($key)] = $subArray;
