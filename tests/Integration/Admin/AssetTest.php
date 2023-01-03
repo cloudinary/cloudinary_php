@@ -25,6 +25,7 @@ final class AssetTest extends IntegrationTestCase
     const EXTRA_INFO = ['colors' => true, 'exif' => true, 'faces' => true];
 
     const ASSET_IMAGE = 'asset_image';
+    const ASSET_VIDEO = 'asset_video';
     const ASSET_DOCX  = 'asset_docx';
 
     private static $UNIQUE_CONTEXT;
@@ -54,6 +55,12 @@ final class AssetTest extends IntegrationTestCase
                         ModerationType::KEY => ModerationType::MANUAL,
                         AssetType::KEY      => AssetType::RAW,
                         'file'              => self::TEST_DOCX_PATH,
+                    ],
+                ],
+                self::ASSET_VIDEO  => [
+                    'options' => [
+                        AssetType::KEY      => AssetType::VIDEO,
+                        'file'              => self::TEST_VIDEO_PATH,
                     ],
                 ],
             ]
@@ -179,6 +186,29 @@ final class AssetTest extends IntegrationTestCase
                 'bytes'           => 20453,
             ]
         );
+    }
+
+    /**
+     * Get uploaded video file details
+     */
+    public function testGetUploadedVideoFileMediaMetadata()
+    {
+        $result = self::$adminApi->asset(
+            self::getTestAssetPublicId(self::ASSET_VIDEO),
+            [
+                AssetType::KEY   => AssetType::VIDEO,
+                'media_metadata' => true,
+            ]
+        );
+
+        self::assertValidAsset(
+            $result,
+            [
+                DeliveryType::KEY => DeliveryType::UPLOAD,
+                AssetType::KEY    => AssetType::VIDEO,
+            ]
+        );
+        self::assertArrayHasKey('video_metadata', $result);
     }
 
     /**

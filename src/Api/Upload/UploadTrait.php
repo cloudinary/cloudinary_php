@@ -62,6 +62,7 @@ trait UploadTrait
             'folder',
             'format',
             'image_metadata',
+            'media_metadata',
             'invalidate',
             ModerationType::KEY,
             'notification_url',
