@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Unit\Search;
 
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\Test\Helpers\MockSearchFoldersApi;
 use Cloudinary\Test\Helpers\MockSearchApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
 use Cloudinary\Test\Unit\UnitTestCase;
@@ -92,6 +93,22 @@ final class SearchApiTest extends UnitTestCase
                 ],
                 'aggregate' => ['format', 'resource_type'],
                 'with_field' => ['context', 'tags'],
+            ]
+        );
+    }
+
+    public function testShouldSearchFolders()
+    {
+        $mockSearchApi = new MockSearchFoldersApi();
+        $mockSearchApi->expression('parent=folder_name')->execute();
+
+        $lastRequest = $mockSearchApi->getMockHandler()->getLastRequest();
+
+        self::assertStringEndsWith('folders/search', $lastRequest->getRequestTarget());
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            [
+                'expression' => 'parent=folder_name',
             ]
         );
     }

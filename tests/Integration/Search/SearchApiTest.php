@@ -12,7 +12,9 @@ namespace Cloudinary\Test\Integration\Search;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\BadRequest;
+use Cloudinary\Api\Search\SearchFoldersApi;
 use Cloudinary\Api\Search\SearchApi;
+use Cloudinary\Cloudinary;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\StringUtils;
 use Cloudinary\Transformation\Scale;
@@ -28,15 +30,25 @@ class SearchApiTest extends IntegrationTestCase
     const SEARCH_ASSET_2 = 'search_asset_2';
     const SEARCH_ASSET_3 = 'search_asset_3';
 
+    const FOLDER_BASE_NAME = 'test_folder';
+
     private static $STRING_WITH_UNDERSCORE;
     private static $STRING_1;
     private static $STRING_2;
     private static $MULTI_STRING;
 
+    private static $FOLDER_NAME;
+    private static $FOLDER2_NAME;
+
     /**
      * @var SearchApi
      */
     public $search;
+
+    /**
+     * @var SearchFoldersApi
+     */
+    public $searchFolders;
 
     /**
      * @throws ApiError
@@ -47,14 +59,17 @@ class SearchApiTest extends IntegrationTestCase
 
         // Define a number of unique strings to be used in tags and public ids
         self::$STRING_WITH_UNDERSCORE = 'expression_' . self::$UNIQUE_TEST_ID;
-        self::$STRING_1 = '1stString' . self::$SUFFIX;
-        self::$STRING_2 = '2ndString' . self::$SUFFIX;
-        self::$MULTI_STRING = self::$STRING_1 . '_' . self::$STRING_2;
+        self::$STRING_1               = '1stString' . self::$SUFFIX;
+        self::$STRING_2               = '2ndString' . self::$SUFFIX;
+        self::$MULTI_STRING           = self::$STRING_1 . '_' . self::$STRING_2;
+
+        self::$FOLDER_NAME  = self::FOLDER_BASE_NAME . '_' . self::$UNIQUE_TEST_ID;
+        self::$FOLDER2_NAME = self::FOLDER_BASE_NAME . '_2_' . self::$UNIQUE_TEST_ID;
 
         $assets = [
             'options' => [
                 'context' => ['stage' => 'value'],
-                'eager' => (new Transformation())->resize(Scale::scale(100)),
+                'eager'   => (new Transformation())->resize(Scale::scale(100)),
             ],
         ];
 
@@ -65,23 +80,26 @@ class SearchApiTest extends IntegrationTestCase
                 self::SEARCH_ASSET_3 => $assets,
                 [
                     'options' => [
-                        'tags' => [self::$STRING_WITH_UNDERSCORE, self::$STRING_1],
-                        'public_id' => self::$STRING_1
+                        'tags'      => [self::$STRING_WITH_UNDERSCORE, self::$STRING_1],
+                        'public_id' => self::$STRING_1,
+                        'folder'    => self::$FOLDER_NAME,
                     ],
                 ],
                 [
                     'options' => [
-                        'tags' => [self::$STRING_2],
-                        'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
+                        'tags'    => [self::$STRING_2],
+                        'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE],
+                        'folder'  => self::$FOLDER_NAME,
                     ],
                 ],
                 [
                     'options' => [
-                        'tags' => [
+                        'tags'    => [
                             self::$STRING_WITH_UNDERSCORE,
-                            self::$MULTI_STRING
+                            self::$MULTI_STRING,
                         ],
-                        'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE]
+                        'context' => [self::CONTEXT_KEY => self::$STRING_WITH_UNDERSCORE],
+                        'folder'  => self::$FOLDER2_NAME,
                     ],
                 ],
             ]
@@ -92,10 +110,9 @@ class SearchApiTest extends IntegrationTestCase
     public function setUp()
     {
         parent::setUp();
-//        if (!\Cloudinary::config_get('api_secret')) {
-//            $this->markTestSkipped('Please setup environment for Search test to run');
-//        }
-        $this->search = new SearchApi();
+
+        $this->search        = (new Cloudinary())->searchApi();
+        $this->searchFolders = (new Cloudinary())->searchFoldersApi();
     }
 
     public static function tearDownAfterClass()
@@ -347,8 +364,8 @@ class SearchApiTest extends IntegrationTestCase
     public function testFindAssetsByExpressionWithoutCertainTag()
     {
         $expression = 'resource_type:image'
-            . ' AND context.key:' . self::$STRING_WITH_UNDERSCORE
-            . ' AND -tags:' . self::$STRING_WITH_UNDERSCORE;
+                      . ' AND context.key:' . self::$STRING_WITH_UNDERSCORE
+                      . ' AND -tags:' . self::$STRING_WITH_UNDERSCORE;
 
         try {
             $result = $this->search
@@ -367,5 +384,17 @@ class SearchApiTest extends IntegrationTestCase
         self::assertEquals(1, $result['total_count']);
         self::assertCount(1, $result['resources']);
         self::assertValidAsset($result['resources'][0]);
+    }
+
+    public function testSearchFoldersApi()
+    {
+        $result = $this->searchFolders
+            ->expression(self::FOLDER_BASE_NAME . '*')
+            ->maxResults(2)
+            ->execute();
+
+        self::assertGreaterThan(1, $result['total_count']);
+        self::assertCount(2, $result['folders']);
+        self::assertStringContainsString(self::FOLDER_BASE_NAME, $result['folders'][0]['name']);
     }
 }
