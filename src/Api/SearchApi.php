@@ -38,10 +38,6 @@ class SearchApi implements JsonSerializable
     /**
      * @internal
      */
-    const SEARCH_API_ENDPOINT = 'resources/search';
-    /**
-     * @internal
-     */
     const SORT_BY = 'sort_by';
     /**
      * @internal
@@ -67,15 +63,25 @@ class SearchApi implements JsonSerializable
      * @internal
      */
     const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD];
+    /**
+     * @internal
+     */
+    const ASSETS = 'resources';
+
+    /**
+     * @var string The Search API endpoint.
+     */
+    private $endpoint = self::ASSETS;
 
     /**
      * @var array query object that includes the search query
      */
-    private $query = [
-        self::SORT_BY    => [],
-        self::AGGREGATE  => [],
-        self::WITH_FIELD => [],
-    ];
+    private $query
+        = [
+            self::SORT_BY    => [],
+            self::AGGREGATE  => [],
+            self::WITH_FIELD => [],
+        ];
 
     /**
      * @var ApiClient $apiClient The HTTP API client instance.
@@ -90,6 +96,20 @@ class SearchApi implements JsonSerializable
     public function __construct($configuration = null)
     {
         $this->apiClient = new ApiClient($configuration);
+    }
+
+    /**
+     * Sets the Search API endpoint.
+     *
+     * @param string $endpoint The endpoint for the Search API.
+     *
+     * @return $this
+     */
+    public function endpoint($endpoint)
+    {
+        $this->endpoint = $endpoint;
+
+        return $this;
     }
 
     /**
@@ -211,7 +231,7 @@ class SearchApi implements JsonSerializable
      */
     public function executeAsync()
     {
-        return $this->apiClient->postJsonAsync(self::SEARCH_API_ENDPOINT, $this);
+        return $this->apiClient->postJsonAsync($this->getSearchEndpoint(), $this);
     }
 
     /**
@@ -260,5 +280,15 @@ class SearchApi implements JsonSerializable
     public function jsonSerialize()
     {
         return $this->asArray();
+    }
+
+    /**
+     * Returns the search endpoint.
+     *
+     * @return string
+     */
+    private function getSearchEndpoint()
+    {
+        return "{$this->endpoint}/search";
     }
 }

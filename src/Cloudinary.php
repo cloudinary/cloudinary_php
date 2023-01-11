@@ -11,6 +11,7 @@
 namespace Cloudinary;
 
 use Cloudinary\Api\Admin\AdminApi;
+use Cloudinary\Api\Search\SearchFoldersApi;
 use Cloudinary\Api\Search\SearchApi;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Asset\File;
@@ -162,6 +163,16 @@ class Cloudinary
     public function searchApi()
     {
         return new SearchApi($this->configuration);
+    }
+
+    /**
+     * Creates a new SearchFoldersApi instance using the current configuration instance.
+     *
+     * @return SearchFoldersApi
+     */
+    public function searchFoldersApi()
+    {
+        return new SearchFoldersApi($this->configuration);
     }
 
     /**
