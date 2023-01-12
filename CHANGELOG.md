@@ -1,3 +1,19 @@
+2.10.0 / 2023-01-12
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `SearchFolders` API
+  * Add support for `media_metadata` parameter
+
+Other Changes
+-------------
+
+  * Fix `SetMetadataField` default value handling
+  * Fix format for fetched assets
+  * Fix error handling in URL signature generation
+
 2.9.2 / 2022-11-13
 ==================
 
