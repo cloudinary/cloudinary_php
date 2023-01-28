@@ -526,10 +526,10 @@ final class TagFromParamsTest extends ImageTagTestCase
         $prefixUrl = self::VIDEO_FETCH_PATH;
 
         self::assertStrEquals(
-            "<video poster='${prefixUrl}f_jpg/$videoUrl'>" .
-            "<source src='${prefixUrl}f_webm/$videoUrl' type='video/webm'>" .
-            "<source src='${prefixUrl}f_mp4/$videoUrl' type='video/mp4'>" .
-            "<source src='${prefixUrl}f_ogv/$videoUrl' type='video/ogg'>" .
+            "<video poster='{$prefixUrl}f_jpg/$videoUrl'>" .
+            "<source src='{$prefixUrl}f_webm/$videoUrl' type='video/webm'>" .
+            "<source src='{$prefixUrl}f_mp4/$videoUrl' type='video/mp4'>" .
+            "<source src='{$prefixUrl}f_ogv/$videoUrl' type='video/ogg'>" .
             '</video>',
             VideoTag::fromParams($videoUrl, [DeliveryType::KEY => DeliveryType::FETCH])
         );

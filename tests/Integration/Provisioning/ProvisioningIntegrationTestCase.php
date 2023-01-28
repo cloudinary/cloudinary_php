@@ -178,12 +178,10 @@ abstract class ProvisioningIntegrationTestCase extends CloudinaryTestCase
             [
                 'id' => IsType::TYPE_STRING,
                 'name' => IsType::TYPE_STRING,
-                'description' => [IsType::TYPE_STRING, IsType::TYPE_NULL],
                 'cloud_name' => IsType::TYPE_STRING,
                 'api_access_keys' => IsType::TYPE_ARRAY,
                 'enabled' => IsType::TYPE_BOOL,
-                'created_at' => IsType::TYPE_STRING,
-                'custom_attributes' => [IsType::TYPE_ARRAY, IsType::TYPE_NULL]
+                'created_at' => IsType::TYPE_STRING
             ]
         );
 
