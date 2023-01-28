@@ -65,11 +65,11 @@ final class VideoTagTest extends TagTestCase
         $videoUrl  = self::FETCH_VIDEO_URL;
         $prefixUrl = self::FETCH_VIDEO_URL_PREFIX;
 
-        $expected = "<video poster=\"${prefixUrl}f_jpg/$videoUrl\">" . "\n" .
-                    "<source src=\"${prefixUrl}f_mp4/vc_h265/$videoUrl\" type=\"video/mp4; codecs=hev1\">" . "\n" .
-                    "<source src=\"${prefixUrl}f_webm/vc_vp9/$videoUrl\" type=\"video/webm; codecs=vp9\">" . "\n" .
-                    "<source src=\"${prefixUrl}f_mp4/vc_auto/$videoUrl\" type=\"video/mp4\">" . "\n" .
-                    "<source src=\"${prefixUrl}f_webm/vc_auto/$videoUrl\" type=\"video/webm\">" . "\n" .
+        $expected = "<video poster=\"{$prefixUrl}f_jpg/$videoUrl\">" . "\n" .
+                    "<source src=\"{$prefixUrl}f_mp4/vc_h265/$videoUrl\" type=\"video/mp4; codecs=hev1\">" . "\n" .
+                    "<source src=\"{$prefixUrl}f_webm/vc_vp9/$videoUrl\" type=\"video/webm; codecs=vp9\">" . "\n" .
+                    "<source src=\"{$prefixUrl}f_mp4/vc_auto/$videoUrl\" type=\"video/mp4\">" . "\n" .
+                    "<source src=\"{$prefixUrl}f_webm/vc_auto/$videoUrl\" type=\"video/webm\">" . "\n" .
                     '</video>';
 
         self::assertStrEquals(

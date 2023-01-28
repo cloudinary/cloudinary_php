@@ -149,7 +149,7 @@ class ApiUtils
             return self::serializeSimpleApiParam($array);
         }
 
-        $array = array_map('self::serializeSimpleApiParam', $array);
+        $array = array_map(self::class . '::serializeSimpleApiParam', $array);
 
 
         return self::serializeParameter($array, self::ARRAY_OF_ARRAYS_DELIMITER);
@@ -274,7 +274,7 @@ class ApiUtils
      */
     public static function signParameters($parameters, $secret, $signatureAlgorithm = Utils::ALGO_SHA1)
     {
-        $parameters = array_map('self::serializeSimpleApiParam', $parameters);
+        $parameters = array_map(self::class . '::serializeSimpleApiParam', $parameters);
 
         ksort($parameters);
 
