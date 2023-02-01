@@ -55,4 +55,16 @@ final class AnalyticsTest extends AssetTestCase
             MockAnalytics::sdkAnalyticsSignature()
         );
     }
+
+    public function testSdkAnalyticsSignatureWithIntegration()
+    {
+        MockAnalytics::sdkCode('W');
+        MockAnalytics::sdkVersion('2.0.0');
+        MockAnalytics::techVersion('9.5');
+
+        self::assertEquals(
+            'AWAACH9',
+            MockAnalytics::sdkAnalyticsSignature()
+        );
+    }
 }
