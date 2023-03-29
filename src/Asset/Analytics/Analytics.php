@@ -22,11 +22,12 @@ use OutOfRangeException;
 class Analytics
 {
     const QUERY_KEY    = '_a';
-    const ALGO_VERSION = 'A'; // The version of the algorithm
+    const ALGO_VERSION = 'B'; // The version of the algorithm
     const SDK_CODE     = 'A'; // Cloudinary PHP SDK
 
+    protected static $product = 'A'; // Official SDK. Set to 'B' for integrations.
     protected static $sdkCode = self::SDK_CODE;
-    protected static $sdkVersion  = Cloudinary::VERSION;
+    protected static $sdkVersion = Cloudinary::VERSION;
     protected static $techVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
     const CHARS           = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -45,7 +46,7 @@ class Analytics
         if (empty(static::$signature)) {
             // Lazily create $signature
             try {
-                static::$signature = static::ALGO_VERSION . static::$sdkCode .
+                static::$signature = static::ALGO_VERSION . static::$product . static::$sdkCode .
                                      static::encodeVersion(static::$sdkVersion) .
                                      static::encodeVersion(static::$techVersion);
             } catch (OutOfRangeException $e) {
@@ -54,6 +55,22 @@ class Analytics
         }
 
         return static::$signature;
+    }
+
+    /**
+     * Sets the product code.
+     *
+     * Used for integrations.
+     *
+     * @param string $product The product code to set. 'A' is for the official SDK. 'B' for integrations.
+     *
+     * @return void
+     *
+     * @internal
+     */
+    public static function product($product)
+    {
+        static::$product = $product;
     }
 
     /**
@@ -101,7 +118,7 @@ class Analytics
      */
     public static function techVersion($techVersion)
     {
-        static::$techVersion = $techVersion;
+        static::$techVersion = join('.', array_slice(explode('.', $techVersion), 0, 2));
     }
 
     /**
