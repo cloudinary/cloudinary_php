@@ -1,0 +1,38 @@
+{% extends "layout/layout.twig" %}
+
+{% block body_class 'index' %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>{{ project.config('title') }}</h1>
+    </div>
+    <div class="description">
+        <p>This reference provides details on all PHP SDK asset management namespaces and classes. </p>
+        <p>For details on the PHP SDK transformation namespaces and classes,
+            see the <a href="/documentation/sdks/php/php-transformation-builder/index.html">PHP SDK Transformation Reference.</a></p>
+    </div>
+    <div class="page-header">
+        <h2>Namespaces</h2>
+    </div>
+    {% if namespaces %}
+        <div class="namespaces clearfix">
+        {% set last_name = '' %}
+        {% for namespace in namespaces %}
+            {% set top_level = namespace|split('\\')|first %}
+            {% if top_level != last_name %}
+                {% if last_name %}</ul></div>{% endif %}
+                <div class="namespace-container">
+                <h2>{{ top_level|raw }}</h2>
+                <ul>
+                {% set last_name = top_level %}
+            {% endif %}
+            <li><a href="{{ namespace_path(namespace) }}">{{ namespace|raw }}</a></li>
+        {% endfor %}
+        </ul>
+        </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
