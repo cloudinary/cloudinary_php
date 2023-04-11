@@ -29,6 +29,12 @@ abstract class UnitTestCase extends CloudinaryTestCase
 
     const TEST_LOGGING = ['logging' => ['test' => ['level' => 'debug']]];
 
+    const API_TEST_ASSET_ID = '4af5a0d1d4047808528b5425d166c101';
+    const API_TEST_ASSET_ID2 = '4af5a0d1d4047808528b5425d166c102';
+    const API_TEST_ASSET_ID3 = '4af5a0d1d4047808528b5425d166c103';
+
+    const NEXT_CURSOR = '8c452e112d4c88ac7c9ffb3a2a41c41bef24';
+
     protected $cloudinaryUrl;
 
     private $cldUrlEnvBackup;

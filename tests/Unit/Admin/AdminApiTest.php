@@ -44,4 +44,19 @@ final class AdminApiTest extends UnitTestCase
 
         self::assertRequestBodySubset($lastRequest, ['accessibility_analysis' => '1']);
     }
+
+    /**
+     * Should allow listing related assets in the asset function.
+     */
+    public function testAssetRelatedAssets()
+    {
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->asset(self::$UNIQUE_TEST_ID, ['related' => true, 'related_next_cursor' => self::NEXT_CURSOR]);
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestQueryStringSubset(
+            $lastRequest,
+            ['related' => '1', 'related_next_cursor' => self::NEXT_CURSOR]
+        );
+    }
 }

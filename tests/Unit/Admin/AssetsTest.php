@@ -77,7 +77,8 @@ final class AssetsTest extends UnitTestCase
     public function testUpdateAssetFields()
     {
         $mockAdminApi = new MockAdminApi();
-        $mockAdminApi->update(self::$UNIQUE_TEST_ID,
+        $mockAdminApi->update(
+            self::$UNIQUE_TEST_ID,
             [
                 'metadata'            => ['key' => 'value'],
                 'asset_folder'        => 'asset_folder',
@@ -93,6 +94,92 @@ final class AssetsTest extends UnitTestCase
                 'metadata'            => 'key=value',
                 'asset_folder'        => 'asset_folder',
                 'unique_display_name' => true,
+            ]
+        );
+    }
+
+    /**
+     * Test related assets.
+     */
+    public function testRelatedAssets()
+    {
+        $testIds = [
+            'image/upload/' . self::$UNIQUE_TEST_ID,
+            'raw/upload/' . self::$UNIQUE_TEST_ID,
+        ];
+
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->addRelatedAssets(
+            self::$UNIQUE_TEST_ID,
+            $testIds
+        );
+
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, '/resources/related_assets/image/upload/' . self::$UNIQUE_TEST_ID);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            [
+                'assets_to_relate' => $testIds
+            ]
+        );
+
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->deleteRelatedAssets(
+            self::$UNIQUE_TEST_ID,
+            $testIds
+        );
+
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, '/resources/related_assets/image/upload/' . self::$UNIQUE_TEST_ID);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            [
+                'assets_to_unrelate' => $testIds
+            ]
+        );
+    }
+
+    /**
+     * Test related assets by asset Ids.
+     */
+    public function testRelatedAssetsByAssetIds()
+    {
+        $testAssetIds = [
+            self::API_TEST_ASSET_ID2,
+            self::API_TEST_ASSET_ID3,
+        ];
+
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->addRelatedAssetsByAssetIds(
+            self::API_TEST_ASSET_ID,
+            $testAssetIds
+        );
+
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, '/resources/related_assets/' . self::API_TEST_ASSET_ID);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            [
+                'assets_to_relate' => $testAssetIds
+            ]
+        );
+
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->deleteRelatedAssetsByAssetIds(
+            self::API_TEST_ASSET_ID,
+            $testAssetIds
+        );
+
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, '/resources/related_assets/' . self::API_TEST_ASSET_ID);
+        self::assertRequestJsonBodySubset(
+            $lastRequest,
+            [
+                'assets_to_unrelate' => $testAssetIds
             ]
         );
     }

@@ -506,6 +506,94 @@ trait AssetsTrait
     }
 
     /**
+     * Relates an asset to other assets by public IDs.
+     *
+     * @param string $publicId      The public ID of the asset to update.
+     * @param array $assetsToRelate The array of up to 10 fully_qualified_public_ids given as
+     *                              resource_type/type/public_id.
+     * @param array $options        The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#add_related_assets target="_blank"> Admin API</a> documentation.
+     *
+     * @return ApiResponse
+     */
+    public function addRelatedAssets($publicId, $assetsToRelate, $options = [])
+    {
+        $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
+        $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
+
+        $uri       = [ApiEndPoint::ASSETS, ApiEndPoint::RELATED_ASSETS, $assetType, $type, $publicId];
+
+        $params = [
+            'assets_to_relate' => ArrayUtils::build($assetsToRelate),
+        ];
+
+        return $this->apiClient->postJson($uri, $params);
+    }
+
+    /**
+     * Relates an asset to other assets by asset IDs.
+     *
+     * @param string $assetId       The asset ID of the asset to update.
+     * @param array $assetsToRelate The array of up to 10 asset IDs.
+     *
+     * @return ApiResponse
+     */
+    public function addRelatedAssetsByAssetIds($assetId, $assetsToRelate)
+    {
+        $uri = [ApiEndPoint::ASSETS, ApiEndPoint::RELATED_ASSETS, $assetId];
+
+        $params = [
+            'assets_to_relate' => ArrayUtils::build($assetsToRelate),
+        ];
+
+        return $this->apiClient->postJson($uri, $params);
+    }
+
+    /**
+     * Unrelates an asset from other assets by public IDs.
+     *
+     * @param string $publicId        The public ID of the asset to update.
+     * @param array $assetsToUnrelate The array of up to 10 fully_qualified_public_ids given as
+     *                                resource_type/type/public_id.
+     * @param array $options          The optional parameters. See the
+     * <a href=https://cloudinary.com/documentation/admin_api#delete_related_assets target="_blank"> Admin API</a> documentation.
+     *
+     * @return ApiResponse
+     */
+    public function deleteRelatedAssets($publicId, $assetsToUnrelate, $options = [])
+    {
+        $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
+        $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
+
+        $uri       = [ApiEndPoint::ASSETS, ApiEndPoint::RELATED_ASSETS, $assetType, $type, $publicId];
+
+        $params = [
+            'assets_to_unrelate' => ArrayUtils::build($assetsToUnrelate),
+        ];
+
+        return $this->apiClient->deleteJson($uri, $params);
+    }
+
+    /**
+     * Unrelates an asset from other assets by asset IDs.
+     *
+     * @param string $assetId          The asset ID of the asset to update.
+     * @param array  $assetsToUnrelate The array of up to 10 asset IDs.
+     *
+     * @return ApiResponse
+     */
+    public function deleteRelatedAssetsByAssetIds($assetId, $assetsToUnrelate)
+    {
+        $uri       = [ApiEndPoint::ASSETS, ApiEndPoint::RELATED_ASSETS, $assetId];
+
+        $params = [
+            'assets_to_unrelate' => ArrayUtils::build($assetsToUnrelate),
+        ];
+
+        return $this->apiClient->deleteJson($uri, $params);
+    }
+
+    /**
      * Prepares optional parameters for delete asset API calls.
      *
      * @param array $options Additional options.
@@ -553,6 +641,8 @@ trait AssetsTrait
                 'derived_next_cursor',
                 'accessibility_analysis',
                 'versions',
+                'related',
+                'related_next_cursor',
             ]
         );
     }
