@@ -34,7 +34,7 @@ final class SearchApiTest extends UnitTestCase
         $mockSearchApi
             ->expression('format:png')
             ->maxResults(10)
-            ->nextCursor('8c452e112d4c88ac7c9ffb3a2a41c41bef24')
+            ->nextCursor(self::NEXT_CURSOR)
             ->sortBy('created_at', 'asc')
             ->sortBy('updated_at')
             ->aggregate('format')
@@ -55,7 +55,7 @@ final class SearchApiTest extends UnitTestCase
                 'with_field'  => ['tags', 'image_metadata'],
                 'expression'  => 'format:png',
                 'max_results' => 10,
-                'next_cursor' => '8c452e112d4c88ac7c9ffb3a2a41c41bef24',
+                'next_cursor' => self::NEXT_CURSOR,
             ],
             'Should use right headers for execution of advanced search api'
         );

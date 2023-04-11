@@ -19,6 +19,7 @@ class ApiEndPoint
     const USAGE              = 'usage';
     const ASSETS             = 'resources';
     const DERIVED_ASSETS     = 'derived_resources';
+    const RELATED_ASSETS     = 'related_assets';
     const FOLDERS            = 'folders';
     const TAGS               = 'tags';
     const STREAMING_PROFILES = 'streaming_profiles';
