@@ -319,8 +319,11 @@ class BaseApiClient
     {
         $endPoint = self::finalizeEndPoint($endPoint);
         if (isset($options['headers']) || isset($options['extra_headers'])) {
+            if (!isset($options['headers'])) {
+                $options['headers'] = [];
+            }
             $options['headers'] =
-                ArrayUtils::mergeNonEmpty((array)$options['headers'], (array)$options['extra_headers']);
+                array_merge((array)$options['headers'], (array)$options['extra_headers']);
         };
         $this->getLogger()->debug("Making async $method request", ['method' => $method, 'endPoint' => $endPoint]);
 

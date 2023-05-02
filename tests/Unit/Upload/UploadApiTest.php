@@ -140,8 +140,8 @@ final class UploadApiTest extends AssetTestCase
     {
         $mockUploadApi = new MockUploadApi();
             $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $input);
-            $mockOutput = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
-        $this->assertEquals($expectedOutput, $mockOutput);
+            $mockOutput = $mockUploadApi->getApiClient()->extraHeaders($input);
+        $this->assertEquals($expectedOutput, (array)$mockOutput);
     }
 
     public function headersDataProvider()
@@ -180,7 +180,7 @@ final class UploadApiTest extends AssetTestCase
                     'headers' => [],
                     'extra_headers' => []
                 ],
-                []
+               ['headers' => []]
             ]
         ];
     }
