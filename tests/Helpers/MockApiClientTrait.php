@@ -98,10 +98,8 @@ trait MockApiClientTrait
             }
         );
     }
-    function extraHeaders($input)
+    public function getLastRequestHeaders()
     {
-        $headers = isset($input['headers']) ? $input['headers'] : [];
-        $extraHeaders = isset($input['extra_headers']) ? $input['extra_headers'] : [];
-        return ['headers' => array_merge($headers, $extraHeaders)];
+        return $this->mockHandler->getLastRequest()->getHeaders();
     }
 }

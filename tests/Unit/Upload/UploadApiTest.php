@@ -140,8 +140,8 @@ final class UploadApiTest extends AssetTestCase
     {
         $mockUploadApi = new MockUploadApi();
             $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $input);
-            $mockOutput = $mockUploadApi->getApiClient()->extraHeaders($input);
-        $this->assertEquals($expectedOutput, (array)$mockOutput);
+            $mockOutput = $mockUploadApi->getApiClient()->getLastRequestHeaders();
+        self::assertSubset($expectedOutput, $mockOutput);
     }
 
     public function headersDataProvider()
@@ -150,38 +150,38 @@ final class UploadApiTest extends AssetTestCase
             [
                 [
                     'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
-                    'extra_headers' => ['Authorization' => 'Bearer abc123', 'User-Agent' => 'MyApp/1.0']
+                    'extra_headers' => ['test1' => 'Bearer abc123', 'test2' => 'MyApp/1.0']
                 ],
-                ['headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json',
-                    'Authorization' => 'Bearer abc123', 'User-Agent' => 'MyApp/1.0']]
+                ['Content-Type' => ['application/json'], 'Accept' => ['application/json'],
+                    'test1' => ['Bearer abc123'], 'test2' => ['MyApp/1.0']]
             ],
             [
                 [
                     'headers' => ['X-Request-ID' => '12345'],
                     'extra_headers' => ['Accept-Encoding' => 'gzip']
                 ],
-                ['headers' => ['X-Request-ID' => '12345', 'Accept-Encoding' => 'gzip']]
+                ['X-Request-ID' => ['12345'], 'Accept-Encoding' => ['gzip']]
             ],
             [
                 [
                     'headers' => ['Content-Language' => 'en-US'],
                     'extra_headers' => []
                 ],
-                ['headers' => ['Content-Language' => 'en-US']]
+                ['Content-Language' => ['en-US']]
             ],
             [
                 [
                     'headers' => [],
-                    'extra_headers' => ['X-Debug' => 'true']
+                    'extra_headers' => ['X-Debug' => ['true']]
                 ],
-                ['headers' => ['X-Debug' => 'true']]
+                ['X-Debug' => ['true']]
             ],
             [
                 [
                     'headers' => [],
                     'extra_headers' => []
                 ],
-                ['headers' => []]
+                []
             ]
         ];
     }

@@ -322,8 +322,10 @@ class BaseApiClient
             if (!isset($options['headers'])) {
                 $options['headers'] = [];
             }
-            $options['headers'] =
-                array_merge((array)$options['headers'], (array)$options['extra_headers']);
+            $options['headers'] = ArrayUtils::mergeNonEmpty(
+                ArrayUtils::get($options['headers'], []),
+                ArrayUtils::get($options['extra_headers'], [])
+            );
         };
         $this->getLogger()->debug("Making async $method request", ['method' => $method, 'endPoint' => $endPoint]);
 
