@@ -152,7 +152,8 @@ final class UploadApiTest extends AssetTestCase
                     'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
                     'extra_headers' => ['Authorization' => 'Bearer abc123', 'User-Agent' => 'MyApp/1.0']
                 ],
-                ['headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json', 'Authorization' => 'Bearer abc123', 'User-Agent' => 'MyApp/1.0']]
+                ['headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json',
+                    'Authorization' => 'Bearer abc123', 'User-Agent' => 'MyApp/1.0']]
             ],
             [
                 [
@@ -180,9 +181,8 @@ final class UploadApiTest extends AssetTestCase
                     'headers' => [],
                     'extra_headers' => []
                 ],
-               ['headers' => []]
+                ['headers' => []]
             ]
         ];
     }
-
 }
