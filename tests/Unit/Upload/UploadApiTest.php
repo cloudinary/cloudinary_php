@@ -132,4 +132,57 @@ final class UploadApiTest extends AssetTestCase
 
         self::assertSubset($options, $lastOptions);
     }
+
+    /**
+     * @dataProvider headersDataProvider
+     */
+    public function testHeadersExtraHeaders($input, $expectedOutput)
+    {
+        $mockUploadApi = new MockUploadApi();
+            $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $input);
+            $mockOutput = $mockUploadApi->getApiClient()->getLastRequestHeaders();
+        self::assertSubset($expectedOutput, $mockOutput);
+    }
+
+    public function headersDataProvider()
+    {
+        return [
+            [
+                [
+                    'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+                    'extra_headers' => ['test1' => 'Bearer abc123', 'test2' => 'MyApp/1.0']
+                ],
+                ['Content-Type' => ['application/json'], 'Accept' => ['application/json'],
+                    'test1' => ['Bearer abc123'], 'test2' => ['MyApp/1.0']]
+            ],
+            [
+                [
+                    'headers' => ['X-Request-ID' => '12345'],
+                    'extra_headers' => ['Accept-Encoding' => 'gzip']
+                ],
+                ['X-Request-ID' => ['12345'], 'Accept-Encoding' => ['gzip']]
+            ],
+            [
+                [
+                    'headers' => ['Content-Language' => 'en-US'],
+                    'extra_headers' => []
+                ],
+                ['Content-Language' => ['en-US']]
+            ],
+            [
+                [
+                    'headers' => [],
+                    'extra_headers' => ['X-Debug' => ['true']]
+                ],
+                ['X-Debug' => ['true']]
+            ],
+            [
+                [
+                    'headers' => [],
+                    'extra_headers' => []
+                ],
+                []
+            ]
+        ];
+    }
 }

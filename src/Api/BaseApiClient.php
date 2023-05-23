@@ -318,6 +318,10 @@ class BaseApiClient
     protected function callAsync($method, $endPoint, $options)
     {
         $endPoint = self::finalizeEndPoint($endPoint);
+        $options['headers'] = ArrayUtils::mergeNonEmpty(
+            ArrayUtils::get($options, 'headers', []),
+            ArrayUtils::get($options, 'extra_headers', [])
+        );
         $this->getLogger()->debug("Making async $method request", ['method' => $method, 'endPoint' => $endPoint]);
 
         return $this

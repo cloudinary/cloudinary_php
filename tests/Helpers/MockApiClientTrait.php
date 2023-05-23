@@ -98,4 +98,8 @@ trait MockApiClientTrait
             }
         );
     }
+    public function getLastRequestHeaders()
+    {
+        return $this->mockHandler->getLastRequest()->getHeaders();
+    }
 }
