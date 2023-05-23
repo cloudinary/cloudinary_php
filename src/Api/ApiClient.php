@@ -20,7 +20,7 @@ use Cloudinary\FileUtils;
 use Cloudinary\Utils;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\LimitStream;
 use InvalidArgumentException;
@@ -355,13 +355,13 @@ class ApiClient extends BaseApiClient
                     ]
                 );
 
-                return Promise\rejection_for($e);
+                return Create::rejectionFor($e);
             }
 
             ArrayUtils::addNonEmptyFromOther($parameters, 'public_id', $uploadResult);
         }
 
-        return Promise\promise_for($uploadResult);
+        return Create::promiseFor($uploadResult);
     }
 
     /**
