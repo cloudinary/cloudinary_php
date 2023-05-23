@@ -26,7 +26,9 @@
   "require": {
     "php": ">=5.6.0",
     "cloudinary/transformation-builder-sdk":  "^1",
-    "guzzlehttp/guzzle": "^6|^7",
+    "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
+    "guzzlehttp/promises": "^1.5.3|^2.0",
+    "guzzlehttp/psr7": "^1.9.1|^2.5",
     "teapot/status-code": "^1|^2",
     "ext-json": "*",
     "monolog/monolog": "^1|^2|^3",

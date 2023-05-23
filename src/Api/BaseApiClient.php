@@ -28,7 +28,7 @@ use Cloudinary\Utils;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -330,7 +330,7 @@ class BaseApiClient
                         ['statusCode' => $response->getStatusCode()]
                     );
                     try {
-                        return Promise\promise_for($this->handleApiResponse($response));
+                        return Create::promiseFor($this->handleApiResponse($response));
                     } catch (Exception $e) {
                         $this->getLogger()->critical(
                             'Async request failed',
@@ -340,7 +340,7 @@ class BaseApiClient
                             ]
                         );
 
-                        return Promise\rejection_for($e);
+                        return Create::rejectionFor($e);
                     }
                 },
                 function (Exception $error) {
@@ -352,10 +352,10 @@ class BaseApiClient
                         ]
                     );
                     if ($error instanceof ClientException) {
-                        return Promise\rejection_for($this->handleApiResponse($error->getResponse()));
+                        return Create::rejectionFor($this->handleApiResponse($error->getResponse()));
                     }
 
-                    return Promise\rejection_for($error);
+                    return Create::rejectionFor($error);
                 }
             );
     }
