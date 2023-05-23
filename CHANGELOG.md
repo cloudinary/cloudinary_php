@@ -1,3 +1,18 @@
+2.11.0 / 2023-05-23
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for related assets Admin APIs
+  * Add support for `extra_headers` option in Upload and Admin API
+
+Other Changes
+-------------
+
+  * Fix Guzzle compatibility issues
+  * Update analytics token algorithm
+
 2.10.2 / 2023-02-01
 ==================
 
