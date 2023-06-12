@@ -11,9 +11,12 @@
 namespace Cloudinary\Test\Unit\Search;
 
 use Cloudinary\Api\Exception\GeneralError;
+use Cloudinary\Asset\SearchAsset;
+use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Helpers\MockSearchFoldersApi;
 use Cloudinary\Test\Helpers\MockSearchApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
+use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Test\Unit\UnitTestCase;
 
 /**
@@ -87,11 +90,11 @@ final class SearchApiTest extends UnitTestCase
         self::assertRequestJsonBodySubset(
             $lastRequest,
             [
-                'sort_by' => [
+                'sort_by'    => [
                     ['created_at' => 'desc'],
                     ['public_id' => 'asc'],
                 ],
-                'aggregate' => ['format', 'resource_type'],
+                'aggregate'  => ['format', 'resource_type'],
                 'with_field' => ['context', 'tags'],
             ]
         );
@@ -110,6 +113,27 @@ final class SearchApiTest extends UnitTestCase
             [
                 'expression' => 'parent=folder_name',
             ]
+        );
+    }
+
+    public function testShouldBuildSearchUrl()
+    {
+        $config = Configuration::instance();
+        $config->url->privateCdn();
+
+        $mockSearchApi = new MockSearchApi($config);
+        $mockSearchApi->expression("resource_type:image AND tags=kitten AND uploaded_at>1d AND bytes>1m")
+                      ->sortBy("public_id", "desc")
+                      ->maxResults(30)->ttl(1000)->nextCursor(self::NEXT_CURSOR);
+
+        $searchAsset = new SearchAsset($config);
+        $searchAsset->expression("resource_type:image AND tags=kitten AND uploaded_at>1d AND bytes>1m")
+                    ->sortBy("public_id", "desc")
+                    ->maxResults(30)->ttl(1000)->nextCursor(self::NEXT_CURSOR);
+
+        self::assertStrEquals(
+            $searchAsset,
+            $mockSearchApi->toUrl()
         );
     }
 }

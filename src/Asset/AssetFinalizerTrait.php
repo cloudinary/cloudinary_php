@@ -176,7 +176,7 @@ trait AssetFinalizerTrait
 
             $finalAssetType = $suffixSupportedDeliveryTypes[$this->asset->assetType][$this->asset->deliveryType];
         } else {
-            $finalAssetType = implode('/', [$this->asset->assetType, $this->asset->deliveryType]);
+            $finalAssetType = ArrayUtils::implodeUrl([$this->asset->assetType, $this->asset->deliveryType]);
         }
 
         return $finalAssetType;
