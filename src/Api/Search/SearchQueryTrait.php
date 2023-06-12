@@ -1,78 +1,14 @@
 <?php
-/**
- * This file is part of the Cloudinary PHP package.
- *
- * (c) Cloudinary
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Cloudinary\Api\Search;
 
-use Cloudinary\Api\ApiClient;
-use Cloudinary\Api\ApiResponse;
-use Cloudinary\Api\Exception\GeneralError;
 use Cloudinary\ArrayUtils;
-use GuzzleHttp\Promise\PromiseInterface;
-use JsonSerializable;
 
 /**
- * Class SearchApi
- *
- * The Cloudinary API search method allows you fine control on filtering and retrieving information on all the assets
- * in your cloud with the help of query expressions in a Lucene-like query language. A few examples of what you can
- * accomplish using the search method include:
- *
- *  * Searching by descriptive attributes such as public ID, filename, folders, tags, context, etc.
- *  * Searching by file details such as type, format, file size, dimensions, etc.
- *  * Searching by embedded data such as Exif, XMP, etc.
- *  * Searching by analyzed data such as the number of faces, predominant colors, auto-tags, etc.
- *  * Requesting aggregation counts on specified parameters, for example the number of assets found broken down by file
- * format.
- *
- * @api
+ * Trait SearchQueryTrait
  */
-class SearchApi implements JsonSerializable
+trait SearchQueryTrait
 {
-    /**
-     * @internal
-     */
-    const SORT_BY = 'sort_by';
-    /**
-     * @internal
-     */
-    const AGGREGATE = 'aggregate';
-    /**
-     * @internal
-     */
-    const WITH_FIELD = 'with_field';
-    /**
-     * @internal
-     */
-    const EXPRESSION = 'expression';
-    /**
-     * @internal
-     */
-    const MAX_RESULTS = 'max_results';
-    /**
-     * @internal
-     */
-    const NEXT_CURSOR = 'next_cursor';
-    /**
-     * @internal
-     */
-    const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD];
-    /**
-     * @internal
-     */
-    const ASSETS = 'resources';
-
-    /**
-     * @var string The Search API endpoint.
-     */
-    private $endpoint = self::ASSETS;
-
     /**
      * @var array query object that includes the search query
      */
@@ -82,35 +18,6 @@ class SearchApi implements JsonSerializable
             self::AGGREGATE  => [],
             self::WITH_FIELD => [],
         ];
-
-    /**
-     * @var ApiClient $apiClient The HTTP API client instance.
-     */
-    protected $apiClient;
-
-    /**
-     * SearchApi constructor.
-     *
-     * @param mixed $configuration
-     */
-    public function __construct($configuration = null)
-    {
-        $this->apiClient = new ApiClient($configuration);
-    }
-
-    /**
-     * Sets the Search API endpoint.
-     *
-     * @param string $endpoint The endpoint for the Search API.
-     *
-     * @return $this
-     */
-    public function endpoint($endpoint)
-    {
-        $this->endpoint = $endpoint;
-
-        return $this;
-    }
 
     /**
      * Sets the query string for filtering the assets in your cloud.
@@ -223,29 +130,17 @@ class SearchApi implements JsonSerializable
     }
 
     /**
-     * Executes the search API request asynchronously.
+     * Sets the search query.
      *
-     * @return PromiseInterface
+     * @param array $query The search query.
      *
-     * @api
+     * @return $this
      */
-    public function executeAsync()
+    public function query($query)
     {
-        return $this->apiClient->postJsonAsync($this->getSearchEndpoint(), $this);
-    }
+        $this->query = $query;
 
-    /**
-     * Executes the search API request.
-     *
-     * @return ApiResponse
-     *
-     * @throws GeneralError
-     *
-     * @api
-     */
-    public function execute()
-    {
-        return $this->executeAsync()->wait();
+        return $this;
     }
 
     /**
@@ -269,26 +164,5 @@ class SearchApi implements JsonSerializable
                 }
             )
         );
-    }
-
-    /**
-     * Serializes to JSON.
-     *
-     * @return array data which can be serialized by <b>json_encode</b>
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-        return $this->asArray();
-    }
-
-    /**
-     * Returns the search endpoint.
-     *
-     * @return string
-     */
-    private function getSearchEndpoint()
-    {
-        return "{$this->endpoint}/search";
     }
 }
