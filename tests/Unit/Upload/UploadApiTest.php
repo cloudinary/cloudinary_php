@@ -31,13 +31,26 @@ final class UploadApiTest extends AssetTestCase
      *
      * @throws ApiError
      */
-    public function testAccessibilityAnalysisUpload()
+    public function testVariousUploadParams()
     {
+        $params = [
+            'accessibility_analysis' => true,
+            'cinemagraph_analysis'   => true,
+            'media_metadata'         => true,
+            'visual_search'          => true,
+        ];
+
         $mockUploadApi = new MockUploadApi();
-        $mockUploadApi->upload(self::TEST_BASE64_IMAGE, ['accessibility_analysis' => true]);
+        $mockUploadApi->upload(
+            self::TEST_BASE64_IMAGE,
+            $params
+        );
+
         $lastOptions = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
 
-        self::assertEquals('1', $lastOptions['accessibility_analysis']);
+        foreach ($params as $param => $value) {
+            self::assertEquals($value ? '1' : '0', $lastOptions[$param]);
+        }
     }
 
     /**
@@ -139,50 +152,57 @@ final class UploadApiTest extends AssetTestCase
     public function testHeadersExtraHeaders($input, $expectedOutput)
     {
         $mockUploadApi = new MockUploadApi();
-            $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $input);
-            $mockOutput = $mockUploadApi->getApiClient()->getLastRequestHeaders();
+        $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $input);
+        $mockOutput = $mockUploadApi->getApiClient()->getLastRequestHeaders();
         self::assertSubset($expectedOutput, $mockOutput);
     }
 
+    /**
+     * @return array
+     */
     public function headersDataProvider()
     {
         return [
             [
                 [
-                    'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
-                    'extra_headers' => ['test1' => 'Bearer abc123', 'test2' => 'MyApp/1.0']
+                    'headers'       => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+                    'extra_headers' => ['test1' => 'Bearer abc123', 'test2' => 'MyApp/1.0'],
                 ],
-                ['Content-Type' => ['application/json'], 'Accept' => ['application/json'],
-                    'test1' => ['Bearer abc123'], 'test2' => ['MyApp/1.0']]
+                [
+                    'Content-Type' => ['application/json'],
+                    'Accept'       => ['application/json'],
+                    'test1'        => ['Bearer abc123'],
+                    'test2'        => ['MyApp/1.0'],
+                ],
             ],
             [
                 [
-                    'headers' => ['X-Request-ID' => '12345'],
-                    'extra_headers' => ['Accept-Encoding' => 'gzip']
+                    'headers'       => ['X-Request-ID' => '12345'],
+                    'extra_headers' => ['Accept-Encoding' => 'gzip'],
                 ],
-                ['X-Request-ID' => ['12345'], 'Accept-Encoding' => ['gzip']]
+                ['X-Request-ID' => ['12345'], 'Accept-Encoding' => ['gzip']],
             ],
             [
                 [
-                    'headers' => ['Content-Language' => 'en-US'],
-                    'extra_headers' => []
+                    'headers'       => ['Content-Language' => 'en-US'],
+                    'extra_headers' => [],
                 ],
-                ['Content-Language' => ['en-US']]
+                ['Content-Language' => ['en-US']],
             ],
             [
                 [
-                    'headers' => [],
-                    'extra_headers' => ['X-Debug' => ['true']]
+                    'headers'       => [],
+                    'extra_headers' => ['X-Debug' => ['true']],
                 ],
-                ['X-Debug' => ['true']]
+                ['X-Debug' => ['true']],
             ],
             [
                 [
-                    'headers' => [],
-                    'extra_headers' => []
+                    'headers'       => [],
+                    'extra_headers' => [],
                 ],
-                []
-            ]
+                [],
+            ],
         ];
     }
 }
