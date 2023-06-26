@@ -83,6 +83,7 @@ final class AssetsTest extends UnitTestCase
                 'metadata'            => ['key' => 'value'],
                 'asset_folder'        => 'asset_folder',
                 'unique_display_name' => true,
+                'visual_search'       => true,
             ]
         );
         $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
@@ -94,6 +95,7 @@ final class AssetsTest extends UnitTestCase
                 'metadata'            => 'key=value',
                 'asset_folder'        => 'asset_folder',
                 'unique_display_name' => true,
+                'visual_search'       => true,
             ]
         );
     }
@@ -120,7 +122,7 @@ final class AssetsTest extends UnitTestCase
         self::assertRequestJsonBodySubset(
             $lastRequest,
             [
-                'assets_to_relate' => $testIds
+                'assets_to_relate' => $testIds,
             ]
         );
 
@@ -136,7 +138,7 @@ final class AssetsTest extends UnitTestCase
         self::assertRequestJsonBodySubset(
             $lastRequest,
             [
-                'assets_to_unrelate' => $testIds
+                'assets_to_unrelate' => $testIds,
             ]
         );
     }
@@ -163,7 +165,7 @@ final class AssetsTest extends UnitTestCase
         self::assertRequestJsonBodySubset(
             $lastRequest,
             [
-                'assets_to_relate' => $testAssetIds
+                'assets_to_relate' => $testAssetIds,
             ]
         );
 
@@ -179,7 +181,7 @@ final class AssetsTest extends UnitTestCase
         self::assertRequestJsonBodySubset(
             $lastRequest,
             [
-                'assets_to_unrelate' => $testAssetIds
+                'assets_to_unrelate' => $testAssetIds,
             ]
         );
     }

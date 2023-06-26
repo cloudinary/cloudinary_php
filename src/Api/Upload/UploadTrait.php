@@ -77,6 +77,7 @@ trait UploadTrait
             'raw_convert',
             'return_delete_token',
             'similarity_search',
+            'visual_search',
             'type',
             'unique_filename',
             'upload_preset',

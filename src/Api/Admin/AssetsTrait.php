@@ -227,6 +227,27 @@ trait AssetsTrait
         return $this->apiClient->get($uri, $params);
     }
 
+
+    /**
+     * Find images based on their visual content.
+     *
+     * @param array $options The optional parameters. See the
+     *                       <a href=https://cloudinary.com/documentation/admin_api#visual_search_for_resources
+     *                       target="_blank"> AdminAPI</a> documentation.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/admin_api#visual_search_for_resources
+     */
+    public function visualSearch($options = [])
+    {
+        $uri = [ApiEndPoint::ASSETS, 'visual_search'];
+
+        $params = ArrayUtils::whitelist($options, ['image_url', 'image_asset_id', 'text']);
+
+        return $this->apiClient->get($uri, $params);
+    }
+
     /**
      * Returns the details of the specified asset and all its derived assets.
      *
@@ -333,6 +354,7 @@ trait AssetsTrait
                 'categorization',
                 'detection',
                 'similarity_search',
+                'visual_search',
                 'auto_tagging',
                 'background_removal',
                 'quality_override',
