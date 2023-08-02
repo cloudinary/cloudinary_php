@@ -15,6 +15,7 @@ use Cloudinary\Configuration\ApiConfig;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Helpers\MockUploadApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
+use Cloudinary\Test\Integration\IntegrationTestCase;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 
 /**
@@ -38,6 +39,7 @@ final class UploadApiTest extends AssetTestCase
             'cinemagraph_analysis'   => true,
             'media_metadata'         => true,
             'visual_search'          => true,
+            'on_success'             => IntegrationTestCase::TEST_ON_SUCCESS_STR,
         ];
 
         $mockUploadApi = new MockUploadApi();
@@ -49,7 +51,7 @@ final class UploadApiTest extends AssetTestCase
         $lastOptions = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
 
         foreach ($params as $param => $value) {
-            self::assertEquals($value ? '1' : '0', $lastOptions[$param]);
+            self::assertEquals(is_bool($value) ? $value ? '1' : '0': $value, $lastOptions[$param]);
         }
     }
 
