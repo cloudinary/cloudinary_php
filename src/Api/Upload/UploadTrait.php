@@ -56,6 +56,7 @@ trait UploadTrait
             'eager_async',
             'eager_notification_url',
             'eval',
+            'on_success',
             'exif',
             'faces',
             'filename_override',
