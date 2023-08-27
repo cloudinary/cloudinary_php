@@ -27,7 +27,7 @@ final class AssetsTest extends UnitTestCase
     /**
      * @return array[]
      */
-    protected function restoreDeletedAssetSpecificVersionDataProvider()
+    public function restoreDeletedAssetSpecificVersionDataProvider()
     {
         return [
             [
@@ -196,7 +196,7 @@ final class AssetsTest extends UnitTestCase
     /**
      * @return array[]
      */
-    protected function visualSearchDataProvider()
+    public function visualSearchDataProvider()
     {
         return [
             [
