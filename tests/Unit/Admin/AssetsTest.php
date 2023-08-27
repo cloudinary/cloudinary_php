@@ -10,8 +10,11 @@
 
 namespace Cloudinary\Test\Unit\Admin;
 
+use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Test\Helpers\MockAdminApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
+use Cloudinary\Test\Integration\IntegrationTestCase;
+use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Test\Unit\UnitTestCase;
 
 /**
@@ -21,7 +24,10 @@ final class AssetsTest extends UnitTestCase
 {
     use RequestAssertionsTrait;
 
-    public function restoreDeletedAssetSpecificVersionDataProvider()
+    /**
+     * @return array[]
+     */
+    protected function restoreDeletedAssetSpecificVersionDataProvider()
     {
         return [
             [
@@ -184,5 +190,81 @@ final class AssetsTest extends UnitTestCase
                 'assets_to_unrelate' => $testAssetIds,
             ]
         );
+    }
+
+
+    /**
+     * @return array[]
+     */
+    protected function visualSearchDataProvider()
+    {
+        return [
+            [
+                'options'    => [
+                    'image_url' => AssetTestCase::FETCH_IMAGE_URL,
+                ],
+                'url'        => '/resources/visual_search',
+                'bodyFields' => [
+                    'image_url' => AssetTestCase::FETCH_IMAGE_URL,
+                ],
+            ],
+            [
+                'options'    => [
+                    'image_asset_id' => self::API_TEST_ASSET_ID,
+                ],
+                'url'        => '/resources/visual_search',
+                'bodyFields' => [
+                    'image_asset_id' => self::API_TEST_ASSET_ID,
+                ],
+            ],
+            [
+                'options'    => [
+                    'text' => 'sample image',
+                ],
+                'url'        => '/resources/visual_search',
+                'bodyFields' => [
+                    'text' => 'sample image',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test Visual search.
+     *
+     * @dataProvider visualSearchDataProvider
+     *
+     * @param array  $options
+     * @param string $url
+     * @param array  $bodyFields
+     *
+     * @throws ApiError
+     */
+    public function testVisualSearch($options, $url, $bodyFields)
+    {
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->visualSearch($options);
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, $url);
+        self::assertRequestBodySubset($lastRequest, $bodyFields);
+    }
+
+    /**
+     * Test Visual search using image file.
+     *
+     * @throws ApiError
+     */
+    public function testVisualSearchImageFile()
+    {
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->visualSearch(['image_file' => IntegrationTestCase::TEST_IMAGE_PATH]);
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, '/resources/visual_search');
+        $body = $lastRequest->getBody()->getContents();
+
+        self::assertStringContainsString('image_file', $body);
+        self::assertStringContainsString('Content-Length: 5110', $body);
     }
 }
