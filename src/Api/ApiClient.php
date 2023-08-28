@@ -380,7 +380,7 @@ class ApiClient extends BaseApiClient
     protected function postSingleChunkAsync($endPoint, $singleChunk, $parameters, $options = [])
     {
         $filePart = [
-            'name'     => 'file',
+            'name'     => ArrayUtils::get($options, 'file_field', 'file'),
             'contents' => $singleChunk,
         ];
 

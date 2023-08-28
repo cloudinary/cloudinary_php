@@ -237,6 +237,8 @@ trait AssetsTrait
      *
      * @return ApiResponse
      *
+     * @throws ApiError
+     *
      * @see https://cloudinary.com/documentation/admin_api#visual_search_for_resources
      */
     public function visualSearch($options = [])
@@ -245,7 +247,15 @@ trait AssetsTrait
 
         $params = ArrayUtils::whitelist($options, ['image_url', 'image_asset_id', 'text']);
 
-        return $this->apiClient->get($uri, $params);
+        // Special handling for file inside Admin API.
+        if (array_key_exists('image_file', $options)) {
+            $options['file_field'] = 'image_file';
+            $options['unsigned'] = true;
+
+            return $this->apiClient->postFile($uri, $options['image_file'], $params, $options);
+        }
+
+        return $this->apiClient->postForm($uri, $params);
     }
 
     /**
