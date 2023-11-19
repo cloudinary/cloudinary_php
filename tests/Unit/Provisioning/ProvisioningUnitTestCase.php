@@ -11,6 +11,7 @@
 namespace Cloudinary\Test\Unit\Provisioning;
 
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
+use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\Test\CloudinaryTestCase;
 
 /**
@@ -36,6 +37,8 @@ abstract class ProvisioningUnitTestCase extends CloudinaryTestCase
                             . $this::ACCOUNT_ID;
 
         putenv(ProvisioningConfiguration::CLOUDINARY_ACCOUNT_URL_ENV_VAR . '=' . $this->accountUrl);
+
+        ProvisioningConfiguration::instance()->init();
     }
 
     public function tearDown()
@@ -44,7 +47,11 @@ abstract class ProvisioningUnitTestCase extends CloudinaryTestCase
 
         putenv(
             ProvisioningConfiguration::CLOUDINARY_ACCOUNT_URL_ENV_VAR .
-               (! empty($this->accountUrlEnvBackup) ? '=' . $this->accountUrlEnvBackup : "")
+            (! empty($this->accountUrlEnvBackup) ? '=' . $this->accountUrlEnvBackup : "")
         );
+        try {
+            ProvisioningConfiguration::instance()->init();
+        } catch (ConfigurationException $ce) {
+        }
     }
 }
