@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Integration;
 use Cloudinary\Api\Admin\AdminApi;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Api\HttpStatusCode;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
@@ -31,7 +32,6 @@ use GuzzleHttp\Psr7;
 use PHPUnit\Framework\Constraint\IsType;
 use ReflectionClass;
 use RuntimeException;
-use Teapot\StatusCode\Http as HttpStatusCode;
 
 /**
  * Class IntegrationTestCase
