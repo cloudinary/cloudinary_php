@@ -18,7 +18,6 @@ use Cloudinary\Test\CloudinaryTestCase;
  */
 abstract class ProvisioningUnitTestCase extends CloudinaryTestCase
 {
-
     const ACCOUNT_ID         = 'account123';
     const ACCOUNT_API_KEY    = 'accountKey';
     const ACCOUNT_API_SECRET = 'accountSecret';
