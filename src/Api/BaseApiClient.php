@@ -33,8 +33,6 @@ use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
-use Teapot\StatusCode\Http as HttpStatusCode;
-use Teapot\StatusCode\Vendor\Twitter as TwitterStatusCode;
 
 /**
  * Class BaseApiClient
@@ -60,7 +58,7 @@ class BaseApiClient
             HttpStatusCode::FORBIDDEN             => NotAllowed::class,
             HttpStatusCode::NOT_FOUND             => NotFound::class,
             HttpStatusCode::CONFLICT              => AlreadyExists::class,
-            TwitterStatusCode::ENHANCE_YOUR_CALM  => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
+            HttpStatusCode::ENHANCE_YOUR_CALM     => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
             HttpStatusCode::INTERNAL_SERVER_ERROR => GeneralError::class,
         ];
 
