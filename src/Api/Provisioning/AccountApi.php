@@ -13,6 +13,7 @@ namespace Cloudinary\Api\Provisioning;
 use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\ApiUtils;
 use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
 
 /**
@@ -27,7 +28,7 @@ class AccountApi
     /**
      * @var AccountApiClient $accountApiClient
      */
-    private $accountApiClient;
+    protected $accountApiClient;
 
     /**
      * AccountApi constructor.
@@ -409,5 +410,63 @@ class AccountApi
         $uri = [AccountEndPoint::USER_GROUPS, $groupId, AccountEndPoint::USERS];
 
         return $this->accountApiClient->get($uri);
+    }
+
+    /**
+     * Gets sub account access keys.
+     *
+     * @param string $subAccountId The id of the sub account.
+     * @param array  $options      Additional options.
+     *
+     * @return ApiResponse A list of access keys.
+     *
+     * @api
+     */
+    public function accessKeys($subAccountId, $options = [])
+    {
+        $uri = [AccountEndPoint::SUB_ACCOUNTS, $subAccountId, AccountEndPoint::ACCESS_KEYS];
+
+        $params = ArrayUtils::whitelist($options, ['page_size', 'page', 'sort_by', 'sort_order']);
+
+        return $this->accountApiClient->get($uri, $params);
+    }
+
+    /**
+     * Generates a new access key.
+     *
+     * @param string $subAccountId The id of the sub account.
+     * @param array  $options      Additional options.
+     *
+     * @return ApiResponse Generated access key.
+     *
+     * @api
+     */
+    public function generateAccessKey($subAccountId, $options = [])
+    {
+        $uri = [AccountEndPoint::SUB_ACCOUNTS, $subAccountId, AccountEndPoint::ACCESS_KEYS];
+
+        $params = ArrayUtils::whitelist($options, ['name', 'enabled']);
+
+        return $this->accountApiClient->postJson($uri, $params);
+    }
+
+    /**
+     * Updates the access key.
+     *
+     * @param string $subAccountId The id of the sub account.
+     * @param string $apiKey       The Api Key.
+     * @param array  $options      Additional options.
+     *
+     * @return ApiResponse Updated access key.
+     *
+     * @api
+     */
+    public function updateAccessKey($subAccountId, $apiKey, $options = [])
+    {
+        $uri = [AccountEndPoint::SUB_ACCOUNTS, $subAccountId, AccountEndPoint::ACCESS_KEYS, $apiKey];
+
+        $params = ArrayUtils::whitelist($options, ['name', 'enabled']);
+
+        return $this->accountApiClient->putJson($uri, $params);
     }
 }

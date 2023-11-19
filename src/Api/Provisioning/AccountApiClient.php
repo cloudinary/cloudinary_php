@@ -11,6 +11,8 @@
 namespace Cloudinary\Api\Provisioning;
 
 use Cloudinary\Api\BaseApiClient;
+use Cloudinary\Configuration\ApiConfig;
+use Cloudinary\Configuration\Provisioning\ProvisioningAccountConfig;
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
 use Cloudinary\Exception\ConfigurationException;
 use GuzzleHttp\Client;
@@ -26,6 +28,11 @@ class AccountApiClient extends BaseApiClient
 {
     const PROVISIONING = 'provisioning';
     const ACCOUNTS     = 'accounts';
+
+    /**
+     * @var ProvisioningAccountConfig $provisioningAccount The Account API configuration.
+     */
+    protected $provisioningAccount;
 
     /**
      * AccountApiClient constructor
@@ -48,14 +55,16 @@ class AccountApiClient extends BaseApiClient
 
         if (empty($configuration->provisioningAccount->accountId)
             || empty($configuration->provisioningAccount->provisioningApiKey)
-            || empty($configuration->provisioningAccount->provisioningApiSecret)) {
+            || empty($configuration->provisioningAccount->provisioningApiSecret)
+        ) {
             throw new ConfigurationException(
                 'When providing account id, key or secret, all must be provided'
             );
         }
 
-        $this->api     = $configuration->api;
-        $this->logging = $configuration->logging;
+        $this->api                 = $configuration->api;
+        $this->provisioningAccount = $configuration->provisioningAccount;
+        $this->logging             = $configuration->logging;
 
         $this->baseUri = sprintf(
             '%s/%s/%s/%s/%s/',
@@ -66,10 +75,23 @@ class AccountApiClient extends BaseApiClient
             $configuration->provisioningAccount->accountId
         );
 
-        $clientConfig = [
+        $this->createHttpClient();
+    }
+
+    protected function createHttpClient()
+    {
+        $this->httpClient = new Client($this->buildHttpClientConfig());
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildHttpClientConfig()
+    {
+        return [
             'auth'            => [
-                $configuration->provisioningAccount->provisioningApiKey,
-                $configuration->provisioningAccount->provisioningApiSecret,
+                $this->provisioningAccount->provisioningApiKey,
+                $this->provisioningAccount->provisioningApiSecret,
             ],
             'base_uri'        => $this->baseUri,
             'connect_timeout' => $this->api->connectionTimeout,
@@ -78,7 +100,7 @@ class AccountApiClient extends BaseApiClient
             'headers'         => ['User-Agent' => self::userAgent()],
             'http_errors'     => false, // We handle HTTP errors by ourselves and throw corresponding exceptions
         ];
-
-        $this->httpClient = new Client($clientConfig);
     }
+
+
 }
