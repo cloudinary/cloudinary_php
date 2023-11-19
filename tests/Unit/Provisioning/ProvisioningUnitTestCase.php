@@ -42,6 +42,9 @@ abstract class ProvisioningUnitTestCase extends CloudinaryTestCase
     {
         parent::tearDown();
 
-        putenv(ProvisioningConfiguration::CLOUDINARY_ACCOUNT_URL_ENV_VAR . '=' . $this->accountUrlEnvBackup);
+        putenv(
+            ProvisioningConfiguration::CLOUDINARY_ACCOUNT_URL_ENV_VAR .
+               (! empty($this->accountUrlEnvBackup) ? '=' . $this->accountUrlEnvBackup : "")
+        );
     }
 }
