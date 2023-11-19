@@ -29,10 +29,7 @@ class AccessKeysTest extends ProvisioningUnitTestCase
 
         $lastRequest = $mockAccApi->getMockHandler()->getLastRequest();
 
-        self::assertAccountRequestUrl(
-            $lastRequest,
-            '/' . self::ACCOUNT_ID . '/sub_accounts/' . self::SUB_ACCOUNT_ID . '/access_keys'
-        );
+        self::assertAccountRequestUrl($lastRequest, '/sub_accounts/' . self::SUB_ACCOUNT_ID . '/access_keys');
 
         self::assertRequestGet($lastRequest);
 
@@ -56,10 +53,7 @@ class AccessKeysTest extends ProvisioningUnitTestCase
 
         $lastRequest = $mockAccApi->getMockHandler()->getLastRequest();
 
-        self::assertAccountRequestUrl(
-            $lastRequest,
-            '/' . self::ACCOUNT_ID . '/sub_accounts/' . self::SUB_ACCOUNT_ID . '/access_keys'
-        );
+        self::assertAccountRequestUrl($lastRequest, '/sub_accounts/' . self::SUB_ACCOUNT_ID . '/access_keys');
         self::assertRequestPost($lastRequest);
 
         self::assertRequestJsonBodySubset($lastRequest, ['enabled' => true, 'name' => 'test_key']);
@@ -82,7 +76,7 @@ class AccessKeysTest extends ProvisioningUnitTestCase
 
         self::assertAccountRequestUrl(
             $lastRequest,
-            '/' . self::ACCOUNT_ID . '/sub_accounts/' . self::SUB_ACCOUNT_ID . '/access_keys/' . self::API_KEY
+            '/sub_accounts/' . self::SUB_ACCOUNT_ID . '/access_keys/' . self::API_KEY
         );
         self::assertRequestPut($lastRequest);
 

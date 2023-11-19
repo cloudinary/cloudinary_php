@@ -12,6 +12,8 @@ namespace Cloudinary\Test\Helpers;
 
 use Cloudinary\Api\ApiClient;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Configuration\Provisioning\ProvisioningAccountConfig;
+use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
 use Psr\Http\Message\RequestInterface;
 
 use GuzzleHttp\Psr7;
@@ -110,8 +112,11 @@ trait RequestAssertionsTrait
      */
     protected static function assertAccountRequestUrl(RequestInterface $request, $path, $message = '')
     {
+        $config = ProvisioningConfiguration::instance();
+
         self::assertEquals(
-            '/' . ApiClient::apiVersion() . '/' . 'provisioning/accounts' . $path,
+            '/' . ApiClient::apiVersion() . '/' . 'provisioning/accounts/' . $config->provisioningAccount->accountId
+            . $path,
             $request->getUri()->getPath(),
             $message
         );
