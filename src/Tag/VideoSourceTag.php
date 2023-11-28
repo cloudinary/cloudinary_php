@@ -97,7 +97,6 @@ class VideoSourceTag extends BaseTag
     public function type($type, $codecs = null)
     {
         $this->sourceType = ClassUtils::verifyInstance($type, VideoSourceType::class, null, $codecs);
-        $this->video->setFormat($this->sourceType->type);
 
         return $this;
     }
@@ -112,7 +111,9 @@ class VideoSourceTag extends BaseTag
     public function serializeAttributes($attributes = [])
     {
         if (! empty((string)$this->video)) {
-            $attributes['src'] = $this->video->toUrl($this->additionalTransformation);
+            $toSerialize = new Video($this->video);
+            $toSerialize->setFormat($this->sourceType->type, $this->config->tag->useFetchFormat);
+            $attributes['src'] = $toSerialize->toUrl($this->additionalTransformation);
         }
 
         if (! empty((string)$this->sourceType)) {
