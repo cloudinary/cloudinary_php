@@ -14,7 +14,6 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\Video;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Configuration\TagConfig;
 
 /**
  *
@@ -36,7 +35,7 @@ class VideoThumbnailTag extends ImageTag
     {
         parent::image(new Video($source, $configuration), $configuration);
 
-        $this->image->setFormat($configuration->tag->videoPosterFormat);
+        $this->image->setFormat($configuration->tag->videoPosterFormat, $configuration->tag->useFetchFormat);
 
         return $this;
     }

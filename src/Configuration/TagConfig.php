@@ -26,6 +26,8 @@ use Cloudinary\Transformation\Format;
  */
 class TagConfig extends BaseConfigSection
 {
+    use TagConfigTrait;
+
     const CONFIG_NAME = 'tag';
 
     const DEFAULT_VIDEO_POSTER_FORMAT = Format::JPG;
@@ -43,6 +45,7 @@ class TagConfig extends BaseConfigSection
     const CLIENT_HINTS           = 'client_hints';
     const UNSIGNED_UPLOAD        = 'unsigned_upload';
     const VIDEO_POSTER_FORMAT    = 'video_poster_format';
+    const USE_FETCH_FORMAT       = 'use_fetch_format';
     const QUOTES_TYPE            = 'quotes_type';
     const VOID_CLOSING_SLASH     = 'void_closing_slash';
     const SORT_ATTRIBUTES        = 'sort_attributes';
@@ -119,6 +122,13 @@ class TagConfig extends BaseConfigSection
     protected $videoPosterFormat;
 
     /**
+     * Whether to use fetch format transformation ("f_") instead of file extension.
+     *
+     * @var string $useFetchFormat
+     */
+    public $useFetchFormat;
+
+    /**
      * Sets the type of the quotes to use (single or double). Default: BaseTag::DOUBLE_QUOTES.
      *
      * @var string $quotesType
@@ -154,4 +164,19 @@ class TagConfig extends BaseConfigSection
      * @var string $contentDelimiter
      */
     protected $contentDelimiter;
+
+    /**
+     * Sets the Tag configuration key with the specified value.
+     *
+     * @param string $configKey   The configuration key.
+     * @param mixed  $configValue THe configuration value.
+     *
+     * @return $this
+     *
+     * @internal
+     */
+    public function setTagConfig($configKey, $configValue)
+    {
+        return $this->setConfig($configKey, $configValue);
+    }
 }

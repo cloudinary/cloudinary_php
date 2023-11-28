@@ -17,6 +17,7 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Asset\Video;
 use Cloudinary\Configuration\AssetConfigTrait;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Configuration\TagConfigTrait;
 use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\ImageTransformation;
@@ -47,6 +48,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     use VideoTransformationTrait;
     use AssetDescriptorTrait;
     use AssetConfigTrait;
+    use TagConfigTrait;
 
     const NAME = 'video';
 
@@ -156,7 +158,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
+     * @return static
      */
 
     public static function fromParams($source, $params = [])
@@ -213,7 +215,9 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
 
         if (! array_key_exists('poster', $videoParams)) {
             // set default poster based on the video
-            return Image::fromParams($source, $videoParams);
+            $videoPosterParams = $videoParams;
+            ArrayUtils::setDefaultValue($videoPosterParams, 'use_fetch_format', $configuration->tag->useFetchFormat);
+            return Image::fromParams($source, $videoPosterParams);
         }
 
         // Custom poster
@@ -301,7 +305,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
 
         if (! array_key_exists('poster', $this->attributes)) {
             $poster                   = new Image($this->video);
-            $poster->setFormat($this->config->tag->videoPosterFormat);
+            $poster->setFormat($this->config->tag->videoPosterFormat, $this->config->tag->useFetchFormat);
 
             $attributes['poster'] = $poster;
         }
@@ -408,6 +412,27 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     public function setUrlConfig($configKey, $configValue)
     {
         return $this->applyAssetModification('setUrlConfig', $configKey, $configValue);
+    }
+
+    /**
+     * Sets the Tag configuration key with the specified value.
+     *
+     * @param string $configKey   The configuration key.
+     * @param mixed  $configValue THe configuration value.
+     *
+     * @return $this
+     *
+     * @internal
+     */
+    public function setTagConfig($configKey, $configValue)
+    {
+        $this->config->tag->setTagConfig($configKey, $configValue);
+
+        foreach ($this->sources as $source) {
+            $source->setTagConfig($configKey, $configValue);
+        }
+
+        return $this;
     }
 
     /**

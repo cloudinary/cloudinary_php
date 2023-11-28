@@ -535,6 +535,23 @@ final class TagFromParamsTest extends ImageTagTestCase
         );
     }
 
+    public function testVideoTagUseFetchFormat()
+    {
+        $videoId = self::VIDEO_NAME;
+        $prefixUrl = self::VIDEO_UPLOAD_PATH;
+
+        Configuration::instance()->importJson(['use_fetch_format' => true]);
+
+        self::assertStrEquals(
+            "<video poster='{$prefixUrl}f_jpg/$videoId'>" .
+            "<source src='{$prefixUrl}f_webm/$videoId' type='video/webm'>" .
+            "<source src='{$prefixUrl}f_mp4/$videoId' type='video/mp4'>" .
+            "<source src='{$prefixUrl}f_ogv/$videoId' type='video/ogg'>" .
+            '</video>',
+            VideoTag::fromParams($videoId)
+        );
+    }
+
     public function testVideoTagWithAttributes()
     {
         //test video attributes

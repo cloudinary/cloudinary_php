@@ -12,6 +12,7 @@ namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\Configuration;
+use Cloudinary\Configuration\TagConfig;
 use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\Transformation\BaseAction;
 use Cloudinary\Transformation\CommonTransformation;
@@ -136,13 +137,14 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * For non-fetched assets sets the filename extension.
      * For remotely fetched assets sets the 'f_' transformation parameter.
      *
-     * @param string $format The format to set.
+     * @param string $format         The format to set.
+     * @param bool   $useFetchFormat Whether to force fetch format behavior.
      *
      * @return static
      */
-    public function setFormat($format)
+    public function setFormat($format, $useFetchFormat = false)
     {
-        if ($this->asset->deliveryType == DeliveryType::FETCH) {
+        if ($useFetchFormat || $this->asset->deliveryType == DeliveryType::FETCH) {
             $this->addTransformation(Delivery::format($format));
         } else {
             $this->asset->extension = $format;
@@ -203,7 +205,9 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      */
     private static function setFormatParameter($params)
     {
-        if (ArrayUtils::get($params, DeliveryType::KEY) !== DeliveryType::FETCH) {
+        if (ArrayUtils::get($params, DeliveryType::KEY) !== DeliveryType::FETCH
+            && ! ArrayUtils::get($params, TagConfig::USE_FETCH_FORMAT, false)
+        ) {
             return $params;
         }
 

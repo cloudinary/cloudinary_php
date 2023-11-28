@@ -121,7 +121,7 @@ trait ImageTagDeliveryTypeTrait
      */
     public static function hulu($videoId, $configuration = null)
     {
-        return new static(Image::youTube($videoId, $configuration));
+        return new static(Image::hulu($videoId, $configuration));
     }
 
     /**
