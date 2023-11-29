@@ -24,6 +24,56 @@ final class AssetsTest extends UnitTestCase
 {
     use RequestAssertionsTrait;
 
+
+    /**
+     * @return array[]
+     */
+    public function listAssetsFieldsDataProvider()
+    {
+        return [
+            [
+                'options'     => [
+                    'fields' => ['tags', 'secure_url'],
+                ],
+                'url'         => '/resources/image',
+                'queryParams' => [
+                    'fields' => 'tags,secure_url',
+                ],
+            ],
+            [
+                'options'     => [
+                    'fields' => 'context,url',
+                ],
+                'url'         => '/resources/image',
+                'queryParams' => [
+                    'fields' => 'context,url',
+                ],
+            ],
+            [
+                'options'     => [
+                    'fields' => "",
+                ],
+                'url'         => '/resources/image',
+                'queryParams' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Test list assets fields serialization.
+     *
+     * @dataProvider listAssetsFieldsDataProvider
+     */
+    public function testListAssetFields($options, $url, $queryParams)
+    {
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->assets($options);
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, $url);
+        self::assertRequestQueryStringSubset($lastRequest, $queryParams);
+    }
+
     /**
      * @return array[]
      */
