@@ -18,6 +18,7 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
+use Cloudinary\StringUtils;
 
 /**
  * Enables you to manage the assets in your cloud.
@@ -58,19 +59,9 @@ trait AssetsTrait
         $uri       = [ApiEndPoint::ASSETS, $assetType];
         ArrayUtils::appendNonEmpty($uri, ArrayUtils::get($options, DeliveryType::KEY));
 
-        $params = ArrayUtils::whitelist(
-            $options,
-            [
-                'next_cursor',
-                'max_results',
-                'prefix',
-                'tags',
-                'context',
-                'moderations',
-                'direction',
-                'start_at',
-                'metadata',
-            ]
+        $params = array_merge(
+            self::prepareListAssetsParams($options),
+            ArrayUtils::whitelist($options, ['prefix', 'direction'])
         );
 
         return $this->apiClient->get($uri, $params);
@@ -93,10 +84,7 @@ trait AssetsTrait
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType, 'tags', $tag];
-        $params    = ArrayUtils::whitelist(
-            $options,
-            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction', 'metadata']
-        );
+        $params    = self::prepareListAssetsParams($options);
 
         return $this->apiClient->get($uri, $params);
     }
@@ -121,10 +109,7 @@ trait AssetsTrait
     {
         $assetType       = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri             = [ApiEndPoint::ASSETS, $assetType, 'context'];
-        $params          = ArrayUtils::whitelist(
-            $options,
-            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction', 'metadata']
-        );
+        $params          = self::prepareListAssetsParams($options);
         $params['key']   = $key;
         $params['value'] = $value;
 
@@ -150,10 +135,7 @@ trait AssetsTrait
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType, 'moderations', $kind, $status];
 
-        $params = ArrayUtils::whitelist(
-            $options,
-            ['next_cursor', 'max_results', 'tags', 'context', 'moderations', 'direction', 'metadata']
-        );
+        $params = self::prepareListAssetsParams($options);
 
         return $this->apiClient->get($uri, $params);
     }
@@ -175,7 +157,7 @@ trait AssetsTrait
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
         $uri       = [ApiEndPoint::ASSETS, $assetType, $type];
 
-        $params               = ArrayUtils::whitelist($options, ['public_ids', 'tags', 'moderations', 'context']);
+        $params               = self::prepareAssetsParams($options);
         $params['public_ids'] = $publicIds;
 
         return $this->apiClient->get($uri, $params);
@@ -196,7 +178,7 @@ trait AssetsTrait
     {
         $uri = [ApiEndPoint::ASSETS, 'by_asset_ids'];
 
-        $params              = ArrayUtils::whitelist($options, ['public_ids', 'tags', 'moderations', 'context']);
+        $params              = self::prepareAssetsParams($options);
         $params['asset_ids'] = $assetIds;
 
         return $this->apiClient->get($uri, $params);
@@ -218,10 +200,7 @@ trait AssetsTrait
     {
         $uri = [ApiEndPoint::ASSETS, 'by_asset_folder'];
 
-        $params                 = ArrayUtils::whitelist(
-            $options,
-            ['next_cursor', 'max_results', 'tags', 'moderations', 'context']
-        );
+        $params                 =  self::prepareListAssetsParams($options);
         $params['asset_folder'] = $assetFolder;
 
         return $this->apiClient->get($uri, $params);
@@ -676,6 +655,40 @@ trait AssetsTrait
                 'related',
                 'related_next_cursor',
             ]
+        );
+    }
+
+    /**
+     * Prepares optional parameters for assets* API calls.
+     *
+     * @param array $options Additional options.
+     *
+     * @return array    Optional parameters
+     *
+     * @internal
+     */
+    protected static function prepareAssetsParams($options)
+    {
+        $params = ArrayUtils::whitelist($options, ['tags', 'context', 'metadata', 'moderations']);
+        $params['fields'] = ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'fields')));
+
+        return $params;
+    }
+
+    /**
+     * Prepares optional parameters for assetsBy* API calls.
+     *
+     * @param array $options Additional options.
+     *
+     * @return array    Optional parameters
+     *
+     * @internal
+     */
+    protected static function prepareListAssetsParams($options)
+    {
+        return array_merge(
+            self::prepareAssetsParams($options),
+            ArrayUtils::whitelist($options, ['next_cursor', 'max_results', 'direction'])
         );
     }
 }

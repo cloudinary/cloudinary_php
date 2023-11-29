@@ -19,6 +19,11 @@ interface SearchQueryInterface
      * @internal
      */
     const WITH_FIELD = 'with_field';
+
+    /**
+     * @internal
+     */
+    const FIELDS = 'fields';
     /**
      * @internal
      */
@@ -34,5 +39,5 @@ interface SearchQueryInterface
     /**
      * @internal
      */
-    const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD];
+    const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD, self::FIELDS];
 }

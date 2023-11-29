@@ -17,6 +17,7 @@ trait SearchQueryTrait
             self::SORT_BY    => [],
             self::AGGREGATE  => [],
             self::WITH_FIELD => [],
+            self::FIELDS     => [],
         ];
 
     /**
@@ -125,6 +126,24 @@ trait SearchQueryTrait
     public function withField($value)
     {
         $this->query[self::WITH_FIELD][$value] = $value;
+
+        return $this;
+    }
+
+    /**
+     * The list of the fields to include for each asset in the response.
+     *
+     * @param array|string $fields The fields' names.
+     *
+     * @return $this
+     *
+     * @api
+     */
+    public function fields($fields)
+    {
+        foreach (ArrayUtils::build($fields) as $field) {
+            $this->query[self::FIELDS][$field] = $field;
+        }
 
         return $this;
     }

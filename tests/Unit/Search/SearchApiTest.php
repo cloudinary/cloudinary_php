@@ -16,7 +16,6 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Helpers\MockSearchFoldersApi;
 use Cloudinary\Test\Helpers\MockSearchApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
-use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Test\Unit\UnitTestCase;
 
 /**
@@ -44,6 +43,9 @@ final class SearchApiTest extends UnitTestCase
             ->aggregate('resource_type')
             ->withField('tags')
             ->withField('image_metadata')
+            ->fields(['tags', 'context'])
+            ->fields('metadata')
+            ->fields('tags')
             ->execute();
         $lastRequest = $mockSearchApi->getMockHandler()->getLastRequest();
 
@@ -56,6 +58,7 @@ final class SearchApiTest extends UnitTestCase
                 ],
                 'aggregate'   => ['format', 'resource_type'],
                 'with_field'  => ['tags', 'image_metadata'],
+                'fields'      => ['tags', 'context', 'metadata'],
                 'expression'  => 'format:png',
                 'max_results' => 10,
                 'next_cursor' => self::NEXT_CURSOR,
@@ -84,6 +87,8 @@ final class SearchApiTest extends UnitTestCase
             ->withField('context')
             ->withField('context')
             ->withField('tags')
+            ->fields(['tags', 'context'])
+            ->fields('tags')
             ->execute();
         $lastRequest = $mockSearchApi->getMockHandler()->getLastRequest();
 
@@ -96,6 +101,7 @@ final class SearchApiTest extends UnitTestCase
                 ],
                 'aggregate'  => ['format', 'resource_type'],
                 'with_field' => ['context', 'tags'],
+                'fields'     => ['tags', 'context'],
             ]
         );
     }

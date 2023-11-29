@@ -197,6 +197,18 @@ final class ListAssetsTest extends IntegrationTestCase
     }
 
     /**
+     * Get specific fields.
+     */
+    public function testListImagesFields()
+    {
+        $result = self::$adminApi->assets(['fields' => ['tags', 'secure_url']]);
+
+        self::assertArrayHasKey('tags', $result['resources'][0]);
+        self::assertArrayHasKey('secure_url', $result['resources'][0]);
+        self::assertArrayNotHasKey('url', $result['resources'][0]);
+    }
+
+    /**
      * Get a single uploaded asset with a given ID passed as a string.
      */
     public function testListUploadedAssetsById()
