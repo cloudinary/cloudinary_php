@@ -1,3 +1,21 @@
+2.12.0 / 2023-12-03
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for access keys management in Account Provisioning API
+  * Add support for `visualSearch` Admin API
+  * Add support for `fields` parameter in Search and Admin APIs
+  * Add support for Search URL
+  * Add support for `useFetchFormat` in `VideoTag`
+  * Add support for `on_success` upload parameter
+
+Other Changes
+-------------
+
+  * Remove redundant `teapot/status-code` dependency
+
 2.11.0 / 2023-05-23
 ==================
 
