@@ -11,6 +11,8 @@
 namespace Cloudinary\Test\Helpers;
 
 use Cloudinary\Api\Admin\AdminApi;
+use Cloudinary\Api\ApiClient;
+use Cloudinary\Configuration\Configuration;
 
 /**
  * Class MockAdminApi
@@ -29,5 +31,10 @@ class MockAdminApi extends AdminApi
         parent::__construct($configuration);
 
         $this->apiClient = new MockApiClient($configuration);
+
+        $apiV2Configuration = new Configuration($configuration);
+        $apiV2Configuration->api->apiVersion = '2';
+
+        $this->apiV2Client = new MockApiClient($apiV2Configuration);
     }
 }

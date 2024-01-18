@@ -28,12 +28,32 @@ trait MockApiTrait
     }
 
     /**
+     * Returns mock handler.
+     *
+     * @return MockHandler
+     */
+    public function getV2MockHandler()
+    {
+        return $this->getApiV2Client()->mockHandler;
+    }
+
+    /**
      * Returns a mock api client.
      *
-     * @return MockApiClient
+     * @return \Cloudinary\Api\ApiClient|\Cloudinary\Api\UploadApiClient|MockApiClient
      */
     public function getApiClient()
     {
         return $this->apiClient;
+    }
+
+    /**
+     * Returns a mock api client.
+     *
+     * @return \Cloudinary\Api\ApiClient|\Cloudinary\Api\UploadApiClient|MockApiClient
+     */
+    public function getApiV2Client()
+    {
+        return $this->apiV2Client;
     }
 }

@@ -92,12 +92,14 @@ trait RequestAssertionsTrait
      * @param string           $path
      * @param string           $message
      */
-    protected static function assertRequestUrl(RequestInterface $request, $path, $message = '')
+    protected static function assertRequestUrl(RequestInterface $request, $path, $message = '', $config = null)
     {
-        $config = Configuration::instance();
+        if ($config == null) {
+            $config = Configuration::instance();
+        }
 
         self::assertEquals(
-            '/' . ApiClient::apiVersion() . '/' . $config->cloud->cloudName . $path,
+            '/' . ApiClient::apiVersion($config->api->apiVersion) . '/' . $config->cloud->cloudName . $path,
             $request->getUri()->getPath(),
             $message
         );

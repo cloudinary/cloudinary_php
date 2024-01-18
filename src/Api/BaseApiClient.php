@@ -44,11 +44,6 @@ class BaseApiClient
     use LoggerTrait;
 
     /**
-     * @var string Cloudinary API version
-     */
-    const API_VERSION = '1.1';
-
-    /**
      * @var array Cloudinary API Error Classes mapping between http error codes and Cloudinary exceptions
      */
     const CLOUDINARY_API_ERROR_CLASSES
@@ -275,13 +270,15 @@ class BaseApiClient
     /**
      * Gets the API version string from the version.
      *
+     * @param string $apiVersion The API version in the form Major.minor (for example: 1.1).
+     *
      * @return string API version string
      *
      * @internal
      */
-    public static function apiVersion()
+    public static function apiVersion($apiVersion = ApiConfig::DEFAULT_API_VERSION)
     {
-        return 'v' . str_replace('.', '_', self::API_VERSION);
+        return 'v' . str_replace('.', '_', $apiVersion);
     }
 
     /**
@@ -315,7 +312,7 @@ class BaseApiClient
      */
     protected function callAsync($method, $endPoint, $options)
     {
-        $endPoint = self::finalizeEndPoint($endPoint);
+        $endPoint           = self::finalizeEndPoint($endPoint);
         $options['headers'] = ArrayUtils::mergeNonEmpty(
             ArrayUtils::get($options, 'headers', []),
             ArrayUtils::get($options, 'extra_headers', [])

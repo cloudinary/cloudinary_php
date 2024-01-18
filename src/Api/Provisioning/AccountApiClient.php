@@ -69,7 +69,7 @@ class AccountApiClient extends BaseApiClient
         $this->baseUri = sprintf(
             '%s/%s/%s/%s/%s/',
             $this->api->uploadPrefix,
-            self::apiVersion(),
+            self::apiVersion($this->api->apiVersion),
             self::PROVISIONING,
             self::ACCOUNTS,
             $configuration->provisioningAccount->accountId

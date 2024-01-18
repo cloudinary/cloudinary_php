@@ -11,6 +11,7 @@
 namespace Cloudinary\Api\Admin;
 
 use Cloudinary\Api\ApiClient;
+use Cloudinary\Configuration\Configuration;
 
 /**
  * Enables Cloudinary Admin API functionality.
@@ -31,11 +32,17 @@ class AdminApi
     use UploadMappingsTrait;
     use MiscTrait;
     use MetadataFieldsTrait;
+    use AnalysisTrait;
 
     /**
      * @var ApiClient $apiClient The API client instance.
      */
     protected $apiClient;
+
+    /**
+     * @var ApiClient $apiV2Client The API v2 client instance.
+     */
+    protected $apiV2Client;
 
     /**
      * AdminApi constructor.
@@ -46,5 +53,10 @@ class AdminApi
     public function __construct($configuration = null)
     {
         $this->apiClient = new ApiClient($configuration);
+
+        $apiV2Configuration = new Configuration($configuration);
+        $apiV2Configuration->api->apiVersion = '2';
+
+        $this->apiV2Client = new ApiClient($apiV2Configuration);
     }
 }
