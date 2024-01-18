@@ -14,6 +14,7 @@ namespace Cloudinary\Configuration;
  * Defines the global configuration when making requests to the Cloudinary API.
  *
  * @property string    $uploadPrefix    Used for changing default API host.
+ * @property string    $apiVersion      Used for changing default API version.
  * @property int|float $timeout         Describing the timeout of the request in seconds.
  *                                          Use 0 to wait indefinitely (the default value is 60 seconds).
  * @property int|float $uploadTimeout   Describing the timeout of the upload request in seconds.
@@ -27,11 +28,13 @@ class ApiConfig extends BaseConfigSection
     const CONFIG_NAME = 'api';
 
     const DEFAULT_UPLOAD_PREFIX = 'https://api.cloudinary.com';
+    const DEFAULT_API_VERSION   = '1.1';
     const DEFAULT_CHUNK_SIZE    = 20000000; // bytes
     const DEFAULT_TIMEOUT       = 60; // seconds
 
     // Supported parameters
     const UPLOAD_PREFIX      = 'upload_prefix'; // FIXME: rename it! (it is actually prefix for all API calls)
+    const API_VERSION        = 'api_version';
     const API_PROXY          = 'api_proxy';
     const CONNECTION_TIMEOUT = 'connection_timeout';
     const TIMEOUT            = 'timeout';
@@ -45,6 +48,13 @@ class ApiConfig extends BaseConfigSection
      * @var string
      */
     protected $uploadPrefix;
+
+    /**
+     * Used for changing default API version.
+     *
+     * @var string
+     */
+    protected $apiVersion;
 
     /**
      * Optional. Specifies a proxy through which to make calls to the Cloudinary API.  Format: http://hostname:port.
