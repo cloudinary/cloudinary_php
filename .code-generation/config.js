@@ -16,6 +16,11 @@ module.exports = {
                 video: '(new VideoTag(\'#publicID\'))',
                 media: '(new Media(\'#publicID\'))'
             },
+            openUrlSyntaxString: {
+                image: '(new Image(\'#publicID\'))',
+                video: '(new Video(\'#publicID\'))',
+                media: '(new Media(\'#publicID\'))'
+            },
             closeSyntaxString: ';'
         },
         openActionChar: '(',
