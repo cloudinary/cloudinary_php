@@ -13,6 +13,7 @@ namespace Cloudinary\Test\Integration\Provisioning;
 use Cloudinary\Api\Provisioning\UserRole;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Api\Exception\NotFound;
+use DateTime;
 
 /**
  * Class ProvisioningAccountTest
@@ -31,6 +32,8 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
     private static $USER_UPDATE_NEW_NAME;
     private static $USER_UPDATE_EMAIL;
     private static $USER_UPDATE_NEW_EMAIL;
+    private static $USER_LAST_LOGIN_NAME;
+    private static $USER_LAST_LOGIN_EMAIL;
     private static $USER_UPDATE_ID;
 
     private static $SUB_ACCOUNT_GET_NAME;
@@ -64,6 +67,8 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
 
         self::$USER_CREATE_NAME      = 'provisioning_user_name_create_' . self::$UNIQUE_TEST_ID;
         self::$USER_CREATE_EMAIL     = 'provisioning_user_create_' . self::$UNIQUE_TEST_ID . '@cloudinary.com';
+        self::$USER_LAST_LOGIN_NAME  = 'provisioning_user_name_last_login_' . self::$UNIQUE_TEST_ID;
+        self::$USER_LAST_LOGIN_EMAIL = 'provisioning_user_last_login_' . self::$UNIQUE_TEST_ID . '@cloudinary.com';
         self::$USER_DELETE_NAME      = 'provisioning_user_name_delete_' . self::$UNIQUE_TEST_ID;
         self::$USER_DELETE_EMAIL     = 'provisioning_user_delete_' . self::$UNIQUE_TEST_ID . '@cloudinary.com';
         self::$USER_GET_NAME         = self::$PREFIX . 'provisioning_user_name_get_' . self::$UNIQUE_TEST_ID;
@@ -100,6 +105,13 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
             UserRole::BILLING
         );
         self::$USERS[] = self::$USER_DELETE_ID = $user['id'];
+
+        $user = self::$accountApi->createUser(
+            self::$USER_LAST_LOGIN_NAME,
+            self::$USER_LAST_LOGIN_EMAIL,
+            UserRole::BILLING
+        );
+        self::$USERS[] = $user['id'];
 
         $user = self::$accountApi->createUser(
             self::$USER_GET_NAME,
@@ -211,6 +223,42 @@ final class ProvisioningAccountTest extends ProvisioningIntegrationTestCase
         $result = self::$accountApi->users(true, [], self::$USER_GET_NAME, self::$SUB_ACCOUNT_GET_ID);
 
         self::assertCount(1, $result['users']);
+    }
+
+    /**
+     * Tests getting users by last login equal true.
+     */
+    public function testGetUserByLastLoginTrue()
+    {
+        $userByLastLogin = self::$accountApi->users(
+            true,
+            [],
+            substr(self::$USER_LAST_LOGIN_NAME, 0, -1),
+            null,
+            true,
+            new DateTime(),
+            new DateTime()
+        );
+
+        self::assertCount(0, $userByLastLogin['users']);
+    }
+
+    /**
+     * Tests getting users by last login equal false.
+     */
+    public function testGetUserByLastLoginFalse()
+    {
+        $userByLastLogin = self::$accountApi->users(
+            true,
+            [],
+            substr(self::$USER_LAST_LOGIN_NAME, 0, -1),
+            null,
+            false,
+            new DateTime(),
+            new DateTime()
+        );
+
+        self::assertCount(1, $userByLastLogin['users']);
     }
 
     /**
