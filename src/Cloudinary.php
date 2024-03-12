@@ -34,7 +34,7 @@ class Cloudinary
      *
      * @var string VERSION
      */
-    const VERSION = '2.12.0';
+    const VERSION = '2.13.0';
 
     /**
      * Defines the Cloudinary cloud details and other global configuration options.
