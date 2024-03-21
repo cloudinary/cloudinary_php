@@ -29,6 +29,8 @@ trait AnalysisTrait
      * @param string $inputType    The type of input for the asset to analyze ('uri').
      * @param string $analysisType The type of analysis to run ('google_tagging', 'captioning', 'fashion').
      * @param string $uri          The URI of the asset to analyze.
+     * @param array  $parameters   Additional parameters.
+     *
      *
      * @return ApiResponse
      *
@@ -36,9 +38,9 @@ trait AnalysisTrait
      *
      * @see https://cloudinary.com/documentation/media_analyzer_api_reference
      */
-    public function analyze($inputType, $analysisType, $uri = null)
+    public function analyze($inputType, $analysisType, $uri = null, $parameters = null)
     {
-        return $this->analyzeAsync($inputType, $analysisType, $uri)->wait();
+        return $this->analyzeAsync($inputType, $analysisType, $uri, $parameters)->wait();
     }
 
     /**
@@ -47,16 +49,17 @@ trait AnalysisTrait
      * @param string $inputType    The type of input for the asset to analyze ('uri').
      * @param string $analysisType The type of analysis to run ('google_tagging', 'captioning', 'fashion').
      * @param string $uri          The URI of the asset to analyze.
+     * @param array  $parameters   Additional parameters.
      *
      * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/media_analyzer_api_reference
      */
-    public function analyzeAsync($inputType, $analysisType, $uri = null)
+    public function analyzeAsync($inputType, $analysisType, $uri = null, $parameters = null)
     {
-        $endPoint = [ApiEndPoint::ANALYSIS, 'analyze'];
+        $endPoint = [ApiEndPoint::ANALYSIS, 'analyze', $inputType];
 
-        $params = ['input_type' => $inputType, 'analysis_type' => $analysisType, 'uri' => $uri];
+        $params = ['analysis_type' => $analysisType, 'uri' => $uri, 'parameters' => $parameters];
 
         return $this->apiV2Client->postJsonAsync($endPoint, $params);
     }
