@@ -10,12 +10,9 @@
 
 namespace Cloudinary\Test\Unit\Admin;
 
-use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Helpers\MockAdminApi;
 use Cloudinary\Test\Helpers\RequestAssertionsTrait;
-use Cloudinary\Test\Integration\IntegrationTestCase;
-use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Cloudinary\Test\Unit\UnitTestCase;
 
 /**
@@ -31,19 +28,24 @@ final class AnalysisTest extends UnitTestCase
     public function testAnalyze()
     {
         $mockAdminApi = new MockAdminApi();
-        $mockAdminApi->analyze("uri", "captioning", "https://res.cloudinary.com/demo/image/upload/dog");
+        $mockAdminApi->analyze(
+            "uri",
+            "captioning",
+            "https://res.cloudinary.com/demo/image/upload/dog",
+            ["custom" => ["model_name" => "my_model", "model_version" => 1]]
+        );
 
-        $lastRequest = $mockAdminApi->getV2MockHandler()->getLastRequest();
-        $apiV2Configuration = new Configuration();
+        $lastRequest                         = $mockAdminApi->getV2MockHandler()->getLastRequest();
+        $apiV2Configuration                  = new Configuration();
         $apiV2Configuration->api->apiVersion = '2';
 
-        self::assertRequestUrl($lastRequest, '/analysis/analyze', "", $apiV2Configuration);
+        self::assertRequestUrl($lastRequest, '/analysis/analyze/uri', "", $apiV2Configuration);
         self::assertRequestJsonBodySubset(
             $lastRequest,
             [
-                "input_type"=> "uri",
-                "analysis_type"=> "captioning",
-                "uri"=> "https://res.cloudinary.com/demo/image/upload/dog",
+                "analysis_type" => "captioning",
+                "uri"           => "https://res.cloudinary.com/demo/image/upload/dog",
+                "parameters"    => ["custom" => ["model_name" => "my_model", "model_version" => 1]]
             ]
         );
     }
