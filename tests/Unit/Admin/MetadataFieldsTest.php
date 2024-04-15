@@ -65,6 +65,7 @@ class MetadataFieldsTest extends UnitTestCase
 
         $stringMetadataField = new StringMetadataField(self::EXTERNAL_ID_STRING);
         $stringMetadataField->setExternalId(self::EXTERNAL_ID_STRING);
+        $stringMetadataField->setRestrictions(["readonly_ui" => true]);
 
         $mockAdminApi->addMetadataField($stringMetadataField);
         $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
@@ -74,9 +75,10 @@ class MetadataFieldsTest extends UnitTestCase
         self::assertRequestFields(
             $lastRequest,
             [
-                'type'        => MetadataFieldType::STRING,
-                'external_id' => self::EXTERNAL_ID_STRING,
-                'label'       => self::EXTERNAL_ID_STRING
+                'type'         => MetadataFieldType::STRING,
+                'external_id'  => self::EXTERNAL_ID_STRING,
+                'label'        => self::EXTERNAL_ID_STRING,
+                'restrictions' => ["readonly_ui" => true],
             ]
         );
     }

@@ -50,6 +50,11 @@ abstract class MetadataField extends Metadata
     protected $validation;
 
     /**
+     * @var array
+     */
+    protected $restrictions;
+
+    /**
      * The MetadataField constructor.
      *
      * @param string $label
@@ -66,7 +71,7 @@ abstract class MetadataField extends Metadata
      */
     public function getPropertyKeys()
     {
-        return ['externalId', 'label', 'mandatory', 'defaultValue', 'type', 'validation'];
+        return ['externalId', 'label', 'mandatory', 'defaultValue', 'type', 'validation', 'restrictions'];
     }
 
     /**
@@ -177,5 +182,25 @@ abstract class MetadataField extends Metadata
     public function setValidation(MetadataValidation $validation)
     {
         $this->validation = $validation;
+    }
+
+    /**
+     * Gets the restrictions of this field.
+     *
+     * @return array
+     */
+    public function getRestrictions()
+    {
+        return $this->restrictions;
+    }
+
+    /**
+     * Sets the restrictions of this field.
+     *
+     * @param array $restrictions
+     */
+    public function setRestrictions($restrictions)
+    {
+        $this->restrictions = $restrictions;
     }
 }
