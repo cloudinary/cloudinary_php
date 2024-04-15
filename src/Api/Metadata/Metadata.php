@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Api\Metadata;
 
+use Cloudinary\ArrayUtils;
 use Cloudinary\StringUtils;
 use JsonSerializable;
 
@@ -48,7 +49,7 @@ abstract class Metadata implements JsonSerializable
                 if (method_exists($value, 'jsonSerialize')) {
                     $snakeCaseProperties[StringUtils::camelCaseToSnakeCase($key)] = $value->jsonSerialize();
                 }
-            } elseif (is_array($value)) {
+            } elseif (is_array($value) && !ArrayUtils::isAssoc($value)) {
                 $subArray = [];
                 foreach ($value as $subArrayValue) {
                     if (method_exists($subArrayValue, 'jsonSerialize')) {

@@ -220,6 +220,7 @@ class MetadataFieldsTest extends IntegrationTestCase
     {
         $dateMetadataField = new DateMetadataField(self::$EXTERNAL_ID_DATE);
         $dateMetadataField->setExternalId(self::$EXTERNAL_ID_DATE);
+        $dateMetadataField->setRestrictions(["readonly_ui" => true]);
 
         $result = self::$adminApi->addMetadataField($dateMetadataField);
 
@@ -229,7 +230,8 @@ class MetadataFieldsTest extends IntegrationTestCase
             [
                 'label' => self::$EXTERNAL_ID_DATE,
                 'external_id' => self::$EXTERNAL_ID_DATE,
-                'mandatory' => false
+                'mandatory' => false,
+                'restrictions' => ["readonly_ui" => true],
             ]
         );
     }
