@@ -1,3 +1,11 @@
+2.14.0 / 2024-05-07
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `restrictions` parameter in `MetadataField`
+
 2.13.1 / 2024-03-21
 ==================
 

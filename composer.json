@@ -1,6 +1,6 @@
 {
   "name": "cloudinary/cloudinary_php",
-  "version": "2.13.1",
+  "version": "2.14.0",
   "description": "Cloudinary PHP SDK",
   "keywords": [
     "cloudinary",
