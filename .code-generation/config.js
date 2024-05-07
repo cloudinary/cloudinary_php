@@ -60,6 +60,11 @@ module.exports = {
                 close: '',
             }
         },
+        importStatementsTemplate: {
+            action: 'use Cloudinary\\Transformation\\<GROUP>;',
+            qualifier: 'use Cloudinary\\Transformation\\<GROUP>;',
+            importCase: "PascalCase",
+        },
     },
     "overwrites": {
         "qualifiers": {
