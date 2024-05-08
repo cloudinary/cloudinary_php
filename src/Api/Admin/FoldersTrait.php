@@ -88,6 +88,27 @@ trait FoldersTrait
     }
 
     /**
+     * Renames folder.
+     *
+     * @param string $fromPath The full path of an existing asset folder.
+     * @param string $toPath   The full path of the new asset folder.
+     *
+     * @return ApiResponse
+     *
+     * @throws ApiError
+     *
+     * @see https://cloudinary.com/documentation/admin_api#rename_folder
+     */
+    public function renameFolder($fromPath, $toPath)
+    {
+        $uri = [ApiEndPoint::FOLDERS, $fromPath];
+
+        $params = ['to_folder' => $toPath];
+
+        return $this->apiClient->put($uri, $params);
+    }
+
+    /**
      * Deletes an empty folder.
      *
      * The specified folder cannot contain any assets, but can have empty descendant sub-folders.
