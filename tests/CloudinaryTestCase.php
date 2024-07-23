@@ -101,7 +101,7 @@ abstract class CloudinaryTestCase extends TestCase
             $haystack,
             static function ($item) use ($needle) {
                 /** @noinspection TypeUnsafeComparisonInspection */
-                return $item == $needle;
+                return array_intersect_key($item, $needle) == $needle;
             }
         );
 
