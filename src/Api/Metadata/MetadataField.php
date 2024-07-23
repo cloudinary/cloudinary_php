@@ -55,6 +55,11 @@ abstract class MetadataField extends Metadata
     protected $restrictions;
 
     /**
+     * @var bool
+     */
+    protected $defaultDisabled;
+
+    /**
      * The MetadataField constructor.
      *
      * @param string $label
@@ -71,7 +76,16 @@ abstract class MetadataField extends Metadata
      */
     public function getPropertyKeys()
     {
-        return ['externalId', 'label', 'mandatory', 'defaultValue', 'type', 'validation', 'restrictions'];
+        return [
+            'externalId',
+            'label',
+            'mandatory',
+            'defaultValue',
+            'type',
+            'validation',
+            'restrictions',
+            'defaultDisabled',
+        ];
     }
 
     /**
@@ -159,7 +173,7 @@ abstract class MetadataField extends Metadata
      *
      * @param bool $mandatory A boolean indicating whether the field should be mandatory.
      */
-    public function setMandatory($mandatory)
+    public function setMandatory($mandatory = true)
     {
         $this->mandatory = $mandatory;
     }
@@ -202,5 +216,25 @@ abstract class MetadataField extends Metadata
     public function setRestrictions($restrictions)
     {
         $this->restrictions = $restrictions;
+    }
+
+    /**
+     * Gets the value indicating whether the field should be disabled by default.
+     *
+     * @return bool
+     */
+    public function isDefaultDisabled()
+    {
+        return $this->defaultDisabled;
+    }
+
+    /**
+     * Sets the value indicating whether the field should be disabled by default.
+     *
+     * @param bool $defaultDisabled The value to set.
+     */
+    public function setDefaultDisabled($defaultDisabled = true)
+    {
+        $this->defaultDisabled = $defaultDisabled;
     }
 }
