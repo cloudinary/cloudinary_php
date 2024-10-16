@@ -16,6 +16,7 @@ namespace Cloudinary\Api\Admin;
 class ApiEndPoint
 {
     const PING               = 'ping';
+    const CONFIG             = 'config';
     const USAGE              = 'usage';
     const ASSETS             = 'resources';
     const DERIVED_ASSETS     = 'derived_resources';
