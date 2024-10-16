@@ -54,6 +54,24 @@ trait MiscTrait
     }
 
     /**
+     * Gets account config details.
+     *
+     * Fetches the account's configuration details with optional settings.
+     *
+     * @param array $options The optional parameters for the API request.
+     *
+     * @return ApiResponse
+     *
+     * @see https://cloudinary.com/documentation/admin_api#config
+     */
+    public function config($options = [])
+    {
+        $params = ArrayUtils::whitelist($options, ['settings']);
+
+        return $this->apiClient->get(ApiEndPoint::CONFIG, $params);
+    }
+
+    /**
      * Gets cloud usage details.
      *
      * Returns a report detailing your current Cloudinary cloud usage details, including

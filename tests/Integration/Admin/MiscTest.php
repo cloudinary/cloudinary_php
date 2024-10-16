@@ -10,12 +10,13 @@
 
 namespace Cloudinary\Test\Integration\Admin;
 
+use Cloudinary\Configuration\Configuration;
 use Cloudinary\Test\Integration\IntegrationTestCase;
 
 /**
  * Class PingTest
  */
-final class PingTest extends IntegrationTestCase
+final class MiscTest extends IntegrationTestCase
 {
     public function testPing()
     {
@@ -29,5 +30,17 @@ final class PingTest extends IntegrationTestCase
         $result = self::$adminApi->pingAsync()->wait();
 
         self::assertEquals('ok', $result['status']);
+    }
+
+    public function testConfig()
+    {
+        $result = self::$adminApi->config();
+
+        self::assertEquals(Configuration::instance()->cloud->cloudName, $result['cloud_name']);
+        self::assertArrayNotHasKey('settings', $result);
+
+        $resultWithSettings = self::$adminApi->config(['settings' => 'true']);
+
+        self::assertArrayHasKey('settings', $resultWithSettings);
     }
 }
