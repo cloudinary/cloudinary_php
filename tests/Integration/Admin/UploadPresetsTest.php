@@ -173,7 +173,6 @@ final class UploadPresetsTest extends IntegrationTestCase
             [
                 'unsigned' => true,
                 'tags' => self::$UPLOAD_PRESET_UPDATE_TAG,
-                'live' => true,
                 'eval' => self::TEST_EVAL_STR
             ]
         );
@@ -190,7 +189,6 @@ final class UploadPresetsTest extends IntegrationTestCase
             ],
             [
                 'tags' => [self::$UPLOAD_PRESET_UPDATE_TAG],
-                'live' => true,
                 'eval' => self::TEST_EVAL_STR
             ]
         );
