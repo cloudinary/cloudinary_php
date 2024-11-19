@@ -137,7 +137,6 @@ final class UploadPresetsTest extends IntegrationTestCase
                 'unsigned' => true,
                 'tags' => self::$ASSET_TAGS,
                 'allowed_formats' => 'jpg',
-                'live' => true,
                 'eval' => self::TEST_EVAL_STR,
                 'use_asset_folder_as_public_id_prefix' => true,
             ]
@@ -154,7 +153,6 @@ final class UploadPresetsTest extends IntegrationTestCase
             [
                 'tags' => self::$ASSET_TAGS,
                 'allowed_formats' => ['jpg'],
-                'live' => true,
                 'eval' => self::TEST_EVAL_STR,
                 'use_asset_folder_as_public_id_prefix' => true,
             ]
