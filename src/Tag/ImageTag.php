@@ -16,7 +16,7 @@ use Cloudinary\ArrayUtils;
  * Generates an HTML `<img>` tag with the `src` attribute set to the transformation URL, optional `srcset` and other
  * specified attributes.
  * 
- * For more information, see the [PHP SDK guide](https://cloudinary.com/documentation/php_integration#landingpage).
+ * For more information, see the [PHP SDK guide](https://cloudinary.com/documentation/php_image_manipulation#deliver_and_transform_images).
  *
  * @api
  */
