@@ -343,7 +343,7 @@ class VideoTag extends BaseTag implements VideoTransformationInterface
     }
 
     /**
-     * Adds (appends) a transformation.
+     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing formats. For a detailed listing of all transformations, see the [Transformation Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
      *
      * Appended transformation is nested.
      *
