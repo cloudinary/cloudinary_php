@@ -104,7 +104,7 @@ class SrcSet
      *
      * @return $this
      */
-    public function breakpoints(array $breakpoints = null)
+    public function breakpoints(?array $breakpoints = null)
     {
         $this->breakpoints = $breakpoints;
 

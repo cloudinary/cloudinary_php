@@ -24,24 +24,23 @@
     "issues": "https://github.com/cloudinary/cloudinary_php/issues"
   },
   "require": {
-    "php": ">=5.6.0",
-    "cloudinary/transformation-builder-sdk":  "^1",
-    "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
+    "php": ">=8.0.0",
+    "cloudinary/transformation-builder-sdk":  "^2",
+    "guzzlehttp/guzzle": "^7.4.5",
     "guzzlehttp/promises": "^1.5.3|^2.0",
-    "guzzlehttp/psr7": "^1.9.1|^2.5",
+    "guzzlehttp/psr7": "^2.7",
     "ext-json": "*",
-    "monolog/monolog": "^1|^2|^3",
-    "psr/log" : "^1|^2|^3"
+    "monolog/monolog": "^2|^3",
+    "psr/log" : "^2|^3"
   },
   "require-dev": {
-    "symfony/phpunit-bridge": "^5.2",
+    "symfony/phpunit-bridge": "^7.2",
     "phpmd/phpmd": "*",
-    "squizlabs/php_codesniffer": "3.*",
+    "squizlabs/php_codesniffer": "*",
     "friendsofphp/php-cs-fixer": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
-    "ext-zip": "*",
-    "consolidation/robo": "~1"
+    "ext-zip": "*"
   },
   "autoload": {
     "classmap": [
