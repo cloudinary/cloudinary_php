@@ -39,7 +39,7 @@ class AccountApiClient extends BaseApiClient
      *
      * @param ProvisioningConfiguration $configuration
      */
-    public function __construct(ProvisioningConfiguration $configuration = null)
+    public function __construct(?ProvisioningConfiguration $configuration = null)
     {
         $this->init($configuration);
     }
@@ -47,7 +47,7 @@ class AccountApiClient extends BaseApiClient
     /**
      * @param ProvisioningConfiguration $configuration
      */
-    public function init(ProvisioningConfiguration $configuration = null)
+    public function init(?ProvisioningConfiguration $configuration = null)
     {
         if ($configuration === null) {
             $configuration = ProvisioningConfiguration::instance();

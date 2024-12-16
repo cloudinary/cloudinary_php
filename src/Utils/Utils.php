@@ -199,7 +199,7 @@ class Utils
      *
      * @return false|UriInterface
      */
-    public static function tryParseUrl($url, array $allowedSchemes = null)
+    public static function tryParseUrl($url, ?array $allowedSchemes = null)
     {
         if (! $url instanceof UriInterface) {
             if (! is_string($url)) {

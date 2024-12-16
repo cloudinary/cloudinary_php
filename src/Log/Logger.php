@@ -54,7 +54,6 @@ class Logger
         E_USER_ERROR => Monolog::ERROR,
         E_USER_WARNING => Monolog::WARNING,
         E_USER_NOTICE => Monolog::NOTICE,
-        E_STRICT => Monolog::NOTICE,
         E_RECOVERABLE_ERROR => Monolog::ERROR,
         E_DEPRECATED => Monolog::NOTICE,
         E_USER_DEPRECATED => Monolog::NOTICE,

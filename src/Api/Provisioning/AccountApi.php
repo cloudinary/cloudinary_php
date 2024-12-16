@@ -35,7 +35,7 @@ class AccountApi
      *
      * @param ProvisioningConfiguration $configuration
      */
-    public function __construct(ProvisioningConfiguration $configuration = null)
+    public function __construct(?ProvisioningConfiguration $configuration = null)
     {
         $this->accountApiClient = new AccountApiClient($configuration);
     }

@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 /**
  * LoggerTrait adds logging capabilities to a class
  *
- * By default it writes to the standard error log configured for PHP
+ * By default, it writes to the standard error log configured for PHP
  *
  * Example usage:
  *   class Foo
