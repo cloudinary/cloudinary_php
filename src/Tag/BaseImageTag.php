@@ -211,7 +211,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @return $this
      */
-    public function breakpoints(array $breakpoints = null)
+    public function breakpoints(?array $breakpoints = null)
     {
         $this->srcset->breakpoints($breakpoints);
 
