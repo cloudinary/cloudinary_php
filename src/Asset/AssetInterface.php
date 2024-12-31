@@ -22,18 +22,16 @@ interface AssetInterface extends JsonSerializable
      *
      * @param string $string The asset string (URL).
      *
-     * @return mixed
      */
-    public static function fromString($string);
+    public static function fromString(string $string): mixed;
 
     /**
      * Creates a new asset from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public static function fromJson($json);
+    public static function fromJson(array|string $json): mixed;
 
     /**
      * Creates a new asset from the provided source and an array of (legacy) parameters.
@@ -41,27 +39,24 @@ interface AssetInterface extends JsonSerializable
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
      */
-    public static function fromParams($source, $params);
+    public static function fromParams(string $source, array $params): mixed;
 
     /**
      * Imports data from the provided string (URL).
      *
      * @param string $string The asset string (URL).
      *
-     * @return mixed
      */
-    public function importString($string);
+    public function importString(string $string): mixed;
 
     /**
      * Imports data from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public function importJson($json);
+    public function importJson(array|string $json): mixed;
 
     /**
      * Serializes to string.
@@ -73,8 +68,6 @@ interface AssetInterface extends JsonSerializable
     /**
      * Serializes to json.
      *
-     * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize();
+    public function jsonSerialize(): array;
 }

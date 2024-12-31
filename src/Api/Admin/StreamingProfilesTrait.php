@@ -34,11 +34,10 @@ trait StreamingProfilesTrait
      *
      * @return ApiResponse An array with a "data" key for results.
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#get_adaptive_streaming_profiles
      */
-    public function listStreamingProfiles()
+    public function listStreamingProfiles(): ApiResponse
     {
         return $this->apiClient->get(ApiEndPoint::STREAMING_PROFILES);
     }
@@ -50,11 +49,10 @@ trait StreamingProfilesTrait
      *
      * @return ApiResponse An array with a "data" key for results.
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#get_details_of_a_single_streaming_profile
      */
-    public function getStreamingProfile($name)
+    public function getStreamingProfile(string $name): ApiResponse
     {
         $uri = [ApiEndPoint::STREAMING_PROFILES, $name];
 
@@ -71,13 +69,10 @@ trait StreamingProfilesTrait
      *
      * @param string $name The name of the streaming profile to delete or revert.
      *
-     * @return ApiResponse
-     *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_or_revert_the_specified_streaming_profile
      */
-    public function deleteStreamingProfile($name)
+    public function deleteStreamingProfile(string $name): ApiResponse
     {
         $uri = [ApiEndPoint::STREAMING_PROFILES, $name];
 
@@ -92,16 +87,14 @@ trait StreamingProfilesTrait
      *
      * @param string $name    The name of the streaming profile to update.
      * @param array  $options The optional parameters. See the
-     * <a href=https://cloudinary.com/documentation/admin_api#create_a_streaming_profile target="_blank"> Admin API</a>
-     * documentation.
+     *                        <a href=https://cloudinary.com/documentation/admin_api#create_a_streaming_profile
+     *                        target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#create_a_streaming_profile
      */
-    public function updateStreamingProfile($name, $options = [])
+    public function updateStreamingProfile(string $name, array $options = []): ApiResponse
     {
         $uri    = [ApiEndPoint::STREAMING_PROFILES, $name];
         $params = $this->prepareStreamingProfileParams($options);
@@ -116,17 +109,14 @@ trait StreamingProfilesTrait
      *                        The name is case-insensitive and can contain alphanumeric characters, underscores (_) and
      *                        hyphens (-). If the name is of a predefined profile, the profile will be modified.
      * @param array  $options The optional parameters. See the
-     * <a href=https://cloudinary.com/documentation/admin_api#create_a_streaming_profile target="_blank"> Admin API</a>
-     * documentation.
+     *                        <a href=https://cloudinary.com/documentation/admin_api#create_a_streaming_profile
+     *                        target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
-     *
-     * @throws ApiError
      *
      * @see self::createStreamingProfile()
      * @see https://cloudinary.com/documentation/admin_api#create_a_streaming_profile
      */
-    public function createStreamingProfile($name, $options = [])
+    public function createStreamingProfile(string $name, array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::STREAMING_PROFILES];
 
@@ -145,15 +135,14 @@ trait StreamingProfilesTrait
      *
      * @internal
      */
-    protected function prepareStreamingProfileParams($options)
+    protected function prepareStreamingProfileParams(array $options): array
     {
         $params = ArrayUtils::whitelist($options, ['display_name']);
 
         if (isset($options['representations'])) {
             $representations           = array_map(
-                static function ($representation) {
-                    return ['transformation' => ApiUtils::serializeAssetTransformations($representation)];
-                },
+                static fn($representation
+                ) => ['transformation' => ApiUtils::serializeAssetTransformations($representation)],
                 $options['representations']
             );
             $params['representations'] = json_encode($representations);

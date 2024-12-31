@@ -17,7 +17,7 @@ namespace Cloudinary\Api\Metadata\Validators;
  */
 class StringLength extends MetadataValidation
 {
-    const STRLEN = 'strlen';
+    public const STRLEN = 'strlen';
 
     /**
      * Create a new instance with the given min and max.
@@ -25,7 +25,7 @@ class StringLength extends MetadataValidation
      * @param int $min Minimum valid string length.
      * @param int $max Maximum valid string length.
      */
-    public function __construct($min, $max)
+    public function __construct(int $min, int $max)
     {
         $this->type = self::STRLEN;
         $this->min = $min;

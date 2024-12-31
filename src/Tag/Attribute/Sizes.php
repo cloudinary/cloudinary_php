@@ -22,14 +22,14 @@ class Sizes
     /**
      * @var Configuration $configuration The Configuration instance.
      */
-    protected $configuration;
+    protected Configuration $configuration;
 
     /**
      * Sizes constructor.
      *
      * @param Configuration $configuration The Configuration instance..
      */
-    public function __construct($configuration)
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
     }

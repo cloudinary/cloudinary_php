@@ -171,22 +171,7 @@ class SignatureVerifierTest extends AssetTestCase
                 'body'      => self::$notificationBody,
                 'timestamp' => self::$timestamp,
                 'signature' => null,
-            ],
-            [
-                'body'      => [self::$notificationBody],
-                'timestamp' => self::$timestamp,
-                'signature' => self::$notificationSignature,
-            ],
-            [
-                'body'      => self::$notificationBody,
-                'timestamp' => [self::$timestamp],
-                'signature' => self::$notificationSignature,
-            ],
-            [
-                'body'      => self::$notificationBody,
-                'timestamp' => self::$timestamp,
-                'signature' => [self::$notificationSignature],
-            ],
+            ]
         ];
 
         foreach ($invalidValues as $value) {
@@ -197,7 +182,7 @@ class SignatureVerifierTest extends AssetTestCase
                     $value['timestamp'],
                     $value['signature']
                 );
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 $success = true;
             }
             self::assertTrue($success);

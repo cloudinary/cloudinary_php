@@ -25,7 +25,7 @@ trait TagConfigTrait
      *
      * @return $this
      */
-    public function videoPosterFormat($format)
+    public function videoPosterFormat($format): static
     {
         return $this->setTagConfig(TagConfig::VIDEO_POSTER_FORMAT, $format);
     }
@@ -38,7 +38,7 @@ trait TagConfigTrait
      *
      * @return $this
      */
-    public function useFetchFormat($useFetchFormat = true)
+    public function useFetchFormat($useFetchFormat = true): static
     {
         return $this->setTagConfig(TagConfig::USE_FETCH_FORMAT, $useFetchFormat);
     }
@@ -53,5 +53,5 @@ trait TagConfigTrait
      *
      * @internal
      */
-    abstract public function setTagConfig($configKey, $configValue);
+    abstract public function setTagConfig($configKey, $configValue): static;
 }

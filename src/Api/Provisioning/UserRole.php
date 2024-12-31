@@ -17,11 +17,11 @@ namespace Cloudinary\Api\Provisioning;
  */
 class UserRole
 {
-    const MASTER_ADMIN        = 'master_admin';
-    const ADMIN               = 'admin';
-    const TECHNICAL_ADMIN     = 'technical_admin';
-    const BILLING             = 'billing';
-    const REPORTS             = 'reports';
-    const MEDIA_LIBRARY_ADMIN = 'media_library_admin';
-    const MEDIA_LIBRARY_USER  = 'media_library_user';
+    public const MASTER_ADMIN = 'master_admin';
+    public const ADMIN        = 'admin';
+    public const TECHNICAL_ADMIN = 'technical_admin';
+    public const BILLING         = 'billing';
+    public const REPORTS  = 'reports';
+    public const MEDIA_LIBRARY_ADMIN = 'media_library_admin';
+    public const MEDIA_LIBRARY_USER  = 'media_library_user';
 }

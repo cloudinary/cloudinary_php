@@ -18,7 +18,6 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\ModerationStatus;
-use Cloudinary\StringUtils;
 
 /**
  * Enables you to manage the assets in your cloud.
@@ -36,9 +35,8 @@ trait AssetsTrait
     /**
      * Lists available asset types.
      *
-     * @return ApiResponse
      */
-    public function assetTypes()
+    public function assetTypes(): ApiResponse
     {
         return $this->apiClient->get(ApiEndPoint::ASSETS);
     }
@@ -49,11 +47,10 @@ trait AssetsTrait
      * @param array $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources
      */
-    public function assets($options = [])
+    public function assets(array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType];
@@ -76,11 +73,10 @@ trait AssetsTrait
      * @param array  $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_resources_by_tag target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources_by_tag
      */
-    public function assetsByTag($tag, $options = [])
+    public function assetsByTag(string $tag, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType, 'tags', $tag];
@@ -94,18 +90,17 @@ trait AssetsTrait
      *
      * This method does not return matching deleted assets, even if they have been backed up.
      *
-     * @param string $key     Only assets with this context key are returned.
-     * @param string $value   Only assets with this context value for the specified context key are returned.
+     * @param string      $key     Only assets with this context key are returned.
+     * @param string|null $value   Only assets with this context value for the specified context key are returned.
      *                        If this parameter is not provided, all assets with the specified context key are returned,
      *                        regardless of the key value.
-     * @param array  $options The optional parameters. See the
+     * @param array       $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_resources_by_context target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources_by_context
      */
-    public function assetsByContext($key, $value = null, $options = [])
+    public function assetsByContext(string $key, ?string $value = null, array $options = []): ApiResponse
     {
         $assetType       = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri             = [ApiEndPoint::ASSETS, $assetType, 'context'];
@@ -126,11 +121,10 @@ trait AssetsTrait
      * @param array  $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_resources_in_moderation_queues target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources_in_moderation_queues
      */
-    public function assetsByModeration($kind, $status, $options = [])
+    public function assetsByModeration(string $kind, string $status, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType, 'moderations', $kind, $status];
@@ -143,15 +137,14 @@ trait AssetsTrait
     /**
      * Lists assets with the specified public IDs.
      *
-     * @param string|array $publicIds The requested public_ids (up to 100).
+     * @param array|string $publicIds The requested public_ids (up to 100).
      * @param array        $options   The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources
      */
-    public function assetsByIds($publicIds, $options = [])
+    public function assetsByIds(array|string $publicIds, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -166,15 +159,14 @@ trait AssetsTrait
     /**
      * Lists assets with the specified asset IDs.
      *
-     * @param string|array $assetIds  The requested asset IDs.
-     * @param array        $options   The optional parameters. See the
+     * @param array|string $assetIds The requested asset IDs.
+     * @param array        $options  The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_resources
      */
-    public function assetsByAssetIds($assetIds, $options = [])
+    public function assetsByAssetIds(array|string $assetIds, array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::ASSETS, 'by_asset_ids'];
 
@@ -192,11 +184,10 @@ trait AssetsTrait
      *                            <a href=https://cloudinary.com/documentation/dynamic_folders target="_blank"> Admin
      *                            API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/dynamic_folders
      */
-    public function assetsByAssetFolder($assetFolder, $options = [])
+    public function assetsByAssetFolder(string $assetFolder, array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::ASSETS, 'by_asset_folder'];
 
@@ -214,13 +205,12 @@ trait AssetsTrait
      *                       <a href=https://cloudinary.com/documentation/admin_api#visual_search_for_resources
      *                       target="_blank"> AdminAPI</a> documentation.
      *
-     * @return ApiResponse
      *
      * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#visual_search_for_resources
      */
-    public function visualSearch($options = [])
+    public function visualSearch(array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::ASSETS, 'visual_search'];
 
@@ -249,11 +239,10 @@ trait AssetsTrait
      * @param array  $options  The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource
      */
-    public function asset($publicId, $options = [])
+    public function asset(string $publicId, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -278,11 +267,10 @@ trait AssetsTrait
      *                        href=https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource
      *                        target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_resource
      */
-    public function assetByAssetId($assetId, $options = [])
+    public function assetByAssetId(string $assetId, array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::ASSETS, $assetId];
 
@@ -294,16 +282,15 @@ trait AssetsTrait
     /**
      * Reverts to the latest backed up version of the specified deleted assets.
      *
-     * @param string|array $publicIds The public IDs of the backed up assets to restore. They can be existing or
+     * @param array|string $publicIds The public IDs of the backed up assets to restore. They can be existing or
      * deleted assets.
      * @param array        $options   The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#restore_resources target="f_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#restore_resources
      */
-    public function restore($publicIds, $options = [])
+    public function restore(array|string $publicIds, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -320,15 +307,14 @@ trait AssetsTrait
      * Update one or more of the attributes associated with a specified asset. Note that you can also update
      * most attributes of an existing asset using the Uploader::explicit method, which is not rate limited.
      *
-     * @param string|array $publicId The public ID of the asset to update.
+     * @param array|string $publicId The public ID of the asset to update.
      * @param array        $options  The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#update_details_of_an_existing_resource target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#update_details_of_an_existing_resource
      */
-    public function update($publicId, $options = [])
+    public function update(array|string $publicId, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -370,17 +356,13 @@ trait AssetsTrait
     /**
      * Deletes the specified assets.
      *
-     * @param string|array $publicIds The public IDs of the assets to delete (up to 100).
+     * @param array|string $publicIds The public IDs of the assets to delete (up to 100).
      * @param array        $options   The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#sdelete_resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
-     *
-     * @throws ApiError
-     *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources
      */
-    public function deleteAssets($publicIds, $options = [])
+    public function deleteAssets(array|string $publicIds, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -401,13 +383,11 @@ trait AssetsTrait
      * @param array  $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#delete_resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources
      */
-    public function deleteAssetsByPrefix($prefix, $options = [])
+    public function deleteAssetsByPrefix(string $prefix, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -426,13 +406,11 @@ trait AssetsTrait
      * @param array $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#delete_resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * https://cloudinary.com/documentation/admin_api#delete_resources
      */
-    public function deleteAllAssets($options = [])
+    public function deleteAllAssets(array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -451,13 +429,11 @@ trait AssetsTrait
      * @param array  $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#delete_resources_by_tags target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_resources_by_tags
      */
-    public function deleteAssetsByTag($tag, $options = [])
+    public function deleteAssetsByTag(string $tag, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::ASSETS, $assetType, 'tags', $tag];
@@ -472,15 +448,13 @@ trait AssetsTrait
      * The derived asset IDs for a particular original asset are returned when calling the `asset` method to
      * return the details of a single asset.
      *
-     * @param string|array $derived_asset_ids The derived asset IDs (up to 100 ids).
+     * @param array|string $derived_asset_ids The derived asset IDs (up to 100 ids).
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api##delete_resources
      */
-    public function deleteDerivedAssets($derived_asset_ids)
+    public function deleteDerivedAssets(array|string $derived_asset_ids): ApiResponse
     {
         $uri    = ApiEndPoint::DERIVED_ASSETS;
         $params = ['derived_resource_ids' => $derived_asset_ids];
@@ -491,16 +465,14 @@ trait AssetsTrait
     /**
      * Deletes derived assets identified by transformation and public_ids.
      *
-     * @param string|array $publicIds       The public IDs for which you want to delete derived assets.
-     * @param string|array $transformations The transformation(s) associated with the derived assets to delete.
+     * @param array|string $publicIds       The public IDs for which you want to delete derived assets.
+     * @param array|string $transformations The transformation(s) associated with the derived assets to delete.
      * @param array        $options         The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#resources target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      */
-    public function deleteDerivedByTransformation($publicIds, $transformations = [], $options = [])
+    public function deleteDerivedByTransformation(array|string $publicIds, array|string $transformations = [], array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -519,15 +491,14 @@ trait AssetsTrait
     /**
      * Relates an asset to other assets by public IDs.
      *
-     * @param string $publicId      The public ID of the asset to update.
-     * @param array $assetsToRelate The array of up to 10 fully_qualified_public_ids given as
+     * @param string $publicId       The public ID of the asset to update.
+     * @param array  $assetsToRelate The array of up to 10 fully_qualified_public_ids given as
      *                              resource_type/type/public_id.
-     * @param array $options        The optional parameters. See the
+     * @param array  $options        The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#add_related_assets target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      */
-    public function addRelatedAssets($publicId, $assetsToRelate, $options = [])
+    public function addRelatedAssets(string $publicId, array $assetsToRelate, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -544,12 +515,11 @@ trait AssetsTrait
     /**
      * Relates an asset to other assets by asset IDs.
      *
-     * @param string $assetId       The asset ID of the asset to update.
-     * @param array $assetsToRelate The array of up to 10 asset IDs.
+     * @param string $assetId        The asset ID of the asset to update.
+     * @param array  $assetsToRelate The array of up to 10 asset IDs.
      *
-     * @return ApiResponse
      */
-    public function addRelatedAssetsByAssetIds($assetId, $assetsToRelate)
+    public function addRelatedAssetsByAssetIds(string $assetId, array $assetsToRelate): ApiResponse
     {
         $uri = [ApiEndPoint::ASSETS, ApiEndPoint::RELATED_ASSETS, $assetId];
 
@@ -563,15 +533,14 @@ trait AssetsTrait
     /**
      * Unrelates an asset from other assets by public IDs.
      *
-     * @param string $publicId        The public ID of the asset to update.
-     * @param array $assetsToUnrelate The array of up to 10 fully_qualified_public_ids given as
+     * @param string $publicId         The public ID of the asset to update.
+     * @param array  $assetsToUnrelate The array of up to 10 fully_qualified_public_ids given as
      *                                resource_type/type/public_id.
-     * @param array $options          The optional parameters. See the
+     * @param array  $options          The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#delete_related_assets target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      */
-    public function deleteRelatedAssets($publicId, $assetsToUnrelate, $options = [])
+    public function deleteRelatedAssets(string $publicId, array $assetsToUnrelate, array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $type      = ArrayUtils::get($options, DeliveryType::KEY, DeliveryType::UPLOAD);
@@ -591,9 +560,8 @@ trait AssetsTrait
      * @param string $assetId          The asset ID of the asset to update.
      * @param array  $assetsToUnrelate The array of up to 10 asset IDs.
      *
-     * @return ApiResponse
      */
-    public function deleteRelatedAssetsByAssetIds($assetId, $assetsToUnrelate)
+    public function deleteRelatedAssetsByAssetIds(string $assetId, array $assetsToUnrelate): ApiResponse
     {
         $uri       = [ApiEndPoint::ASSETS, ApiEndPoint::RELATED_ASSETS, $assetId];
 
@@ -614,7 +582,7 @@ trait AssetsTrait
      *
      * @internal
      */
-    protected static function prepareDeleteAssetParams($options, $params = [])
+    protected static function prepareDeleteAssetParams(array $options, array $params = []): array
     {
         $filtered = ArrayUtils::whitelist($options, ['keep_original', 'next_cursor', 'invalidate']);
         if (isset($options['transformations'])) {
@@ -633,7 +601,7 @@ trait AssetsTrait
      *
      * @internal
      */
-    protected static function prepareAssetDetailsParams($options)
+    protected static function prepareAssetDetailsParams(array $options): array
     {
         return ArrayUtils::whitelist(
             $options,
@@ -667,10 +635,10 @@ trait AssetsTrait
      *
      * @internal
      */
-    protected static function prepareAssetsParams($options)
+    protected static function prepareAssetsParams(array $options): array
     {
         $params = ArrayUtils::whitelist($options, ['tags', 'context', 'metadata', 'moderations']);
-        $params['fields'] = ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'fields')));
+        $params['fields'] = ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'fields'));
 
         return $params;
     }
@@ -684,7 +652,7 @@ trait AssetsTrait
      *
      * @internal
      */
-    protected static function prepareListAssetsParams($options)
+    protected static function prepareListAssetsParams(array $options): array
     {
         return array_merge(
             self::prepareAssetsParams($options),

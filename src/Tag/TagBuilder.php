@@ -29,14 +29,14 @@ use Cloudinary\Transformation\ImageTransformation;
  */
 class TagBuilder
 {
-    protected $configuration;
+    protected string|array|null|Configuration $configuration;
 
     /**
      * Tag constructor.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      */
-    public function __construct($configuration = null)
+    public function __construct(Configuration|array|string|null $configuration = null)
     {
         $this->configuration = $configuration;
     }
@@ -44,12 +44,11 @@ class TagBuilder
     /**
      * Creates a new image tag.
      *
-     * @param string|Image        $image                    The Public ID or the Image instance.
-     * @param ImageTransformation $additionalTransformation The additional transformation.
+     * @param string|Image             $image                    The Public ID or the Image instance.
+     * @param ImageTransformation|null $additionalTransformation The additional transformation.
      *
-     * @return ImageTag
      */
-    public function imageTag($image, $additionalTransformation = null)
+    public function imageTag(string|Image $image, ?ImageTransformation $additionalTransformation = null): ImageTag
     {
         return new ImageTag($image, $this->configuration, $additionalTransformation);
     }
@@ -60,9 +59,8 @@ class TagBuilder
      * @param string|Video $video   The public ID or Video instance.
      * @param array|null   $sources The tag sources definition.
      *
-     * @return VideoTag
      */
-    public function videoTag($video, $sources = null)
+    public function videoTag(Video|string $video, ?array $sources = null): VideoTag
     {
         return new VideoTag($video, $sources, $this->configuration);
     }
@@ -72,11 +70,10 @@ class TagBuilder
      *
      * @param string|Video $video The public ID of the video.
      *
-     * @return VideoThumbnailTag
      *
      * @see VideoThumbnailTag
      */
-    public function videoThumbnailTag($video)
+    public function videoThumbnailTag(Video|string $video): VideoThumbnailTag
     {
         return new VideoThumbnailTag($video, $this->configuration);
     }
@@ -84,14 +81,13 @@ class TagBuilder
     /**
      * Generates an HTML `<picture>` tag containing `<source>` and `<img>` tags.
      *
-     * @param string|Image  $image         The public ID or Image instance.
-     * @param array         $sources       The sources definitions.
+     * @param string|Image $image   The public ID or Image instance.
+     * @param array        $sources The sources definitions.
      *
-     * @return PictureTag
      *
      * @see PictureTag
      */
-    public function pictureTag($image, $sources)
+    public function pictureTag(string|Image $image, array $sources): PictureTag
     {
         return new PictureTag($image, $sources, $this->configuration);
     }
@@ -99,11 +95,10 @@ class TagBuilder
     /**
      * Generates an HTML `<script/>` tag for JavaScript.
      *
-     * @return JsConfigTag
      *
      * @see JsConfigTag
      */
-    public function jsConfigTag()
+    public function jsConfigTag(): JsConfigTag
     {
         return new JsConfigTag($this->configuration);
     }
@@ -111,14 +106,13 @@ class TagBuilder
     /**
      * Generates an HTML `<link>` tag to specify the relationship to the CSS file associated with an image sprite.
      *
-     * @param string              $tag                      The sprite is created from all images with this tag.
-     * @param ImageTransformation $additionalTransformation The additional transformation.
+     * @param string                   $tag                      The sprite is created from all images with this tag.
+     * @param ImageTransformation|null $additionalTransformation The additional transformation.
      *
-     * @return SpriteTag
      *
      * @see SpriteTag
      */
-    public function spriteTag($tag, $additionalTransformation = null)
+    public function spriteTag(string $tag, ?ImageTransformation $additionalTransformation = null): SpriteTag
     {
         return new SpriteTag($tag, $this->configuration, $additionalTransformation);
     }
@@ -126,11 +120,10 @@ class TagBuilder
     /**
      * Generates an HTML `<meta>` tag to indicate support for Client Hints.
      *
-     * @return ClientHintsMetaTag
      *
      * @see ClientHintsMetaTag
      */
-    public function clientHintsMetaTag()
+    public function clientHintsMetaTag(): ClientHintsMetaTag
     {
         return new ClientHintsMetaTag($this->configuration);
     }
@@ -141,11 +134,10 @@ class TagBuilder
      * @param array  $uploadParams The upload parameters.
      * @param string $assetType    The type of the asset.
      *
-     * @return FormTag
      *
      * @see FormTag
      */
-    public function formTag($uploadParams = [], $assetType = AssetType::AUTO)
+    public function formTag(array $uploadParams = [], string $assetType = AssetType::AUTO): FormTag
     {
         return new FormTag($this->configuration, $uploadParams, $assetType);
     }
@@ -158,11 +150,10 @@ class TagBuilder
      * @param array  $uploadParams         The upload parameters.
      * @param string $assetType            The type of the asset.
      *
-     * @return UploadTag
      *
      * @see UploadTag
      */
-    public function uploadTag($field, $uploadParams = [], $assetType = AssetType::AUTO)
+    public function uploadTag(string $field, array $uploadParams = [], string $assetType = AssetType::AUTO): UploadTag
     {
         return new UploadTag($field, $this->configuration, $uploadParams, $assetType);
     }

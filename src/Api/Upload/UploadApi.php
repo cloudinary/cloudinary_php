@@ -34,7 +34,7 @@ class UploadApi
     use TagTrait;
     use UploadTrait;
 
-    const MODE_DOWNLOAD = 'download';
+    public const MODE_DOWNLOAD = 'download';
 
     /**
      * @var UploadApiClient $apiClient The HTTP API client instance.
@@ -44,9 +44,9 @@ class UploadApi
     /**
      * Admin Api constructor.
      *
-     * @param mixed $configuration
+     * @param mixed|null $configuration
      */
-    public function __construct($configuration = null)
+    public function __construct(mixed $configuration = null)
     {
         $this->apiClient = new UploadApiClient($configuration);
     }
@@ -54,15 +54,14 @@ class UploadApi
     /**
      * Gets Upload API end point.
      *
-     * @param string $action  The action to perform.
+     * @param string $action The action to perform.
      *
      * @param array  $options Additional options.
      *
-     * @return string
      *
      * @internal
      */
-    protected static function getUploadApiEndPoint($action, $options = [])
+    protected static function getUploadApiEndPoint(string $action, array $options = []): string
     {
         return ArrayUtils::implodeUrl([ArrayUtils::get($options, 'resource_type', AssetType::IMAGE), $action]);
     }
@@ -70,14 +69,16 @@ class UploadApi
     /**
      * Gets upload URL for the specified asset type and endpoint.
      *
-     * @param string $assetType The asset type.
-     * @param string $endPoint  The endpoint name.
-     * @param array  $params    Additional query parameters.
+     * @param ?string $assetType The asset type.
+     * @param string  $endPoint  The endpoint name.
+     * @param array   $params    Additional query parameters.
      *
-     * @return string
      */
-    public function getUploadUrl($assetType = AssetType::AUTO, $endPoint = UploadEndPoint::UPLOAD, $params = [])
-    {
+    public function getUploadUrl(
+        ?string $assetType = AssetType::AUTO,
+        string $endPoint = UploadEndPoint::UPLOAD,
+        array $params = []
+    ): string {
         $baseUrl = $this->apiClient->getBaseUri();
         $path    = self::getUploadApiEndPoint($endPoint, ['resource_type' => $assetType]);
 
@@ -88,11 +89,10 @@ class UploadApi
     /**
      * Gets cloud config of the current instance.
      *
-     * @return CloudConfig
      *
      * @internal
      */
-    public function getCloud()
+    public function getCloud(): CloudConfig
     {
         return $this->apiClient->getCloud();
     }
@@ -104,12 +104,14 @@ class UploadApi
      * @param array  $params   Parameters to pass to the endpoint.
      * @param array  $options  Additional options.
      *
-     * @return PromiseInterface
      *
      * @internal
      */
-    protected function callUploadApiAsync($endPoint = UploadEndPoint::UPLOAD, $params = [], $options = [])
-    {
+    protected function callUploadApiAsync(
+        string $endPoint = UploadEndPoint::UPLOAD,
+        array $params = [],
+        array $options = []
+    ): PromiseInterface {
         return $this->apiClient->postAndSignFormAsync(
             self::getUploadApiEndPoint($endPoint, $options),
             ApiUtils::finalizeUploadApiParams($params)
@@ -123,12 +125,14 @@ class UploadApi
      * @param array  $params   Parameters to pass to the endpoint.
      * @param array  $options  Additional options.
      *
-     * @return PromiseInterface
      *
      * @internal
      */
-    protected function callUploadApiJsonAsync($endPoint = UploadEndPoint::UPLOAD, $params = [], $options = [])
-    {
+    protected function callUploadApiJsonAsync(
+        string $endPoint = UploadEndPoint::UPLOAD,
+        array $params = [],
+        array $options = []
+    ): PromiseInterface {
         return $this->apiClient->postAndSignJsonAsync(
             self::getUploadApiEndPoint($endPoint, $options),
             ApiUtils::finalizeUploadApiParams($params)

@@ -28,13 +28,11 @@ trait MediaAssetFinalizerTrait
     /**
      * Finalizes asset transformation.
      *
-     * @param string|CommonTransformation $withTransformation Additional transformation
-     * @param bool                        $append             Whether to append transformation or set in instead of the
-     *                                                        asset transformation
+     * @param mixed $withTransformation Additional transformation
+     * @param bool  $append             Whether to append transformation or set in instead of the asset transformation.
      *
-     * @return string
      */
-    protected function finalizeTransformation($withTransformation = null, $append = true)
+    protected function finalizeTransformation(mixed $withTransformation = null, bool $append = true): string
     {
         if ($withTransformation === null && ! $this->urlConfig->responsiveWidth) {
             return (string)$this->transformation;
@@ -58,10 +56,9 @@ trait MediaAssetFinalizerTrait
     /**
      * Sign both transformation and asset parts of the URL.
      *
-     * @return string
      * @throws ConfigurationException
      */
-    protected function finalizeSimpleSignature()
+    protected function finalizeSimpleSignature(): string
     {
         if (! $this->urlConfig->signUrl || $this->authToken->isEnabled()) {
             return '';
@@ -92,15 +89,16 @@ trait MediaAssetFinalizerTrait
      *
      * Currently only image/upload is supported.
      *
-     * @param null|string $assetType The asset type to finalize.
+     * @param string|null $assetType The asset type to finalize.
      *
      * @return null|string The finalized asset type.
      */
-    protected function finalizeShorten($assetType)
+    protected function finalizeShorten(?string $assetType): ?string
     {
         if ($this->urlConfig->shorten
             && $this->asset->deliveryType === DeliveryType::UPLOAD
-            && $this->asset->assetType === AssetType::IMAGE) {
+            && $this->asset->assetType === AssetType::IMAGE
+        ) {
             $assetType = Image::SHORTEN_ASSET_TYPE;
         }
 

@@ -19,10 +19,8 @@ class StringMetadataField extends MetadataField
 {
     /**
      * The StringMetadataField constructor.
-     *
-     * @param string $label
      */
-    public function __construct($label)
+    public function __construct(string $label)
     {
         parent::__construct($label);
         $this->type = MetadataFieldType::STRING;
@@ -31,9 +29,8 @@ class StringMetadataField extends MetadataField
     /**
      * Sets the default value.
      *
-     * @param string $defaultValue
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue(mixed $defaultValue): void
     {
         $this->defaultValue = (string)$defaultValue;
     }

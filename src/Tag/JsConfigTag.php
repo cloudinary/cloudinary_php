@@ -26,12 +26,12 @@ use Cloudinary\Configuration\Configuration;
  */
 class JsConfigTag extends BaseTag
 {
-    const NAME = 'script';
+    public const NAME = 'script';
 
     /**
      * @var array $attributes An array of tag attributes.
      */
-    protected $attributes = [
+    protected array $attributes = [
         'type' => 'text/javascript',
     ];
 

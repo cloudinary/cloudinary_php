@@ -19,31 +19,31 @@ use Cloudinary\Configuration\BaseConfigSection;
  */
 class ProvisioningAccountConfig extends BaseConfigSection
 {
-    const CONFIG_NAME = 'provisioning_account';
+    public const CONFIG_NAME = 'provisioning_account';
 
     // Supported parameters
-    const ACCOUNT_ID              = 'account_id';
-    const PROVISIONING_API_KEY    = 'provisioning_api_key';
-    const PROVISIONING_API_SECRET = 'provisioning_api_secret';
+    public const ACCOUNT_ID = 'account_id';
+    public const PROVISIONING_API_KEY = 'provisioning_api_key';
+    public const PROVISIONING_API_SECRET = 'provisioning_api_secret';
 
     /**
      * The account id of your Cloudinary account. Mandatory for provisioning API operations.
      *
      * @var string
      */
-    public $accountId;
+    public string $accountId;
 
     /**
      * The provisioning API key. Mandatory for provisioning API operations.
      *
      * @var string
      */
-    public $provisioningApiKey;
+    public string $provisioningApiKey;
 
     /**
      * The provisioning API secret. Mandatory for provisioning API operations.
      *
      * @var string
      */
-    public $provisioningApiSecret;
+    public string $provisioningApiSecret;
 }

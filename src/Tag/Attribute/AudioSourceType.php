@@ -19,12 +19,12 @@ namespace Cloudinary\Tag;
  */
 class AudioSourceType extends SourceType
 {
-    const WAV  = 'wav';
-    const MP3  = 'mpeg';
-    const MP4  = 'mp4';
-    const AAC  = 'aac';
-    const WEBM = 'webm';
-    const FLAC = 'flac';
+    public const WAV = 'wav';
+    public const MP3 = 'mpeg';
+    public const MP4 = 'mp4';
+    public const AAC = 'aac';
+    public const WEBM = 'webm';
+    public const FLAC = 'flac';
 
     /**
      * AudioSourceType constructor.

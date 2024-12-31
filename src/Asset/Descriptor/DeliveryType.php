@@ -17,52 +17,52 @@ namespace Cloudinary\Asset;
  */
 class DeliveryType
 {
-    const KEY = 'type';
+    public const KEY = 'type';
 
     /**
      * Uploaded public asset.
      *
      * @const string UPLOAD
      */
-    const UPLOAD = 'upload';
+    public const UPLOAD = 'upload';
 
     /**
      * Private asset.
      *
      * @const string PRIVATE_DELIVERY
      */
-    const PRIVATE_DELIVERY = 'private';
+    public const PRIVATE_DELIVERY = 'private';
 
     /**
      * Public asset.
      *
      * @const string PUBLIC_DELIVERY
      */
-    const PUBLIC_DELIVERY = 'public';
+    public const PUBLIC_DELIVERY = 'public';
 
     /**
      * Authenticated asset.
      *
      * @const string AUTHENTICATED
      */
-    const AUTHENTICATED = 'authenticated';
+    public const AUTHENTICATED = 'authenticated';
     /**
      * Fetch remote asset from URL(ftp/http[s]/s3/gs).
      *
      * @const string FETCH
      */
-    const FETCH           = 'fetch';
-    const SPRITE          = 'sprite';
-    const TEXT            = 'text';
-    const MULTI           = 'multi';
-    const FACEBOOK        = 'facebook';
-    const TWITTER         = 'twitter';
-    const TWITTER_NAME    = 'twitter_name';
-    const GRAVATAR        = 'gravatar';
-    const YOUTUBE         = 'youtube';
-    const HULU            = 'hulu';
-    const VIMEO           = 'vimeo';
-    const ANIMOTO         = 'animoto';
-    const WORLDSTARHIPHOP = 'worldstarhiphop';
-    const DAILYMOTION     = 'dailymotion';
+    public const FETCH           = 'fetch';
+    public const SPRITE          = 'sprite';
+    public const TEXT            = 'text';
+    public const MULTI           = 'multi';
+    public const FACEBOOK        = 'facebook';
+    public const TWITTER         = 'twitter';
+    public const TWITTER_NAME    = 'twitter_name';
+    public const GRAVATAR        = 'gravatar';
+    public const YOUTUBE         = 'youtube';
+    public const HULU            = 'hulu';
+    public const VIMEO           = 'vimeo';
+    public const ANIMOTO         = 'animoto';
+    public const WORLDSTARHIPHOP = 'worldstarhiphop';
+    public const DAILYMOTION     = 'dailymotion';
 }

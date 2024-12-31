@@ -24,7 +24,7 @@ abstract class ModerationType
      *
      * @var string
      */
-    const KEY = 'moderation';
+    public const KEY = 'moderation';
 
     /**
      * Automatically moderate an uploaded image using the Amazon Rekognition AI Moderation add-on.
@@ -37,7 +37,7 @@ abstract class ModerationType
      *
      * @see https://cloudinary.com/documentation/aws_rekognition_ai_moderation_addon
      */
-    const AWS_REKOGNITION = 'aws_rek';
+    public const AWS_REKOGNITION = 'aws_rek';
 
     /**
      * Automatically moderate an uploaded asset of any type using the MetaDefender Anti-Malware Protection add-on.
@@ -52,7 +52,7 @@ abstract class ModerationType
      *
      * @see https://cloudinary.com/documentation/metadefender_anti_malware_protection_addon
      */
-    const METASCAN = 'metascan';
+    public const METASCAN = 'metascan';
 
     /**
      * Automatically moderate an uploaded image using the WebPurify Image Moderation add-on.
@@ -65,7 +65,7 @@ abstract class ModerationType
      *
      * @see https://cloudinary.com/documentation/webpurify_image_moderation_addon
      */
-    const WEBPURIFY = 'webpurify';
+    public const WEBPURIFY = 'webpurify';
 
     /**
      * Add an uploaded asset of any type to a queue of pending assets that can be moderated using the
@@ -73,5 +73,5 @@ abstract class ModerationType
      *
      * @var string
      */
-    const MANUAL = 'manual';
+    public const MANUAL = 'manual';
 }

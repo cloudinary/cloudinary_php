@@ -25,40 +25,38 @@ class ApiResponse extends ArrayObject
      *
      * @var false|int
      */
-    public $rateLimitResetAt;
+    public int|false $rateLimitResetAt;
 
     /**
      * Per-hour limit.
      *
      * @var int
      */
-    public $rateLimitAllowed;
+    public int $rateLimitAllowed;
 
     /**
      * Remaining number of actions.
      *
      * @var int
      */
-    public $rateLimitRemaining;
+    public int $rateLimitRemaining;
 
     /**
      * Response headers.
      *
      * @var array $headers
      */
-    public $headers;
+    public array $headers;
 
     /**
      * ApiResponse constructor.
      *
-     * @param $responseJson
-     * @param $headers
      */
     public function __construct($responseJson, $headers)
     {
         $this->headers = $headers;
         // According to RFC 2616, header names are case-insensitive.
-        $lcHeaders = array_change_key_case($headers, CASE_LOWER);
+        $lcHeaders = array_change_key_case($headers);
 
         $this->rateLimitResetAt   = strtotime(ArrayUtils::get($lcHeaders, ['x-featureratelimit-reset', 0], 0));
         $this->rateLimitAllowed   = (int)ArrayUtils::get($lcHeaders, ['x-featureratelimit-limit', 0], 0);

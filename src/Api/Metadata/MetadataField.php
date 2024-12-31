@@ -19,52 +19,27 @@ use Cloudinary\Api\Metadata\Validators\MetadataValidation;
  */
 abstract class MetadataField extends Metadata
 {
-    /**
-     * @var string
-     */
-    protected $externalId;
+    protected string $externalId;
 
-    /**
-     * @var string
-     */
-    protected $label;
+    protected string $label;
 
-    /**
-     * @var bool
-     */
-    protected $mandatory;
+    protected bool $mandatory;
 
-    /**
-     * @var mixed
-     */
-    protected $defaultValue;
+    protected mixed $defaultValue;
 
-    /**
-     * @var string
-     */
-    protected $type;
+    protected string $type;
 
-    /**
-     * @var MetadataValidation
-     */
-    protected $validation;
+    protected MetadataValidation $validation;
 
-    /**
-     * @var array
-     */
-    protected $restrictions;
+    protected array $restrictions;
 
-    /**
-     * @var bool
-     */
-    protected $defaultDisabled;
+    protected bool $defaultDisabled;
 
     /**
      * The MetadataField constructor.
      *
-     * @param string $label
      */
-    public function __construct($label)
+    public function __construct(string $label)
     {
         $this->label = $label;
     }
@@ -74,7 +49,7 @@ abstract class MetadataField extends Metadata
      *
      * @return string[]
      */
-    public function getPropertyKeys()
+    public function getPropertyKeys(): array
     {
         return [
             'externalId',
@@ -93,7 +68,7 @@ abstract class MetadataField extends Metadata
      *
      * @return string The type name.
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -101,9 +76,8 @@ abstract class MetadataField extends Metadata
     /**
      * Gets the default value of this field.
      *
-     * @return mixed
      */
-    public function getDefaultValue()
+    public function getDefaultValue(): mixed
     {
         return $this->defaultValue;
     }
@@ -111,9 +85,8 @@ abstract class MetadataField extends Metadata
     /**
      * Sets the default value of this field.
      *
-     * @param mixed $defaultValue
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue(mixed $defaultValue): void
     {
         $this->defaultValue = $defaultValue;
     }
@@ -123,7 +96,7 @@ abstract class MetadataField extends Metadata
      *
      * @return string The field ID.
      */
-    public function getExternalId()
+    public function getExternalId(): string
     {
         return $this->externalId;
     }
@@ -133,7 +106,7 @@ abstract class MetadataField extends Metadata
      *
      * @param string $externalId The ID to set.
      */
-    public function setExternalId($externalId)
+    public function setExternalId(string $externalId): void
     {
         $this->externalId = $externalId;
     }
@@ -143,7 +116,7 @@ abstract class MetadataField extends Metadata
      *
      * @return string The label of the field.
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -153,7 +126,7 @@ abstract class MetadataField extends Metadata
      *
      * @param string $label The label to set.
      */
-    public function setLabel($label)
+    public function setLabel(string $label): void
     {
         $this->label = $label;
     }
@@ -163,7 +136,7 @@ abstract class MetadataField extends Metadata
      *
      * @return bool A boolean indicating whether the field is mandatory.
      */
-    public function getMandatory()
+    public function getMandatory(): bool
     {
         return $this->mandatory;
     }
@@ -173,7 +146,7 @@ abstract class MetadataField extends Metadata
      *
      * @param bool $mandatory A boolean indicating whether the field should be mandatory.
      */
-    public function setMandatory($mandatory = true)
+    public function setMandatory(bool $mandatory = true): void
     {
         $this->mandatory = $mandatory;
     }
@@ -183,7 +156,7 @@ abstract class MetadataField extends Metadata
      *
      * @return MetadataValidation The validation rules.
      */
-    public function getValidation()
+    public function getValidation(): MetadataValidation
     {
         return $this->validation;
     }
@@ -193,7 +166,7 @@ abstract class MetadataField extends Metadata
      *
      * @param MetadataValidation $validation The rules to set.
      */
-    public function setValidation(MetadataValidation $validation)
+    public function setValidation(MetadataValidation $validation): void
     {
         $this->validation = $validation;
     }
@@ -201,9 +174,8 @@ abstract class MetadataField extends Metadata
     /**
      * Gets the restrictions of this field.
      *
-     * @return array
      */
-    public function getRestrictions()
+    public function getRestrictions(): array
     {
         return $this->restrictions;
     }
@@ -211,9 +183,8 @@ abstract class MetadataField extends Metadata
     /**
      * Sets the restrictions of this field.
      *
-     * @param array $restrictions
      */
-    public function setRestrictions($restrictions)
+    public function setRestrictions(array $restrictions): void
     {
         $this->restrictions = $restrictions;
     }
@@ -221,9 +192,8 @@ abstract class MetadataField extends Metadata
     /**
      * Gets the value indicating whether the field should be disabled by default.
      *
-     * @return bool
      */
-    public function isDefaultDisabled()
+    public function isDefaultDisabled(): bool
     {
         return $this->defaultDisabled;
     }
@@ -233,7 +203,7 @@ abstract class MetadataField extends Metadata
      *
      * @param bool $defaultDisabled The value to set.
      */
-    public function setDefaultDisabled($defaultDisabled = true)
+    public function setDefaultDisabled(bool $defaultDisabled = true): void
     {
         $this->defaultDisabled = $defaultDisabled;
     }

@@ -14,6 +14,7 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\StringUtils;
 use Cloudinary\Utils;
 use InvalidArgumentException;
+use Psr\Http\Message\UriInterface;
 use UnexpectedValueException;
 
 /**
@@ -23,29 +24,30 @@ use UnexpectedValueException;
  */
 class ConfigUtils
 {
-    const CLOUDINARY_URL_SCHEME = 'cloudinary';
+    public const CLOUDINARY_URL_SCHEME = 'cloudinary';
 
     /**
      * Checks whether the supplied string is a valid cloudinary url
      *
-     * @param string $cloudinaryUrl Cloudinary url candidate
+     * @param mixed $cloudinaryUrl Cloudinary url candidate
      *
-     * @return bool
      */
-    public static function isCloudinaryUrl($cloudinaryUrl)
+    public static function isCloudinaryUrl(mixed $cloudinaryUrl): bool
     {
-        return Utils::tryParseUrl(self::normalizeCloudinaryUrl($cloudinaryUrl), [self::CLOUDINARY_URL_SCHEME]) ? true
-            : false;
+        if (! $cloudinaryUrl instanceof UriInterface && ! is_string($cloudinaryUrl)) {
+                return false;
+        }
+
+        return (bool)Utils::tryParseUrl(self::normalizeCloudinaryUrl($cloudinaryUrl), [self::CLOUDINARY_URL_SCHEME]);
     }
 
     /**
      * Parses cloudinary url and fills in array that can be consumed by Configuration.
      *
-     * @param string $cloudinaryUrl The Cloudinary Url
+     * @param ?string $cloudinaryUrl The Cloudinary Url
      *
-     * @return array
      */
-    public static function parseCloudinaryUrl($cloudinaryUrl)
+    public static function parseCloudinaryUrl(?string $cloudinaryUrl): array
     {
         if (empty($cloudinaryUrl)) {
             throw new InvalidArgumentException(
@@ -80,7 +82,7 @@ class ConfigUtils
                 [
                     UrlConfig::CONFIG_NAME => [
                         UrlConfig::SECURE_CNAME => substr($uri->getPath(), 1),
-                        UrlConfig::PRIVATE_CDN  => $isPrivateCdn,
+                        UrlConfig::PRIVATE_CDN  => true,
                     ],
                 ]
             );
@@ -92,11 +94,10 @@ class ConfigUtils
     /**
      * Tries to normalize the supplied cloudinary url string.
      *
-     * @param string $cloudinaryUrl Cloudinary url candidate.
+     * @param mixed $cloudinaryUrl Cloudinary url candidate.
      *
-     * @return string
      */
-    public static function normalizeCloudinaryUrl($cloudinaryUrl)
+    public static function normalizeCloudinaryUrl(mixed $cloudinaryUrl): mixed
     {
         if (! is_string($cloudinaryUrl)) {
             return $cloudinaryUrl;
@@ -112,7 +113,7 @@ class ConfigUtils
      *
      * @return string Resulting Cloudinary Url
      */
-    public static function buildCloudinaryUrl($config)
+    public static function buildCloudinaryUrl(array $config): string
     {
         $res = self::CLOUDINARY_URL_SCHEME . '://';
 
@@ -123,11 +124,9 @@ class ConfigUtils
 
         $res .= ArrayUtils::get($config, [CloudConfig::CONFIG_NAME, CloudConfig::CLOUD_NAME]);
 
-        $res = ArrayUtils::implodeFiltered(
+        return ArrayUtils::implodeFiltered(
             '/',
             [$res, ArrayUtils::get($config, [UrlConfig::CONFIG_NAME, UrlConfig::SECURE_CNAME])]
         );
-
-        return $res;
     }
 }

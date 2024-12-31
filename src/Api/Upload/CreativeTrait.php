@@ -37,15 +37,14 @@ trait CreativeTrait
      *
      * This is an asynchronous function.
      *
-     * @param string|array $tag     A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tag     A string specifying a tag that indicates which images to include or an array
      *                              which include options and image URLs.
      * @param array        $options The optional parameters. Should be omitted when $tag is an array.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#sprite_method
      */
-    public function generateSpriteAsync($tag, $options = [])
+    public function generateSpriteAsync(array|string $tag, array $options = []): PromiseInterface
     {
         $params = self::buildSpriteAndMultiParams($tag, $options);
 
@@ -59,15 +58,14 @@ trait CreativeTrait
      * * A single sprite image file containing all the images.
      * * A CSS file that includes the style class names and the location of the individual images in the sprite.
      *
-     * @param string|array $tag     A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tag     A string specifying a tag that indicates which images to include or an array
      *                              which include options and image URLs.
      * @param array        $options The optional parameters. Should be omitted when $tag is an array.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#sprite_method
      */
-    public function generateSprite($tag, $options = [])
+    public function generateSprite(array|string $tag, array $options = []): ApiResponse
     {
         return $this->generateSpriteAsync($tag, $options)->wait();
     }
@@ -76,15 +74,14 @@ trait CreativeTrait
      * Generates an url to create a sprite from all images that have been assigned a specified tag or from a provided
      * array of URLs.
      *
-     * @param string|array $tag     A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tag     A string specifying a tag that indicates which images to include or an array
      *                              which include options and image URLs.
      * @param array        $options The optional parameters. Should be omitted when $tag is an array.
      *
-     * @return string
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#sprite_method
      */
-    public function downloadGeneratedSprite($tag, $options = [])
+    public function downloadGeneratedSprite(array|string $tag, array $options = []): string
     {
         $params = self::buildSpriteAndMultiParams($tag, $options);
 
@@ -103,15 +100,14 @@ trait CreativeTrait
      *
      * This is an asynchronous function.
      *
-     * @param string|array $tag     A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tag     A string specifying a tag that indicates which images to include or an array
      *                              which include options and image URLs.
      * @param array        $options The optional parameters. Should be omitted when $tag is an array.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#multi_method
      */
-    public function multiAsync($tag, $options = [])
+    public function multiAsync(array|string $tag, array $options = []): PromiseInterface
     {
         $params = self::buildSpriteAndMultiParams($tag, $options);
 
@@ -122,15 +118,14 @@ trait CreativeTrait
      * Creates a single animated image, video or PDF from all image assets that have been assigned a specified tag or
      * from a provided array of URLs.
      *
-     * @param string|array $tag     A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tag     A string specifying a tag that indicates which images to include or an array
      *                              which include options and image URLs.
      * @param array        $options The optional parameters. Should be omitted when $tag is an array.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#multi_method
      */
-    public function multi($tag, $options = [])
+    public function multi(array|string $tag, array $options = []): ApiResponse
     {
         return $this->multiAsync($tag, $options)->wait();
     }
@@ -139,15 +134,14 @@ trait CreativeTrait
      * Generates an url to create a single animated image, video or PDF from all image assets that have been assigned
      * a specified tag or from a provided array of URLs.
      *
-     * @param string|array $tag     A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tag     A string specifying a tag that indicates which images to include or an array
      *                              which include options and image URLs.
      * @param array        $options The optional parameters. Should be omitted when $tag is an array.
      *
-     * @return string
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#sprite_method
      */
-    public function downloadMulti($tag, $options = [])
+    public function downloadMulti(array|string $tag, array $options = []): string
     {
         $params = self::buildSpriteAndMultiParams($tag, $options);
 
@@ -171,11 +165,10 @@ trait CreativeTrait
      * @param string $publicId The public ID of the multi-page file.
      * @param array  $options  The optional parameters.  See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#explode_method
      */
-    public function explodeAsync($publicId, $options = [])
+    public function explodeAsync(string $publicId, array $options = []): PromiseInterface
     {
         $options['transformation'] = ApiUtils::serializeAssetTransformations($options);
 
@@ -197,11 +190,10 @@ trait CreativeTrait
      * @param string $publicId The public ID of the multi-page file.
      * @param array  $options  The optional parameters.  See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#explode_method
      */
-    public function explode($publicId, $options = [])
+    public function explode(string $publicId, array $options = []): ApiResponse
     {
         return $this->explodeAsync($publicId, $options)->wait();
     }
@@ -214,11 +206,10 @@ trait CreativeTrait
      * @param string $text    The text string to generate an image for.
      * @param array  $options The optional parameters.  See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#text_method
      */
-    public function textAsync($text, $options = [])
+    public function textAsync(string $text, array $options = []): PromiseInterface
     {
         $params         = ArrayUtils::whitelist(
             $options,
@@ -246,11 +237,10 @@ trait CreativeTrait
      * @param string $text    The text string to generate an image for.
      * @param array  $options The optional parameters.  See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#text_method
      */
-    public function text($text, $options = [])
+    public function text(string $text, array $options = []): ApiResponse
     {
         return $this->textAsync($text, $options)->wait();
     }
@@ -258,13 +248,12 @@ trait CreativeTrait
     /**
      * Build params for multi, downloadMulti, generateSprite, and downloadGeneratedSprite methods.
      *
-     * @param string|array $tagOrOptions A string specifying a tag that indicates which images to include or an array
+     * @param array|string $tagOrOptions A string specifying a tag that indicates which images to include or an array
      *                                   which include image URLs and options.
      * @param array        $options      The optional parameters. Should be omitted when $tagOrOptions is an array.
      *
-     * @return array
      */
-    private static function buildSpriteAndMultiParams($tagOrOptions, $options)
+    private static function buildSpriteAndMultiParams(array|string $tagOrOptions, array $options): array
     {
         if (is_array($tagOrOptions)) {
             if (empty($options)) {
@@ -299,11 +288,10 @@ trait CreativeTrait
      *
      * @param array $options The optional parameters.  See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/video_slideshow_generation
      */
-    public function createSlideshowAsync($options = [])
+    public function createSlideshowAsync(array $options = []): PromiseInterface
     {
         $params = ArrayUtils::whitelist(
             $options,
@@ -342,11 +330,10 @@ trait CreativeTrait
      *
      * @param array $options The optional parameters.  See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/video_slideshow_generation
      */
-    public function createSlideshow($options = [])
+    public function createSlideshow(array $options = []): ApiResponse
     {
         return $this->createSlideshowAsync($options)->wait();
     }

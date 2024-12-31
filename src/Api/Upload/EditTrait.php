@@ -37,11 +37,10 @@ trait EditTrait
      * @param string $publicId The public ID of the asset to delete.
      * @param array  $options  The optional parameters.  See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#destroy_method
      */
-    public function destroyAsync($publicId, $options = [])
+    public function destroyAsync(string $publicId, array $options = []): PromiseInterface
     {
         $params              = ArrayUtils::whitelist($options, ['type', 'invalidate']);
         $params['public_id'] = $publicId;
@@ -59,11 +58,10 @@ trait EditTrait
      * @param string $publicId The public ID of the asset to delete.
      * @param array  $options  The optional parameters.  See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#destroy_method
      */
-    public function destroy($publicId, $options = [])
+    public function destroy(string $publicId, array $options = []): ApiResponse
     {
         return $this->destroyAsync($publicId, $options)->wait();
     }
@@ -81,11 +79,10 @@ trait EditTrait
      * @param string $toPublicId   The new public ID of the asset.
      * @param array  $options      The optional parameters.  See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#rename_method
      */
-    public function renameAsync($fromPublicId, $toPublicId, $options = [])
+    public function renameAsync(string $fromPublicId, string $toPublicId, array $options = []): PromiseInterface
     {
         $params                   = ArrayUtils::whitelist($options, [
             'type',
@@ -112,11 +109,10 @@ trait EditTrait
      * @param string $toPublicId   The new public ID of the asset.
      * @param array  $options      The optional parameters.  See the upload API documentation.
      *
-     * @return mixed
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#rename_method
      */
-    public function rename($fromPublicId, $toPublicId, $options = [])
+    public function rename(string $fromPublicId, string $toPublicId, array $options = []): mixed
     {
         return $this->renameAsync($fromPublicId, $toPublicId, $options)->wait();
     }
@@ -129,11 +125,9 @@ trait EditTrait
      * @param string $publicId The public ID of the asset to apply the actions to.
      * @param array  $options  The optional parameters.  See the upload API documentation.
      *
-     * @return PromiseInterface
-     *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#explicit_method
      */
-    public function explicitAsync($publicId, $options = [])
+    public function explicitAsync(string $publicId, array $options = []): PromiseInterface
     {
         $options['public_id'] = $publicId;
 
@@ -148,11 +142,9 @@ trait EditTrait
      * @param string $publicId The public ID of the asset to apply the actions to.
      * @param array  $options  The optional parameters.  See the upload API documentation.
      *
-     * @return mixed
-     *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#explicit_method
      */
-    public function explicit($publicId, $options = [])
+    public function explicit(string $publicId, array $options = []): mixed
     {
         return $this->explicitAsync($publicId, $options)->wait();
     }
@@ -174,7 +166,7 @@ trait EditTrait
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#metadata_method
      */
-    public function updateMetadataAsync(array $metadata, array $publicIds, array $options)
+    public function updateMetadataAsync(array $metadata, array $publicIds, array $options): PromiseInterface
     {
         $params = ArrayUtils::whitelist($options, ['type']);
 
@@ -201,7 +193,7 @@ trait EditTrait
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#metadata_method
      */
-    public function updateMetadata(array $metadata, array $publicIds, array $options = [])
+    public function updateMetadata(array $metadata, array $publicIds, array $options = []): mixed
     {
         return $this->updateMetadataAsync($metadata, $publicIds, $options)->wait();
     }

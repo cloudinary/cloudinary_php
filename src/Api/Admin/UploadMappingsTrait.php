@@ -35,11 +35,10 @@ trait UploadMappingsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#get_upload_mapping target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_upload_mappings
      */
-    public function uploadMappings($options = [])
+    public function uploadMappings(array $options = []): ApiResponse
     {
         $uri    = ApiEndPoint::UPLOAD_MAPPINGS;
         $params = ArrayUtils::whitelist($options, ['next_cursor', 'max_results']);
@@ -54,11 +53,10 @@ trait UploadMappingsTrait
      *
      * @param string $name The name of the upload mapping folder.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_upload_mapping
      */
-    public function uploadMapping($name)
+    public function uploadMapping(string $name): ApiResponse
     {
         $uri    = ApiEndPoint::UPLOAD_MAPPINGS;
         $params = ['folder' => $name];
@@ -72,13 +70,11 @@ trait UploadMappingsTrait
      *
      * @param string $name The name of the upload mapping folder to delete.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_an_upload_mapping
      */
-    public function deleteUploadMapping($name)
+    public function deleteUploadMapping(string $name): ApiResponse
     {
         $uri    = ApiEndPoint::UPLOAD_MAPPINGS;
         $params = ['folder' => $name];
@@ -95,13 +91,11 @@ trait UploadMappingsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#update_an_upload_mapping target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#update_an_upload_mapping
      */
-    public function updateUploadMapping($name, $options = [])
+    public function updateUploadMapping(string $name, array $options = []): ApiResponse
     {
         $uri    = ApiEndPoint::UPLOAD_MAPPINGS;
         $params = array_merge(['folder' => $name], ArrayUtils::whitelist($options, ['template']));
@@ -118,11 +112,10 @@ trait UploadMappingsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#create_an_upload_mapping target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#create_an_upload_mapping
      */
-    public function createUploadMapping($name, $options = [])
+    public function createUploadMapping(string $name, array $options = []): ApiResponse
     {
         $uri    = ApiEndPoint::UPLOAD_MAPPINGS;
         $params = array_merge(['folder' => $name], ArrayUtils::whitelist($options, ['template']));

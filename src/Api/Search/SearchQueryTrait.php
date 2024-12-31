@@ -12,7 +12,7 @@ trait SearchQueryTrait
     /**
      * @var array query object that includes the search query
      */
-    private $query
+    private array $query
         = [
             self::SORT_BY    => [],
             self::AGGREGATE  => [],
@@ -31,7 +31,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function expression($value)
+    public function expression(mixed $value): static
     {
         $this->query[self::EXPRESSION] = $value;
 
@@ -47,7 +47,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function maxResults($value)
+    public function maxResults(int $value): static
     {
         $this->query[self::MAX_RESULTS] = $value;
 
@@ -66,7 +66,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function nextCursor($value)
+    public function nextCursor(string $value): static
     {
         $this->query[self::NEXT_CURSOR] = $value;
 
@@ -84,7 +84,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function sortBy($fieldName, $dir = 'desc')
+    public function sortBy(string $fieldName, string $dir = 'desc'): static
     {
         $this->query[self::SORT_BY][$fieldName] = [$fieldName => $dir];
 
@@ -107,7 +107,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function aggregate($value)
+    public function aggregate(string $value): static
     {
         $this->query[self::AGGREGATE][$value] = $value;
 
@@ -123,7 +123,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function withField($value)
+    public function withField(string $value): static
     {
         $this->query[self::WITH_FIELD][$value] = $value;
 
@@ -139,7 +139,7 @@ trait SearchQueryTrait
      *
      * @api
      */
-    public function fields($fields)
+    public function fields(array|string $fields): static
     {
         foreach (ArrayUtils::build($fields) as $field) {
             $this->query[self::FIELDS][$field] = $field;
@@ -155,7 +155,7 @@ trait SearchQueryTrait
      *
      * @return $this
      */
-    public function query($query)
+    public function query(array $query): static
     {
         $this->query = $query;
 
@@ -165,21 +165,18 @@ trait SearchQueryTrait
     /**
      * Returns the query as an array.
      *
-     * @return array
      *
      * @api
      */
-    public function asArray()
+    public function asArray(): array
     {
         return ArrayUtils::mapAssoc(
-            static function ($key, $value) {
-                return in_array($key, self::KEYS_WITH_UNIQUE_VALUES) ? array_values($value) : $value;
-            },
+            static fn($key, $value) => in_array($key, self::KEYS_WITH_UNIQUE_VALUES) ? array_values($value) : $value,
             array_filter(
                 $this->query,
                 static function ($value) {
                     /** @noinspection TypeUnsafeComparisonInspection */
-                    return ((is_array($value) && ! empty($value)) || ($value != null));
+                    return is_array($value) && ! empty($value) || $value != null;
                 }
             )
         );

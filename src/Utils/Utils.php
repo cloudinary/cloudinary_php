@@ -21,20 +21,19 @@ use Psr\Http\Message\UriInterface;
  */
 class Utils
 {
-    const ALGO_SHA1                      = 'sha1';
-    const ALGO_SHA256                    = 'sha256';
-    const SUPPORTED_SIGNATURE_ALGORITHMS = [self::ALGO_SHA1, self::ALGO_SHA256];
-    const SHORT_URL_SIGNATURE_LENGTH     = 8;
-    const LONG_URL_SIGNATURE_LENGTH      = 32;
+    public const ALGO_SHA1                      = 'sha1';
+    public const ALGO_SHA256                    = 'sha256';
+    public const SUPPORTED_SIGNATURE_ALGORITHMS = [self::ALGO_SHA1, self::ALGO_SHA256];
+    public const SHORT_URL_SIGNATURE_LENGTH     = 8;
+    public const LONG_URL_SIGNATURE_LENGTH      = 32;
 
     /**
      * Converts a float value to the string representation.
      *
-     * @param mixed $value
      *
      * @return mixed|string
      */
-    public static function floatToString($value)
+    public static function floatToString(mixed $value): mixed
     {
         if (! is_float($value)) {
             return $value;
@@ -43,14 +42,13 @@ class Utils
         // Ensure that trailing decimal(.0) part is not cropped when float is provided.
         // e.g. float 1.0 should be returned as "1.0" and not "1" as it happens by default.
         if ($value - (int)$value === 0.0) {
-            return sprintf("%.1f", $value);
+            return sprintf('%.1f', $value);
         }
 
         $locale = localeconv();
         $string = (string)$value;
-        $string = str_replace($locale['decimal_point'], '.', $string);
 
-        return $string;
+        return str_replace($locale['decimal_point'], '.', $string);
     }
 
     /**
@@ -58,9 +56,8 @@ class Utils
      *
      * @param mixed $value Candidate to convert. If not boolean, returned as is
      *
-     * @return string
      */
-    public static function boolToString($value)
+    public static function boolToString(mixed $value): string
     {
         if (! is_bool($value)) {
             return $value;
@@ -74,9 +71,8 @@ class Utils
      *
      * @param mixed $value Candidate to convert. If not boolean, returned as is
      *
-     * @return string
      */
-    public static function boolToIntString($value)
+    public static function boolToIntString(mixed $value): string
     {
         if (! is_bool($value)) {
             return $value;
@@ -88,11 +84,9 @@ class Utils
     /**
      * Helper method for normalizing values in string representation.
      *
-     * @param mixed $value
      *
-     * @return string
      */
-    public static function normalizeToString($value)
+    public static function normalizeToString(mixed $value): string
     {
         return self::floatToString(self::boolToString($value));
     }
@@ -102,9 +96,8 @@ class Utils
      *
      * @param int $bytes The input value to convert.
      *
-     * @return int
      */
-    public static function bytesToKB($bytes)
+    public static function bytesToKB(int $bytes): int
     {
         return (int)ceil($bytes / 1024);
     }
@@ -114,9 +107,8 @@ class Utils
      *
      * @param int $number The number to format
      *
-     * @return string
      */
-    public static function formatSigned($number)
+    public static function formatSigned(int $number): string
     {
         return $number > 0 ? "+$number" : (string)$number;
     }
@@ -126,9 +118,9 @@ class Utils
      *
      * @param DateTime|mixed $date The date to format.
      *
-     * @return string The formatted date.
+     * @return ?string The formatted date.
      */
-    public static function formatDate($date)
+    public static function formatDate(mixed $date): ?string
     {
         if ($date instanceof DateTime) {
             $date = $date->format(DateTime::ATOM);
@@ -143,9 +135,8 @@ class Utils
      * @param string $signature The signature to format
      * @param int    $length    Number of characters to use from the start of the signature
      *
-     * @return string
      */
-    public static function formatSimpleSignature($signature, $length)
+    public static function formatSimpleSignature(string $signature, int $length): string
     {
         return 's--' . substr($signature, 0, $length) . '--';
     }
@@ -153,11 +144,9 @@ class Utils
     /**
      * Formats a DateTime object to ISO8601 format (e.g., "2020-12-25").
      *
-     * @param DateTime $date
      *
-     * @return string
      */
-    public static function toISO8601DateOnly(DateTime $date)
+    public static function toISO8601DateOnly(DateTime $date): string
     {
         return $date->format('Y-m-d');
     }
@@ -165,15 +154,14 @@ class Utils
     /**
      * Creates a signature for content using specified secret.
      *
-     * @param string $content
-     * @param string $secret
-     * @param bool   $raw
-     * @param string $algo
      *
-     * @return string
      */
-    public static function sign($content, $secret, $raw = null, $algo = self::ALGO_SHA1)
-    {
+    public static function sign(
+        string $content,
+        string $secret,
+        bool $raw = false,
+        string $algo = self::ALGO_SHA1
+    ): string {
         return hash($algo, $content . $secret, $raw);
     }
 
@@ -182,11 +170,10 @@ class Utils
      *
      * @param string $prefix Provide unique prefix to avoid collisions, see uniqid for more details.
      *
-     * @return bool|string
      *
      * @see uniqid
      */
-    public static function randomPublicId($prefix = '')
+    public static function randomPublicId(string $prefix = ''): bool|string
     {
         return substr(sha1(uniqid($prefix . mt_rand(), true)), 0, 16);
     }
@@ -194,13 +181,13 @@ class Utils
     /**
      * Parses URL if applicable, otherwise returns false.
      *
-     * @param string|UriInterface $url            The URL to parse.
-     * @param array|null          $allowedSchemes Optional array of the allowed schemes.
-     *
-     * @return false|UriInterface
+     * @param mixed      $url            The URL to parse.
+     * @param array|null $allowedSchemes Optional array of the allowed schemes.
      */
-    public static function tryParseUrl($url, ?array $allowedSchemes = null)
-    {
+    public static function tryParseUrl(
+        mixed $url,
+        ?array $allowedSchemes = null
+    ): UriInterface|bool|string {
         if (! $url instanceof UriInterface) {
             if (! is_string($url)) {
                 return false;
@@ -213,7 +200,7 @@ class Utils
             $url = Uri::fromParts($urlParts);
         }
 
-        if ($allowedSchemes !== null && ! in_array($url->getScheme(), $allowedSchemes, false)) {
+        if ($allowedSchemes !== null && ! in_array($url->getScheme(), $allowedSchemes)) {
             return false;
         }
 
@@ -246,18 +233,17 @@ class Utils
      *
      * @return string|string[]|null
      */
-    public static function buildHttpQuery($params)
+    public static function buildHttpQuery(array $params): array|string|null
     {
-        return preg_replace("/%5B\d+%5D/", "%5B%5D", http_build_query($params));
+        return preg_replace('/%5B\d+%5D/', '%5B%5D', http_build_query($params));
     }
 
 
     /**
      * Returns current UNIX time in seconds.
      *
-     * @return int
      */
-    public static function unixTimeNow()
+    public static function unixTimeNow(): int
     {
         return time();
     }
@@ -267,9 +253,8 @@ class Utils
      *
      * @param array $params The array of params
      *
-     * @return array
      */
-    public static function tryParseValues(array $params)
+    public static function tryParseValues(array $params): array
     {
         return array_map(
             static function ($value) {
@@ -294,11 +279,9 @@ class Utils
     /**
      * Parses boolean from string
      *
-     * @param $value
      *
-     * @return bool
      */
-    public static function tryParseBoolean($value)
+    public static function tryParseBoolean($value): bool|string
     {
         if (! is_string($value)) {
             return $value;
@@ -314,17 +297,15 @@ class Utils
     /**
      * Convert an object to array.
      *
-     * @param $object
      *
-     * @return array
      */
-    public static function objectToArray($object)
+    public static function objectToArray($object): array
     {
         $properties = (array)$object;
 
         $snakeCaseProperties = [];
         foreach ($properties as $key => $value) {
-            $key = str_replace(["*", "\0"], "", $key);
+            $key = str_replace(['*', "\0"], '', $key);
             $key = StringUtils::camelCaseToSnakeCase($key);
 
             if ($value === null) {

@@ -33,11 +33,10 @@ trait TagTrait
      * @param array  $publicIds The public IDs of the assets to add the tag to.
      * @param array  $options   The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function addTagAsync($tag, $publicIds = [], $options = [])
+    public function addTagAsync(string $tag, array $publicIds = [], array $options = []): PromiseInterface
     {
         return $this->callTagsApiAsync(TagCommand::ADD, $tag, $publicIds, $options);
     }
@@ -49,11 +48,10 @@ trait TagTrait
      * @param array  $publicIds The public IDs of the assets to add the tag to.
      * @param array  $options   The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function addTag($tag, $publicIds = [], $options = [])
+    public function addTag(string $tag, array $publicIds = [], array $options = []): ApiResponse
     {
         return $this->addTagAsync($tag, $publicIds, $options)->wait();
     }
@@ -67,11 +65,10 @@ trait TagTrait
      * @param array|string $publicIds The public IDs of the assets to remove the tags from.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function removeTagAsync($tag, $publicIds = [], $options = [])
+    public function removeTagAsync(string $tag, array|string $publicIds = [], array $options = []): PromiseInterface
     {
         return $this->callTagsApiAsync(TagCommand::REMOVE, $tag, $publicIds, $options);
     }
@@ -83,11 +80,10 @@ trait TagTrait
      * @param array|string $publicIds The public IDs of the assets to remove the tags from.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function removeTag($tag, $publicIds = [], $options = [])
+    public function removeTag(string $tag, array|string $publicIds = [], array $options = []): ApiResponse
     {
         return $this->removeTagAsync($tag, $publicIds, $options)->wait();
     }
@@ -100,11 +96,10 @@ trait TagTrait
      * @param array $publicIds The public IDs of the assets to remove all tags from.
      * @param array $options   The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function removeAllTagsAsync($publicIds = [], $options = [])
+    public function removeAllTagsAsync(array $publicIds = [], array $options = []): PromiseInterface
     {
         return $this->callTagsApiAsync(TagCommand::REMOVE_ALL, null, $publicIds, $options);
     }
@@ -115,11 +110,10 @@ trait TagTrait
      * @param array $publicIds The public IDs of the assets to remove all tags from.
      * @param array $options   The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function removeAllTags($publicIds = [], $options = [])
+    public function removeAllTags(array $publicIds = [], array $options = []): ApiResponse
     {
         return $this->removeAllTagsAsync($publicIds, $options)->wait();
     }
@@ -133,11 +127,10 @@ trait TagTrait
      * @param array|string $publicIds The public IDs of the assets to replace the tags of.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function replaceTagAsync($tag, $publicIds = [], $options = [])
+    public function replaceTagAsync(string $tag, array|string $publicIds = [], array $options = []): PromiseInterface
     {
         return $this->callTagsApiAsync(TagCommand::REPLACE, $tag, $publicIds, $options);
     }
@@ -149,11 +142,10 @@ trait TagTrait
      * @param array|string $publicIds The public IDs of the assets to replace the tags of.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#tags_method
      */
-    public function replaceTag($tag, $publicIds = [], $options = [])
+    public function replaceTag(string $tag, array|string $publicIds = [], array $options = []): ApiResponse
     {
         return $this->replaceTagAsync($tag, $publicIds, $options)->wait();
     }
@@ -162,17 +154,20 @@ trait TagTrait
      * Internal call to the tags API.
      *
      * @param string       $command   The command to perform. See TagCommand class for available commands.
-     * @param string       $tag       The tag.
+     * @param string|null  $tag       The tag.
      * @param array|string $publicIds The public IDs of the assets to apply tag to.
      * @param array        $options   The optional parameters.
      *
-     * @return PromiseInterface
      * @see TagCommand
      *
      * @internal
      */
-    protected function callTagsApiAsync($command, $tag, $publicIds = [], $options = [])
-    {
+    protected function callTagsApiAsync(
+        string $command,
+        ?string $tag,
+        array|string $publicIds = [],
+        array $options = []
+    ): PromiseInterface {
         $params = [
             'tag'        => $tag,
             'public_ids' => $publicIds,

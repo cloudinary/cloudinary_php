@@ -130,7 +130,6 @@ final class FoldersTest extends IntegrationTestCase
     /**
      * Delete folder
      *
-     * @throws ApiError
      */
     public function testDeleteFolder()
     {
@@ -177,7 +176,6 @@ final class FoldersTest extends IntegrationTestCase
     /**
      * Should throw exception on non-existing folder.
      *
-     * @throws ApiError
      */
     public function testFolderListingError()
     {

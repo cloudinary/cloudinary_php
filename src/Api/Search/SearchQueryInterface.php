@@ -10,34 +10,34 @@ interface SearchQueryInterface
     /**
      * @internal
      */
-    const SORT_BY = 'sort_by';
+    public const SORT_BY = 'sort_by';
     /**
      * @internal
      */
-    const AGGREGATE = 'aggregate';
+    public const AGGREGATE = 'aggregate';
     /**
      * @internal
      */
-    const WITH_FIELD = 'with_field';
+    public const WITH_FIELD = 'with_field';
 
     /**
      * @internal
      */
-    const FIELDS = 'fields';
+    public const FIELDS = 'fields';
     /**
      * @internal
      */
-    const EXPRESSION = 'expression';
+    public const EXPRESSION = 'expression';
     /**
      * @internal
      */
-    const MAX_RESULTS = 'max_results';
+    public const MAX_RESULTS = 'max_results';
     /**
      * @internal
      */
-    const NEXT_CURSOR = 'next_cursor';
+    public const NEXT_CURSOR = 'next_cursor';
     /**
      * @internal
      */
-    const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD, self::FIELDS];
+    public const KEYS_WITH_UNIQUE_VALUES = [self::SORT_BY, self::AGGREGATE, self::WITH_FIELD, self::FIELDS];
 }

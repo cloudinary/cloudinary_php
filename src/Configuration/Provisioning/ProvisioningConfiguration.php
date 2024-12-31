@@ -26,43 +26,37 @@ use Psr\Http\Message\UriInterface;
  */
 class ProvisioningConfiguration
 {
-    const CLOUDINARY_ACCOUNT_URL_ENV_VAR = 'CLOUDINARY_ACCOUNT_URL';
+    public const CLOUDINARY_ACCOUNT_URL_ENV_VAR = 'CLOUDINARY_ACCOUNT_URL';
 
     /**
-     * @var static Singleton instance for the ConfigurationAccount
+     * @var ?static Singleton instance for the ConfigurationAccount
      */
-    private static $instance;
+    private static ?ProvisioningConfiguration $instance = null;
 
-    /**
-     * @var ProvisioningAccountConfig $provisioningAccount
-     */
-    public $provisioningAccount;
+    public ?ProvisioningAccountConfig $provisioningAccount = null;
 
     /**
      * @var ApiConfig $api The configuration of the API.
      */
-    public $api;
+    public ApiConfig $api;
 
-    /**
-     * @var LoggingConfig $logging
-     */
-    public $logging;
+    public LoggingConfig $logging;
 
     /**
      * @var array Main configuration sections
      */
-    protected $sections = [
-        ProvisioningAccountConfig::CONFIG_NAME,
-        ApiConfig::CONFIG_NAME,
-        LoggingConfig::CONFIG_NAME,
-    ];
+    protected array $sections
+        = [
+            ProvisioningAccountConfig::CONFIG_NAME,
+            ApiConfig::CONFIG_NAME,
+            LoggingConfig::CONFIG_NAME,
+        ];
 
     /**
      * ConfigurationAccount constructor.
      *
-     * @param ProvisioningConfiguration|string|array|null $config
      */
-    public function __construct($config = null)
+    public function __construct(array|string|ProvisioningConfiguration|null $config = null)
     {
         $this->init($config);
     }
@@ -70,9 +64,8 @@ class ProvisioningConfiguration
     /**
      * ConfigurationAccount initializer
      *
-     * @param ProvisioningConfiguration|string|array|null $config
      */
-    public function init($config = null)
+    public function init(array|string|ProvisioningConfiguration|null $config = null): void
     {
         $this->initSections();
 
@@ -96,9 +89,8 @@ class ProvisioningConfiguration
      *
      * @param string|UriInterface $accountUrl The account URL.
      *
-     * @return ProvisioningConfiguration
      */
-    public function importAccountUrl($accountUrl)
+    public function importAccountUrl(UriInterface|string $accountUrl): static
     {
         $this->importJson(ProvisioningConfigUtils::parseAccountUrl($accountUrl));
 
@@ -108,11 +100,9 @@ class ProvisioningConfiguration
     /**
      * This is the actual constructor.
      *
-     * @param $json
      *
-     * @return ProvisioningConfiguration
      */
-    public function importJson($json)
+    public function importJson($json): static
     {
         $json = JsonUtils::decode($json);
 
@@ -128,9 +118,8 @@ class ProvisioningConfiguration
      *
      * @param ProvisioningConfiguration $otherConfig The source of the configuration.
      *
-     * @return ProvisioningConfiguration
      */
-    public function importConfig($otherConfig)
+    public function importConfig(ProvisioningConfiguration $otherConfig): static
     {
         $this->importJson($otherConfig->jsonSerialize());
 
@@ -144,10 +133,13 @@ class ProvisioningConfiguration
      * @param bool $includeEmptyKeys     Whether to include keys without values.
      * @param bool $includeEmptySections Whether to include sections without keys with non-empty values.
      *
-     * @return mixed data which can be serialized by json_encode.
+     * @return array data which can be serialized by json_encode.
      */
-    public function jsonSerialize($includeSensitive = true, $includeEmptyKeys = false, $includeEmptySections = false)
-    {
+    public function jsonSerialize(
+        bool $includeSensitive = true,
+        bool $includeEmptyKeys = false,
+        bool $includeEmptySections = false
+    ): array {
         $json = [];
 
         foreach ($this->sections as $section) {
@@ -167,12 +159,11 @@ class ProvisioningConfiguration
      *
      * Instance can be optionally initialized with the provided $config (used only on the first call)
      *
-     * @param ProvisioningConfiguration|string|array|null $config
      *
-     * @return ProvisioningConfiguration
+     * @return ProvisioningConfiguration Provisioning Configuration
      */
-    public static function instance($config = null)
-    {
+    public static function instance(array|string|ProvisioningConfiguration|null $config = null
+    ): ProvisioningConfiguration {
         if (self::$instance !== null) {
             return self::$instance;
         }
@@ -185,7 +176,7 @@ class ProvisioningConfiguration
     /**
      * Initializes configuration sections.
      */
-    protected function initSections()
+    protected function initSections(): void
     {
         $this->provisioningAccount = new ProvisioningAccountConfig();
         $this->api                 = new ApiConfig();

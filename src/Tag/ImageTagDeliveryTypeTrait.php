@@ -24,11 +24,10 @@ trait ImageTagDeliveryTypeTrait
      * Static builder for uploaded asset image tag.
      *
      * @param string                          $publicId      The public ID of the asset.
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function upload($publicId, $configuration = null)
+    public static function upload(string $publicId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::upload($publicId, $configuration));
     }
@@ -36,12 +35,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for fetch image tag (from URL).
      *
-     * @param string                          $url
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function fetch($url, $configuration = null)
+    public static function fetch(string $url, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::fetch($url, $configuration));
     }
@@ -49,12 +46,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for facebook profile picture tag.
      *
-     * @param string                          $facebookId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function facebook($facebookId, $configuration = null)
+    public static function facebook(string $facebookId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::facebook($facebookId, $configuration));
     }
@@ -62,12 +57,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for gravatar profile picture tag.
      *
-     * @param string                          $email
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function gravatar($email, $configuration = null)
+    public static function gravatar(string $email, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::gravatar($email, $configuration));
     }
@@ -75,12 +68,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for twitter profile picture tag.
      *
-     * @param string                          $userId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function twitter($userId, $configuration = null)
+    public static function twitter(string $userId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::twitter($userId, $configuration));
     }
@@ -88,12 +79,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for twitter profile picture by name.
      *
-     * @param string                          $username
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function twitterName($username, $configuration = null)
+    public static function twitterName(string $username, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::twitterName($username, $configuration));
     }
@@ -101,12 +90,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for the thumbnail of the YouTube video.
      *
-     * @param string                          $videoId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function youTube($videoId, $configuration = null)
+    public static function youTube(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::youTube($videoId, $configuration));
     }
@@ -114,12 +101,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for the thumbnail of the YouTube video.
      *
-     * @param string                          $videoId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function hulu($videoId, $configuration = null)
+    public static function hulu(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::hulu($videoId, $configuration));
     }
@@ -127,12 +112,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for the thumbnail of the Vimeo video.
      *
-     * @param string                          $videoId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function vimeo($videoId, $configuration = null)
+    public static function vimeo(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::vimeo($videoId, $configuration));
     }
@@ -140,12 +123,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for the thumbnail of the animoto video.
      *
-     * @param string                          $videoId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function animoto($videoId, $configuration = null)
+    public static function animoto(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::animoto($videoId, $configuration));
     }
@@ -153,25 +134,23 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for the thumbnail of the World Star Hip Hop video.
      *
-     * @param string                          $videoId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function worldStarHipHop($videoId, $configuration = null)
-    {
+    public static function worldStarHipHop(
+        string $videoId,
+        Configuration|array|string|null $configuration = null
+    ): static {
         return new static(Image::worldStarHipHop($videoId, $configuration));
     }
 
     /**
      * Static builder for the thumbnail of the DailyMotion video.
      *
-     * @param string                          $videoId
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function dailyMotion($videoId, $configuration = null)
+    public static function dailyMotion(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::dailyMotion($videoId, $configuration));
     }
@@ -179,12 +158,10 @@ trait ImageTagDeliveryTypeTrait
     /**
      * Static builder for sprite tag.
      *
-     * @param string                          $tag
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function sprite($tag, $configuration = null)
+    public static function sprite(string $tag, Configuration|array|string|null $configuration = null): static
     {
         return new static(Image::sprite($tag, $configuration));
     }

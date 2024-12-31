@@ -11,7 +11,6 @@
 namespace Cloudinary\Api\Provisioning;
 
 use Cloudinary\Api\BaseApiClient;
-use Cloudinary\Configuration\ApiConfig;
 use Cloudinary\Configuration\Provisioning\ProvisioningAccountConfig;
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
 use Cloudinary\Exception\ConfigurationException;
@@ -26,28 +25,24 @@ use GuzzleHttp\Client;
  */
 class AccountApiClient extends BaseApiClient
 {
-    const PROVISIONING = 'provisioning';
-    const ACCOUNTS     = 'accounts';
+    public const PROVISIONING = 'provisioning';
+    public const ACCOUNTS     = 'accounts';
 
     /**
      * @var ProvisioningAccountConfig $provisioningAccount The Account API configuration.
      */
-    protected $provisioningAccount;
+    protected ProvisioningAccountConfig $provisioningAccount;
 
     /**
      * AccountApiClient constructor
      *
-     * @param ProvisioningConfiguration $configuration
      */
     public function __construct(?ProvisioningConfiguration $configuration = null)
     {
         $this->init($configuration);
     }
 
-    /**
-     * @param ProvisioningConfiguration $configuration
-     */
-    public function init(?ProvisioningConfiguration $configuration = null)
+    public function init(?ProvisioningConfiguration $configuration = null): void
     {
         if ($configuration === null) {
             $configuration = ProvisioningConfiguration::instance();
@@ -78,15 +73,12 @@ class AccountApiClient extends BaseApiClient
         $this->createHttpClient();
     }
 
-    protected function createHttpClient()
+    protected function createHttpClient(): void
     {
         $this->httpClient = new Client($this->buildHttpClientConfig());
     }
 
-    /**
-     * @return array
-     */
-    protected function buildHttpClientConfig()
+    protected function buildHttpClientConfig(): array
     {
         return [
             'auth'            => [

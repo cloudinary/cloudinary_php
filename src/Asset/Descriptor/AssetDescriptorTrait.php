@@ -26,7 +26,7 @@ trait AssetDescriptorTrait
      *
      * @see                   AssetType
      */
-    public function assetType($assetType)
+    public function assetType(string $assetType): static
     {
         return $this->setAssetProperty('assetType', $assetType);
     }
@@ -41,7 +41,7 @@ trait AssetDescriptorTrait
      *
      * @see DeliveryType
      */
-    public function deliveryType($deliveryType)
+    public function deliveryType(string $deliveryType): static
     {
         return $this->setAssetProperty('deliveryType', $deliveryType);
     }
@@ -53,7 +53,7 @@ trait AssetDescriptorTrait
      *
      * @return $this
      */
-    public function version($version)
+    public function version(int|string $version): static
     {
         return $this->setAssetProperty('version', $version);
     }
@@ -65,7 +65,7 @@ trait AssetDescriptorTrait
      *
      * @return $this
      */
-    public function location($location)
+    public function location(string $location): static
     {
         return $this->setAssetProperty('location', $location);
     }
@@ -77,7 +77,7 @@ trait AssetDescriptorTrait
      *
      * @return $this
      */
-    public function filename($filename)
+    public function filename(string $filename): static
     {
         return $this->setAssetProperty('filename', $filename);
     }
@@ -89,7 +89,7 @@ trait AssetDescriptorTrait
      *
      * @return $this
      */
-    public function extension($extension)
+    public function extension(string $extension): static
     {
         return $this->setAssetProperty('extension', $extension);
     }
@@ -101,7 +101,7 @@ trait AssetDescriptorTrait
      *
      * @return $this
      */
-    public function suffix($suffix)
+    public function suffix(string $suffix): static
     {
         return $this->setAssetProperty('suffix', $suffix);
     }
@@ -116,5 +116,5 @@ trait AssetDescriptorTrait
      *
      * @internal
      */
-    abstract public function setAssetProperty($propertyName, $propertyValue);
+    abstract public function setAssetProperty(string $propertyName, mixed $propertyValue): static;
 }

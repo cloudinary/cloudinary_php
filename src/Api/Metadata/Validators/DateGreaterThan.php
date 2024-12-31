@@ -31,10 +31,7 @@ class DateGreaterThan extends ComparisonRule
         parent::__construct(self::GREATER_THAN, $value, $equals);
     }
 
-    /**
-     * @param DateTime $value
-     */
-    protected function setValue($value)
+    protected function setValue(mixed $value): void
     {
         $this->value = Utils::toISO8601DateOnly($value);
     }

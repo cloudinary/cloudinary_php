@@ -31,37 +31,39 @@ class SpriteTag extends BaseTag
 {
     use ImageTransformationTrait;
 
-    const NAME    = 'link';
-    const IS_VOID = true;
+    public const    NAME    = 'link';
+    protected const IS_VOID = true;
 
     /**
      * @var array $attributes An array of tag attributes.
      */
-    protected $attributes = [
-        'type' => 'text/css',
-        'rel'  => 'stylesheet',
-        // 'href' is set in constructor
-    ];
+    protected array $attributes
+        = [
+            'type' => 'text/css',
+            'rel'  => 'stylesheet',
+            // 'href' is set in constructor
+        ];
 
     /**
      * @var Image $image The sprite image of the tag.
      */
-    public $image;
+    public Image $image;
 
     /**
-     * @var ImageTransformation $additionalTransformation Additional transformation to be applied on the tag image.
+     * @var ImageTransformation|null $additionalTransformation Additional transformation to be applied on the tag image.
      */
-    public $additionalTransformation;
+    public ?ImageTransformation $additionalTransformation;
 
     /**
      * SpriteTag constructor.
      *
-     * @param string              $tag - The sprite is created from all images with this tag.
-     * @param Configuration       $configuration
-     * @param ImageTransformation $additionalTransformation
+     * @param string                   $tag - The sprite is created from all images with this tag.
      */
-    public function __construct($tag, $configuration = null, $additionalTransformation = null)
-    {
+    public function __construct(
+        $tag,
+        ?Configuration $configuration = null,
+        ?ImageTransformation $additionalTransformation = null
+    ) {
         parent::__construct($configuration);
 
         $this->image($tag, $configuration);
@@ -71,12 +73,11 @@ class SpriteTag extends BaseTag
     /**
      * Creates a new sprite tag from the provided public id and array of parameters.
      *
-     * @param string $tag The public ID of the asset.
+     * @param string $tag    The public ID of the asset.
      * @param array  $params The media asset parameters.
      *
-     * @return SpriteTag
      */
-    public static function fromParams($tag, $params = [])
+    public static function fromParams(string $tag, array $params = []): SpriteTag
     {
         $spriteTag = new static($tag, self::fromParamsDefaultConfig());
 
@@ -89,12 +90,11 @@ class SpriteTag extends BaseTag
     /**
      * Creates the sprite image.
      *
-     * @param mixed         $tag           The tag that indicates which images to use in the sprite.
-     * @param Configuration $configuration The configuration instance.
+     * @param mixed              $tag           The tag that indicates which images to use in the sprite.
+     * @param Configuration|null $configuration The configuration instance.
      *
-     * @return static
      */
-    public function image($tag, $configuration = null)
+    public function image(mixed $tag, ?Configuration $configuration = null): static
     {
         $this->image = Image::sprite($tag, $configuration);
 
@@ -106,9 +106,8 @@ class SpriteTag extends BaseTag
      *
      * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
      *
-     * @return string
      */
-    public function serializeAttributes($attributes = [])
+    public function serializeAttributes(array $attributes = []): string
     {
         $attributes['href'] = $this->image->toUrl($this->additionalTransformation);
 

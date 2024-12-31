@@ -10,12 +10,10 @@
 
 namespace Cloudinary\Tag;
 
-use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Video;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\Configuration;
-use Cloudinary\Transformation\Delivery;
-use Cloudinary\Transformation\Format;
+use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\VideoTransformation;
 
 /**
@@ -37,33 +35,36 @@ use Cloudinary\Transformation\VideoTransformation;
  */
 class VideoSourceTag extends BaseTag
 {
-    const NAME    = 'source';
-    const IS_VOID = true;
+    public const    NAME    = 'source';
+    protected const IS_VOID = true;
 
     /**
      * @var Video $video The video source of the tag.
      */
-    public $video;
+    public Video $video;
 
     /**
      * @var SourceType $sourceType The 'type' attribute.
      */
-    protected $sourceType;
+    protected SourceType $sourceType;
 
     /**
-     * @var VideoTransformation $additionalTransformation Additional transformation to be applied on the tag video.
+     * @var mixed $additionalTransformation Additional transformation to be applied on the tag video.
      */
-    public $additionalTransformation;
+    public mixed $additionalTransformation;
 
     /**
      * VideoSourceTag constructor.
      *
      * @param mixed                           $asset                    The public ID or the Video asset.
-     * @param Configuration|string|array|null $configuration            The Configuration source.
-     * @param null                            $additionalTransformation Additional transformation to be applied.
+     * @param array|string|Configuration|null $configuration            The Configuration source.
+     * @param mixed                           $additionalTransformation Additional transformation to be applied.
      */
-    public function __construct($asset, $configuration = null, $additionalTransformation = null)
-    {
+    public function __construct(
+        $asset,
+        Configuration|array|string|null $configuration = null,
+        mixed $additionalTransformation = null
+    ) {
         parent::__construct($configuration);
 
         $this->video($asset, $configuration);
@@ -74,12 +75,11 @@ class VideoSourceTag extends BaseTag
     /**
      * Sets the video of the tag.
      *
-     * @param mixed         $video         The public ID or the Video asset.
-     * @param Configuration $configuration The configuration instance.
+     * @param mixed              $video         The public ID or the Video asset.
+     * @param Configuration|null $configuration The configuration instance.
      *
-     * @return static
      */
-    public function video($video, $configuration = null)
+    public function video(mixed $video, ?Configuration $configuration = null): static
     {
         $this->video = new Video($video, $configuration);
 
@@ -89,12 +89,11 @@ class VideoSourceTag extends BaseTag
     /**
      * Sets the type.
      *
-     * @param SourceType|string $type   The type of the source.
-     * @param string|array      $codecs The codecs.
+     * @param string|SourceType $type   The type of the source.
+     * @param array|string|null $codecs The codecs.
      *
-     * @return static
      */
-    public function type($type, $codecs = null)
+    public function type(SourceType|string $type, array|string|null $codecs = null): static
     {
         $this->sourceType = ClassUtils::verifyInstance($type, VideoSourceType::class, null, $codecs);
 
@@ -106,9 +105,8 @@ class VideoSourceTag extends BaseTag
      *
      * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
      *
-     * @return string
      */
-    public function serializeAttributes($attributes = [])
+    public function serializeAttributes(array $attributes = []): string
     {
         if (! empty((string)$this->video)) {
             $toSerialize = new Video($this->video);

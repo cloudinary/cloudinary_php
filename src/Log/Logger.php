@@ -27,42 +27,39 @@ use Monolog\Logger as Monolog;
  */
 class Logger
 {
-    const LOGGER_NAME = 'cloudinary';
+    public const LOGGER_NAME = 'cloudinary';
 
-    /**
-     * @var Monolog $entity
-     */
-    private $entity;
+    private Monolog $entity;
 
     /**
      * @var int $defaultLogLevel The default log level. Is set during initialization.
      */
-    private $defaultLogLevel;
+    private int $defaultLogLevel;
 
     /**
      * @var array Map of PHP error levels to PSR-3 log levels
      */
-    private $errorLevelMap = [
-        E_ERROR => Monolog::CRITICAL,
-        E_WARNING => Monolog::WARNING,
-        E_PARSE => Monolog::ALERT,
-        E_NOTICE => Monolog::NOTICE,
-        E_CORE_ERROR => Monolog::CRITICAL,
-        E_CORE_WARNING => Monolog::WARNING,
-        E_COMPILE_ERROR => Monolog::ALERT,
-        E_COMPILE_WARNING => Monolog::WARNING,
-        E_USER_ERROR => Monolog::ERROR,
-        E_USER_WARNING => Monolog::WARNING,
-        E_USER_NOTICE => Monolog::NOTICE,
-        E_RECOVERABLE_ERROR => Monolog::ERROR,
-        E_DEPRECATED => Monolog::NOTICE,
-        E_USER_DEPRECATED => Monolog::NOTICE,
-    ];
+    private array $errorLevelMap
+        = [
+            E_ERROR             => Monolog::CRITICAL,
+            E_WARNING           => Monolog::WARNING,
+            E_PARSE             => Monolog::ALERT,
+            E_NOTICE            => Monolog::NOTICE,
+            E_CORE_ERROR        => Monolog::CRITICAL,
+            E_CORE_WARNING      => Monolog::WARNING,
+            E_COMPILE_ERROR     => Monolog::ALERT,
+            E_COMPILE_WARNING   => Monolog::WARNING,
+            E_USER_ERROR        => Monolog::ERROR,
+            E_USER_WARNING      => Monolog::WARNING,
+            E_USER_NOTICE       => Monolog::NOTICE,
+            E_RECOVERABLE_ERROR => Monolog::ERROR,
+            E_DEPRECATED        => Monolog::NOTICE,
+            E_USER_DEPRECATED   => Monolog::NOTICE,
+        ];
 
     /**
      * Logger constructor.
      *
-     * @param LoggingConfig $config
      */
     public function __construct(LoggingConfig $config)
     {
@@ -70,12 +67,7 @@ class Logger
         $this->init($config);
     }
 
-    /**
-     * @param LoggingConfig $config
-     *
-     * @return null|Logger
-     */
-    private function init(LoggingConfig $config)
+    private function init(LoggingConfig $config): ?Logger
     {
         if ($config->enabled === false) {
             return null;
@@ -129,16 +121,10 @@ class Logger
         return $this;
     }
 
-    /**
-     * @param HandlerInterface $handler
-     *
-     * @return Monolog
-     */
-    private function addHandler(HandlerInterface $handler)
+    private function addHandler(HandlerInterface $handler): Monolog
     {
         foreach ($this->entity->getHandlers() as $entityHandler) {
-            if ($entityHandler instanceof HandlerInterface
-                && $entityHandler->getLevel() === $handler->getLevel()
+            if ($entityHandler instanceof HandlerInterface && $entityHandler->getLevel() === $handler->getLevel()
             ) {
                 return $this->entity;
             }
@@ -150,7 +136,7 @@ class Logger
     /**
      * @return HandlerInterface[]
      */
-    public function getHandlers()
+    public function getHandlers(): array
     {
         return $this->entity->getHandlers();
     }
@@ -158,9 +144,8 @@ class Logger
     /**
      * Gets TestHandler
      *
-     * @return null|TestHandler
      */
-    public function getTestHandler()
+    public function getTestHandler(): ?TestHandler
     {
         foreach ($this->entity->getHandlers() as $handler) {
             if ($handler instanceof TestHandler) {
@@ -172,13 +157,16 @@ class Logger
     }
 
     /**
-     * @param       $level
-     * @param       $message
-     * @param array $context
+     *  Adds a log record at an arbitrary level.
      *
-     * @return void
+     *  This method allows for compatibility with common interfaces.
+     *
+     * @param mixed              $level   The log level (a Monolog, PSR-3 or RFC 5424 level)
+     * @param string|\Stringable $message The log message
+     * @param array              $context The log context
+     *
      */
-    public function log($level, $message, array $context = [])
+    public function log(mixed $level, string|\Stringable $message, array $context = []): void
     {
         $this->entity->log($level, $message, $context);
     }
@@ -190,9 +178,9 @@ class Logger
      *
      * @return int PSR-3 log level
      */
-    public function getDefaultLogLevel()
+    public function getDefaultLogLevel(): int
     {
-        if ($this->defaultLogLevel !== null) {
+        if (isset($this->defaultLogLevel)) {
             return $this->defaultLogLevel;
         }
 

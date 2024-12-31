@@ -41,7 +41,7 @@ trait LoggerDecoratorTrait
      */
     public function log($level, string|\Stringable $message, array $context = []): void
     {
-        if ($this->logger === null) {
+        if (! isset($this->logger)) {
             $this->logger = LoggersList::instance()->getLogger($this->config);
         }
 

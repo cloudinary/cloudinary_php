@@ -26,37 +26,42 @@ trait AnalysisTrait
     /**
      * Analyzes an asset with the requested analysis type.
      *
-     * @param string $inputType    The type of input for the asset to analyze ('uri').
-     * @param string $analysisType The type of analysis to run ('google_tagging', 'captioning', 'fashion').
-     * @param string $uri          The URI of the asset to analyze.
-     * @param array  $parameters   Additional parameters.
+     * @param string      $inputType    The type of input for the asset to analyze ('uri').
+     * @param string      $analysisType The type of analysis to run ('google_tagging', 'captioning', 'fashion').
+     * @param string|null $uri          The URI of the asset to analyze.
+     * @param array|null  $parameters   Additional parameters.
      *
      *
-     * @return ApiResponse
      *
      * @see AdminApi::analyzeAsync()
      *
      * @see https://cloudinary.com/documentation/media_analyzer_api_reference
      */
-    public function analyze($inputType, $analysisType, $uri = null, $parameters = null)
-    {
+    public function analyze(
+        string $inputType,
+        string $analysisType,
+        ?string $uri = null,
+        ?array $parameters = null
+    ): ApiResponse {
         return $this->analyzeAsync($inputType, $analysisType, $uri, $parameters)->wait();
     }
 
     /**
      * Analyzes an asset with the requested analysis type asynchronously.
      *
-     * @param string $inputType    The type of input for the asset to analyze ('uri').
-     * @param string $analysisType The type of analysis to run ('google_tagging', 'captioning', 'fashion').
-     * @param string $uri          The URI of the asset to analyze.
-     * @param array  $parameters   Additional parameters.
-     *
-     * @return PromiseInterface
+     * @param string      $inputType    The type of input for the asset to analyze ('uri').
+     * @param string      $analysisType The type of analysis to run ('google_tagging', 'captioning', 'fashion').
+     * @param string|null $uri          The URI of the asset to analyze.
+     * @param array|null  $parameters   Additional parameters.
      *
      * @see https://cloudinary.com/documentation/media_analyzer_api_reference
      */
-    public function analyzeAsync($inputType, $analysisType, $uri = null, $parameters = null)
-    {
+    public function analyzeAsync(
+        string $inputType,
+        string $analysisType,
+        ?string $uri = null,
+        ?array $parameters = null
+    ): PromiseInterface {
         $endPoint = [ApiEndPoint::ANALYSIS, 'analyze', $inputType];
 
         $params = ['analysis_type' => $analysisType, 'uri' => $uri, 'parameters' => $parameters];

@@ -30,24 +30,24 @@ use UnexpectedValueException;
  */
 class AuthToken
 {
-    const UNSAFE = '/([ "#%&\'\/:;<=>?@\[\]^`{\|}~\\\])/';
+    public const     AUTH_TOKEN_NAME       = '__cld_token__';
 
-    const AUTH_TOKEN_NAME       = '__cld_token__';
-    const TOKEN_SEPARATOR       = '~';
-    const TOKEN_INNER_SEPARATOR = '=';
-    const TOKEN_ACL_SEPARATOR   = '!';
+    protected const UNSAFE = '/([ "#%&\'\/:;<=>?@\[\]^`{\|}~\\\])/';
+    protected const  TOKEN_SEPARATOR       = '~';
+    protected const  TOKEN_INNER_SEPARATOR = '=';
+    protected const  TOKEN_ACL_SEPARATOR   = '!';
 
     /**
      * @var AuthTokenConfig $config The configuration of the authentication token.
      */
-    public $config;
+    public AuthTokenConfig $config;
 
     /**
      * AuthToken constructor.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      */
-    public function __construct($configuration = null)
+    public function __construct(Configuration|array|string|null $configuration = null)
     {
         if ($configuration === null) {
             $configuration = Configuration::instance(); // get global instance
@@ -59,11 +59,10 @@ class AuthToken
     /**
      * AuthToken named constructor.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return AuthToken
      */
-    public static function fromJson($configuration = null)
+    public static function fromJson(Configuration|array|string|null $configuration = null): AuthToken
     {
         return new self($configuration);
     }
@@ -72,9 +71,8 @@ class AuthToken
     /**
      * Indicates whether according to the current configuration, AuthToken is enabled or not
      *
-     * @return bool
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return ! empty($this->config->key);
     }
@@ -84,9 +82,8 @@ class AuthToken
      *
      * @param mixed $configuration The configuration to set.
      *
-     * @return static
      */
-    public function configuration($configuration)
+    public function configuration(mixed $configuration): static
     {
         $tempConfiguration = new Configuration($configuration, false); // TODO: improve performance here
 
@@ -100,9 +97,8 @@ class AuthToken
      *
      * @param string $message The input to sign.
      *
-     * @return string
      */
-    private function digest($message)
+    private function digest(string $message): string
     {
         return hash_hmac('sha256', $message, pack('H*', $this->config->key));
     }
@@ -117,13 +113,13 @@ class AuthToken
      *      string acl - the ACL for the token.
      *      string url - the URL to authentication in case of a URL token.
      *
-     * @param null|string $path url path to sign. Ignored if acl is set.
+     * @param string|null $path url path to sign. Ignored if acl is set.
      *
-     * @return string The authorization token.
+     * @return ?string The authorization token.
      *
      * @throws UnexpectedValueException if neither expiration nor duration nor one of acl or url were provided.
      */
-    public function generate($path = null)
+    public function generate(?string $path = null): ?string
     {
         if (! $this->isEnabled()) {
             return null;
@@ -168,20 +164,20 @@ class AuthToken
      *
      * @return array including start time and expiration
      */
-    private function handleLifetime()
+    private function handleLifetime(): array
     {
         $start      = $this->config->startTime;
         $expiration = $this->config->expiration;
         $duration   = $this->config->duration;
 
-        if (! strcasecmp((string) $start, 'now')) {
+        if (! strcasecmp((string)$start, 'now')) {
             $start = Utils::unixTimeNow();
         } elseif (is_numeric($start)) {
             $start = (int)$start;
         }
         if (! isset($expiration)) {
             if (isset($duration)) {
-                $expiration = (isset($start) ? $start : Utils::unixTimeNow()) + $duration;
+                $expiration = ($start ?? Utils::unixTimeNow()) + $duration;
             } else {
                 throw new InvalidArgumentException('Must provide \'expiration\' or \'duration\'.');
             }
@@ -193,11 +189,11 @@ class AuthToken
     /**
      * Escapes a url using lowercase hex characters
      *
-     * @param string $url The URL to escape
+     * @param ?string $url The URL to escape
      *
      * @return string|string[]|null escaped URL
      */
-    private static function escapeToLower($url)
+    private static function escapeToLower(?string $url): array|string|null
     {
         if (empty($url)) {
             return $url;
@@ -205,9 +201,7 @@ class AuthToken
 
         return preg_replace_callback(
             self::UNSAFE,
-            static function ($match) {
-                return '%' . bin2hex($match[1]);
-            },
+            static fn($match) => '%' . bin2hex($match[1]),
             $url
         );
     }

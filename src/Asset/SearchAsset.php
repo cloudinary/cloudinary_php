@@ -16,6 +16,7 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\StringUtils;
 use Cloudinary\Utils;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class SearchAsset
@@ -30,14 +31,14 @@ class SearchAsset extends BaseAsset implements SearchQueryInterface
     /**
      * @var string $assetType The type of the asset.
      */
-    protected static $assetType = 'search';
+    protected static string $assetType = 'search';
 
     /**
      * SearchAsset constructor.
      *
-     * @param mixed $configuration
+     * @param mixed|null $configuration
      */
-    public function __construct($configuration = null)
+    public function __construct(mixed $configuration = null)
     {
         parent::__construct('', $configuration);
     }
@@ -45,14 +46,14 @@ class SearchAsset extends BaseAsset implements SearchQueryInterface
     /**
      * Creates a signed Search URL that can be used on the client side.
      *
-     * @param int    $ttl        The time to live in seconds.
-     * @param string $nextCursor Starting position.
+     * @param int|null    $ttl        The time to live in seconds.
+     * @param string|null $nextCursor Starting position.
      *
-     * @return string The resulting search URL.
+     * @return UriInterface The resulting search URL.
      *
      * @throws ConfigurationException
      */
-    public function toUrl($ttl = null, $nextCursor = null)
+    public function toUrl(?int $ttl = null, ?string $nextCursor = null): UriInterface
     {
         return $this->finalizeUrl(ArrayUtils::implodeUrl($this->prepareSearchUrlParts($ttl, $nextCursor)));
     }
@@ -60,11 +61,14 @@ class SearchAsset extends BaseAsset implements SearchQueryInterface
     /**
      * Internal pre-serialization helper.
      *
-     * @return array
+     * @param int|null    $ttl        The time to live in seconds.
+     * @param string|null $nextCursor Starting position.
+     *
+     * @return array URL parts.
      *
      * @internal
      */
-    protected function prepareSearchUrlParts($ttl, $nextCursor)
+    protected function prepareSearchUrlParts(?int $ttl = null, ?string $nextCursor = null): array
     {
         if ($ttl == null) {
             $ttl = $this->ttl;
@@ -95,10 +99,11 @@ class SearchAsset extends BaseAsset implements SearchQueryInterface
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      *
-     * @return string
-     * @throws ConfigurationException
+     * @param string $toSign Payload to sign.
+     *
+     * @return string the signature.
      */
-    private function finalizeSearchSignature($toSign)
+    private function finalizeSearchSignature(string $toSign): string
     {
         if (empty($this->cloud->apiSecret)) {
             throw new ConfigurationException('Must supply apiSecret');

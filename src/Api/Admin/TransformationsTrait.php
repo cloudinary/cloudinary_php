@@ -37,11 +37,10 @@ trait TransformationsTrait
      *                       <a href=https://cloudinary.com/documentation/admin_api#get_transformations
      *                       target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_transformations
      */
-    public function transformations($options = [])
+    public function transformations(array $options = []): ApiResponse
     {
         $params = ArrayUtils::whitelist($options, ['named', 'next_cursor', 'max_results']);
 
@@ -51,16 +50,15 @@ trait TransformationsTrait
     /**
      * Returns the details of a single transformation.
      *
-     * @param string|array $transformation The transformation. Can be either a string or an array of parameters.
+     * @param array|string $transformation The transformation. Can be either a string or an array of parameters.
      *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
      *                                     100,"crop" => "fill").
      * @param array        $options        The optional parameters. See the admin API documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_transformation_details
      */
-    public function transformation($transformation, $options = [])
+    public function transformation(array|string $transformation, array $options = []): ApiResponse
     {
         $params                   = ArrayUtils::whitelist($options, ['next_cursor', 'max_results']);
         $params['transformation'] = ApiUtils::serializeAssetTransformations($transformation);
@@ -74,20 +72,18 @@ trait TransformationsTrait
      * Deleting a transformation also deletes all the stored derived assets based on this transformation (up to 1000).
      * The method returns an error if there are more than 1000 derived assets based on this transformation.
      *
-     * @param string|array $transformation The transformation to delete. Can be either a string or an array of
+     * @param array|string $transformation The transformation to delete. Can be either a string or an array of
      *                                     parameters. For example:
      *                                     "w_150,h_100,c_fill" or ["width" => 150, "height" => 100,"crop" => "fill"].
      * @param array        $options        The optional parameters. See the
      *                                     <a href=https://cloudinary.com/documentation/admin_api#delete_transformation
      *                                     target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see  https://cloudinary.com/documentation/admin_api#delete_transformation
      */
-    public function deleteTransformation($transformation, $options = [])
+    public function deleteTransformation(array|string $transformation, array $options = []): ApiResponse
     {
         $params = ['transformation' => ApiUtils::serializeAssetTransformations($transformation)];
         if (isset($options['invalidate'])) {
@@ -100,20 +96,18 @@ trait TransformationsTrait
     /**
      * Updates the specified transformation.
      *
-     * @param string|array $transformation The transformation. Can be either a string or an array of parameters.
+     * @param array|string $transformation The transformation. Can be either a string or an array of parameters.
      *                                     For example: "w_150,h_100,c_fill" or array("width" => 150, "height" =>
      *                                     100,"crop" => "fill").
      * @param array        $updates        The update parameters. See the
      *                                     <a href=https://cloudinary.com/documentation/admin_api#update_transformation
      *                                     target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#update_transformation
      */
-    public function updateTransformation($transformation, $updates = [])
+    public function updateTransformation(array|string $transformation, array $updates = []): ApiResponse
     {
         $params = ArrayUtils::whitelist($updates, ['allowed_for_strict']);
         if (isset($updates['unsafe_update'])) {
@@ -130,14 +124,13 @@ trait TransformationsTrait
      * @see https://cloudinary.com/documentation/admin_api#create_named_transformation
      *
      * @param string                      $name       The name of the transformation.
-     * @param Transformation|string|array $definition The transformation. Can be either a defined Transformation,
+     * @param array|string|Transformation $definition The transformation. Can be either a defined Transformation,
      *                                                a string or an array of parameters. For example:
      *                                                "w_150,h_100,c_fill" or ["width" => 150, "height" => 100,
      *                                                "crop" => "fill"].
      *
-     * @return ApiResponse
      */
-    public function createTransformation($name, $definition)
+    public function createTransformation(string $name, Transformation|array|string $definition): ApiResponse
     {
         $params = [
             'name'           => $name,

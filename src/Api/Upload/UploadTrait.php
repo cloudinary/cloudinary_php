@@ -32,11 +32,10 @@ trait UploadTrait
      *
      * @param array $options The optional parameters. See the upload API documentation.
      *
-     * @return array
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#upload_method
      */
-    public static function buildUploadParams($options)
+    public static function buildUploadParams(array $options): array
     {
         $simpleParams = [
             'accessibility_analysis',
@@ -102,7 +101,7 @@ trait UploadTrait
             'responsive_breakpoints' => ApiUtils::serializeResponsiveBreakpoints(
                 ArrayUtils::get($options, 'responsive_breakpoints')
             ),
-            'tags'                   => ApiUtils::serializeSimpleApiParam((ArrayUtils::get($options, 'tags'))),
+            'tags'                   => ApiUtils::serializeSimpleApiParam(ArrayUtils::get($options, 'tags')),
             'transformation'         => ApiUtils::serializeTransformation($options),
         ];
 
@@ -123,16 +122,15 @@ trait UploadTrait
      *
      * This is an asynchronous function.
      *
-     * @param string $file    The asset to upload.
-     * @param array  $options The optional parameters. See the upload API documentation.
+     * @param mixed $file    The asset to upload.
+     * @param array $options The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#upload_method
      */
-    public function uploadAsync($file, $options = [])
+    public function uploadAsync(mixed $file, array $options = []): PromiseInterface
     {
         $params   = UploadApi::buildUploadParams($options);
         $endPoint = self::getUploadApiEndPoint(UploadEndPoint::UPLOAD, $options);
@@ -150,16 +148,15 @@ trait UploadTrait
      * * the remote FTP, HTTP or HTTPS URL address of an existing file
      * * a private storage bucket (S3 or Google Storage) URL of a whitelisted bucket
      *
-     * @param string $file    The asset to upload.
-     * @param array  $options The optional parameters. See the upload API documentation.
+     * @param mixed $file    The asset to upload.
+     * @param array $options The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#upload_method
      */
-    public function upload($file, $options = [])
+    public function upload(mixed $file, array $options = []): ApiResponse
     {
         return $this->uploadAsync($file, $options)->wait();
     }
@@ -175,13 +172,12 @@ trait UploadTrait
      * @param string $uploadPreset The name of an upload preset.
      * @param array  $options      The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      *
      * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#unsigned_upload_syntax
      */
-    public function unsignedUploadAsync($file, $uploadPreset, $options = [])
+    public function unsignedUploadAsync(string $file, string $uploadPreset, array $options = []): PromiseInterface
     {
         $options = array_merge($options, ['unsigned' => true, 'upload_preset' => $uploadPreset]);
 
@@ -197,13 +193,12 @@ trait UploadTrait
      * @param string $uploadPreset The name of an upload preset.
      * @param array  $options      The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      *
      * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/image_upload_api_reference#unsigned_upload_syntax
      */
-    public function unsignedUpload($file, $uploadPreset, $options = [])
+    public function unsignedUpload(string $file, string $uploadPreset, array $options = []): ApiResponse
     {
         return $this->unsignedUploadAsync($file, $uploadPreset, $options)->wait();
     }

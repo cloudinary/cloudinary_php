@@ -36,32 +36,35 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     use AssetDescriptorTrait;
     use AssetConfigTrait;
 
-    const IS_VOID = true;
+    public const IS_VOID = true;
 
     /**
      * @var Image $image The image of the tag.
      */
-    public $image;
+    public Image $image;
 
     /**
      * @var SrcSet $srcset The srcset of the tag.
      */
-    public $srcset;
+    public SrcSet $srcset;
 
     /**
-     * @var ImageTransformation $additionalTransformation Additional transformation to be applied on the tag image.
+     * @var ImageTransformation|null $additionalTransformation Additional transformation to be applied on the tag image.
      */
-    public $additionalTransformation;
+    public ?ImageTransformation $additionalTransformation;
 
     /**
      * BaseImageTag constructor.
      *
      * @param string|Image                    $source                   The Public ID or Image instance
-     * @param Configuration|string|array|null $configuration            The Configuration source.
-     * @param ImageTransformation             $additionalTransformation The additional transformation.
+     * @param array|string|Configuration|null $configuration            The Configuration source.
+     * @param ImageTransformation|null        $additionalTransformation The additional transformation.
      */
-    public function __construct($source, $configuration = null, $additionalTransformation = null)
-    {
+    public function __construct(
+        $source,
+        Configuration|array|string|null $configuration = null,
+        ?ImageTransformation $additionalTransformation = null
+    ) {
         parent::__construct($configuration);
 
         $this->image($source, $this->config);
@@ -77,9 +80,8 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return BaseImageTag
      */
-    public static function fromParams($source, $params = [])
+    public static function fromParams(string $source, array $params = []): BaseImageTag
     {
         $configuration = self::fromParamsDefaultConfig();
 
@@ -105,11 +107,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
         return (new static($image, $configuration))->setAttributes($tagAttributes);
     }
 
-    /**
-     * @param array         $params
-     * @param Configuration $configuration
-     */
-    public static function handleResponsive(&$params, $configuration)
+    public static function handleResponsive(array &$params, Configuration $configuration): void
     {
         if ($configuration->url->responsiveWidth) {
             $configuration->tag->responsive = true;
@@ -131,11 +129,10 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     /**
      * Imports (merges) the configuration.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public function importConfiguration($configuration)
+    public function importConfiguration(Configuration|array|string|null $configuration): static
     {
         parent::importConfiguration($configuration);
 
@@ -147,12 +144,11 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
     /**
      * Sets the image.
      *
-     * @param mixed         $image         The public ID or Image asset.
-     * @param Configuration $configuration The configuration instance.
+     * @param mixed              $image         The public ID or Image asset.
+     * @param Configuration|null $configuration The configuration instance.
      *
-     * @return static
      */
-    public function image($image, $configuration = null)
+    public function image(mixed $image, ?Configuration $configuration = null): static
     {
         if ($configuration === null) {
             $configuration = $this->config;
@@ -165,24 +161,26 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
 
     /**
      * Serializes to json.
-     *
-     * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         // TODO: Implement jsonSerialize() method.
+        return [];
     }
 
     /**
-     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing formats. For a detailed listing of all transformations, see the [Transformation Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
+     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions
+     * for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing
+     * formats. For a detailed listing of all transformations, see the [Transformation
+     * Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP
+     * reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
      *
      * Appended transformation is nested.
      *
      * @param CommonTransformation $transformation The transformation to add.
      *
-     * @return static
      */
-    public function addTransformation($transformation)
+    public function addTransformation($transformation): static
     {
         $this->image->addTransformation($transformation);
 
@@ -195,9 +193,8 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
      *                                               If BaseQualifier is provided, it is wrapped with action.
      *
-     * @return static
      */
-    public function addAction($action)
+    public function addAction($action): static
     {
         $this->image->addAction($action);
 
@@ -209,9 +206,8 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @param array|null $breakpoints The breakpoints.
      *
-     * @return $this
      */
-    public function breakpoints(?array $breakpoints = null)
+    public function breakpoints(?array $breakpoints = null): static
     {
         $this->srcset->breakpoints($breakpoints);
 
@@ -225,7 +221,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @return $this
      */
-    public function autoOptimalBreakpoints($autoOptimalBreakpoints = true)
+    public function autoOptimalBreakpoints(bool $autoOptimalBreakpoints = true): static
     {
         $this->srcset->autoOptimalBreakpoints($autoOptimalBreakpoints);
 
@@ -239,7 +235,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @return $this
      */
-    public function relativeWidth($relativeWidth = 1.0)
+    public function relativeWidth(float $relativeWidth = 1.0): static
     {
         $this->srcset->relativeWidth($relativeWidth);
 
@@ -258,7 +254,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @internal
      */
-    public function setAssetProperty($propertyName, $propertyValue)
+    public function setAssetProperty(string $propertyName, mixed $propertyValue): static
     {
         $this->image->setAssetProperty($propertyName, $propertyValue);
 
@@ -275,7 +271,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @internal
      */
-    public function setCloudConfig($configKey, $configValue)
+    public function setCloudConfig(string $configKey, mixed $configValue): static
     {
         $this->image->setCloudConfig($configKey, $configValue);
 
@@ -293,7 +289,7 @@ abstract class BaseImageTag extends BaseTag implements ImageTransformationInterf
      *
      * @internal
      */
-    public function setUrlConfig($configKey, $configValue)
+    public function setUrlConfig(string $configKey, mixed $configValue): static
     {
         $this->image->setUrlConfig($configKey, $configValue);
 

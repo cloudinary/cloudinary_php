@@ -26,22 +26,20 @@ abstract class Metadata implements JsonSerializable
      *
      * @return string[]
      */
-    abstract protected function getPropertyKeys();
+    abstract protected function getPropertyKeys(): array;
 
     /**
      * Returns data that should be serialized to JSON.
      * Serializes the object to a value that can be serialized natively by json_encode().
      *
-     * @return array
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $propertyKeys = $this->getPropertyKeys();
 
         $snakeCaseProperties = [];
         foreach ($propertyKeys as $key) {
-            $value = $this->{$key};
+            $value = $this->{$key} ?? null;
             if ($value === null) {
                 continue;
             }

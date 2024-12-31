@@ -21,27 +21,26 @@ use OutOfRangeException;
  */
 class Analytics
 {
-    const QUERY_KEY    = '_a';
-    const ALGO_VERSION = 'B'; // The version of the algorithm
-    const SDK_CODE     = 'A'; // Cloudinary PHP SDK
+    public const QUERY_KEY    = '_a';
+    protected const ALGO_VERSION = 'B'; // The version of the algorithm
+    protected const SDK_CODE     = 'A'; // Cloudinary PHP SDK
 
-    protected static $product = 'A'; // Official SDK. Set to 'B' for integrations.
-    protected static $sdkCode = self::SDK_CODE;
-    protected static $sdkVersion = Cloudinary::VERSION;
-    protected static $techVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+    protected static string $product = 'A'; // Official SDK. Set to 'B' for integrations.
+    protected static string $sdkCode = self::SDK_CODE;
+    protected static string $sdkVersion = Cloudinary::VERSION;
+    protected static string $techVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
-    const CHARS           = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    const BINARY_PAD_SIZE = 6;
+    protected const CHARS           = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    protected const BINARY_PAD_SIZE = 6;
 
-    protected static $charCodes = [];
-    protected static $signature;
+    protected static array $charCodes = [];
+    protected static ?string $signature;
 
     /**
      * Gets the SDK signature by encoding the SDK version and tech version.
      *
-     * @return string
      */
-    public static function sdkAnalyticsSignature()
+    public static function sdkAnalyticsSignature(): string
     {
         if (empty(static::$signature)) {
             // Lazily create $signature
@@ -64,11 +63,10 @@ class Analytics
      *
      * @param string $product The product code to set. 'A' is for the official SDK. 'B' for integrations.
      *
-     * @return void
      *
      * @internal
      */
-    public static function product($product)
+    public static function product(string $product): void
     {
         static::$product = $product;
     }
@@ -80,11 +78,10 @@ class Analytics
      *
      * @param string $sdkCode The SDK code to set.
      *
-     * @return void
      *
      * @internal
      */
-    public static function sdkCode($sdkCode)
+    public static function sdkCode(string $sdkCode): void
     {
         static::$sdkCode = $sdkCode;
     }
@@ -96,11 +93,10 @@ class Analytics
      *
      * @param string $sdkVersion The SDK version to set (MAJOR.MINOR.PATCH), for example: "1.0.0".
      *
-     * @return void
      *
      * @internal
      */
-    public static function sdkVersion($sdkVersion)
+    public static function sdkVersion(string $sdkVersion): void
     {
         static::$sdkVersion = $sdkVersion;
     }
@@ -112,11 +108,10 @@ class Analytics
      *
      * @param string $techVersion The tech version to set (MAJOR.MINOR), for example: "1.0".
      *
-     * @return void
      *
      * @internal
      */
-    public static function techVersion($techVersion)
+    public static function techVersion(string $techVersion): void
     {
         static::$techVersion = join('.', array_slice(explode('.', $techVersion), 0, 2));
     }
@@ -143,14 +138,13 @@ class Analytics
      *
      * @throws OutOfRangeException when version is larger than 43.21.26
      */
-    protected static function encodeVersion($version)
+    protected static function encodeVersion(string $version): string
     {
         $parts = explode('.', $version);
 
         $paddedParts = array_map(
-            static function ($part) {
-                return str_pad((int)$part, 2, "0", STR_PAD_LEFT); // this also zeros non-numeric values
-            },
+            // this also zeros non-numeric values
+            static fn($part) => str_pad((int)$part, 2, '0', STR_PAD_LEFT),
             $parts
         );
 
@@ -162,9 +156,7 @@ class Analytics
         }
 
         $encodedChars = array_map(
-            static function ($part) {
-                return self::getKey($part);
-            },
+            static fn($part) => self::getKey($part),
             str_split($paddedBinary, self::BINARY_PAD_SIZE)
         );
 
@@ -179,7 +171,7 @@ class Analytics
      *
      * @return array|mixed
      */
-    protected static function getKey($binaryValue)
+    protected static function getKey(string $binaryValue): mixed
     {
         if (empty(self::$charCodes)) {
             // let's lazily populate $charCodes
@@ -197,10 +189,9 @@ class Analytics
      * @param int $integer The input.
      * @param int $padNum  The num of padding chars.
      *
-     * @return string
      */
-    protected static function intToPaddedBin($integer, $padNum)
+    protected static function intToPaddedBin(int $integer, int $padNum): string
     {
-        return str_pad(decbin($integer), $padNum, "0", STR_PAD_LEFT);
+        return str_pad(decbin($integer), $padNum, '0', STR_PAD_LEFT);
     }
 }

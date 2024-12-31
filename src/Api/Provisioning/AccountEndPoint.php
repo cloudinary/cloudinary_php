@@ -17,8 +17,8 @@ namespace Cloudinary\Api\Provisioning;
  */
 class AccountEndPoint
 {
-    const USERS        = 'users';
-    const USER_GROUPS  = 'user_groups';
-    const SUB_ACCOUNTS = 'sub_accounts';
-    const ACCESS_KEYS  = 'access_keys';
+    public const USERS = 'users';
+    public const USER_GROUPS = 'user_groups';
+    public const SUB_ACCOUNTS = 'sub_accounts';
+    public const ACCESS_KEYS  = 'access_keys';
 }

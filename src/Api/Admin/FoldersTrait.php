@@ -35,11 +35,10 @@ trait FoldersTrait
      * <a href=https://cloudinary.com/documentation/admin_api#get_root_folders target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_root_folders
      */
-    public function rootFolders($options = [])
+    public function rootFolders(array $options = []): ApiResponse
     {
         $params = ArrayUtils::whitelist($options, ['next_cursor', 'max_results']);
 
@@ -55,13 +54,11 @@ trait FoldersTrait
      * @param array  $options      The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_subfolders target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#get_subfolders
      */
-    public function subFolders($ofFolderPath, $options = [])
+    public function subFolders(string $ofFolderPath, array $options = []): ApiResponse
     {
         $uri    = [ApiEndPoint::FOLDERS, $ofFolderPath];
         $params = ArrayUtils::whitelist($options, ['next_cursor', 'max_results']);
@@ -74,13 +71,11 @@ trait FoldersTrait
      *
      * @param string $path The full path of the new folder to create.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#create_folder
      */
-    public function createFolder($path)
+    public function createFolder(string $path): ApiResponse
     {
         $uri = [ApiEndPoint::FOLDERS, $path];
 
@@ -93,13 +88,11 @@ trait FoldersTrait
      * @param string $fromPath The full path of an existing asset folder.
      * @param string $toPath   The full path of the new asset folder.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#rename_folder
      */
-    public function renameFolder($fromPath, $toPath)
+    public function renameFolder(string $fromPath, string $toPath): ApiResponse
     {
         $uri = [ApiEndPoint::FOLDERS, $fromPath];
 
@@ -115,13 +108,11 @@ trait FoldersTrait
      *
      * @param string $path The full path of the empty folder to delete.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_folder
      */
-    public function deleteFolder($path)
+    public function deleteFolder(string $path): ApiResponse
     {
         $uri = [ApiEndPoint::FOLDERS, $path];
 

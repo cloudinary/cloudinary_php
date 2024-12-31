@@ -34,26 +34,26 @@ class Cloudinary
      *
      * @var string VERSION
      */
-    const VERSION = '2.14.0';
+    public const VERSION = '2.14.0';
 
     /**
      * Defines the Cloudinary cloud details and other global configuration options.
      *
      * @var Configuration $configuration
      */
-    public $configuration;
+    public Configuration $configuration;
 
     /**
      * @var TagBuilder $tagBuilder The TagBuilder object that includes builders for all tags.
      */
-    protected $tagBuilder;
+    protected TagBuilder $tagBuilder;
 
     /**
      * Cloudinary constructor.
      *
-     * @param Configuration|string|array|null $config The Configuration source.
+     * @param array|string|Configuration|null $config The Configuration source.
      */
-    public function __construct($config = null)
+    public function __construct(Configuration|array|string|null $config = null)
     {
         $this->configuration = new Configuration($config);
         $this->configuration->validate();
@@ -66,9 +66,8 @@ class Cloudinary
      *
      * @param string $publicId The public ID of the image.
      *
-     * @return Image
      */
-    public function image($publicId)
+    public function image(string $publicId): Image
     {
         return $this->createWithConfiguration($publicId, Image::class);
     }
@@ -78,9 +77,8 @@ class Cloudinary
      *
      * @param string|mixed $publicId The public ID of the video.
      *
-     * @return Video
      */
-    public function video($publicId)
+    public function video(mixed $publicId): Video
     {
         return $this->createWithConfiguration($publicId, Video::class);
     }
@@ -90,9 +88,8 @@ class Cloudinary
      *
      * @param string|mixed $publicId The public ID of the file.
      *
-     * @return File
      */
-    public function raw($publicId)
+    public function raw(mixed $publicId): File
     {
         return $this->createWithConfiguration($publicId, File::class);
     }
@@ -100,9 +97,8 @@ class Cloudinary
     /**
      * Returns an instance of the TagBuilder class that includes builders for all tags.
      *
-     * @return TagBuilder
      */
-    public function tag()
+    public function tag(): TagBuilder
     {
         return $this->tagBuilder;
     }
@@ -112,9 +108,8 @@ class Cloudinary
      *
      * @param string|mixed $publicId The public ID of the image.
      *
-     * @return ImageTag
      */
-    public function imageTag($publicId)
+    public function imageTag(mixed $publicId): ImageTag
     {
         return $this->createWithConfiguration($publicId, ImageTag::class);
     }
@@ -125,9 +120,8 @@ class Cloudinary
      * @param string|mixed $publicId The public ID of the video.
      * @param array|null   $sources  The tag src definition.
      *
-     * @return VideoTag
      */
-    public function videoTag($publicId, $sources = null)
+    public function videoTag(mixed $publicId, ?array $sources = null): VideoTag
     {
         $videoTag = ClassUtils::forceInstance($publicId, VideoTag::class, null, $sources, $this->configuration);
         $videoTag->importConfiguration($this->configuration);
@@ -138,9 +132,8 @@ class Cloudinary
     /**
      * Creates a new AdminApi instance using the current configuration instance.
      *
-     * @return AdminApi
      */
-    public function adminApi()
+    public function adminApi(): AdminApi
     {
         return new AdminApi($this->configuration);
     }
@@ -148,9 +141,8 @@ class Cloudinary
     /**
      * Creates a new UploadApi instance using the current configuration instance.
      *
-     * @return UploadApi
      */
-    public function uploadApi()
+    public function uploadApi(): UploadApi
     {
         return new UploadApi($this->configuration);
     }
@@ -158,9 +150,8 @@ class Cloudinary
     /**
      * Creates a new SearchApi instance using the current configuration instance.
      *
-     * @return SearchApi
      */
-    public function searchApi()
+    public function searchApi(): SearchApi
     {
         return new SearchApi($this->configuration);
     }
@@ -168,9 +159,8 @@ class Cloudinary
     /**
      * Creates a new SearchFoldersApi instance using the current configuration instance.
      *
-     * @return SearchFoldersApi
      */
-    public function searchFoldersApi()
+    public function searchFoldersApi(): SearchFoldersApi
     {
         return new SearchFoldersApi($this->configuration);
     }
@@ -182,11 +172,10 @@ class Cloudinary
      * @param string $className The class name of the object to create.
      * @param mixed  ...$args   Additional constructor arguments.
      *
-     * @return mixed
      *
      * @internal
      */
-    protected function createWithConfiguration($publicId, $className, ...$args)
+    protected function createWithConfiguration(mixed $publicId, string $className, ...$args): mixed
     {
         $instance = ClassUtils::forceInstance($publicId, $className, null, $this->configuration, ...$args);
         // this covers the case when an instance of the asset is provided and the line above is a no op.

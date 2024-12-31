@@ -17,11 +17,11 @@ namespace Cloudinary\Asset;
  */
 abstract class AssetType
 {
-    const KEY = 'resource_type';
+    public const KEY = 'resource_type';
 
-    const IMAGE = 'image';
-    const VIDEO = 'video';
-    const RAW   = 'raw';
-    const AUTO  = 'auto';
-    const ALL   = 'all';
+    public const IMAGE = 'image';
+    public const VIDEO = 'video';
+    public const RAW   = 'raw';
+    public const AUTO = 'auto';
+    public const ALL  = 'all';
 }

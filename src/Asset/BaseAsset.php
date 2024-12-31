@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Asset;
 
+use BadMethodCallException;
 use Cloudinary\ArrayUtils;
 use Cloudinary\ClassUtils;
 use Cloudinary\Configuration\AssetConfigTrait;
@@ -21,6 +22,7 @@ use Cloudinary\Exception\ConfigurationException;
 use Cloudinary\JsonUtils;
 use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class BaseAsset
@@ -32,7 +34,7 @@ abstract class BaseAsset implements AssetInterface
     /**
      * @var string $assetType The type of the asset.
      */
-    protected static $assetType;
+    protected static string $assetType;
 
     use AssetDescriptorTrait;
     use AssetConfigTrait;
@@ -46,12 +48,12 @@ abstract class BaseAsset implements AssetInterface
     /**
      * @var CloudConfig $cloud The configuration of the cloud.
      */
-    public $cloud;
+    public CloudConfig $cloud;
 
     /**
      * @var UrlConfig $urlConfig The configuration of the URL.
      */
-    public $urlConfig;
+    public UrlConfig $urlConfig;
 
     /**
      * @var AssetDescriptor $asset The asset descriptor.
@@ -66,15 +68,15 @@ abstract class BaseAsset implements AssetInterface
     /**
      * @var array A list of the delivery types that support SEO suffix.
      */
-    protected static $suffixSupportedDeliveryTypes = [];
+    protected static array $suffixSupportedDeliveryTypes = [];
 
     /**
      * BaseAsset constructor.
      *
-     * @param       $source
-     * @param mixed $configuration
+     * @param mixed      $source        The asset source.
+     * @param mixed|null $configuration Configuration.
      */
-    public function __construct($source, $configuration = null)
+    public function __construct(mixed $source, mixed $configuration = null)
     {
         if ($source instanceof $this) { // copy constructor
             $this->deepCopy($source);
@@ -113,13 +115,11 @@ abstract class BaseAsset implements AssetInterface
     /**
      * Internal method that returns the asset type of the current object.
      *
-     * @param self|string $class The instance of the object.
-     *
-     * @return string
+     * @param string|self $class The instance of the object.
      *
      * @internal
      */
-    protected static function getAssetType($class)
+    protected static function getAssetType(BaseAsset|string $class): string
     {
         if (isset(static::$assetType)) {
             return static::$assetType;
@@ -135,11 +135,10 @@ abstract class BaseAsset implements AssetInterface
     /**
      * Internal getter for a list of the delivery types that support SEO suffix.
      *
-     * @return array
      *
      * @internal
      */
-    public static function getSuffixSupportedDeliveryTypes()
+    public static function getSuffixSupportedDeliveryTypes(): array
     {
         return static::$suffixSupportedDeliveryTypes;
     }
@@ -151,7 +150,7 @@ abstract class BaseAsset implements AssetInterface
      *
      * @internal
      */
-    public function deepCopy($other)
+    public function deepCopy(BaseAsset $other): void
     {
         $this->cloud     = clone $other->cloud;
         $this->urlConfig = clone $other->urlConfig;
@@ -165,25 +164,24 @@ abstract class BaseAsset implements AssetInterface
      * Creates a new asset from the provided string (URL).
      *
      * @param string $string The asset string (URL).
-     *
-     * @return mixed
      */
-    public static function fromString($string)
+    public static function fromString(string $string): static
     {
         //TODO: Parse URL and populate the asset
+        throw new BadMethodCallException('Not Implemented');
     }
 
 
     /**
      * Creates a new asset from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public static function fromJson($json)
+    public static function fromJson(array|string $json): static
     {
-        //TODO: implement me
+        //TODO: Parse URL and populate the asset
+        throw new BadMethodCallException('Not Implemented');
     }
 
 
@@ -193,16 +191,15 @@ abstract class BaseAsset implements AssetInterface
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
      */
-    public static function fromParams($source, $params = [])
+    public static function fromParams(string $source, array $params): static
     {
         ArrayUtils::setDefaultValue($params, 'resource_type', static::getAssetType(static::class));
 
         $params['public_id'] = $source;
 
         $asset         = AssetDescriptor::fromParams($source, $params);
-        $configuration = (new Configuration(Configuration::instance()));
+        $configuration = new Configuration(Configuration::instance());
 
         # set v1 defaults
         if (! $configuration->url->isExplicitlySet('secure')) {
@@ -222,29 +219,26 @@ abstract class BaseAsset implements AssetInterface
      * Imports data from the provided string (URL).
      *
      * @param string $string The asset string (URL).
-     *
-     * @return mixed
      */
-    public function importString($string)
+    public function importString(string $string): static
     {
-        //TODO: implement me
+        throw new BadMethodCallException('Import string is not implemented');
     }
 
 
     /**
      * Imports data from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public function importJson($json)
+    public function importJson(array|string $json): static
     {
         try {
             $json = JsonUtils::decode($json);
 
-            $this->cloud     = CloudConfig::fromJson($json, true);
-            $this->urlConfig = UrlConfig::fromJson($json, false);
+            $this->cloud     = CloudConfig::fromJson($json);
+            $this->urlConfig = UrlConfig::fromJson($json);
             $this->asset     = AssetDescriptor::fromJson($json);
             $this->authToken = AuthToken::fromJson($json);
             $this->logging   = LoggingConfig::fromJson($json);
@@ -269,9 +263,8 @@ abstract class BaseAsset implements AssetInterface
      *
      * @param array|Configuration $configuration The configuration source.
      *
-     * @return static
      */
-    public function configuration($configuration)
+    public function configuration(Configuration|array $configuration): static
     {
         $tempConfiguration = new Configuration($configuration, true); // TODO: improve performance here
         $this->cloud       = $tempConfiguration->cloud;
@@ -286,9 +279,8 @@ abstract class BaseAsset implements AssetInterface
      *
      * @param array|Configuration $configuration The configuration source.
      *
-     * @return static
      */
-    public function importConfiguration($configuration)
+    public function importConfiguration(Configuration|array $configuration): static
     {
         $this->cloud->importJson($configuration->cloud->jsonSerialize());
         $this->urlConfig->importJson($configuration->url->jsonSerialize());
@@ -303,9 +295,8 @@ abstract class BaseAsset implements AssetInterface
      *
      * @param bool $omitExtension Indicates whether to exclude the file extension.
      *
-     * @return string
      */
-    public function getPublicId($omitExtension = false)
+    public function getPublicId(bool $omitExtension = false): string
     {
         return $this->asset->publicId($omitExtension);
     }
@@ -315,9 +306,8 @@ abstract class BaseAsset implements AssetInterface
      *
      * @param string $publicId The public ID.
      *
-     * @return static
      */
-    public function setPublicId($publicId)
+    public function setPublicId(string $publicId): static
     {
         $this->asset->setPublicId($publicId);
 
@@ -327,11 +317,10 @@ abstract class BaseAsset implements AssetInterface
     /**
      * Internal pre-serialization helper.
      *
-     * @return array
      *
      * @internal
      */
-    protected function prepareUrlParts()
+    protected function prepareUrlParts(): array
     {
         return [
             'distribution' => $this->finalizeDistribution(),
@@ -345,10 +334,9 @@ abstract class BaseAsset implements AssetInterface
     /**
      * Serializes to URL string.
      *
-     * @return string
      * @throws ConfigurationException
      */
-    public function toUrl()
+    public function toUrl(): UriInterface
     {
         return $this->finalizeUrl(ArrayUtils::implodeUrl($this->prepareUrlParts()));
     }
@@ -374,10 +362,8 @@ abstract class BaseAsset implements AssetInterface
      * @param bool $includeEmptyKeys     Whether to include empty keys.
      * @param bool $includeEmptySections Whether to include empty sections.
      *
-     * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize($includeEmptyKeys = false, $includeEmptySections = false)
+    public function jsonSerialize(bool $includeEmptyKeys = false, bool $includeEmptySections = false): array
     {
         $json = $this->asset->jsonSerialize($includeEmptyKeys);
 
@@ -402,7 +388,7 @@ abstract class BaseAsset implements AssetInterface
      *
      * @internal
      */
-    public function setAssetProperty($propertyName, $propertyValue)
+    public function setAssetProperty(string $propertyName, mixed $propertyValue): static
     {
         try {
             $this->asset->setAssetProperty($propertyName, $propertyValue);
@@ -432,7 +418,7 @@ abstract class BaseAsset implements AssetInterface
      *
      * @internal
      */
-    public function setCloudConfig($configKey, $configValue)
+    public function setCloudConfig(string $configKey, mixed $configValue): static
     {
         $this->cloud->setCloudConfig($configKey, $configValue);
 
@@ -449,7 +435,7 @@ abstract class BaseAsset implements AssetInterface
      *
      * @internal
      */
-    public function setUrlConfig($configKey, $configValue)
+    public function setUrlConfig(string $configKey, mixed $configValue): static
     {
         $this->urlConfig->setUrlConfig($configKey, $configValue);
 

@@ -19,37 +19,22 @@ use Cloudinary\Api\Metadata\Metadata;
  */
 abstract class MetadataValidation extends Metadata
 {
-    /**
-     * @var string $type
-     */
-    protected $type;
+    protected string $type;
 
-    /**
-     * @var int $min
-     */
-    protected $min;
+    protected int $min;
 
-    /**
-     * @var int $max
-     */
-    protected $max;
+    protected int $max;
 
-    /**
-     * @var bool $equals
-     */
-    protected $equals;
+    protected bool $equals;
 
-    /**
-     * @var mixed $value
-     */
-    protected $value;
+    protected mixed $value;
 
     /**
      * Gets the keys for all the properties of this object.
      *
      * @return string[]
      */
-    public function getPropertyKeys()
+    public function getPropertyKeys(): array
     {
         return ['type', 'min', 'max', 'equals', 'value'];
     }

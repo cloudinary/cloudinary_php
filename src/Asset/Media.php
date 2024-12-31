@@ -11,6 +11,7 @@
 namespace Cloudinary\Asset;
 
 use Cloudinary\ArrayUtils;
+use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\Transformation;
 use Cloudinary\Transformation\TransformationTrait;
 
@@ -26,13 +27,12 @@ class Media extends BaseMediaAsset
     /**
      * Internal method that returns the asset type of the current object.
      *
-     * @param self $class The instance of the object.
+     * @param string|BaseAsset $class The instance of the object.
      *
-     * @return string
      *
      * @internal
      */
-    protected static function getAssetType($class)
+    protected static function getAssetType(BaseAsset|string $class): string
     {
         if (isset(static::$assetType)) {
             return static::$assetType;
@@ -45,9 +45,8 @@ class Media extends BaseMediaAsset
     /**
      * Gets the transformation.
      *
-     * @return Transformation
      */
-    public function getTransformation()
+    public function getTransformation(): Transformation|CommonTransformation
     {
         if (! isset($this->transformation)) {
             $this->transformation = new Transformation();
@@ -59,11 +58,10 @@ class Media extends BaseMediaAsset
     /**
      * Internal getter for a list of the delivery types that support SEO suffix.
      *
-     * @return array
      *
      * @internal
      */
-    public static function getSuffixSupportedDeliveryTypes()
+    public static function getSuffixSupportedDeliveryTypes(): array
     {
         if (empty(self::$suffixSupportedDeliveryTypes)) {
             self::$suffixSupportedDeliveryTypes = ArrayUtils::mergeNonEmpty(
@@ -79,9 +77,8 @@ class Media extends BaseMediaAsset
     /**
      * Finalizes the asset type.
      *
-     * @return mixed
      */
-    protected function finalizeAssetType()
+    protected function finalizeAssetType(): ?string
     {
         return $this->finalizeShorten(parent::finalizeAssetType());
     }

@@ -24,11 +24,10 @@ trait VideoTagDeliveryTypeTrait
      * Creates the video tag of the uploaded video.
      *
      * @param string|mixed                    $publicId      The public ID of the asset.
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function upload($publicId, $configuration = null)
+    public static function upload(mixed $publicId, Configuration|array|string|null $configuration = null): static
     {
         return new static(Video::upload($publicId, $configuration));
     }
@@ -36,12 +35,11 @@ trait VideoTagDeliveryTypeTrait
     /**
      * Creates the video tag of the fetched (remote) video URL.
      *
-     * @param string $url The URL of the remote video.
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param string                          $url           The URL of the remote video.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public static function fetch($url, $configuration = null)
+    public static function fetch(string $url, Configuration|array|string|null $configuration = null): static
     {
         return new static(Video::fetch($url, $configuration));
     }

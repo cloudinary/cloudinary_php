@@ -21,20 +21,14 @@ use Psr\Log\LoggerInterface;
 class LoggerDecorator implements LoggerInterface
 {
     use LoggerDecoratorTrait;
-    /**
-     * @var Logger
-     */
-    private $logger;
 
-    /**
-     * @var LoggingConfig
-     */
-    private $config;
+    private ?Logger $logger;
+
+    private ?LoggingConfig $config;
 
     /**
      * LoggerDecorator constructor.
      *
-     * @param LoggingConfig|null $config
      */
     public function __construct(?LoggingConfig $config = null)
     {
@@ -44,15 +38,11 @@ class LoggerDecorator implements LoggerInterface
     /**
      * Get the TestHandler (if one has been defined)
      *
-     * @return TestHandler|null
      */
-    public function getTestHandler()
+    public function getTestHandler(): ?TestHandler
     {
-        if ($this->logger !== null) {
-            return $this->logger->getTestHandler();
-        }
+        return $this->logger?->getTestHandler();
 
-        return null;
     }
 
     /**
@@ -60,7 +50,7 @@ class LoggerDecorator implements LoggerInterface
      *
      * @return HandlerInterface[]
      */
-    public function getHandlers()
+    public function getHandlers(): array
     {
         if ($this->logger !== null) {
             return $this->logger->getHandlers();

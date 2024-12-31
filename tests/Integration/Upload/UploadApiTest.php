@@ -342,18 +342,19 @@ final class UploadApiTest extends IntegrationTestCase
             ]
         );
     }
+
     /**
      * @throws ApiError
      */
     public function testUploadIncomingTransformationWithFormat()
     {
-        $result = self::uploadTestAssetImage(array_merge(self::$INCOMING_TRANSFORMATION_ARR, ['format'=> 'gif']));
+        $result = self::uploadTestAssetImage(array_merge(self::$INCOMING_TRANSFORMATION_ARR, ['format' => 'gif']));
 
         self::assertValidAsset(
             $result,
             [
-                'width' => self::INCOMING_TRANSFORMATION_WIDTH,
-                'format' => 'gif'
+                'width'  => self::INCOMING_TRANSFORMATION_WIDTH,
+                'format' => 'gif',
             ]
         );
     }
@@ -537,7 +538,8 @@ final class UploadApiTest extends IntegrationTestCase
         self::assertArrayHasKey('responsive_breakpoints', $asset);
         self::assertEquals('a_90', $asset['responsive_breakpoints'][0]['transformation']);
         self::assertMatchesRegularExpression('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['url']);
-        self::assertMatchesRegularExpression('/\.gif$/', $asset['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
+        self::assertMatchesRegularExpression('/\.gif$/',
+            $asset['responsive_breakpoints'][0]['breakpoints'][0]['secure_url']);
     }
 
     /**
@@ -551,7 +553,7 @@ final class UploadApiTest extends IntegrationTestCase
             'http://cloudinary.com/images/old_logo.png',
             [
                 'filename_override' => 'overridden',
-                'tags' => self::$ASSET_TAGS
+                'tags'              => self::$ASSET_TAGS,
             ]
         );
 

@@ -31,31 +31,36 @@ use Cloudinary\Configuration\Configuration;
  */
 class PictureSourceTag extends BaseImageTag
 {
-    const NAME = 'source';
+    public const NAME = 'source';
 
-    const IS_VOID = true;
+    public const IS_VOID = true;
 
     /**
      * @var Media $media The media query attribute.
      */
-    protected $media;
+    protected Media $media;
 
     /**
      * @var mixed $sizes The sizes attribute.
      */
-    protected $sizes;
+    protected mixed $sizes;
 
     /**
      * PictureSourceTag constructor.
      *
      * @param string|Image                    $source        The Public ID or Image instance
-     * @param int                             $minWidth      The minimum width of the screen.
-     * @param int                             $maxWidth      The maximum width of the screen.
-     * @param string                          $sizes         The sizes attribute value.
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param int|null                        $minWidth      The minimum width of the screen.
+     * @param int|null                        $maxWidth      The maximum width of the screen.
+     * @param string|null                     $sizes         The sizes attribute value.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      */
-    public function __construct($source, $minWidth = null, $maxWidth = null, $sizes = null, $configuration = null)
-    {
+    public function __construct(
+        string|Image $source,
+        ?int $minWidth = null,
+        ?int $maxWidth = null,
+        ?string $sizes = null,
+        Configuration|array|string|null $configuration = null
+    ) {
         parent::__construct($source, $configuration);
 
         $this->sizes($sizes);
@@ -65,12 +70,11 @@ class PictureSourceTag extends BaseImageTag
     /**
      * Sets the media query $minWidth and $maxWidth.
      *
-     * @param int $minWidth The minimum width of the screen.
-     * @param int $maxWidth The maximum width of the screen.
+     * @param int|null $minWidth The minimum width of the screen.
+     * @param int|null $maxWidth The maximum width of the screen.
      *
-     * @return PictureSourceTag
      */
-    public function media($minWidth = null, $maxWidth = null)
+    public function media(?int $minWidth = null, ?int $maxWidth = null): static
     {
         $this->media = new Media($minWidth, $maxWidth, $this->config);
 
@@ -83,11 +87,9 @@ class PictureSourceTag extends BaseImageTag
     /**
      * Sets the sizes tag attribute.
      *
-     * @param string $sizes The sizes attribute value.
-     *
-     * @return PictureSourceTag
+     * @param string|null $sizes The sizes attribute value.
      */
-    public function sizes($sizes = null)
+    public function sizes(?string $sizes = null): static
     {
         if ($sizes && $this->config->responsiveBreakpoints->autoOptimalBreakpoints) {
             throw new \InvalidArgumentException("Invalid input: sizes must not be used with autoOptimalBreakpoints");
@@ -103,9 +105,8 @@ class PictureSourceTag extends BaseImageTag
      *
      * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
      *
-     * @return string
      */
-    public function serializeAttributes($attributes = [])
+    public function serializeAttributes(array $attributes = []): string
     {
         if (! empty($this->srcset->getBreakpoints())) {
             $attributes['srcset'] = $this->srcset;
