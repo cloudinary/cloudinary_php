@@ -1,3 +1,23 @@
+3.0.0 / 2025-01-06
+==================
+
+⚠ BREAKING CHANGES
+------------------------------
+
+  * Drop support for PHP `5.6` and `7.x`
+
+New functionality and features
+------------------------------
+
+  * Add support for `config` Admin API
+  * Add support for `defaultDisabled` parameter in `MetadataField`
+  * Add support for `renameFolder` Admin API
+
+Other Changes
+-------------
+
+  * Improve doc strings
+
 2.14.0 / 2024-05-07
 ==================
 
