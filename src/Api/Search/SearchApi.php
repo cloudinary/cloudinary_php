@@ -42,29 +42,29 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
     /**
      * @internal
      */
-    const ASSETS = 'resources';
+    protected const ASSETS = 'resources';
 
     /**
      * @var string The Search API endpoint.
      */
-    private $endpoint = self::ASSETS;
+    private string $endpoint = self::ASSETS;
 
     /**
      * @var ApiClient $apiClient The HTTP API client instance.
      */
-    protected $apiClient;
+    protected ApiClient $apiClient;
 
     /**
      * @var SearchAsset $searchAsset The Search Asset for building Search URL.
      */
-    protected $searchAsset;
+    protected SearchAsset $searchAsset;
 
     /**
      * SearchApi constructor.
      *
-     * @param mixed $configuration
+     * @param mixed|null $configuration
      */
-    public function __construct($configuration = null)
+    public function __construct(mixed $configuration = null)
     {
         $this->apiClient   = new ApiClient($configuration);
         $this->searchAsset = new SearchAsset($configuration);
@@ -77,7 +77,7 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
      *
      * @return $this
      */
-    public function endpoint($endpoint)
+    public function endpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
 
@@ -87,11 +87,10 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
     /**
      * Executes the search API request asynchronously.
      *
-     * @return PromiseInterface
      *
      * @api
      */
-    public function executeAsync()
+    public function executeAsync(): PromiseInterface
     {
         return $this->apiClient->postJsonAsync($this->getSearchEndpoint(), $this);
     }
@@ -99,13 +98,11 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
     /**
      * Executes the search API request.
      *
-     * @return ApiResponse
      *
-     * @throws GeneralError
      *
      * @api
      */
-    public function execute()
+    public function execute(): ApiResponse
     {
         return $this->executeAsync()->wait();
     }
@@ -113,12 +110,12 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
     /**
      * Creates a signed Search URL that can be used on the client side.
      *
-     * @param int    $ttl        The time to live in seconds.
-     * @param string $nextCursor Starting position.
+     * @param int|null    $ttl        The time to live in seconds.
+     * @param string|null $nextCursor Starting position.
      *
      * @return string The resulting search URL.
      */
-    public function toUrl($ttl = null, $nextCursor = null)
+    public function toUrl(?int $ttl = null, ?string $nextCursor = null): string
     {
         $this->searchAsset->query($this->asArray());
 
@@ -134,18 +131,15 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
      *
      * @return array data which can be serialized by <b>json_encode</b>
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->asArray();
     }
 
     /**
      * Returns the search endpoint.
-     *
-     * @return string
      */
-    private function getSearchEndpoint()
+    private function getSearchEndpoint(): string
     {
         return "{$this->endpoint}/search";
     }

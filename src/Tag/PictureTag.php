@@ -34,26 +34,26 @@ class PictureTag extends BaseTag
 {
     use ImageTagDeliveryTypeTrait;
 
-    const NAME = 'picture';
+    public const NAME = 'picture';
 
     /**
      * @var ImageTag $imageTag The fallback image tag of the picture tag.
      */
-    public $imageTag;
+    public ImageTag $imageTag;
 
     /**
      * @var array of PictureSourceTag $sources
      */
-    public $sources;
+    public array $sources;
 
     /**
      * PictureTag constructor.
      *
-     * @param string|Image  $source        The public ID or Image instance.
-     * @param array         $sources       The sources definitions.
-     * @param Configuration $configuration The configuration instance.
+     * @param string|Image       $source        The public ID or Image instance.
+     * @param array              $sources       The sources definitions.
+     * @param Configuration|null $configuration The configuration instance.
      */
-    public function __construct($source, $sources, $configuration = null)
+    public function __construct($source, array $sources, ?Configuration $configuration = null)
     {
         parent::__construct($configuration);
 
@@ -65,11 +65,10 @@ class PictureTag extends BaseTag
     /**
      * Sets the image of the picture.
      *
-     * @param mixed         $image         The public ID or Image asset.
+     * @param mixed $image The public ID or Image asset.
      *
-     * @return static
      */
-    public function image($image)
+    public function image(mixed $image): static
     {
         $this->imageTag = new ImageTag(new Image($image, $this->config), $this->config);
 
@@ -81,15 +80,14 @@ class PictureTag extends BaseTag
      *
      * @param array $sourcesDefinitions The definitions of the sources.
      *
-     * @return static
      */
-    public function setSources($sourcesDefinitions)
+    public function setSources(array $sourcesDefinitions): static
     {
         $this->sources = [];
 
         foreach ($sourcesDefinitions as $source) {
             if (is_array($source)) {
-                $sourceTag = new PictureSourceTag(ArrayUtils::get($source, 'image'), $this->config);
+                $sourceTag = new PictureSourceTag(ArrayUtils::get($source, 'image'), null, null, null, $this->config);
                 $sourceTag->media(ArrayUtils::get($source, 'min_width'), ArrayUtils::get($source, 'max_width'));
                 $sourceTag->sizes(ArrayUtils::get($source, 'sizes'));
 
@@ -108,9 +106,8 @@ class PictureTag extends BaseTag
      * @param array $additionalContent        The additional content.
      * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append).
      *
-     * @return string
      */
-    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
+    public function serializeContent(array $additionalContent = [], bool $prependAdditionalContent = false): string
     {
         return parent::serializeContent(
             ArrayUtils::mergeNonEmpty(

@@ -32,7 +32,7 @@ class UploadApiClient extends ApiClient
      *
      * @internal
      */
-    protected static function validateAuthorization($cloudConfig, $options)
+    protected static function validateAuthorization(CloudConfig $cloudConfig, array $options): void
     {
         if (!ArrayUtils::get($options, 'unsigned')) {
             parent::validateAuthorization($cloudConfig, $options);

@@ -20,13 +20,12 @@ trait UrlConfigTrait
     /**
      * Whether to automatically build URLs with multiple CDN sub-domains.
      *
-     * @param bool $cdnSubdomain
      *
      * @return $this
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#multiple_sub_domains
      */
-    public function cdnSubdomain($cdnSubdomain = true)
+    public function cdnSubdomain(bool $cdnSubdomain = true): static
     {
         return $this->setUrlConfig(UrlConfig::CDN_SUBDOMAIN, $cdnSubdomain);
     }
@@ -34,11 +33,10 @@ trait UrlConfigTrait
     /**
      * Whether to use secure CDN sub-domain.
      *
-     * @param bool $secureCdnSubdomain
      *
      * @return $this
      */
-    public function secureCdnSubdomain($secureCdnSubdomain = true)
+    public function secureCdnSubdomain(bool $secureCdnSubdomain = true): static
     {
         return $this->setUrlConfig(UrlConfig::SECURE_CDN_SUBDOMAIN, $secureCdnSubdomain);
     }
@@ -48,13 +46,12 @@ trait UrlConfigTrait
      *
      * Relevant only for Advanced plan users that have a private CDN distribution and a custom CNAME.
      *
-     * @param string $cname
      *
      * @return $this
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      *
      */
-    public function cname($cname)
+    public function cname(string $cname): static
     {
         return $this->setUrlConfig(UrlConfig::CNAME, $cname);
     }
@@ -62,11 +59,10 @@ trait UrlConfigTrait
     /**
      * Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
      *
-     * @param bool $secure
      *
      * @return $this
      */
-    public function secure($secure = true)
+    public function secure(bool $secure = true): static
     {
         return $this->setUrlConfig(UrlConfig::SECURE, $secure);
     }
@@ -82,7 +78,7 @@ trait UrlConfigTrait
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      *
      */
-    public function secureCname($secureCname)
+    public function secureCname(string $secureCname): static
     {
         return $this->setUrlConfig(UrlConfig::SECURE_CNAME, $secureCname);
     }
@@ -90,14 +86,13 @@ trait UrlConfigTrait
     /**
      * Set this parameter to true if you are an Advanced plan user with a private CDN distribution.
      *
-     * @param bool $privateCdn
      *
      * @return $this
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      *
      */
-    public function privateCdn($privateCdn = true)
+    public function privateCdn(bool $privateCdn = true): static
     {
         return $this->setUrlConfig(UrlConfig::PRIVATE_CDN, $privateCdn);
     }
@@ -105,11 +100,10 @@ trait UrlConfigTrait
     /**
      * Set to true to create a signed Cloudinary URL.
      *
-     * @param bool $signUrl
      *
      * @return $this
      */
-    public function signUrl($signUrl = true)
+    public function signUrl(?bool $signUrl = true): static
     {
         return $this->setUrlConfig(UrlConfig::SIGN_URL, $signUrl);
     }
@@ -117,13 +111,12 @@ trait UrlConfigTrait
     /**
      * Setting both this and signUrl to true will sign the URL using the first 32 characters of a SHA-256 hash.
      *
-     * @param bool $longUrlSignature
      *
      * @return $this
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      */
-    public function longUrlSignature($longUrlSignature = true)
+    public function longUrlSignature(bool $longUrlSignature = true): static
     {
         return $this->setUrlConfig(UrlConfig::LONG_URL_SIGNATURE, $longUrlSignature);
     }
@@ -131,11 +124,10 @@ trait UrlConfigTrait
     /**
      * Set to true to use shorten asset type.
      *
-     * @param bool $shorten
      *
      * @return $this
      */
-    public function shorten($shorten = true)
+    public function shorten(bool $shorten = true): static
     {
         return $this->setUrlConfig(UrlConfig::SHORTEN, $shorten);
     }
@@ -143,14 +135,13 @@ trait UrlConfigTrait
     /**
      * Set to true to omit type and resource_type in the URL.
      *
-     * @param bool $useRootPath
      *
      * @return $this
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#root_path_urls
      *
      */
-    public function useRootPath($useRootPath = true)
+    public function useRootPath(bool $useRootPath = true): static
     {
         return $this->setUrlConfig(UrlConfig::USE_ROOT_PATH, $useRootPath);
     }
@@ -158,11 +149,10 @@ trait UrlConfigTrait
     /**
      * Set to false to omit default version string for assets in folders in the delivery URL.
      *
-     * @param bool $forceVersion
      *
      * @return $this
      */
-    public function forceVersion($forceVersion = true)
+    public function forceVersion(bool $forceVersion = true): static
     {
         return $this->setUrlConfig(UrlConfig::FORCE_VERSION, $forceVersion);
     }
@@ -174,7 +164,7 @@ trait UrlConfigTrait
      *
      * @return $this
      */
-    public function analytics($analytics = true)
+    public function analytics(bool $analytics = true): static
     {
         return $this->setUrlConfig(UrlConfig::ANALYTICS, $analytics);
     }
@@ -189,5 +179,5 @@ trait UrlConfigTrait
      *
      * @internal
      */
-    abstract public function setUrlConfig($configKey, $configValue);
+    abstract public function setUrlConfig(string $configKey, mixed $configValue): static;
 }

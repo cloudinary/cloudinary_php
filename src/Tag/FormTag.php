@@ -31,12 +31,12 @@ use Cloudinary\ArrayUtils;
  */
 class FormTag extends BaseConfigurableApiTag
 {
-    const NAME = 'form';
+    public const NAME = 'form';
 
     /**
      * @var array $attributes An array of tag attributes.
      */
-    protected $attributes = [
+    protected array $attributes = [
         'enctype' => 'multipart/form-data',
         'method'  => HttpMethod::POST,
     ];
@@ -46,11 +46,9 @@ class FormTag extends BaseConfigurableApiTag
      *
      * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
      *
-     * @return string
-     *
      * @internal
      */
-    public function serializeAttributes($attributes = [])
+    public function serializeAttributes(array $attributes = []): string
     {
         $attributes['action'] = $this->uploadApi->getUploadUrl($this->assetType);
 
@@ -71,17 +69,16 @@ class FormTag extends BaseConfigurableApiTag
      * @param array $additionalContent        The additional content.
      * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append).
      *
-     * @return string
      *
      * @internal
      */
-    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
+    public function serializeContent(array $additionalContent = [], bool $prependAdditionalContent = false): string
     {
         $inputTags    = [];
         $uploadParams = $this->getUploadParams();
 
         foreach ($uploadParams as $key => $value) {
-            $inputTags[] = (string)(new FormInputTag($key, $value));
+            $inputTags[] = (string)new FormInputTag($key, $value);
         }
 
         return parent::serializeContent(

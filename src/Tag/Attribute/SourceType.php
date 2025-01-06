@@ -22,34 +22,34 @@ use Cloudinary\Transformation\Format;
  */
 class SourceType
 {
-    const MEDIA_TYPE_VIDEO = 'video';
-    const MEDIA_TYPE_AUDIO = 'audio';
+    public const MEDIA_TYPE_VIDEO = 'video';
+    public const MEDIA_TYPE_AUDIO = 'audio';
 
     /**
-     * @var string $mediaType The media type. Can be self::MEDIA_TYPE_VIDEO or self::MEDIA_TYPE_AUDIO.
+     * @var string|null $mediaType The media type. Can be self::MEDIA_TYPE_VIDEO or self::MEDIA_TYPE_AUDIO.
      */
-    protected $mediaType;
+    protected ?string $mediaType;
 
     /**
-     * @var string $type The type(format) of the source.
+     * @var string|null $type The type(format) of the source.
      */
-    public $type;
+    public ?string $type;
 
     /**
      * @var array $codecs The codecs.
      */
-    public $codecs = [];
+    public array $codecs = [];
 
-    public static $typeOverrides = [Format::OGV => VideoSourceType::OGG];
+    public static array $typeOverrides = [Format::OGV => VideoSourceType::OGG];
 
     /**
      * SourceType constructor.
      *
-     * @param string            $mediaType The media type. Can be self::MEDIA_TYPE_VIDEO or self::MEDIA_TYPE_AUDIO.
-     * @param string            $type      The type(format) of the source.
-     * @param string|array|null $codecs    The codecs.
+     * @param string|null       $mediaType The media type. Can be self::MEDIA_TYPE_VIDEO or self::MEDIA_TYPE_AUDIO.
+     * @param string|null       $type      The type(format) of the source.
+     * @param array|string|null $codecs    The codecs.
      */
-    public function __construct($mediaType = null, $type = null, $codecs = null)
+    public function __construct(?string $mediaType = null, ?string $type = null, array|string|null $codecs = null)
     {
         $this->mediaType = $mediaType;
         $this->type      = $type;

@@ -17,12 +17,12 @@ namespace Cloudinary\Api\Metadata\Validators;
  */
 class AndValidator extends MetadataValidation
 {
-    const RULE_AND = 'and';
+    protected const RULE_AND = 'and';
 
     /**
      * @var MetadataValidation[]
      */
-    protected $rules;
+    protected array $rules;
 
     /**
      * Create a new instance of the validator with the given rules.
@@ -40,7 +40,7 @@ class AndValidator extends MetadataValidation
      *
      * @return string[]
      */
-    public function getPropertyKeys()
+    public function getPropertyKeys(): array
     {
         return array_merge(parent::getPropertyKeys(), ['rules']);
     }

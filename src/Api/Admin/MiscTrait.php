@@ -30,13 +30,12 @@ trait MiscTrait
     /**
      * Tests the reachability of the Cloudinary API.
      *
-     * @return ApiResponse
      *
      * @see AdminApi::pingAsync()
      *
      * @see https://cloudinary.com/documentation/admin_api#ping
      */
-    public function ping()
+    public function ping(): ApiResponse
     {
         return $this->pingAsync()->wait();
     }
@@ -44,11 +43,10 @@ trait MiscTrait
     /**
      * Tests the reachability of the Cloudinary API asynchronously.
      *
-     * @return PromiseInterface
      *
      * @see https://cloudinary.com/documentation/admin_api#ping
      */
-    public function pingAsync()
+    public function pingAsync(): PromiseInterface
     {
         return $this->apiClient->getAsync(ApiEndPoint::PING);
     }
@@ -60,11 +58,10 @@ trait MiscTrait
      *
      * @param array $options The optional parameters for the API request.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#config
      */
-    public function config($options = [])
+    public function config(array $options = []): ApiResponse
     {
         $params = ArrayUtils::whitelist($options, ['settings']);
 
@@ -81,13 +78,11 @@ trait MiscTrait
      * @param array $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#usage target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#usage
      */
-    public function usage($options = [])
+    public function usage(array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::USAGE, Utils::formatDate(ArrayUtils::get($options, 'date'))];
 
@@ -101,13 +96,11 @@ trait MiscTrait
      * @param array $options The optional parameters. See the
      * <a href=https://cloudinary.com/documentation/admin_api#get_tags target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#get_tags
      */
-    public function tags($options = [])
+    public function tags(array $options = []): ApiResponse
     {
         $assetType = ArrayUtils::get($options, AssetType::KEY, AssetType::IMAGE);
         $uri       = [ApiEndPoint::TAGS, $assetType];

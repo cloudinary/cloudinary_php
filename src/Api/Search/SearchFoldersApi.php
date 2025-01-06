@@ -23,14 +23,14 @@ class SearchFoldersApi extends SearchApi
     /**
      * @internal
      */
-    const FOLDERS = 'folders';
+    protected const FOLDERS = 'folders';
 
     /**
      * SearchFoldersApi constructor.
      *
-     * @param mixed $configuration
+     * @param mixed|null $configuration
      */
-    public function __construct($configuration = null)
+    public function __construct(mixed $configuration = null)
     {
         parent::__construct($configuration);
 

@@ -16,7 +16,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const OK = 200;
+    public const OK = 200;
 
 
     /**
@@ -29,7 +29,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const BAD_REQUEST = 400;
+    public const BAD_REQUEST = 400;
 
     /**
      * The 401 (Unauthorized) status code indicates that the request has not
@@ -42,7 +42,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const UNAUTHORIZED = 401;
+    public const UNAUTHORIZED = 401;
 
     /**
      * The 403 (Forbidden) status code indicates that the server understood the
@@ -54,7 +54,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const FORBIDDEN = 403;
+    public const FORBIDDEN = 403;
 
     /**
      * The 404 (Not Found) status code indicates that the origin server did not
@@ -65,7 +65,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const NOT_FOUND = 404;
+    public const NOT_FOUND = 404;
 
     /**
      * The 409 (Conflict) status code indicates that the request could not be
@@ -79,7 +79,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const CONFLICT = 409;
+    public const CONFLICT = 409;
 
     /**
      * Returned when you are being rate limited.
@@ -88,7 +88,7 @@ class HttpStatusCode
      *
      * @var int
      */
-    const ENHANCE_YOUR_CALM = 420;
+    public const ENHANCE_YOUR_CALM = 420;
 
     /**
      * The 500 (Internal Server Error) status code indicates that the server
@@ -99,6 +99,6 @@ class HttpStatusCode
      *
      * @var int
      */
-    const INTERNAL_SERVER_ERROR = 500;
+    public const INTERNAL_SERVER_ERROR = 500;
 
 }

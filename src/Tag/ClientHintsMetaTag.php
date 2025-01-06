@@ -24,17 +24,17 @@ class ClientHintsMetaTag extends BaseTag
     /**
      * @var string NAME Mandatory. The name of the tag.
      */
-    const NAME = 'meta';
+    public const NAME = 'meta';
 
     /**
      * @var bool IS_VOID Indicates whether the tag is a void (self-closed, without body) tag.
      */
-    const IS_VOID = true;
+    protected const IS_VOID = true;
 
     /**
      * @var array $attributes An array of tag attributes.
      */
-    protected $attributes = [
+    protected array $attributes = [
         'http-equiv' => 'Accept-CH',
         'content'    => 'DPR, Viewport-Width, Width',
     ];

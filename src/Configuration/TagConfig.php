@@ -28,50 +28,50 @@ class TagConfig extends BaseConfigSection
 {
     use TagConfigTrait;
 
-    const CONFIG_NAME = 'tag';
+    public const CONFIG_NAME = 'tag';
 
-    const DEFAULT_VIDEO_POSTER_FORMAT = Format::JPG;
-    const DEFAULT_QUOTES_TYPE         = BaseTag::DOUBLE_QUOTES;
-    const DEFAULT_CONTENT_DELIMITER   = "\n";
-    const DEFAULT_RELATIVE_WIDTH      = 1.0;
+    public const DEFAULT_VIDEO_POSTER_FORMAT = Format::JPG;
+    public const DEFAULT_QUOTES_TYPE         = BaseTag::DOUBLE_QUOTES;
+    public const DEFAULT_CONTENT_DELIMITER = "\n";
+    public const DEFAULT_RELATIVE_WIDTH    = 1.0;
 
     // Supported parameters
-    const RESPONSIVE             = 'responsive';
-    const RESPONSIVE_CLASS       = 'responsive_class';
-    const RESPONSIVE_PLACEHOLDER = 'responsive_placeholder';
-    const SIZES                  = 'sizes';
-    const RELATIVE_WIDTH         = 'relative_width';
-    const HIDPI                  = 'hidpi';
-    const CLIENT_HINTS           = 'client_hints';
-    const UNSIGNED_UPLOAD        = 'unsigned_upload';
-    const VIDEO_POSTER_FORMAT    = 'video_poster_format';
-    const USE_FETCH_FORMAT       = 'use_fetch_format';
-    const QUOTES_TYPE            = 'quotes_type';
-    const VOID_CLOSING_SLASH     = 'void_closing_slash';
-    const SORT_ATTRIBUTES        = 'sort_attributes';
-    const PREPEND_SRC_ATTRIBUTE  = 'prepend_src_attribute';
-    const CONTENT_DELIMITER      = 'content_delimiter';
+    public const RESPONSIVE = 'responsive';
+    public const RESPONSIVE_CLASS = 'responsive_class';
+    public const RESPONSIVE_PLACEHOLDER = 'responsive_placeholder';
+    public const SIZES                  = 'sizes';
+    public const RELATIVE_WIDTH  = 'relative_width';
+    public const HIDPI          = 'hidpi';
+    public const CLIENT_HINTS = 'client_hints';
+    public const UNSIGNED_UPLOAD = 'unsigned_upload';
+    public const VIDEO_POSTER_FORMAT = 'video_poster_format';
+    public const USE_FETCH_FORMAT    = 'use_fetch_format';
+    public const QUOTES_TYPE      = 'quotes_type';
+    public const VOID_CLOSING_SLASH = 'void_closing_slash';
+    public const SORT_ATTRIBUTES    = 'sort_attributes';
+    public const PREPEND_SRC_ATTRIBUTE = 'prepend_src_attribute';
+    public const CONTENT_DELIMITER     = 'content_delimiter';
 
     /**
      * Whether to generate responsive image tags.
      *
-     * @var bool $responsive
+     * @var ?bool $responsive
      */
-    public $responsive;
+    public ?bool $responsive = null;
 
     /**
      * The class of the responsive tag.
      *
-     * @var string $responsiveClass
+     * @var ?string $responsiveClass
      */
-    public $responsiveClass;
+    public ?string $responsiveClass = null;
 
     /**
      * The value of the 'src' attribute.
      *
-     * @var string $responsivePlaceholder
+     * @var ?string $responsivePlaceholder
      */
-    public $responsivePlaceholder;
+    public ?string $responsivePlaceholder = null;
 
     /**
      * Whether to automatically generate "sizes" attribute if not provided.
@@ -79,31 +79,31 @@ class TagConfig extends BaseConfigSection
      * @var bool|int|string $sizes
      *
      */
-    public $sizes;
+    public string|int|bool|null $sizes = null;
 
     /**
      * The percentage of the screen that the image occupies.
      *
      * Used for responsive breakpoints optimization.
      *
-     * @var float $relativeWidth Specify a percentage of the screen width (Range: 0.0 to 1.0)
+     * @var ?float $relativeWidth Specify a percentage of the screen width (Range: 0.0 to 1.0)
      *
      */
-    protected $relativeWidth;
+    protected ?float $relativeWidth = null;
 
     /**
      * Whether to use hi dpi.
      *
-     * @var bool $hidpi
+     * @var ?bool $hidpi
      */
-    public $hidpi;
+    public ?bool $hidpi = null;
 
     /**
      * Whether to use client hints.
      *
      * @var bool $clientHints
      */
-    public $clientHints;
+    public ?bool $clientHints = null;
 
     /**
      * Whether to perform unsigned upload in the UploadTag.
@@ -112,21 +112,21 @@ class TagConfig extends BaseConfigSection
      *
      * @see UploadTag
      */
-    public $unsignedUpload;
+    public ?bool $unsignedUpload = null;
 
     /**
      * Image format of the video poster.
      *
-     * @var string $videoPosterFormat
+     * @var ?string $videoPosterFormat
      */
-    protected $videoPosterFormat;
+    protected ?string $videoPosterFormat;
 
     /**
      * Whether to use fetch format transformation ("f_") instead of file extension.
      *
-     * @var string $useFetchFormat
+     * @var ?string $useFetchFormat
      */
-    public $useFetchFormat;
+    public ?string $useFetchFormat = null;
 
     /**
      * Sets the type of the quotes to use (single or double). Default: BaseTag::DOUBLE_QUOTES.
@@ -135,35 +135,35 @@ class TagConfig extends BaseConfigSection
      *
      * @see BaseTag::DOUBLE_QUOTES
      */
-    protected $quotesType;
+    protected string $quotesType;
 
     /**
      * Defines whether to add slash to the void tag ending, e.g. "/>" or simply ">".
      *
-     * @var bool $voidClosingSlash
+     * @var ?bool $voidClosingSlash
      */
-    public $voidClosingSlash;
+    public ?bool $voidClosingSlash = null;
 
     /**
      * Defines whether to sort attributes by keys alphabetically.
      *
      * @var bool $sortAttributes
      */
-    public $sortAttributes;
+    public ?bool $sortAttributes = null;
 
     /**
      * Defines whether to set "src" attribute first.
      *
-     * @var bool $prependSrcAttribute
+     * @var ?bool $prependSrcAttribute
      */
-    public $prependSrcAttribute;
+    public ?bool $prependSrcAttribute = null;
 
     /**
      * The delimiter between content items.
      *
-     * @var string $contentDelimiter
+     * @var ?string $contentDelimiter
      */
-    protected $contentDelimiter;
+    protected ?string $contentDelimiter = null;
 
     /**
      * Sets the Tag configuration key with the specified value.
@@ -175,7 +175,7 @@ class TagConfig extends BaseConfigSection
      *
      * @internal
      */
-    public function setTagConfig($configKey, $configValue)
+    public function setTagConfig($configKey, $configValue): static
     {
         return $this->setConfig($configKey, $configValue);
     }

@@ -15,9 +15,9 @@ namespace Cloudinary\Api\Upload;
  */
 class TagCommand
 {
-    const ADD           = 'add';
-    const REMOVE        = 'remove';
-    const REPLACE       = 'replace';
-    const SET_EXCLUSIVE = 'set_exclusive';
-    const REMOVE_ALL    = 'remove_all';
+    public const ADD = 'add';
+    public const REMOVE = 'remove';
+    public const REPLACE = 'replace';
+    public const SET_EXCLUSIVE = 'set_exclusive';
+    public const REMOVE_ALL    = 'remove_all';
 }

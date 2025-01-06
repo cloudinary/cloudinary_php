@@ -33,25 +33,27 @@ class AssetTransformation implements ComponentInterface
 {
     use TransformationTrait;
 
-    const DELIMITER = '/'; # delimiter between transformation and extension
+    protected const DELIMITER = '/'; # delimiter between transformation and extension
 
     /**
      * @var Transformation $transformation The asset transformation.
      */
-    protected $transformation;
+    protected mixed $transformation;
     /**
      * @var mixed|string|null The file extension, A.K.A format
      */
-    protected $extension;
+    protected mixed $extension;
 
     /**
      * AssetTransformation constructor.
      *
-     * @param Transformation|array $transformation The asset transformation.
-     * @param string               $extension      The file extension.
+     * @param CommonTransformation|array|string|null $transformation The asset transformation.
+     * @param string|null                            $extension      The file extension.
      */
-    public function __construct($transformation = null, $extension = null)
-    {
+    public function __construct(
+        CommonTransformation|array|string|null $transformation = null,
+        ?string $extension = null
+    ) {
         $this->transformation = ClassUtils::forceInstance($transformation, Transformation::class);
 
         if ($extension === null && is_array($transformation)) {
@@ -64,11 +66,11 @@ class AssetTransformation implements ComponentInterface
     /**
      * Sets the file extension.
      *
-     * @param string $extension The file extension.
+     * @param ?string $extension The file extension.
      *
      * @return $this
      */
-    public function extension($extension)
+    public function extension(?string $extension): static
     {
         $this->extension = $extension;
 
@@ -80,9 +82,8 @@ class AssetTransformation implements ComponentInterface
      *
      * @param string $string The asset string (URL).
      *
-     * @return mixed
      */
-    public static function fromString($string)
+    public static function fromString(string $string): mixed
     {
         throw new BadMethodCallException('Not Implemented');
     }
@@ -91,11 +92,10 @@ class AssetTransformation implements ComponentInterface
     /**
      * Creates a new asset from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public static function fromJson($json)
+    public static function fromJson(array|string $json): AssetTransformation
     {
         $new = new self('');
 
@@ -112,7 +112,7 @@ class AssetTransformation implements ComponentInterface
      *
      * @return static
      */
-    public static function fromParams($params)
+    public static function fromParams(array $params): self
     {
         return new self(Transformation::fromParams($params), ArrayUtils::get($params, 'format'));
     }
@@ -123,9 +123,8 @@ class AssetTransformation implements ComponentInterface
      *
      * @param string $string The asset string (URL).
      *
-     * @return mixed
      */
-    public function importString($string)
+    public function importString(string $string): mixed
     {
         throw new BadMethodCallException('Not Implemented');
     }
@@ -134,16 +133,15 @@ class AssetTransformation implements ComponentInterface
     /**
      * Imports data from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public function importJson($json)
+    public function importJson(array|string $json): static
     {
         $json = JsonUtils::decode($json);
 
-        if (! array_key_exists('asset_transformation', $json) ||
-            ! array_key_exists('transformation', $json['asset_transformation'])
+        if (! array_key_exists('asset_transformation', $json)
+            || ! array_key_exists('transformation', $json['asset_transformation'])
         ) {
             throw new InvalidArgumentException('Invalid asset transformation JSON');
         }
@@ -157,15 +155,18 @@ class AssetTransformation implements ComponentInterface
     }
 
     /**
-     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing formats. For a detailed listing of all transformations, see the [Transformation Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
+     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions
+     * for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing
+     * formats. For a detailed listing of all transformations, see the [Transformation
+     * Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP
+     * reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
      *
      * Appended transformation is nested.
      *
      * @param CommonTransformation $transformation The transformation to add.
      *
-     * @return static
      */
-    public function addTransformation($transformation)
+    public function addTransformation(CommonTransformation $transformation): static
     {
         $this->transformation->addTransformation($transformation);
 
@@ -178,9 +179,8 @@ class AssetTransformation implements ComponentInterface
      * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
      *                                               If BaseQualifier is provided, it is wrapped with action.
      *
-     * @return static
      */
-    public function addAction($action)
+    public function addAction(mixed $action): static
     {
         $this->transformation->addAction($action);
 
@@ -209,10 +209,8 @@ class AssetTransformation implements ComponentInterface
      *
      * @param bool $includeEmptyKeys Whether to include empty keys.
      *
-     * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize($includeEmptyKeys = false)
+    public function jsonSerialize(bool $includeEmptyKeys = false): array
     {
         $dataArr = [
             'transformation' => $this->transformation ? (string)$this->transformation : null, // FIXME: serialization

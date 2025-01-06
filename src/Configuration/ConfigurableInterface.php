@@ -20,45 +20,40 @@ interface ConfigurableInterface extends JsonSerializable
     /**
      * Creates a new instance using json string or an array as a source.
      *
-     * @param string|array $json Configuration json
+     * @param array|string $json Configuration json
      *
-     * @return static
      */
-    public static function fromJson($json);
+    public static function fromJson(array|string $json): static;
 
     /**
      * Creates a new instance using Cloudinary url as a source.
      *
      * @param string $cloudinaryUrl The Cloudinary url.
      *
-     * @return static
      */
-    public static function fromCloudinaryUrl($cloudinaryUrl);
+    public static function fromCloudinaryUrl(string $cloudinaryUrl): static;
 
     /**
      * Imports configuration from a json string or an array as a source.
      *
-     * @param string|array $json Configuration json
+     * @param array|string $json Configuration json
      *
-     * @return static
      */
-    public function importJson($json);
+    public function importJson(array|string $json): static;
 
     /**
      * Imports configuration from a Cloudinary url as a source.
      *
      * @param string $cloudinaryUrl The Cloudinary url.
      *
-     * @return static
      */
-    public function importCloudinaryUrl($cloudinaryUrl);
+    public function importCloudinaryUrl(string $cloudinaryUrl): static;
 
     /**
      * Serialises to a string representation.
      *
-     * @return string
      */
-    public function toString();
+    public function toString(): string;
 
     /**
      * Serialises to a string representation.
@@ -74,8 +69,11 @@ interface ConfigurableInterface extends JsonSerializable
      * @param bool $includeEmptyKeys     Whether to include keys without values.
      * @param bool $includeEmptySections Whether to include sections without keys with non-empty values.
      *
-     * @return mixed data which can be serialized by json_encode.
+     * @return array data which can be serialized by json_encode.
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize($includeSensitive = true, $includeEmptyKeys = false, $includeEmptySections = false);
+    public function jsonSerialize(
+        bool $includeSensitive = true,
+        bool $includeEmptyKeys = false,
+        bool $includeEmptySections = false
+    ): array;
 }

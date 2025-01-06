@@ -29,13 +29,14 @@ class HttpClient
     /**
      * @var Client $httpClient The HTTP client instance.
      */
-    protected $httpClient;
+    protected Client $httpClient;
 
     /**
      * HttpClient constructor.
-     * @param Configuration|null $configuration
+     *
+     * @param Configuration|null $configuration Configuration source.
      */
-    public function __construct($configuration = null)
+    public function __construct(?Configuration $configuration = null)
     {
         $this->httpClient = new Client();
 
@@ -51,12 +52,11 @@ class HttpClient
      *
      * @param string $url The url
      *
-     * @return mixed
      *
      * @throws Error
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getJson($url)
+    public function getJson(string $url): mixed
     {
         try {
             return self::parseJsonResponse($this->httpClient->get($url));
@@ -78,14 +78,13 @@ class HttpClient
      *
      * @param ResponseInterface $response Response from HTTP request to Cloudinary server
      *
-     * @return mixed
      *
      * @throws Error
      */
-    private static function parseJsonResponse($response)
+    private static function parseJsonResponse(ResponseInterface $response): mixed
     {
         try {
-            $responseJson = JsonUtils::decode($response->getBody(), true);
+            $responseJson = JsonUtils::decode($response->getBody());
         } catch (InvalidArgumentException $iae) {
             $message = sprintf(
                 'Error parsing server response (%s) - %s. Got - %s',

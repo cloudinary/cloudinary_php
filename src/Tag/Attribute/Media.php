@@ -12,7 +12,6 @@ namespace Cloudinary\Tag;
 
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Log\LoggerTrait;
-use \InvalidArgumentException;
 
 /**
  * Class Media
@@ -24,23 +23,23 @@ class Media
     use LoggerTrait;
 
     /**
-     * @var int $minWidth The minimum width of the screen.
+     * @var int|null $minWidth The minimum width of the screen.
      */
-    protected $minWidth;
+    protected ?int $minWidth;
 
     /**
-     * @var int $maxWidthThe maximum width of the screen.
+     * @var int|null $maxWidthThe maximum width of the screen.
      */
-    protected $maxWidth;
+    protected ?int $maxWidth;
 
     /**
      * Media constructor.
      *
-     * @param int           $minWidth The minimum width of the screen.
-     * @param int           $maxWidth The maximum width of the screen.
-     * @param Configuration $configuration
+     * @param int|null           $minWidth      The minimum width of the screen.
+     * @param int|null           $maxWidth      The maximum width of the screen.
+     * @param Configuration|null $configuration The Configuration source.
      */
-    public function __construct($minWidth = null, $maxWidth = null, $configuration = null)
+    public function __construct(?int $minWidth = null, ?int $maxWidth = null, ?Configuration $configuration = null)
     {
         $this->minWidth = $minWidth;
         $this->maxWidth = $maxWidth;

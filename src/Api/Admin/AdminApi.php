@@ -47,10 +47,10 @@ class AdminApi
     /**
      * AdminApi constructor.
      *
-     * @param mixed $configuration
+     * @param mixed|null $configuration
      *
      * @noinspection UnusedConstructorDependenciesInspection*/
-    public function __construct($configuration = null)
+    public function __construct(mixed $configuration = null)
     {
         $this->apiClient = new ApiClient($configuration);
 

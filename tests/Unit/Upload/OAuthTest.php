@@ -77,8 +77,8 @@ final class OAuthTest extends AssetTestCase
     {
         $config = new Configuration(Configuration::instance());
         $config->cloud->oauthToken(null);
-        $config->cloud->apiKey = null;
-        $config->cloud->apiSecret = null;
+        $config->cloud->apiKey = "";
+        $config->cloud->apiSecret = "";
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Must supply apiKey');

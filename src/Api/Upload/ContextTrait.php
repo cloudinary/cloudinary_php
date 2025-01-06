@@ -34,11 +34,13 @@ trait ContextTrait
      * @param array|string $publicIds The public IDs of the assets to add context metadata to.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      * @see https://cloudinary.com/documentation/image_upload_api_reference#context_method
      */
-    public function addContextAsync($context, $publicIds = [], $options = [])
-    {
+    public function addContextAsync(
+        array|string $context,
+        array|string $publicIds = [],
+        array $options = []
+    ): PromiseInterface {
         return $this->callContextApiAsync(ContextCommand::ADD, $context, $publicIds, $options);
     }
 
@@ -49,10 +51,9 @@ trait ContextTrait
      * @param array|string $publicIds The public IDs of the assets to add context metadata to.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      * @see https://cloudinary.com/documentation/image_upload_api_reference#context_method
      */
-    public function addContext($context, $publicIds = [], $options = [])
+    public function addContext(array|string $context, array|string $publicIds = [], array $options = []): ApiResponse
     {
         return $this->addContextAsync($context, $publicIds, $options)->wait();
     }
@@ -65,10 +66,9 @@ trait ContextTrait
      * @param array|string $publicIds The public IDs of the assets to remove context metadata from.
      * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return PromiseInterface
      * @see https://cloudinary.com/documentation/image_upload_api_reference#context_method
      */
-    public function removeAllContextAsync($publicIds = [], $options = [])
+    public function removeAllContextAsync(array|string $publicIds = [], array $options = []): PromiseInterface
     {
         return $this->callContextApiAsync(ContextCommand::REMOVE_ALL, null, $publicIds, $options);
     }
@@ -76,13 +76,12 @@ trait ContextTrait
     /**
      * Removes all context metadata from the specified assets.
      *
-     * @param array $publicIds The public IDs of the assets to remove context metadata from.
-     * @param array $options   The optional parameters. See the upload API documentation.
+     * @param array|string $publicIds The public IDs of the assets to remove context metadata from.
+     * @param array        $options   The optional parameters. See the upload API documentation.
      *
-     * @return ApiResponse
      * @see https://cloudinary.com/documentation/image_upload_api_reference#context_method
      */
-    public function removeAllContext($publicIds = [], $options = [])
+    public function removeAllContext(array|string $publicIds = [], array $options = []): ApiResponse
     {
         return $this->removeAllContextAsync($publicIds, $options)->wait();
     }
@@ -90,18 +89,21 @@ trait ContextTrait
     /**
      * Internal call to the context API.
      *
-     * @param string       $command   The command to perform. See ContextCommand class for available commands.
-     * @param array|string $context   The key-value pairs of context metadata.
-     * @param array|string $publicIds The public IDs of the assets to apply context to.
-     * @param array        $options   The optional parameters.
+     * @param string            $command   The command to perform. See ContextCommand class for available commands.
+     * @param array|string|null $context   The key-value pairs of context metadata.
+     * @param array|string      $publicIds The public IDs of the assets to apply context to.
+     * @param array             $options   The optional parameters.
      *
-     * @return PromiseInterface
      * @see ContextCommand
      *
      * @internal
      */
-    protected function callContextApiAsync($command, $context, $publicIds = [], $options = [])
-    {
+    protected function callContextApiAsync(
+        string $command,
+        array|string|null $context,
+        array|string $publicIds = [],
+        array $options = []
+    ): PromiseInterface {
         $params = [
             'context'    => ApiUtils::serializeContext($context),
             'public_ids' => ArrayUtils::build($publicIds),

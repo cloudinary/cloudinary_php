@@ -7,7 +7,7 @@ namespace Cloudinary\Asset;
  */
 trait SearchAssetTrait
 {
-    private $ttl = 300;
+    private int $ttl = 300;
 
     /**
      * Sets the time to live of the search URL.
@@ -18,7 +18,7 @@ trait SearchAssetTrait
      *
      * @api
      */
-    public function ttl($ttl)
+    public function ttl(int $ttl): static
     {
         $this->ttl = $ttl;
 

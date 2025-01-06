@@ -17,6 +17,6 @@ namespace Cloudinary\Asset\AccessControl;
  */
 class AccessType
 {
-    const ANONYMOUS = 'anonymous';
-    const TOKEN     = 'token';
+    public const ANONYMOUS = 'anonymous';
+    public const TOKEN = 'token';
 }

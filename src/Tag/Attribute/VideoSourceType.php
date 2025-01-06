@@ -19,17 +19,17 @@ namespace Cloudinary\Tag;
  */
 class VideoSourceType extends SourceType
 {
-    const MP4  = 'mp4';
-    const WEBM = 'webm';
-    const OGG  = 'ogg';
+    public const MP4  = 'mp4';
+    public const WEBM = 'webm';
+    public const OGG  = 'ogg';
 
     /**
      * VideoSourceType constructor.
      *
-     * @param string $type   The type of the video source.
-     * @param null   $codecs The codecs.
+     * @param ?string            $type   The type of the video source.
+     * @param array|string|null $codecs The codecs.
      */
-    public function __construct($type = null, $codecs = null)
+    public function __construct(?string $type = null, array|string|null $codecs = null)
     {
         parent::__construct(self::MEDIA_TYPE_VIDEO, $type, $codecs);
     }
@@ -37,11 +37,10 @@ class VideoSourceType extends SourceType
     /**
      * The mp4 video source type.
      *
-     * @param string|array $codecs The codecs.
+     * @param array|string|null $codecs The codecs.
      *
-     * @return VideoSourceType
      */
-    public static function mp4($codecs = null)
+    public static function mp4(array|string|null $codecs = null): VideoSourceType
     {
         return new VideoSourceType(self::MP4, $codecs);
     }
@@ -49,11 +48,10 @@ class VideoSourceType extends SourceType
     /**
      * The webm video source type.
      *
-     * @param string|array $codecs The codecs.
+     * @param array|string|null $codecs The codecs.
      *
-     * @return VideoSourceType
      */
-    public static function webm($codecs = null)
+    public static function webm(array|string|null $codecs = null): VideoSourceType
     {
         return new VideoSourceType(self::WEBM, $codecs);
     }
@@ -61,11 +59,10 @@ class VideoSourceType extends SourceType
     /**
      * The ogg video source type.
      *
-     * @param string|array $codecs The codecs.
+     * @param array|string|null $codecs The codecs.
      *
-     * @return VideoSourceType
      */
-    public static function ogg($codecs = null)
+    public static function ogg(array|string|null $codecs = null): VideoSourceType
     {
         return new VideoSourceType(self::OGG, $codecs);
     }

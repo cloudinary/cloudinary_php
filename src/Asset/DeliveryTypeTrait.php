@@ -21,11 +21,10 @@ trait DeliveryTypeTrait
      * Static builder for uploaded asset (actually a default constructor, put it here as an alias for consistency).
      *
      * @param string                          $publicId      The public ID of the asset.
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function upload($publicId, $configuration = null)
+    public static function upload(string $publicId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($publicId, $configuration, DeliveryType::UPLOAD);
     }
@@ -34,11 +33,10 @@ trait DeliveryTypeTrait
      * Static builder for private asset
      *
      * @param string                          $publicId      The public ID of the asset.
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function private_($publicId, $configuration = null)
+    public static function private_(string $publicId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($publicId, $configuration, DeliveryType::PRIVATE_DELIVERY);
     }
@@ -47,12 +45,13 @@ trait DeliveryTypeTrait
      * Static builder for authenticated asset
      *
      * @param string                          $publicId      The public ID of the asset.
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function authenticated($publicId, $configuration = null)
-    {
+    public static function authenticated(
+        string $publicId,
+        Configuration|array|string|null $configuration = null
+    ): static {
         return self::deliveryTypeBuilder($publicId, $configuration, DeliveryType::AUTHENTICATED);
     }
 
@@ -60,11 +59,10 @@ trait DeliveryTypeTrait
      * Static builder for fetch asset (from URL)
      *
      * @param string                          $url           The URL of the remote asset.
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function fetch($url, $configuration = null)
+    public static function fetch(string $url, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($url, $configuration, DeliveryType::FETCH);
     }
@@ -73,11 +71,10 @@ trait DeliveryTypeTrait
      * Static builder for facebook profile picture
      *
      * @param string                          $facebookId    Facebook user ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function facebook($facebookId, $configuration = null)
+    public static function facebook(string $facebookId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($facebookId, $configuration, DeliveryType::FACEBOOK);
     }
@@ -86,11 +83,10 @@ trait DeliveryTypeTrait
      * Static builder for gravatar profile picture
      *
      * @param string                          $email         The email of the gravatar user
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function gravatar($email, $configuration = null)
+    public static function gravatar(string $email, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder(md5(strtolower(trim($email))), $configuration, DeliveryType::GRAVATAR);
     }
@@ -99,11 +95,10 @@ trait DeliveryTypeTrait
      * Static builder for twitter profile picture by user ID
      *
      * @param string                          $userId        the User ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function twitter($userId, $configuration = null)
+    public static function twitter(string $userId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($userId, $configuration, DeliveryType::TWITTER);
     }
@@ -112,11 +107,10 @@ trait DeliveryTypeTrait
      * Static builder for twitter profile picture by username
      *
      * @param string                          $username      The username.
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function twitterName($username, $configuration = null)
+    public static function twitterName(string $username, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($username, $configuration, DeliveryType::TWITTER_NAME);
     }
@@ -125,11 +119,10 @@ trait DeliveryTypeTrait
      * Static builder for YouTube video thumbnail
      *
      * @param string                          $videoId       The video ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function youTube($videoId, $configuration = null)
+    public static function youTube(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($videoId, $configuration, DeliveryType::YOUTUBE);
     }
@@ -138,11 +131,10 @@ trait DeliveryTypeTrait
      * Static builder for hulu video thumbnail
      *
      * @param string                          $videoId       The video ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function hulu($videoId, $configuration = null)
+    public static function hulu(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($videoId, $configuration, DeliveryType::HULU);
     }
@@ -151,11 +143,10 @@ trait DeliveryTypeTrait
      * Static builder for vimeo video thumbnail
      *
      * @param string                          $videoId       The video ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function vimeo($videoId, $configuration = null)
+    public static function vimeo(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($videoId, $configuration, DeliveryType::VIMEO);
     }
@@ -164,11 +155,10 @@ trait DeliveryTypeTrait
      * Static builder for animoto video thumbnail
      *
      * @param string                          $videoId       The video ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function animoto($videoId, $configuration = null)
+    public static function animoto(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($videoId, $configuration, DeliveryType::ANIMOTO);
     }
@@ -177,12 +167,13 @@ trait DeliveryTypeTrait
      * Static builder for worldStarHipHop video thumbnail
      *
      * @param string                          $videoId       The video ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function worldStarHipHop($videoId, $configuration = null)
-    {
+    public static function worldStarHipHop(
+        string $videoId,
+        Configuration|array|string|null $configuration = null
+    ): static {
         return self::deliveryTypeBuilder($videoId, $configuration, DeliveryType::WORLDSTARHIPHOP);
     }
 
@@ -190,11 +181,10 @@ trait DeliveryTypeTrait
      * Static builder for dailyMotion video thumbnail
      *
      * @param string                          $videoId       The video ID
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function dailyMotion($videoId, $configuration = null)
+    public static function dailyMotion(string $videoId, Configuration|array|string|null $configuration = null): static
     {
         return self::deliveryTypeBuilder($videoId, $configuration, DeliveryType::DAILYMOTION);
     }
@@ -203,11 +193,10 @@ trait DeliveryTypeTrait
      * Static builder for sprite asset.
      *
      * @param string                          $tag           The tag of the assets
-     * @param Configuration|string|array|null $configuration Configuration source.
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      */
-    public static function sprite($tag, $configuration = null)
+    public static function sprite(string $tag, Configuration|array|string|null $configuration = null): static
     {
         $image = self::deliveryTypeBuilder($tag, $configuration, DeliveryType::SPRITE);
 
@@ -219,16 +208,16 @@ trait DeliveryTypeTrait
     /**
      * The actual constructor.
      *
-     * @param                                 $source
-     * @param Configuration|string|array|null $configuration Configuration source.
-     * @param                                 $deliveryType
+     * @param array|string|Configuration|null $configuration Configuration source.
      *
-     * @return static
      *
      * @internal
      */
-    protected static function deliveryTypeBuilder($source, $configuration, $deliveryType)
-    {
+    protected static function deliveryTypeBuilder(
+        $source,
+        Configuration|array|string|null $configuration,
+        $deliveryType
+    ): static {
         $asset = new static($source, $configuration);
 
         $asset->deliveryType($deliveryType);

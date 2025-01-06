@@ -18,29 +18,29 @@ namespace Cloudinary\Configuration;
  */
 class AuthTokenConfig extends BaseConfigSection
 {
-    const CONFIG_NAME = 'auth_token';
+    public const CONFIG_NAME = 'auth_token';
 
     // Supported parameters
-    const KEY        = 'key';
-    const IP         = 'ip';
-    const ACL        = 'acl';
-    const START_TIME = 'start_time';
-    const EXPIRATION = 'expiration';
-    const DURATION   = 'duration';
+    public const KEY = 'key';
+    public const IP  = 'ip';
+    public const ACL = 'acl';
+    public const START_TIME = 'start_time';
+    public const EXPIRATION = 'expiration';
+    public const DURATION   = 'duration';
 
     /**
      * (Required) – the token must be signed with the encryption key received from Cloudinary.
      *
-     * @var string
+     * @var ?string
      */
-    public $key;
+    public ?string $key = null;
 
     /**
      * (Optional) – only this IP address can access the resource.
      *
-     * @var string
+     * @var ?string
      */
-    public $ip;
+    public ?string $ip = null;
 
     /**
      * (Optional) – an Access Control List for limiting the allowed URL path to a specified pattern (e.g.,
@@ -52,28 +52,28 @@ class AuthTokenConfig extends BaseConfigSection
      * that can be added to a number of different URLs that share a common transformation. Without this parameter,
      * the pattern defaults to the full URL path of the requested asset.
      *
-     * @var string|array
+     * @var string|array|null
      */
-    public $acl;
+    public string|array|null $acl = null;
 
     /**
      * (Optional) – timestamp of the UNIX time when the URL becomes valid. Default value: the current time.
      *
-     * @var int
+     * @var ?int
      */
-    public $startTime;
+    public ?int $startTime = null;
 
     /**
      * (Optional) – timestamp of the UNIX time when the URL expires.
      *
-     * @var int
+     * @var ?int
      */
-    public $expiration;
+    public ?int $expiration = null;
 
     /**
      * (Optional) – the duration that the URL is valid in seconds (counted from start_time).
      *
-     * @var int
+     * @var ?int
      */
-    public $duration;
+    public ?int $duration = null;
 }

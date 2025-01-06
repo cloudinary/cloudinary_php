@@ -29,32 +29,32 @@ class AccessControlRule implements JsonSerializable
      *
      * @see AccessType for available types.
      */
-    protected $accessType;
+    protected string $accessType;
 
     /**
      * The start time.
      *
-     * @var DateTime $start
+     * @var ?DateTime $start
      */
-    protected $start;
+    protected ?DateTime $start;
 
     /**
      * The end time.
      *
-     * @var DateTime $end
+     * @var ?DateTime $end
      */
-    protected $end;
+    protected ?DateTime $end;
 
     /**
      * AccessControlRule constructor.
      *
-     * @param string   $accessType The type of the access. Use the constants defined in the AccessType class.
-     * @param DateTime $start      The start time.
-     * @param DateTime $end        The end time.
+     * @param string        $accessType The type of the access. Use the constants defined in the AccessType class.
+     * @param DateTime|null $start      The start time.
+     * @param DateTime|null $end        The end time.
      *
      * @see AccessType for available types.
      */
-    public function __construct($accessType, $start = null, $end = null)
+    public function __construct(string $accessType, ?DateTime $start = null, ?DateTime $end = null)
     {
         $this->accessType = $accessType;
         $this->start      = $start;
@@ -64,11 +64,8 @@ class AccessControlRule implements JsonSerializable
 
     /**
      * Serializes to JSON
-     *
-     * @return array|mixed
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return ArrayUtils::safeFilter(
             [

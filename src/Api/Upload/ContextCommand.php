@@ -15,6 +15,6 @@ namespace Cloudinary\Api\Upload;
  */
 class ContextCommand
 {
-    const ADD        = 'add';
-    const REMOVE_ALL = 'remove_all';
+    public const ADD = 'add';
+    public const REMOVE_ALL = 'remove_all';
 }

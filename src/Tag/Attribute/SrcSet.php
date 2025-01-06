@@ -31,7 +31,7 @@ class SrcSet
     /**
      * @var array RES_DISTRIBUTION The distribution of screen resolutions.
      */
-    const RES_DISTRIBUTION
+    public const RES_DISTRIBUTION
         = [
             1366,
             828,
@@ -47,46 +47,42 @@ class SrcSet
     /**
      * @var int DEFAULT_DPR_THRESHOLD The threshold for switching from DEFAULT_DPR to DPR 1.0.
      */
-    const DEFAULT_DPR_THRESHOLD = 768;
+    public const DEFAULT_DPR_THRESHOLD = 768;
     /**
      * @var float DEFAULT_DPR The default DPR for width below DEFAULT_DPR_THRESHOLD.
      */
-    const DEFAULT_DPR = 2.0;
+    public const DEFAULT_DPR = 2.0;
 
     use LoggerTrait;
 
     /**
-     * @var array The list of the breakpoints.
+     * @var ?array The list of the breakpoints.
      */
-    protected $breakpoints = [];
+    protected ?array $breakpoints = [];
 
     /**
      * @var Image $image The Image of the attribute.
      */
-    protected $image;
+    protected mixed $image;
 
     /**
      * @var ResponsiveBreakpointsConfig $responsiveBreakpointsConfig The configuration instance.
      */
-    protected $responsiveBreakpointsConfig;
+    protected ResponsiveBreakpointsConfig $responsiveBreakpointsConfig;
 
     /**
      * @var Transformation $transformation The srcset transformation.
      */
-    protected $transformation;
+    protected Transformation $transformation;
 
-    /**
-     * @var float
-     */
-    protected $relativeWidth;
+    protected float $relativeWidth;
 
     /**
      * SrcSet constructor.
      *
-     * @param               $image
-     * @param Configuration $configuration
+     * @param Configuration|null $configuration The Configuration source.
      */
-    public function __construct($image, $configuration = null)
+    public function __construct($image, ?Configuration $configuration = null)
     {
         $this->image                       = ClassUtils::forceInstance($image, Image::class, null, $configuration);
         $this->logging                     = $configuration->logging;
@@ -104,7 +100,7 @@ class SrcSet
      *
      * @return $this
      */
-    public function breakpoints(?array $breakpoints = null)
+    public function breakpoints(?array $breakpoints = null): static
     {
         $this->breakpoints = $breakpoints;
 
@@ -118,7 +114,7 @@ class SrcSet
      *
      * @return $this
      */
-    public function autoOptimalBreakpoints($autoOptimalBreakpoints = true)
+    public function autoOptimalBreakpoints(bool $autoOptimalBreakpoints = true): static
     {
         $this->responsiveBreakpointsConfig->autoOptimalBreakpoints = $autoOptimalBreakpoints;
 
@@ -132,7 +128,7 @@ class SrcSet
      *
      * @return $this
      */
-    public function relativeWidth($relativeWidth = 1.0)
+    public function relativeWidth(float $relativeWidth = 1.0): static
     {
         $this->relativeWidth = $relativeWidth;
 
@@ -146,13 +142,12 @@ class SrcSet
      * @param int $maxWidth  The maximum width needed for this image.
      * @param int $maxImages The number of breakpoints to use.
      *
-     * @return array
      */
-    private function calculateAutoOptimalBreakpoints($minWidth, $maxWidth, $maxImages)
+    private function calculateAutoOptimalBreakpoints(int $minWidth, int $maxWidth, int $maxImages): array
     {
-        list($minWidth, $maxWidth, $maxImages) = $this->validateInput($minWidth, $maxWidth, $maxImages);
+        [$minWidth, $maxWidth, $maxImages] = $this->validateInput($minWidth, $maxWidth, $maxImages);
 
-        list($physicalMinWidth, $physicalMaxWidth) = self::getPhysicalDimensions($minWidth, $maxWidth);
+        [$physicalMinWidth, $physicalMaxWidth] = self::getPhysicalDimensions($minWidth, $maxWidth);
 
         if ($physicalMinWidth === $physicalMaxWidth) {
             return [$physicalMaxWidth];
@@ -160,9 +155,7 @@ class SrcSet
 
         $validBreakpoints = array_filter(
             self::RES_DISTRIBUTION,
-            static function ($v) use ($physicalMinWidth, $physicalMaxWidth) {
-                return $v >= $physicalMinWidth && $v <= $physicalMaxWidth;
-            }
+            static fn($v) => $v >= $physicalMinWidth && $v <= $physicalMaxWidth
         );
 
         $res = self::collectFromGroup(
@@ -175,49 +168,39 @@ class SrcSet
 
         sort($res);
 
-        $res = array_map(function ($bp) {
-            return (int)ceil($bp * $this->relativeWidth);
-        }, $res);
-
-        return $res;
+        return array_map(fn($bp) => (int)ceil($bp * $this->relativeWidth), $res);
     }
 
     /**
-     * @param $minWidth
-     * @param $maxWidth
      *
      * @return int[]
      */
-    protected static function getPhysicalDimensions($minWidth, $maxWidth)
+    protected static function getPhysicalDimensions($minWidth, $maxWidth): array
     {
         $physicalMinWidth = self::getDprDimension($minWidth);
         $physicalMaxWidth = self::getDprDimension($maxWidth);
 
         if ($physicalMinWidth > $physicalMaxWidth) {
-            list($physicalMinWidth, $physicalMaxWidth) = [$physicalMaxWidth, $physicalMinWidth];
+            [$physicalMinWidth, $physicalMaxWidth] = [$physicalMaxWidth, $physicalMinWidth];
         }
 
         return [$physicalMinWidth, $physicalMaxWidth];
     }
 
-    /**
-     * @param int $dimension
-     *
-     * @return int
-     */
-    protected static function getDprDimension($dimension)
+    protected static function getDprDimension(int $dimension): float|int
     {
-        return $dimension < self::DEFAULT_DPR_THRESHOLD ? (int)$dimension * self::DEFAULT_DPR : $dimension;
+        return $dimension < self::DEFAULT_DPR_THRESHOLD ? $dimension * self::DEFAULT_DPR : $dimension;
     }
 
     /**
-     * @param     $group
-     * @param     $whitelist
-     * @param int $count
+     *  Collect breakpoints from group.
      *
-     * @return array
+     * @param array $group     The group of breakpoints.
+     * @param array $whitelist The whitelisted values.
+     * @param int   $count     The amount to collect.
+     *
      */
-    protected static function collectFromGroup($group, $whitelist, $count = 1)
+    protected static function collectFromGroup(array $group, array $whitelist, int $count = 1): array
     {
         $result = [];
 
@@ -226,7 +209,7 @@ class SrcSet
         }
 
         foreach ($group as $res) {
-            if (in_array($res, $whitelist, false) && ! in_array($res, $result, false)) {
+            if (in_array($res, $whitelist) && ! in_array($res, $result)) {
                 $result [] = $res;
                 $count--;
                 if (! $count) {
@@ -245,9 +228,8 @@ class SrcSet
      * @param int $maxWidth  The maximum width needed for this image.
      * @param int $maxImages The number of breakpoints to use.
      *
-     * @return array
      */
-    private function validateInput($minWidth, $maxWidth, $maxImages)
+    private function validateInput(int $minWidth, int $maxWidth, int $maxImages): ?array
     {
         // When called without any values, just return null
         if ($minWidth === null && $maxWidth === null && $maxImages === null) {
@@ -299,9 +281,7 @@ class SrcSet
         return implode(
             ', ',
             array_map(
-                function ($b) {
-                    return $this->image->toUrl(Resize::scale($b)) . " {$b}w";
-                },
+                fn($b) => $this->image->toUrl(Resize::scale($b)) . " {$b}w",
                 $breakpoints
             )
         );
@@ -310,11 +290,10 @@ class SrcSet
     /**
      * Gets the breakpoints.
      *
-     * @return array
      *
      * @internal
      */
-    public function getBreakpoints()
+    public function getBreakpoints(): array
     {
         if (! empty($this->breakpoints)) {
             return $this->breakpoints;

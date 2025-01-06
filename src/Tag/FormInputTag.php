@@ -19,15 +19,13 @@ namespace Cloudinary\Tag;
  */
 class FormInputTag extends BaseTag
 {
-    const NAME    = 'input';
-    const IS_VOID = true;
+    public const NAME    = 'input';
+    protected const IS_VOID = true;
 
     /**
      * @var array $attributes An array of tag attributes.
      */
-    protected $attributes = [
-        'type' => 'hidden',
-    ];
+    protected array $attributes = ['type' => 'hidden'];
 
     /**
      * FormInputTag constructor.
@@ -35,7 +33,7 @@ class FormInputTag extends BaseTag
      * @param string $name  The name of the input tag.
      * @param mixed  $value The value of the input tag.
      */
-    public function __construct($name, $value)
+    public function __construct($name, mixed $value)
     {
         parent::__construct();
 

@@ -24,36 +24,41 @@ class SignatureVerifier
     /**
      * @var array of parameter => allowed_types for notification signature validator
      */
-    private static $NOTIFICATION_VALIDATOR_ALLOWED_TYPES = [
-        'body'      => 'string',
-        'timestamp' => 'int|string',
-        'signature' => 'string',
-        'validFor'  => 'int|string',
-    ];
+    private static array $NOTIFICATION_VALIDATOR_ALLOWED_TYPES
+        = [
+            'body'      => 'string',
+            'timestamp' => 'int|string',
+            'signature' => 'string',
+            'validFor'  => 'int|string',
+        ];
 
     /**
      * @var array of parameter => allowed_types for API response signature validator
      */
-    private static $API_RESPONSE_VALIDATOR_ALLOWED_TYPES = [
-        'publicId'  => 'string',
-        'version'   => 'int|string',
-        'signature' => 'string',
-    ];
+    private static array $API_RESPONSE_VALIDATOR_ALLOWED_TYPES
+        = [
+            'publicId'  => 'string',
+            'version'   => 'int|string',
+            'signature' => 'string',
+        ];
 
     /**
      * Verifies the authenticity of a notification signature
      *
-     * @param string     $body      Json of the request's body
-     * @param int|string $timestamp Unix timestamp. Can be retrieved from the X-Cld-Timestamp header
-     * @param string     $signature Actual signature. Can be retrieved from the X-Cld-Signature header
-     * @param int|string $validFor  The desired time in seconds for considering the request valid
+     * @param ?string         $body      Json of the request's body
+     * @param int|string|null $timestamp Unix timestamp. Can be retrieved from the X-Cld-Timestamp header
+     * @param ?string         $signature Actual signature. Can be retrieved from the X-Cld-Signature header
+     * @param int|string      $validFor  The desired time in seconds for considering the request valid
      *
-     * @return bool
      *
      * @throws InvalidArgumentException In case a mandatory parameter is empty or of wrong type
      */
-    public static function verifyNotificationSignature($body, $timestamp, $signature, $validFor = 7200)
-    {
+    public static function verifyNotificationSignature(
+        ?string $body,
+        int|string|null $timestamp,
+        string|null $signature,
+        int|string $validFor = 7200
+    ): bool {
         $paramsArray = [
             'body'      => $body,
             'timestamp' => $timestamp,
@@ -83,11 +88,10 @@ class SignatureVerifier
      * @param int|string $version   The version of the asset as returned in the API response
      * @param string     $signature Actual signature. Can be retrieved from the X-Cld-Signature header
      *
-     * @return bool
      *
      * @throws InvalidArgumentException in case a mandatory parameter is empty or of wrong type
      */
-    public static function verifyApiResponseSignature($publicId, $version, $signature)
+    public static function verifyApiResponseSignature(string $publicId, int|string $version, string $signature): bool
     {
         $paramsArray = ['publicId' => $publicId, 'version' => $version, 'signature' => $signature];
 
@@ -110,7 +114,7 @@ class SignatureVerifier
      *
      * @throws InvalidArgumentException In case a mandatory parameter is empty or of wrong type
      */
-    private static function validateParams($params, $allowedTypes)
+    private static function validateParams(array $params, array $allowedTypes): void
     {
         foreach ($allowedTypes as $param => $types) {
             if (empty($params[$param])) {
@@ -124,14 +128,13 @@ class SignatureVerifier
     }
 
     /**
-     * Validates the type of a single parameter
+     * Validates the type of single parameter
      *
      * @param mixed  $param Parameter to validate
      * @param string $type  The allowed type/s of the parameter. Pipe delimiter for multiple values
      *
-     * @return bool
      */
-    private static function paramValidator($param, $type)
+    private static function paramValidator(mixed $param, string $type): bool
     {
         $allowedTypes = explode('|', $type);
 
@@ -148,11 +151,11 @@ class SignatureVerifier
     /**
      * Validates API secret
      *
-     * @param string $apiSecret The API secret
+     * @param ?string $apiSecret The API secret
      *
      * @throws  InvalidArgumentException   In case API secret is missing or invalid
      */
-    private static function validateApiSecret($apiSecret)
+    private static function validateApiSecret(?string $apiSecret): void
     {
         if (empty($apiSecret) || ! is_string($apiSecret)) {
             throw new InvalidArgumentException('API Secret is invalid');
@@ -165,9 +168,8 @@ class SignatureVerifier
      * @param string $payloadToSign The payload to sign
      * @param string $apiSecret     The API secret
      *
-     * @return string
      */
-    public static function generateHmac($payloadToSign, $apiSecret)
+    public static function generateHmac(string $payloadToSign, string $apiSecret): string
     {
         return sha1($payloadToSign . $apiSecret);
     }

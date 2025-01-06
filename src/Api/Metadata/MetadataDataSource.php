@@ -23,12 +23,11 @@ class MetadataDataSource extends Metadata
     /**
      * @var MetadataDataEntry[]
      */
-    protected $values;
+    protected array $values;
 
     /**
      * The MetadataDataSource constructor.
      *
-     * @param array $values
      *
      * @throws InvalidArgumentException
      */
@@ -40,9 +39,8 @@ class MetadataDataSource extends Metadata
     /**
      * Gets the keys for all the properties of this object.
      *
-     * @return array
      */
-    public function getPropertyKeys()
+    public function getPropertyKeys(): array
     {
         return ['values'];
     }
@@ -54,7 +52,7 @@ class MetadataDataSource extends Metadata
      *
      * @throws InvalidArgumentException
      */
-    public function setValues(array $values)
+    public function setValues(array $values): void
     {
         $this->values = [];
         foreach ($values as $value) {
@@ -63,7 +61,7 @@ class MetadataDataSource extends Metadata
             } elseif (is_array($value) && isset($value['value'])) {
                 $this->values[] = new MetadataDataEntry(
                     $value['value'],
-                    isset($value['external_id']) ? $value['external_id'] : null
+                    $value['external_id'] ?? null
                 );
             } else {
                 throw new InvalidArgumentException('The specified metadata datasource values are not valid.');
@@ -76,7 +74,7 @@ class MetadataDataSource extends Metadata
      *
      * @return MetadataDataEntry[]
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }

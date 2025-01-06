@@ -17,7 +17,7 @@ use Cloudinary\JsonUtils;
 /**
  * Class AssetDescriptor
  *
- * @property string suffix SEO URL suffix
+ * @property string $suffix SEO URL suffix.
  *
  * @api
  */
@@ -28,34 +28,34 @@ class AssetDescriptor implements AssetInterface
      *                        Use the constants defined in the AssetType class.
      * @see AssetType
      */
-    public $assetType = AssetType::IMAGE;
+    public string $assetType = AssetType::IMAGE;
     /**
      * @var string $deliveryType The delivery type of the asset, A.K.A type.
      *                           Use the constants defined in the DeliveryType class.
      * @see DeliveryType
      */
-    public $deliveryType = DeliveryType::UPLOAD; // A.K.A type
+    public string $deliveryType = DeliveryType::UPLOAD; // A.K.A type
     /**
-     * @var int|string $version Asset version, typically set to unix timestamp.
+     * @var int|string|null $version Asset version, typically set to unix timestamp.
      */
-    public $version;
+    public string|int|null $version = null;
     /**
-     * @var string $location Can be directory, URL(including path, excluding filename), etc.
+     * @var ?string $location Can be directory, URL(including path, excluding filename), etc.
      */
-    public $location;
+    public ?string $location = null;
     /**
-     * @var string $filename Basename without extension.
+     * @var ?string $filename Basename without extension.
      */
-    public $filename;
+    public ?string $filename = null;
     /**
-     * @var string $extension A.K.A format.
+     * @var ?string $extension A.K.A format.
      */
-    public $extension;
+    public ?string $extension = null;
 
     /**
-     * @var string $suffix SEO URL suffix.
+     * @var ?string $suffix SEO URL suffix.
      */
-    private $suffix;
+    private ?string $suffix = null;
 
     /**
      * AssetDescriptor constructor.
@@ -63,7 +63,7 @@ class AssetDescriptor implements AssetInterface
      * @param string $publicId  The public ID of the asset.
      * @param string $assetType The type of the asset.
      */
-    public function __construct($publicId, $assetType = AssetType::IMAGE)
+    public function __construct(string $publicId, string $assetType = AssetType::IMAGE)
     {
         $this->setPublicId($publicId);
         $this->assetType = $assetType;
@@ -74,15 +74,15 @@ class AssetDescriptor implements AssetInterface
      *
      * @param string $name The name of the property.
      *
-     * @return mixed|null
+     * @return string|null
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if ($name === 'suffix') {
             return $this->suffix;
         }
 
-        trigger_error('Undefined property: ' . static::class . '::$' . $name, E_USER_NOTICE);
+        trigger_error('Undefined property: ' . static::class . '::$' . $name);
 
         return null;
     }
@@ -94,7 +94,7 @@ class AssetDescriptor implements AssetInterface
      *
      * @return bool
      */
-    public function __isset($key)
+    public function __isset(string $key)
     {
         try {
             if (null === $this->__get($key)) {
@@ -113,7 +113,7 @@ class AssetDescriptor implements AssetInterface
      * @param string $name  The class property name.
      * @param mixed  $value The class property value.
      */
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value)
     {
         $this->setAssetProperty($name, $value);
     }
@@ -125,7 +125,7 @@ class AssetDescriptor implements AssetInterface
      *
      * @return $this
      */
-    public function setPublicId($publicId)
+    public function setPublicId(string $publicId): static
     {
         list($this->location, $this->filename, $this->extension) = FileUtils::splitPathFilenameExtension($publicId);
 
@@ -137,9 +137,8 @@ class AssetDescriptor implements AssetInterface
      *
      * @param bool $noExtension When true, omits file extension.
      *
-     * @return string
      */
-    public function publicId($noExtension = false)
+    public function publicId(bool $noExtension = false): string
     {
         return ArrayUtils::implodeFiltered(
             '.',
@@ -153,11 +152,11 @@ class AssetDescriptor implements AssetInterface
     /**
      * Sets the URL SEO suffix of the asset.
      *
-     * @param string $suffix The SEO suffix.
+     * @param ?string $suffix The SEO suffix.
      *
      * @return $this
      */
-    public function setSuffix($suffix)
+    public function setSuffix(?string $suffix): static
     {
         if (is_null($suffix)) {
             return $this;
@@ -177,9 +176,8 @@ class AssetDescriptor implements AssetInterface
      *
      * @param string $string The asset string (URL).
      *
-     * @return mixed
      */
-    public static function fromString($string)
+    public static function fromString(string $string): mixed
     {
         throw new \BadMethodCallException('Not Implemented');
     }
@@ -187,11 +185,10 @@ class AssetDescriptor implements AssetInterface
     /**
      * Creates a new asset from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return mixed
      */
-    public static function fromJson($json)
+    public static function fromJson(array|string $json): AssetDescriptor
     {
         $new = new self('');
 
@@ -206,9 +203,8 @@ class AssetDescriptor implements AssetInterface
      * @param string $source The public ID of the asset.
      * @param array  $params The asset parameters.
      *
-     * @return mixed
      */
-    public static function fromParams($source, $params = [])
+    public static function fromParams(string $source, array $params): AssetDescriptor
     {
         $assetJson = [
             'asset_type'    => ArrayUtils::get($params, 'resource_type', AssetType::IMAGE),
@@ -239,9 +235,8 @@ class AssetDescriptor implements AssetInterface
      *
      * @param string $string The asset string (URL).
      *
-     * @return mixed
      */
-    public function importString($string)
+    public function importString(string $string): mixed
     {
         throw new \BadMethodCallException('Not Implemented');
     }
@@ -250,11 +245,10 @@ class AssetDescriptor implements AssetInterface
     /**
      * Imports data from the provided JSON.
      *
-     * @param string|array $json The asset json. Can be an array or a JSON string.
+     * @param array|string $json The asset json. Can be an array or a JSON string.
      *
-     * @return AssetDescriptor
      */
-    public function importJson($json)
+    public function importJson(array|string $json): static
     {
         $json = JsonUtils::decode($json);
 
@@ -292,10 +286,8 @@ class AssetDescriptor implements AssetInterface
      *
      * @param bool $includeEmptyKeys Whether to include empty keys.
      *
-     * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize($includeEmptyKeys = false)
+    public function jsonSerialize(bool $includeEmptyKeys = false): array
     {
         $dataArr = [
             'asset_type'    => $this->assetType,
@@ -324,7 +316,7 @@ class AssetDescriptor implements AssetInterface
      *
      * @internal
      */
-    public function setAssetProperty($propertyName, $propertyValue)
+    public function setAssetProperty(string $propertyName, mixed $propertyValue): static
     {
         /** @noinspection DegradedSwitchInspection */
         switch ($propertyName) {

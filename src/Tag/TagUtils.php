@@ -21,12 +21,7 @@ use Cloudinary\StringUtils;
  */
 class TagUtils
 {
-    /**
-     * @param array         $tagAttributes
-     * @param array         $params
-     * @param Configuration $configuration
-     */
-    public static function handleSpecialAttributes(&$tagAttributes, &$params, $configuration)
+    public static function handleSpecialAttributes(array &$tagAttributes, array &$params, Configuration $configuration): void
     {
         $hasLayer                 = array_key_exists('overlay', $params) || array_key_exists('underlay', $params);
         $hasAngle                 = array_key_exists('angle', $params) && ! empty($params['angle']);
@@ -41,8 +36,8 @@ class TagUtils
         ArrayUtils::addNonEmpty($params, 'height', ArrayUtils::pop($params, 'html_height'));
 
         $width = ArrayUtils::get($params, 'width');
-        if (! (is_null($width) || strlen($width) == 0 || ($width && (StringUtils::startsWith($width, 'auto')
-                                                  || (float)$width < 1 || $noHtmlSizes)))) {
+        if (! (is_null($width) || strlen($width) == 0 || $width && (StringUtils::startsWith($width, 'auto')
+                                                                    || (float)$width < 1 || $noHtmlSizes))) {
             ArrayUtils::addNonEmptyFromOther($tagAttributes, 'width', $params);
         }
 

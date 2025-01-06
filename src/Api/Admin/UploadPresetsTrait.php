@@ -36,11 +36,10 @@ trait UploadPresetsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#get_upload_presets target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_upload_presets
      */
-    public function uploadPresets($options = [])
+    public function uploadPresets(array $options = []): ApiResponse
     {
         $uri    = [ApiEndPoint::UPLOAD_PRESETS];
         $params = ArrayUtils::whitelist($options, ['next_cursor', 'max_results']);
@@ -56,11 +55,10 @@ trait UploadPresetsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_upload_preset
      * target="_blank"> Admin API</a> documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#get_the_details_of_a_single_upload_preset
      */
-    public function uploadPreset($name, $options = [])
+    public function uploadPreset(string $name, array $options = []): ApiResponse
     {
         $uri = [ApiEndPoint::UPLOAD_PRESETS, $name];
 
@@ -72,17 +70,15 @@ trait UploadPresetsTrait
      *
      * @param string $name The name of the upload preset to delete.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#delete_an_upload_preset
      */
-    public function deleteUploadPreset($name)
+    public function deleteUploadPreset(string $name): ApiResponse
     {
         $uri = [ApiEndPoint::UPLOAD_PRESETS, $name];
 
-        return $this->apiClient->delete($uri, []);
+        return $this->apiClient->delete($uri);
     }
 
     /**
@@ -94,13 +90,11 @@ trait UploadPresetsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#update_an_upload_preset target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
-     * @throws ApiError
      *
      * @see https://cloudinary.com/documentation/admin_api#update_an_upload_preset
      */
-    public function updateUploadPreset($name, $options = [])
+    public function updateUploadPreset(string $name, array $options = []): ApiResponse
     {
         $uri    = [ApiEndPoint::UPLOAD_PRESETS, $name];
         $params = UploadApi::buildUploadParams($options);
@@ -116,11 +110,10 @@ trait UploadPresetsTrait
      * <a href=https://cloudinary.com/documentation/admin_api#create_an_upload_preset target="_blank"> Admin API</a>
      * documentation.
      *
-     * @return ApiResponse
      *
      * @see https://cloudinary.com/documentation/admin_api#create_an_upload_preset
      */
-    public function createUploadPreset($options = [])
+    public function createUploadPreset(array $options = []): ApiResponse
     {
         $params = UploadApi::buildUploadParams($options);
         $params = array_merge(

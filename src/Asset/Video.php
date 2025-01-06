@@ -10,6 +10,7 @@
 
 namespace Cloudinary\Asset;
 
+use Cloudinary\Transformation\CommonTransformation;
 use Cloudinary\Transformation\VideoTransformation;
 use Cloudinary\Transformation\VideoTransformationInterface;
 use Cloudinary\Transformation\VideoTransformationTrait;
@@ -26,16 +27,15 @@ class Video extends BaseMediaAsset implements VideoTransformationInterface
     /**
      * @var array A list of the delivery types that support SEO suffix.
      */
-    protected static $suffixSupportedDeliveryTypes = [
+    protected static array $suffixSupportedDeliveryTypes = [
         AssetType::VIDEO => [DeliveryType::UPLOAD => 'videos'],
     ];
 
     /**
      * Gets the transformation.
      *
-     * @return VideoTransformation
      */
-    public function getTransformation()
+    public function getTransformation(): CommonTransformation|VideoTransformation
     {
         if (! isset($this->transformation)) {
             $this->transformation = new VideoTransformation();

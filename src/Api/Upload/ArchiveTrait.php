@@ -29,12 +29,10 @@ trait ArchiveTrait
     /**
      * Returns an array of parameters used to create an archive.
      *
-     * @param $options
      *
-     * @return array
      * @internal
      */
-    public static function buildArchiveParams($options)
+    public static function buildArchiveParams($options): array
     {
         $simpleParams = [
             'allow_missing',
@@ -84,14 +82,8 @@ trait ArchiveTrait
 
     /**
      * Creates a new archive in the server and returns information in JSON format.
-     *
-     * @param array  $options
-     * @param string $targetFormat
-     *
-     * @return PromiseInterface
-     *
      */
-    public function createArchiveAsync($options = [], $targetFormat = null)
+    public function createArchiveAsync(array $options = [], ?string $targetFormat = null): PromiseInterface
     {
         $params = self::buildArchiveParams($options);
         ArrayUtils::addNonEmpty($params, 'target_format', $targetFormat);
@@ -102,38 +94,25 @@ trait ArchiveTrait
     /**
      * Creates a new archive in the server and returns information in JSON format.
      *
-     * @param array $options
-     * @param null  $targetFormat
-     *
-     * @return ApiResponse
-     *
+     * @param null $targetFormat
      */
-    public function createArchive($options = [], $targetFormat = null)
+    public function createArchive(array $options = [], $targetFormat = null): ApiResponse
     {
         return $this->createArchiveAsync($options, $targetFormat)->wait();
     }
 
     /**
      * Creates a new zip archive in the server and returns information in JSON format.
-     *
-     * @param array $options
-     *
-     * @return PromiseInterface
      */
-    public function createZipAsync($options = [])
+    public function createZipAsync(array $options = []): PromiseInterface
     {
         return $this->createArchiveAsync($options, 'zip');
     }
 
     /**
      * Creates a new zip archive in the server and returns information in JSON format.
-     *
-     * @param array $options
-     *
-     * @return ApiResponse
-     *
      */
-    public function createZip($options = [])
+    public function createZip(array $options = []): ApiResponse
     {
         return $this->createZipAsync($options)->wait();
     }
@@ -145,41 +124,41 @@ trait ArchiveTrait
      *
      * @return string The resulting archive URL.
      * @var string       $resource_type           The resource type of files to include in the archive.
-     *                                     Must be one of image | video | raw.
+     *                                            Must be one of image | video | raw.
      * @var string       $type                    The specific file delivery type of resources:
-     *                                     upload|private|authenticated.
+     *                                            upload|private|authenticated.
      * @var string|array $tags                    (null) list of tags to include in the archive.
      * @var string|array $public_ids              (null) list of public_ids to include in the archive.
      * @var string|array $prefixes                (null) Optional list of prefixes of public IDs (e.g., folders).
      * @var string|array $transformations         Optional list of transformations. The derived images of the given
-     *                                     transformations are included in the archive. Using the string
-     *                                     representation of multiple chained transformations as we use for the
-     *                                     'eager' upload parameter.
+     *                                            transformations are included in the archive. Using the string
+     *                                            representation of multiple chained transformations as we use for the
+     *                                            'eager' upload parameter.
      * @var string       $mode                    (create) return the generated archive file or store it as a raw
-     *                                     resource and return a JSON with URLs for accessing the archive. Possible
-     *                                     values: download, create.
+     *                                            resource and return a JSON with URLs for accessing the archive.
+     *                                            Possible values: download, create.
      * @var string       $target_format           (zip)
      * @var string       $target_public_id        Optional public ID of the generated raw resource.
-     *                                     Relevant only for the create mode. If not specified, a random public ID is
-     *                                     generated.
+     *                                            Relevant only for the create mode. If not specified, a random public
+     *                                            ID is generated.
      * @var bool         $flatten_folders         (false) If true, flatten public IDs with folders to be in the root of
-     *                                     the archive. Add numeric counter to the file name in case of a name
-     *                                     conflict.
+     *                                            the archive. Add numeric counter to the file name in case of a name
+     *                                            conflict.
      * @var bool         $flatten_transformations (false) If true, and multiple transformations are given,
-     *                                     flatten the folder structure of derived images and store the
-     *                                     transformation details on the file name instead.
+     *                                            flatten the folder structure of derived images and store the
+     *                                            transformation details on the file name instead.
      * @var bool         $use_original_filename   Use the original file name of included images (if available) instead
-     *                                     of the public ID.
+     *                                            of the public ID.
      * @var bool         $async                   (false) If true, return immediately and perform the archive creation
-     *                                     in the background. Relevant only for the create mode.
+     *                                            in the background. Relevant only for the create mode.
      * @var string       $notification_url        Optional URL to send an HTTP post request (webhook) when the archive
-     *                                     creation is completed.
+     *                                            creation is completed.
      * @var string|array $target_tags             Optional array. Allows assigning one or more tag to the
-     *                                     generated archive file (for later housekeeping via the admin API).
+     *                                            generated archive file (for later housekeeping via the admin API).
      * @var string       $keep_derived            (false) keep the derived images used for generating the archive.
      *
      */
-    public function downloadArchiveUrl($options = [])
+    public function downloadArchiveUrl(array $options = []): string
     {
         $options['mode'] = self::MODE_DOWNLOAD;
         $params          = self::buildArchiveParams($options);
@@ -200,7 +179,7 @@ trait ArchiveTrait
      *
      * @see ArchiveTrait::downloadArchiveUrl
      */
-    public function downloadZipUrl($options = [])
+    public function downloadZipUrl(array $options = []): string
     {
         $options['target_format'] = 'zip';
 
@@ -214,16 +193,15 @@ trait ArchiveTrait
      * @param string $format   The format of the asset to download.
      * @param array  $options  Additional options.
      *
-     * @return string
      */
-    public function privateDownloadUrl($publicId, $format, $options = [])
+    public function privateDownloadUrl(string $publicId, string $format, array $options = []): string
     {
         $params = ApiUtils::finalizeUploadApiParams([
-            "public_id"  => $publicId,
-            "format"     => $format,
-            "type"       => ArrayUtils::get($options, "type"),
-            "attachment" => ArrayUtils::get($options, "attachment"),
-            "expires_at" => ArrayUtils::get($options, "expires_at"),
+            'public_id'  => $publicId,
+            'format'     => $format,
+            'type'       => ArrayUtils::get($options, 'type'),
+            'attachment' => ArrayUtils::get($options, 'attachment'),
+            'expires_at' => ArrayUtils::get($options, 'expires_at'),
         ]);
 
         ApiUtils::signRequest($params, $this->getCloud());
@@ -241,7 +219,7 @@ trait ArchiveTrait
      *
      * @return string Url for downloading an archive of a folder.
      */
-    public function downloadFolder($folderPath, $options = [])
+    public function downloadFolder(string $folderPath, array $options = []): string
     {
         $options['prefixes']     = $folderPath;
         $options[AssetType::KEY] = ArrayUtils::get($options, AssetType::KEY, AssetType::ALL);
@@ -257,10 +235,9 @@ trait ArchiveTrait
      *
      * @return string The signed URL for downloading backup version of the asset.
      */
-    public function downloadBackedupAsset($assetId, $versionId)
+    public function downloadBackedupAsset(string $assetId, string $versionId): string
     {
-        $options['asset_id']   = $assetId;
-        $options['version_id'] = $versionId;
+        $options = ['asset_id' => $assetId, 'version_id' => $versionId];
 
         $params = self::buildArchiveParams($options);
 

@@ -19,11 +19,8 @@ class EnumMetadataField extends MetadataFieldList
 {
     /**
      * The EnumMetadataField constructor.
-     *
-     * @param string                   $label
-     * @param array|MetadataDataSource $dataSource
      */
-    public function __construct($label, $dataSource = [])
+    public function __construct(string $label, array|MetadataDataSource $dataSource = [])
     {
         parent::__construct($label, $dataSource);
         $this->type = MetadataFieldType::ENUM;

@@ -31,7 +31,7 @@ final class HttpClientTest extends UnitTestCase
         $expectedLogMessage = 'Error parsing JSON server response';
         $expectedExceptionMessage = 'Error parsing server response';
         try {
-            $httpClient->getJson('http://cloudinary.com/');
+            $httpClient->getJson('https://cloudinary.com/');
         } catch (Error $e) {
             $message = $e->getMessage();
         }

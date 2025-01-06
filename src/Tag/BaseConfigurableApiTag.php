@@ -28,37 +28,40 @@ class BaseConfigurableApiTag extends BaseTag
     /**
      * @var ApiConfig $apiConfig The API configuration instance.
      */
-    public $apiConfig;
+    public ApiConfig $apiConfig;
 
     /**
      * @var array $uploadParams The upload parameters.
      */
-    protected $uploadParams;
+    protected array $uploadParams;
 
     /**
      * @var string $assetType The type of the asset.
      */
-    protected $assetType;
+    protected string $assetType;
 
     /**
      * @var UploadApi $uploadApi Upload API instance.
      */
-    protected $uploadApi;
+    protected UploadApi $uploadApi;
 
     /**
      * BaseConfigurableApiTag constructor.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      * @param array                           $uploadParams  The upload parameters.
      * @param string                          $assetType     The type of the asset.
      */
-    public function __construct($configuration = null, $uploadParams = [], $assetType = AssetType::AUTO)
-    {
+    public function __construct(
+        Configuration|array|string|null $configuration = null,
+        array $uploadParams = [],
+        string $assetType = AssetType::AUTO
+    ) {
         parent::__construct($configuration);
 
-        $this->uploadApi    = new UploadApi($configuration);
+        $this->uploadApi = new UploadApi($configuration);
         $this->uploadParams = $uploadParams;
-        $this->assetType    = $assetType;
+        $this->assetType = $assetType;
     }
 
     /**
@@ -66,10 +69,9 @@ class BaseConfigurableApiTag extends BaseTag
      *
      * If signed upload then also adds a signature param to the array.
      *
-     * @return array
      * @noinspection StaticInvocationViaThisInspection
      */
-    protected function getUploadParams()
+    protected function getUploadParams(): array
     {
         $params = $this->uploadApi->buildUploadParams($this->uploadParams);
 
@@ -83,11 +85,10 @@ class BaseConfigurableApiTag extends BaseTag
     /**
      * Sets the configuration.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return Configuration
      */
-    public function configuration($configuration)
+    public function configuration(Configuration|array|string|null $configuration): Configuration
     {
         $tempConfiguration = parent::configuration($configuration);
         $this->apiConfig   = $tempConfiguration->api;

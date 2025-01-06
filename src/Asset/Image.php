@@ -24,12 +24,12 @@ class Image extends BaseMediaAsset implements ImageTransformationInterface
 {
     use ImageTransformationTrait;
 
-    const SHORTEN_ASSET_TYPE = 'iu';
+    protected const SHORTEN_ASSET_TYPE = 'iu';
 
     /**
      * @var array A list of the delivery types that support SEO suffix.
      */
-    protected static $suffixSupportedDeliveryTypes = [
+    protected static array $suffixSupportedDeliveryTypes = [
         AssetType::IMAGE => [
             DeliveryType::UPLOAD           => 'images',
             DeliveryType::PRIVATE_DELIVERY => 'private_images',
@@ -40,9 +40,8 @@ class Image extends BaseMediaAsset implements ImageTransformationInterface
     /**
      * Gets the transformation.
      *
-     * @return CommonTransformation
      */
-    public function getTransformation()
+    public function getTransformation(): CommonTransformation
     {
         if (! isset($this->transformation)) {
             $this->transformation = new ImageTransformation();
@@ -54,9 +53,8 @@ class Image extends BaseMediaAsset implements ImageTransformationInterface
     /**
      * Finalizes the asset type.
      *
-     * @return mixed
      */
-    protected function finalizeAssetType()
+    protected function finalizeAssetType(): ?string
     {
         return $this->finalizeShorten(parent::finalizeAssetType());
     }

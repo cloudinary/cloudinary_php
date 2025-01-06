@@ -19,23 +19,15 @@ use InvalidArgumentException;
  */
 class MetadataDataEntry extends Metadata
 {
-    /**
-     * @var string
-     */
-    protected $externalId;
+    protected ?string $externalId;
 
-    /**
-     * @var string
-     */
-    protected $value;
+    protected string $value;
 
     /**
      * MetadataDataEntry constructor.
      *
-     * @param string $value
-     * @param string $externalId
      */
-    public function __construct($value, $externalId = null)
+    public function __construct(string $value, ?string $externalId = null)
     {
         $this->setValue($value);
         $this->setExternalId($externalId);
@@ -44,9 +36,8 @@ class MetadataDataEntry extends Metadata
     /**
      * Gets the keys for all the properties of this object.
      *
-     * @return array
      */
-    public function getPropertyKeys()
+    public function getPropertyKeys(): array
     {
         return ['externalId', 'value'];
     }
@@ -54,9 +45,8 @@ class MetadataDataEntry extends Metadata
     /**
      * Gets the value of the entry.
      *
-     * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -64,9 +54,8 @@ class MetadataDataEntry extends Metadata
     /**
      * Sets the value of the entry.
      *
-     * @param string $value
      */
-    public function setValue($value)
+    public function setValue(string $value): void
     {
         if (is_null($value)) {
             throw new InvalidArgumentException('Metadata data entry value is not valid');
@@ -77,9 +66,8 @@ class MetadataDataEntry extends Metadata
     /**
      * Gets the ID of the entry.
      *
-     * @return string
      */
-    public function getExternalId()
+    public function getExternalId(): string
     {
         return $this->externalId;
     }
@@ -87,9 +75,9 @@ class MetadataDataEntry extends Metadata
     /**
      * Sets the ID of the entry. Will be auto-generated if left blank.
      *
-     * @param string $externalId
+     * @param ?string $externalId The external ID.
      */
-    public function setExternalId($externalId)
+    public function setExternalId(?string $externalId): void
     {
         $this->externalId = $externalId;
     }

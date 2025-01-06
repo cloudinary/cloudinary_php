@@ -13,10 +13,10 @@ namespace Cloudinary\Configuration;
 /**
  * Defines the global configuration applied when generating Cloudinary URLs.
  *
- * @property bool   $secure                        Force HTTPS URLs for resources even if they are embedded in
- *           non-secure HTTP pages.
- * @property bool   $forceVersion                  By default set to self::DEFAULT_FORCE_VERSION.
- * @property string $responsiveWidthTransformation The transformation to use with responsive width.
+ * @property bool  $secure                        Force HTTPS URLs for resources even if they are embedded in
+ *                                                non-secure HTTP pages.
+ * @property bool  $forceVersion                  By default, set to self::DEFAULT_FORCE_VERSION.
+ * @property mixed $responsiveWidthTransformation The transformation to use with responsive width.
  *
  * @api
  */
@@ -24,111 +24,111 @@ class UrlConfig extends BaseConfigSection
 {
     use UrlConfigTrait;
 
-    protected static $aliases = ['secure_distribution' => self::SECURE_CNAME];
+    protected static array $aliases = ['secure_distribution' => self::SECURE_CNAME];
 
     /**
      * @internal
      */
-    const CONFIG_NAME = 'url';
+    public const CONFIG_NAME = 'url';
 
     /**
      * @internal
      */
-    const DEFAULT_DOMAIN = 'cloudinary.com';
+    public const DEFAULT_DOMAIN = 'cloudinary.com';
 
     /**
      * @internal
      */
-    const DEFAULT_SUB_DOMAIN = 'res';
+    public const DEFAULT_SUB_DOMAIN = 'res';
 
     /**
      * @internal
      */
-    const DEFAULT_SHARED_HOST = self::DEFAULT_SUB_DOMAIN . '.' . self::DEFAULT_DOMAIN;
+    public const DEFAULT_SHARED_HOST = self::DEFAULT_SUB_DOMAIN . '.' . self::DEFAULT_DOMAIN;
 
-    const PROTOCOL_HTTP  = 'http';
-    const PROTOCOL_HTTPS = 'https';
+    public const PROTOCOL_HTTP  = 'http';
+    public const PROTOCOL_HTTPS = 'https';
 
     /**
      * Default value for secure (distribution).
      */
-    const DEFAULT_SECURE = true;
+    public const DEFAULT_SECURE = true;
 
     /**
      * Default value for forcing version.
      */
-    const DEFAULT_FORCE_VERSION = true;
+    public const DEFAULT_FORCE_VERSION = true;
 
     /**
      * Default value for analytics.
      */
-    const DEFAULT_ANALYTICS = true;
+    public const DEFAULT_ANALYTICS = true;
 
     /**
      * Default responsive width transformation.
      */
-    const DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = 'c_limit,w_auto';
+    public const DEFAULT_RESPONSIVE_WIDTH_TRANSFORMATION = 'c_limit,w_auto';
 
     // Supported parameters
-    const CDN_SUBDOMAIN        = 'cdn_subdomain';
-    const SECURE_CDN_SUBDOMAIN = 'secure_cdn_subdomain';
-    const CNAME                = 'cname';
-    const SECURE               = 'secure';
-    const SECURE_CNAME         = 'secure_cname';
-    const PRIVATE_CDN          = 'private_cdn';
+    public const CDN_SUBDOMAIN        = 'cdn_subdomain';
+    public const SECURE_CDN_SUBDOMAIN = 'secure_cdn_subdomain';
+    public const CNAME                = 'cname';
+    public const SECURE               = 'secure';
+    public const SECURE_CNAME         = 'secure_cname';
+    public const PRIVATE_CDN          = 'private_cdn';
 
-    const SIGN_URL           = 'sign_url';
-    const LONG_URL_SIGNATURE = 'long_url_signature';
-    const SHORTEN            = 'shorten';
-    const USE_ROOT_PATH      = 'use_root_path';
-    const FORCE_VERSION      = 'force_version';
-    const ANALYTICS          = 'analytics';
+    public const SIGN_URL           = 'sign_url';
+    public const LONG_URL_SIGNATURE = 'long_url_signature';
+    public const SHORTEN            = 'shorten';
+    public const USE_ROOT_PATH      = 'use_root_path';
+    public const FORCE_VERSION      = 'force_version';
+    public const ANALYTICS          = 'analytics';
 
-    const RESPONSIVE_WIDTH                = 'responsive_width';
-    const RESPONSIVE_WIDTH_TRANSFORMATION = 'responsive_width_transformation';
+    public const RESPONSIVE_WIDTH                = 'responsive_width';
+    public const RESPONSIVE_WIDTH_TRANSFORMATION = 'responsive_width_transformation';
 
     /**
      * Whether to automatically build URLs with multiple CDN sub-domains.
      *
-     * @var bool
+     * @var ?bool
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#multiple_sub_domains
      */
-    public $cdnSubdomain;
+    public ?bool $cdnSubdomain = null;
 
     /**
      * Secure CDN sub-domain.
      *
-     * @var bool
+     * @var ?bool
      */
-    public $secureCdnSubdomain;
+    public ?bool $secureCdnSubdomain = null;
 
     /**
      * The custom domain name to use for building HTTP URLs. Relevant only for Advanced plan users that have a private
      * CDN distribution and a custom CNAME
      *
-     * @var string
+     * @var ?string
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
-    public $cname;
+    public ?string $cname = null;
 
     /**
      * Force HTTPS URLs for resources even if they are embedded in non-secure HTTP pages.
      *
      * @var bool
      */
-    protected $secure;
+    protected bool $secure;
 
     /**
      * The domain name of the CDN distribution to use for building HTTPS URLs. Relevant only for Advanced plan users
      * that have a private CDN distribution.
      *
-     * @var string
+     * @var string|null
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
-    public $secureCname;
+    public ?string $secureCname = null;
 
     /**
      * Set this parameter to true if you are an Advanced plan user with a private CDN distribution.
@@ -137,7 +137,7 @@ class UrlConfig extends BaseConfigSection
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#private_cdns_and_cnames
      */
-    public $privateCdn;
+    public ?bool $privateCdn = null;
 
     /**
      * Set to true to create a Cloudinary URL signed with the first 8 characters of a SHA-1 hash.
@@ -146,7 +146,7 @@ class UrlConfig extends BaseConfigSection
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      */
-    public $signUrl;
+    public ?bool $signUrl = null;
 
     /**
      * Setting both this and signUrl to true will sign the URL using the first 32 characters of a SHA-256 hash.
@@ -155,14 +155,14 @@ class UrlConfig extends BaseConfigSection
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      */
-    public $longUrlSignature;
+    public ?bool $longUrlSignature = null;
 
     /**
      * Set to true to use shorten asset type.
      *
      * @var bool
      */
-    public $shorten;
+    public ?bool $shorten = null;
 
     /**
      * Set to true to omit type and resource_type in the URL.
@@ -171,35 +171,35 @@ class UrlConfig extends BaseConfigSection
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#root_path_urls
      */
-    public $useRootPath;
+    public ?bool $useRootPath = null;
 
     /**
-     * Set to false to omit default version string for assets in folders in the delivery URL.
+     * Set to false in order to omit default version string for assets in folders in the delivery URL.
      *
      * @var bool
      */
-    protected $forceVersion;
+    protected ?bool $forceVersion = null;
 
     /**
-     * Set to false to omit analytics data.
+     * Set to false in order to omit analytics data.
      *
      * @var bool
      */
-    protected $analytics;
+    protected bool $analytics;
 
     /**
      * Whether to use responsive width.
      *
      * @var bool $responsiveWidth
      */
-    public $responsiveWidth;
+    public ?bool $responsiveWidth = null;
 
     /**
      * The transformation to use with responsive width.
      *
-     * @var string $responsiveWidthTransformation
+     * @var mixed $responsiveWidthTransformation
      */
-    protected $responsiveWidthTransformation;
+    protected mixed $responsiveWidthTransformation = null;
 
     /**
      * Serialises configuration section to a string representation.
@@ -222,7 +222,7 @@ class UrlConfig extends BaseConfigSection
      *
      * @internal
      */
-    public function setUrlConfig($configKey, $configValue)
+    public function setUrlConfig(string $configKey, mixed $configValue): static
     {
         return $this->setConfig($configKey, $configValue);
     }

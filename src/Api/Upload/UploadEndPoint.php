@@ -15,19 +15,19 @@ namespace Cloudinary\Api\Upload;
  */
 class UploadEndPoint
 {
-    const UPLOAD           = 'upload';
-    const DESTROY          = 'destroy';
-    const RENAME           = 'rename';
-    const EXPLICIT         = 'explicit';
-    const SPRITE           = 'sprite';
-    const MULTI            = 'multi';
-    const EXPLODE          = 'explode';
-    const TAGS             = 'tags';
-    const CONTEXT          = 'context';
-    const TEXT             = 'text';
-    const GENERATE_ARCHIVE = 'generate_archive';
-    const CREATE_SLIDESHOW = 'create_slideshow';
-    const METADATA         = 'metadata';
-    const DOWNLOAD         = 'download';
-    const DOWNLOAD_BACKUP  = 'download_backup';
+    public const UPLOAD           = 'upload';
+    public const DESTROY          = 'destroy';
+    public const RENAME           = 'rename';
+    public const EXPLICIT         = 'explicit';
+    public const SPRITE           = 'sprite';
+    public const MULTI            = 'multi';
+    public const EXPLODE          = 'explode';
+    public const TAGS             = 'tags';
+    public const CONTEXT          = 'context';
+    public const TEXT             = 'text';
+    public const GENERATE_ARCHIVE = 'generate_archive';
+    public const CREATE_SLIDESHOW = 'create_slideshow';
+    public const METADATA         = 'metadata';
+    public const DOWNLOAD         = 'download';
+    public const DOWNLOAD_BACKUP  = 'download_backup';
 }

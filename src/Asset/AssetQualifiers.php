@@ -22,30 +22,31 @@ abstract class AssetQualifiers
      *
      * @internal
      */
-    const ASSET_KEYS = [
-        'api_secret',
-        'auth_token',
-        'cdn_subdomain',
-        'cloud_name',
-        'cname',
-        'format',
-        'long_url_signature',
-        'private_cdn',
-        'resource_type',
-        'secure',
-        'secure_cdn_subdomain',
-        'secure_distribution', // deprecated, still consume for backwards compatibility
-        'secure_cname',
-        'shorten',
-        'sign_url',
-        'ssl_detected',
-        'type',
-        'url_suffix',
-        'use_root_path',
-        'version',
-        'responsive',
-        'responsive_width',
-        'hidpi',
-        'client_hints'
-    ];
+    public const ASSET_KEYS
+        = [
+            'api_secret',
+            'auth_token',
+            'cdn_subdomain',
+            'cloud_name',
+            'cname',
+            'format',
+            'long_url_signature',
+            'private_cdn',
+            'resource_type',
+            'secure',
+            'secure_cdn_subdomain',
+            'secure_distribution', // deprecated, still consume for backwards compatibility
+            'secure_cname',
+            'shorten',
+            'sign_url',
+            'ssl_detected',
+            'type',
+            'url_suffix',
+            'use_root_path',
+            'version',
+            'responsive',
+            'responsive_width',
+            'hidpi',
+            'client_hints',
+        ];
 }

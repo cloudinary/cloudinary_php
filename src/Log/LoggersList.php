@@ -21,12 +21,12 @@ class LoggersList
     /**
      * @var Logger[] $loggerInstances
      */
-    private static $loggerInstances = [];
+    private static array $loggerInstances = [];
 
     /**
-     * @var LoggersList $instance The instance of the LoggersList.
+     * @var bool|LoggersList $instance The instance of the LoggersList.
      */
-    private static $instance = false;
+    private static LoggersList|bool $instance = false;
 
     /**
      * LoggersList private constructor.
@@ -39,9 +39,8 @@ class LoggersList
     /**
      * Returns a singleton instance of the LoggersList.
      *
-     * @return LoggersList
      */
-    public static function instance()
+    public static function instance(): bool|LoggersList
     {
         if (self::$instance === false) {
             self::$instance = new LoggersList();
@@ -50,12 +49,7 @@ class LoggersList
         return self::$instance;
     }
 
-    /**
-     * @param LoggingConfig $config
-     *
-     * @return Logger|null
-     */
-    public static function getLogger(LoggingConfig $config)
+    public static function getLogger(LoggingConfig $config): ?Logger
     {
         if ($config->enabled === false) {
             return null;

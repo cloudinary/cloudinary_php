@@ -15,30 +15,29 @@ use Cloudinary\ArrayUtils;
 /**
  * Generates an HTML `<img>` tag with the `src` attribute set to the transformation URL, optional `srcset` and other
  * specified attributes.
- * 
+ *
  * For more information, see the [PHP SDK guide](https://cloudinary.com/documentation/php_image_manipulation#deliver_and_transform_images).
  *
  * @api
  */
 class ImageTag extends BaseImageTag
 {
-    const NAME    = 'img';
-    const IS_VOID = true;
+    public const NAME = 'img';
+    public const IS_VOID = true;
 
-    const BLANK            = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-    const RESPONSIVE_CLASS = 'cld-responsive';
-    const HI_DPI_CLASS     = 'cld-hidpi';
+    public const BLANK               = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    protected const RESPONSIVE_CLASS = 'cld-responsive';
+    protected const HI_DPI_CLASS     = 'cld-hidpi';
 
     /**
      * Serializes the tag attributes.
      *
      * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
      *
-     * @return string
      */
-    public function serializeAttributes($attributes = [])
+    public function serializeAttributes(array $attributes = []): string
     {
-        if (($this->config->tag->responsive || $this->config->tag->hidpi) && ! (bool)$this->config->tag->clientHints) {
+        if (($this->config->tag->responsive || $this->config->tag->hidpi) && ! $this->config->tag->clientHints) {
             $attributes['data-src'] = $this->image;
 
             $this->addClass($this->config->tag->responsive ? self::RESPONSIVE_CLASS : self::HI_DPI_CLASS);

@@ -13,6 +13,7 @@ namespace Cloudinary\Configuration\Provisioning;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Utils;
 use InvalidArgumentException;
+use Psr\Http\Message\UriInterface;
 use UnexpectedValueException;
 
 /**
@@ -22,18 +23,21 @@ use UnexpectedValueException;
  */
 class ProvisioningConfigUtils
 {
-    const ACCOUNT_URL_SCHEME = 'account';
+    public const ACCOUNT_URL_SCHEME = 'account';
 
     /**
      * Checks whether the supplied string is a valid account url
      *
-     * @param string $accountUrl Account url candidate
+     * @param mixed $accountUrl Account url candidate
      *
-     * @return bool
      */
-    public static function isAccountUrl($accountUrl)
+    public static function isAccountUrl(mixed $accountUrl): bool
     {
-        return Utils::tryParseUrl($accountUrl, [self::ACCOUNT_URL_SCHEME]) ? true : false;
+        if (! $accountUrl instanceof UriInterface && ! is_string($accountUrl)) {
+            return false;
+        }
+
+        return (bool)Utils::tryParseUrl($accountUrl, [self::ACCOUNT_URL_SCHEME]);
     }
 
     /**
@@ -41,9 +45,8 @@ class ProvisioningConfigUtils
      *
      * @param string $accountUrl The Cloudinary Account Url
      *
-     * @return array
      */
-    public static function parseAccountUrl($accountUrl)
+    public static function parseAccountUrl(string $accountUrl): array
     {
         if (empty($accountUrl)) {
             throw new InvalidArgumentException(

@@ -15,18 +15,18 @@ namespace Cloudinary\Api\Admin;
  */
 class ApiEndPoint
 {
-    const PING               = 'ping';
-    const CONFIG             = 'config';
-    const USAGE              = 'usage';
-    const ASSETS             = 'resources';
-    const DERIVED_ASSETS     = 'derived_resources';
-    const RELATED_ASSETS     = 'related_assets';
-    const FOLDERS            = 'folders';
-    const TAGS               = 'tags';
-    const STREAMING_PROFILES = 'streaming_profiles';
-    const TRANSFORMATIONS    = 'transformations';
-    const UPLOAD_PRESETS     = 'upload_presets';
-    const UPLOAD_MAPPINGS    = 'upload_mappings';
-    const METADATA_FIELDS    = 'metadata_fields';
-    const ANALYSIS           = 'analysis';
+    public const PING               = 'ping';
+    public const CONFIG             = 'config';
+    public const USAGE              = 'usage';
+    public const ASSETS             = 'resources';
+    public const DERIVED_ASSETS     = 'derived_resources';
+    public const RELATED_ASSETS     = 'related_assets';
+    public const FOLDERS            = 'folders';
+    public const TAGS               = 'tags';
+    public const STREAMING_PROFILES = 'streaming_profiles';
+    public const TRANSFORMATIONS    = 'transformations';
+    public const UPLOAD_PRESETS     = 'upload_presets';
+    public const UPLOAD_MAPPINGS    = 'upload_mappings';
+    public const METADATA_FIELDS    = 'metadata_fields';
+    public const ANALYSIS           = 'analysis';
 }

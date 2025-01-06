@@ -24,9 +24,8 @@ class DateMetadataField extends MetadataField
     /**
      * The DateMetadataField constructor.
      *
-     * @param string $label
      */
-    public function __construct($label)
+    public function __construct(string $label)
     {
         parent::__construct($label);
         $this->type = MetadataFieldType::DATE;
@@ -35,9 +34,9 @@ class DateMetadataField extends MetadataField
     /**
      * Sets the default date for this field.
      *
-     * @param DateTime $defaultValue The date to set.
+     * @param mixed $defaultValue The date to set.
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue(mixed $defaultValue): void
     {
         $this->defaultValue = Utils::toISO8601DateOnly($defaultValue);
     }
@@ -45,10 +44,9 @@ class DateMetadataField extends MetadataField
     /**
      * Gets the default date of this field.
      *
-     * @return DateTime|null
      * @throws Exception When the underlying value is malformed.
      */
-    public function getDefaultValue()
+    public function getDefaultValue(): ?DateTime
     {
         return $this->defaultValue ? new DateTime($this->defaultValue) : null;
     }

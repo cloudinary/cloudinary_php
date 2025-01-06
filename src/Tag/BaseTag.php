@@ -27,45 +27,45 @@ abstract class BaseTag
 {
     use TagConfigTrait;
 
-    const SINGLE_QUOTES = 'single_quotes';
-    const DOUBLE_QUOTES = 'double_quotes';
+    public const  SINGLE_QUOTES = 'single_quotes';
+    public const  DOUBLE_QUOTES = 'double_quotes';
 
     /**
-     * @var string NAME Mandatory. The name of the tag.
+     * @var ?string NAME Mandatory. The name of the tag.
      */
-    const NAME = null;
+    public const NAME = null;
 
     /**
      * @var bool IS_VOID Indicates whether the tag is a void (self-closed, without body) tag.
      */
-    const IS_VOID = false;
+    protected const  IS_VOID = false;
 
     /**
      * @var array $classes An array of tag (unique) classes. Keys are used for uniqueness.
      */
-    protected $classes = [];
+    protected array $classes = [];
 
     /**
      * @var array $attributes An array of tag attributes.
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * @var Configuration $config The Configuration instance.
      */
-    public $config;
+    public Configuration $config;
 
     /**
      * @var array $content The items of the tag content(body).
      */
-    protected $content = [];
+    protected array $content = [];
 
     /**
      * BaseTag constructor.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      */
-    public function __construct($configuration = null)
+    public function __construct(Configuration|array|string|null $configuration = null)
     {
         if (static::NAME === null) {
             throw new UnexpectedValueException('Tag name cannot be empty!');
@@ -81,11 +81,10 @@ abstract class BaseTag
     /**
      * Sets the configuration.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return Configuration
      */
-    public function configuration($configuration)
+    public function configuration(Configuration|array|string|null $configuration): Configuration
     {
         $tempConfiguration = new Configuration($configuration); // TODO: improve performance here
         $this->config      = $tempConfiguration;
@@ -96,11 +95,10 @@ abstract class BaseTag
     /**
      * Imports (merges) the configuration.
      *
-     * @param Configuration|string|array|null $configuration The Configuration source.
+     * @param array|string|Configuration|null $configuration The Configuration source.
      *
-     * @return static
      */
-    public function importConfiguration($configuration)
+    public function importConfiguration(Configuration|array|string|null $configuration): static
     {
         $this->config->importConfig($configuration);
 
@@ -110,11 +108,10 @@ abstract class BaseTag
     /**
      * Adds a tag class.
      *
-     * @param string|array $class The class to add.
+     * @param array|string|null $class The class to add.
      *
-     * @return static
      */
-    public function addClass($class)
+    public function addClass(array|string|null $class): static
     {
         if (empty($class)) {
             return $this;
@@ -132,11 +129,10 @@ abstract class BaseTag
     /**
      * Resets tag classes and sets the specified one.
      *
-     * @param string|array $class The class to set.
+     * @param array|string $class The class to set.
      *
-     * @return static
      */
-    public function setClass($class)
+    public function setClass(array|string $class): static
     {
         $this->classes = [];
 
@@ -146,12 +142,11 @@ abstract class BaseTag
     /**
      * Sets tag attribute.
      *
-     * @param string $key   The attribute name.
-     * @param mixed  $value The attribute value.
+     * @param string     $key   The attribute name.
+     * @param mixed|null $value The attribute value.
      *
-     * @return static
      */
-    public function setAttribute($key, $value = null)
+    public function setAttribute(string $key, mixed $value = null): static
     {
         $this->attributes[$key] = $value;
 
@@ -163,9 +158,8 @@ abstract class BaseTag
      *
      * @param array $attributes The attributes to set.
      *
-     * @return static
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): static
     {
         $this->attributes = ArrayUtils::convertToAssoc($attributes);
 
@@ -177,9 +171,8 @@ abstract class BaseTag
      *
      * @param string $key The name of the attribute to delete.
      *
-     * @return static
      */
-    public function deleteAttribute($key)
+    public function deleteAttribute(string $key): static
     {
         unset($this->attributes[$key]);
 
@@ -189,13 +182,13 @@ abstract class BaseTag
     /**
      * Adds tag content.
      *
-     * @param mixed $content The content value.
+     * @param mixed      $content The content value.
      *
-     * @param mixed $key     Optional. Used for uniqueness.
+     * @param mixed|null $key     Optional. Used for uniqueness.
      *
      * @return $this
      */
-    public function addContent($content, $key = null)
+    public function addContent(mixed $content, mixed $key = null): static
     {
         if ($key === null) {
             $this->content [] = $content;
@@ -211,9 +204,8 @@ abstract class BaseTag
      *
      * @param mixed $content The content of the tag.
      *
-     * @return static
      */
-    public function setContent($content)
+    public function setContent(mixed $content): static
     {
         $this->content = [];
 
@@ -223,9 +215,8 @@ abstract class BaseTag
     /**
      * Serializes the tag to string.
      *
-     * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         $closingChar = static::IS_VOID && $this->config->tag->voidClosingSlash ? '/>' : '>';
 
@@ -246,9 +237,8 @@ abstract class BaseTag
      * @param array $additionalContent        The additional content.
      * @param bool  $prependAdditionalContent Whether to prepend additional content (instead of append).
      *
-     * @return string
      */
-    public function serializeContent($additionalContent = [], $prependAdditionalContent = false)
+    public function serializeContent(array $additionalContent = [], bool $prependAdditionalContent = false): string
     {
         $content = $prependAdditionalContent ? ArrayUtils::mergeNonEmpty(
             $additionalContent,
@@ -266,9 +256,8 @@ abstract class BaseTag
      *
      * @param array $attributes Optional. Additional attributes to add without affecting the tag state.
      *
-     * @return string
      */
-    public function serializeAttributes($attributes = [])
+    public function serializeAttributes(array $attributes = []): string
     {
         $classAttr     = ! empty($this->classes) ? ['class' => implode(' ', array_keys($this->classes))] : [];
         $allAttributes = array_merge($classAttr, $this->attributes, $attributes);
@@ -304,9 +293,8 @@ abstract class BaseTag
      * @param string $name  The name of the attribute
      * @param mixed  $value The value of the attribute
      *
-     * @return string
      */
-    protected function serializeAttribute($name, $value)
+    protected function serializeAttribute(string $name, mixed $value): string
     {
         if (empty($value)) {
             return $name;
@@ -328,9 +316,8 @@ abstract class BaseTag
      *
      * @param array $params The input parameters.
      *
-     * @return array
      */
-    protected static function collectAttributesFromParams($params)
+    protected static function collectAttributesFromParams(array $params): array
     {
         $attributes = ArrayUtils::pop($params, 'attributes', []);
 
@@ -349,11 +336,10 @@ abstract class BaseTag
     /**
      * Returns Configuration for fromParams function.
      *
-     * @return Configuration
      */
-    protected static function fromParamsDefaultConfig()
+    protected static function fromParamsDefaultConfig(): Configuration
     {
-        $configuration = (new Configuration(Configuration::instance()));
+        $configuration = new Configuration(Configuration::instance());
         # set v1 defaults
         $configuration->tag->quotesType       = self::SINGLE_QUOTES;
         $configuration->tag->sortAttributes   = true;
@@ -373,7 +359,7 @@ abstract class BaseTag
      *
      * @internal
      */
-    public function setTagConfig($configKey, $configValue)
+    public function setTagConfig($configKey, $configValue): static
     {
         $this->config->tag->setTagConfig($configKey, $configValue);
 
@@ -383,9 +369,8 @@ abstract class BaseTag
     /**
      * Serializes the tag to string.
      *
-     * @return string
      */
-    public function toTag()
+    public function toTag(): string
     {
         return $this->serialize();
     }

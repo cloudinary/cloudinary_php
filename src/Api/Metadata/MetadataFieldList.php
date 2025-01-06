@@ -19,18 +19,15 @@ use InvalidArgumentException;
  */
 abstract class MetadataFieldList extends MetadataField
 {
-    /**
-     * @var MetadataDataSource $datasource
-     */
-    protected $datasource;
+    protected MetadataDataSource $datasource;
 
     /**
      * The MetadataFieldList constructor.
      *
-     * @param string                   $label
-     * @param array|MetadataDataSource $dataSource
+     * @param string                   $label      The label to assign.
+     * @param array|MetadataDataSource $dataSource The data source.
      */
-    public function __construct($label, $dataSource = [])
+    public function __construct(string $label, array|MetadataDataSource $dataSource = [])
     {
         parent::__construct($label);
         $this->type = MetadataFieldType::STRING;
@@ -42,7 +39,7 @@ abstract class MetadataFieldList extends MetadataField
      *
      * @return string[]
      */
-    public function getPropertyKeys()
+    public function getPropertyKeys(): array
     {
         return array_merge(parent::getPropertyKeys(), ['datasource']);
     }
@@ -52,7 +49,7 @@ abstract class MetadataFieldList extends MetadataField
      *
      * @return MetadataDataSource The data source.
      */
-    public function getDataSource()
+    public function getDataSource(): MetadataDataSource
     {
         return $this->datasource;
     }
@@ -64,7 +61,7 @@ abstract class MetadataFieldList extends MetadataField
      *
      * @throws InvalidArgumentException
      */
-    public function setDataSource($metadataDataSource)
+    public function setDataSource(array|MetadataDataSource $metadataDataSource): void
     {
         if ($metadataDataSource instanceof MetadataDataSource) {
             $this->datasource = $metadataDataSource;

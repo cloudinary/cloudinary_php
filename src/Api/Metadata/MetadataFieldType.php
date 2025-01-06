@@ -17,9 +17,9 @@ namespace Cloudinary\Api\Metadata;
  */
 class MetadataFieldType
 {
-    const STRING  = 'string';
-    const INTEGER = 'integer';
-    const DATE    = 'date';
-    const ENUM    = 'enum';
-    const SET     = 'set';
+    public const STRING = 'string';
+    public const INTEGER = 'integer';
+    public const DATE    = 'date';
+    public const ENUM = 'enum';
+    public const SET  = 'set';
 }

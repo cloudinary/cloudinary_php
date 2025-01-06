@@ -24,26 +24,26 @@ abstract class ModerationStatus
      *
      * @var string
      */
-    const KEY = 'moderation_status';
+    public const KEY = 'moderation_status';
 
     /**
      * Asset is pending moderation.
      *
      * @var string
      */
-    const PENDING = 'pending';
+    public const PENDING = 'pending';
 
     /**
      * Asset has passed moderation and been approved.
      *
      * @var string
      */
-    const APPROVED = 'approved';
+    public const APPROVED = 'approved';
 
     /**
      * Asset has passed moderation and been rejected.
      *
      * @var string
      */
-    const REJECTED = 'rejected';
+    public const REJECTED = 'rejected';
 }

@@ -34,17 +34,17 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     use MediaAssetFinalizerTrait;
 
     /**
-     * @var ImageTransformation|VideoTransformation|Transformation $transformation The transformation.
+     * @var ImageTransformation|VideoTransformation|CommonTransformation $transformation The transformation.
      */
     public $transformation;
 
     /**
      * BaseMediaAsset constructor.
      *
-     * @param                                 $source
+     * @param mixed                           $source        The source.
      * @param Configuration|string|array|null $configuration The Configuration source.
      */
-    public function __construct($source, $configuration = null)
+    public function __construct(mixed $source, Configuration|string|array|null $configuration = null)
     {
         parent::__construct($source, $configuration);
 
@@ -65,9 +65,8 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * @param string $source The public ID of the asset.
      * @param array  $params The media asset parameters.
      *
-     * @return static
      */
-    public static function fromParams($source, $params = [])
+    public static function fromParams(string $source, array $params): static
     {
         $params = self::setFormatParameter($params);
 
@@ -84,9 +83,8 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      *
      * @param CommonTransformation $transformation The transformation
      *
-     * @return static
      */
-    public function setTransformation(CommonTransformation $transformation)
+    public function setTransformation(CommonTransformation $transformation): static
     {
         $this->transformation = $transformation;
 
@@ -96,12 +94,15 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     /**
      * Gets the asset transformation.
      *
-     * @return ImageTransformation|VideoTransformation|Transformation
      */
-    abstract public function getTransformation();
+    abstract public function getTransformation(): CommonTransformation;
 
     /**
-     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing formats. For a detailed listing of all transformations, see the [Transformation Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
+     * Adds (appends) a transformation in URL syntax to the current chain. A transformation is a set of instructions
+     * for adjusting images or videos—such as resizing, cropping, applying filters, adding overlays, or optimizing
+     * formats. For a detailed listing of all transformations, see the [Transformation
+     * Reference](https://cloudinary.com/documentation/transformation_reference) or the [PHP
+     * reference](https://cloudinary.com/documentation/sdks/php/php-transformation-builder/index.html).
      *
      * Appended transformation is nested.
      *
@@ -109,7 +110,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      *
      * @return $this
      */
-    public function addTransformation($transformation)
+    public function addTransformation($transformation): static
     {
         $this->getTransformation()->addTransformation($transformation);
 
@@ -122,9 +123,8 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * @param BaseAction|BaseQualifier|mixed $action The transformation action to add.
      *                                               If BaseQualifier is provided, it is wrapped with action.
      *
-     * @return static
      */
-    public function addAction($action)
+    public function addAction($action): static
     {
         $this->getTransformation()->addAction($action);
 
@@ -138,11 +138,9 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      * For remotely fetched assets sets the 'f_' transformation parameter.
      *
      * @param string $format         The format to set.
-     * @param bool   $useFetchFormat Whether to force fetch format behavior.
-     *
-     * @return static
+     * @param ?bool  $useFetchFormat Whether to force fetch format behavior.
      */
-    public function setFormat($format, $useFetchFormat = false)
+    public function setFormat(string $format, ?bool $useFetchFormat = false): static
     {
         if ($useFetchFormat || $this->asset->deliveryType == DeliveryType::FETCH) {
             $this->addTransformation(Delivery::format($format));
@@ -156,13 +154,14 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     /**
      * Internal pre-serialization helper.
      *
-     * @param CommonTransformation|string $withTransformation Optional transformation that can be appended/used instead.
-     * @param bool                        $append             Whether to append or use the provided transformation.
+     * @param mixed $withTransformation Optional transformation that can be appended/used instead.
+     * @param bool  $append             Whether to append or use the provided transformation.
      *
-     * @return array
      */
-    protected function prepareUrlParts($withTransformation = null, $append = true)
-    {
+    protected function prepareUrlParts(
+        mixed $withTransformation = null,
+        bool $append = true
+    ): array {
         $urlParts = parent::prepareUrlParts();
         $urlParts = ArrayUtils::insertAt(
             $urlParts,
@@ -180,14 +179,17 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
     /**
      * Serializes to the URL string.
      *
-     * @param CommonTransformation|string $withTransformation Optional transformation that can be appended/used instead.
-     * @param bool                        $append             Whether to append or use the provided transformation.
+     * @param string|CommonTransformation|array|null $withTransformation Optional transformation that can be
+     *                                                                   appended/used instead.
+     * @param bool                                   $append             Whether to append or use the provided
+     *                                                                   transformation.
      *
-     * @return string|UriInterface
      * @throws ConfigurationException
      */
-    public function toUrl($withTransformation = null, $append = true)
-    {
+    public function toUrl(
+        CommonTransformation|string|array|null $withTransformation = null,
+        bool $append = true
+    ): UriInterface {
         return $this->finalizeUrl(
             ArrayUtils::implodeUrl($this->prepareUrlParts($withTransformation, $append))
         );
@@ -203,7 +205,7 @@ abstract class BaseMediaAsset extends BaseAsset implements CommonTransformationI
      *
      * @return array the resulting parameters.
      */
-    private static function setFormatParameter($params)
+    private static function setFormatParameter(array $params): array
     {
         if (ArrayUtils::get($params, DeliveryType::KEY) !== DeliveryType::FETCH
             && ! ArrayUtils::get($params, TagConfig::USE_FETCH_FORMAT, false)

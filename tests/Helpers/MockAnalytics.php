@@ -17,15 +17,14 @@ use Cloudinary\Asset\Analytics;
  */
 class MockAnalytics extends Analytics
 {
-    protected static $sdkVersion  = "2.3.4";
-    protected static $techVersion = '8.0';
+    protected static string $sdkVersion  = "2.3.4";
+    protected static string $techVersion = '8.0';
 
     /**
      * Gets the SDK signature by encoding the SDK version and tech version.
      *
-     * @return string
      */
-    public static function sdkAnalyticsSignature()
+    public static function sdkAnalyticsSignature(): string
     {
         self::$signature = null; // reset signature for tests
 

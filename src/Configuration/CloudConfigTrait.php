@@ -26,7 +26,7 @@ trait CloudConfigTrait
      *
      * @api
      */
-    public function cloudName($cloudName)
+    public function cloudName(string $cloudName): static
     {
         return $this->setCloudConfig(CloudConfig::CLOUD_NAME, $cloudName);
     }
@@ -34,13 +34,13 @@ trait CloudConfigTrait
     /**
      * Sets the OAuth2.0 token.
      *
-     * @param string $oauthToken Used instead of API key and API secret
+     * @param ?string $oauthToken Used instead of API key and API secret
      *
      * @return $this
      *
      * @api
      */
-    public function oauthToken($oauthToken)
+    public function oauthToken(?string $oauthToken): static
     {
         return $this->setCloudConfig(CloudConfig::OAUTH_TOKEN, $oauthToken);
     }
@@ -54,7 +54,7 @@ trait CloudConfigTrait
      *
      * @api
      */
-    public function signatureAlgorithm($signatureAlgorithm)
+    public function signatureAlgorithm(string $signatureAlgorithm): static
     {
         return $this->setCloudConfig(CloudConfig::SIGNATURE_ALGORITHM, $signatureAlgorithm);
     }
@@ -69,5 +69,5 @@ trait CloudConfigTrait
      *
      * @internal
      */
-    abstract public function setCloudConfig($configKey, $configValue);
+    abstract public function setCloudConfig(string $configKey, mixed $configValue): static;
 }

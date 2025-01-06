@@ -20,12 +20,12 @@ class File extends BaseAsset
     /**
      * @var string $assetType The type of the asset.
      */
-    protected static $assetType = 'raw';
+    protected static string $assetType = 'raw';
 
     /**
      * @var array A list of the delivery types that support SEO suffix.
      */
-    protected static $suffixSupportedDeliveryTypes = [
+    protected static array $suffixSupportedDeliveryTypes = [
         AssetType::RAW => [DeliveryType::UPLOAD => 'files'],
     ];
 }

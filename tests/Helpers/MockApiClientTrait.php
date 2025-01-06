@@ -34,7 +34,7 @@ trait MockApiClientTrait
      */
     private $requestOptions;
 
-    protected function createHttpClient()
+    protected function createHttpClient(): void
     {
         $this->mockHandler = new MockHandler(
             [
@@ -52,14 +52,14 @@ trait MockApiClientTrait
      * Performs an HTTP call asynchronously.
      *
      * @param string       $method   An HTTP method.
-     * @param string|array $endPoint An API endpoint path.
+     * @param array|string $endPoint An API endpoint path.
      * @param array        $options  An array containing request body and additional options passed to the HTTP Client.
      *
      * @return PromiseInterface
      *
      * @internal
      */
-    protected function callAsync($method, $endPoint, $options)
+    protected function callAsync(string $method, array|string $endPoint, array $options): PromiseInterface
     {
         $this->requestOptions = $options;
 

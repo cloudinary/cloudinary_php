@@ -34,7 +34,7 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse A list containing the field definitions maps.
      */
-    public function listMetadataFields()
+    public function listMetadataFields(): ApiResponse
     {
         return $this->apiClient->get(ApiEndPoint::METADATA_FIELDS);
     }
@@ -48,7 +48,7 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse Field definitions.
      */
-    public function metadataFieldByFieldId($fieldExternalId)
+    public function metadataFieldByFieldId(string $fieldExternalId): ApiResponse
     {
         $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId];
 
@@ -64,7 +64,7 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse A map defining the new field.
      */
-    public function addMetadataField(MetadataField $field)
+    public function addMetadataField(MetadataField $field): ApiResponse
     {
         return $this->apiClient->postJson([ApiEndPoint::METADATA_FIELDS], $field);
     }
@@ -81,9 +81,8 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse The updated fields definition.
      *
-     * @throws ApiError
      */
-    public function updateMetadataField($fieldExternalId, MetadataField $field)
+    public function updateMetadataField(string $fieldExternalId, MetadataField $field): ApiResponse
     {
         $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId];
 
@@ -102,9 +101,8 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse An array with a "message" key. "ok" value indicates a successful deletion.
      *
-     * @throws ApiError
      */
-    public function deleteMetadataField($fieldExternalId)
+    public function deleteMetadataField(string $fieldExternalId): ApiResponse
     {
         $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId];
 
@@ -125,9 +123,8 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse The remaining datasource entries.
      *
-     * @throws ApiError
      */
-    public function deleteDatasourceEntries($fieldExternalId, array $entriesExternalId)
+    public function deleteDatasourceEntries(string $fieldExternalId, array $entriesExternalId): ApiResponse
     {
         $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource'];
 
@@ -149,9 +146,8 @@ trait MetadataFieldsTrait
      *
      * @return ApiResponse The updated field definition.
      *
-     * @throws ApiError
      */
-    public function updateMetadataFieldDatasource($fieldExternalId, array $entries)
+    public function updateMetadataFieldDatasource(string $fieldExternalId, array $entries): ApiResponse
     {
         $uri = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource'];
 
@@ -171,12 +167,11 @@ trait MetadataFieldsTrait
      * @param string $fieldExternalId    The ID of the metadata field.
      * @param array  $entriesExternalIds An array of IDs of datasource entries to restore (unblock).
      *
-     * @return ApiResponse
      */
-    public function restoreMetadataFieldDatasource($fieldExternalId, array $entriesExternalIds)
+    public function restoreMetadataFieldDatasource(string $fieldExternalId, array $entriesExternalIds): ApiResponse
     {
-        $uri                    = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource_restore'];
-        $params['external_ids'] = $entriesExternalIds;
+        $uri    = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource_restore'];
+        $params = ['external_ids' => $entriesExternalIds];
 
         return $this->apiClient->postJson($uri, $params);
     }
@@ -184,14 +179,16 @@ trait MetadataFieldsTrait
     /**
      * Reorders metadata field datasource. Currently, supports only value.
      *
-     * @param string $fieldExternalId The ID of the metadata field.
-     * @param string $orderBy         Criteria for the order. Currently, supports only value.
-     * @param string $direction       Optional (gets either asc or desc).
+     * @param string      $fieldExternalId The ID of the metadata field.
+     * @param string      $orderBy         Criteria for the order. Currently, supports only value.
+     * @param string|null $direction       Optional (gets either asc or desc).
      *
-     * @return ApiResponse
      */
-    public function reorderMetadataFieldDatasource($fieldExternalId, $orderBy, $direction = null)
-    {
+    public function reorderMetadataFieldDatasource(
+        string $fieldExternalId,
+        string $orderBy,
+        ?string $direction = null
+    ): ApiResponse {
         $uri    = [ApiEndPoint::METADATA_FIELDS, $fieldExternalId, 'datasource', 'order'];
         $params = [
             'order_by'  => $orderBy,
@@ -204,12 +201,11 @@ trait MetadataFieldsTrait
     /**
      * Reorders metadata fields.
      *
-     * @param string $orderBy   Criteria for the order (one of the fields 'label', 'external_id', 'created_at').
-     * @param string $direction Optional (gets either asc or desc).
+     * @param string      $orderBy   Criteria for the order (one of the fields 'label', 'external_id', 'created_at').
+     * @param string|null $direction Optional (gets either asc or desc).
      *
-     * @return ApiResponse
      */
-    public function reorderMetadataFields($orderBy, $direction = null)
+    public function reorderMetadataFields(string $orderBy, ?string $direction = null): ApiResponse
     {
         $uri    = [ApiEndPoint::METADATA_FIELDS, 'order'];
         $params = [

@@ -20,9 +20,8 @@ class IntMetadataField extends MetadataField
     /**
      * The IntMetadataField constructor.
      *
-     * @param string $label
      */
-    public function __construct($label)
+    public function __construct(string $label)
     {
         parent::__construct($label);
         $this->type = MetadataFieldType::INTEGER;
@@ -31,9 +30,8 @@ class IntMetadataField extends MetadataField
     /**
      * Sets the default value for this field.
      *
-     * @param int $defaultValue
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue(mixed $defaultValue): void
     {
         $this->defaultValue = (int)$defaultValue;
     }
