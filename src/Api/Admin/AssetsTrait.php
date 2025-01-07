@@ -374,6 +374,22 @@ trait AssetsTrait
     }
 
     /**
+     * Deletes the specified assets by asset IDs.
+     *
+     * @param array|string $assetIds The asset IDs of the assets to delete.
+     * @param array        $options  Additional optional parameters.
+     *
+     * @return ApiResponse The result of the command.
+     */
+    public function deleteAssetsByAssetIds(array|string $assetIds, array $options = []): ApiResponse
+    {
+        $uri = [ApiEndPoint::ASSETS];
+        $params = self::prepareDeleteAssetParams($options, ['asset_ids' => ArrayUtils::build($assetIds)]);
+
+        return $this->apiClient->deleteJson($uri, $params);
+    }
+
+    /**
      * Deletes assets by prefix.
      *
      * Delete up to 1000 original assets, along with their derived assets, where the public ID starts with the

@@ -27,13 +27,16 @@ final class DeleteAssetsTest extends IntegrationTestCase
     const TRANSFORMATION           = ['width' => 400, 'height' => 400, 'crop' => 'crop'];
     const TRANSFORMATION_AS_STRING = 'c_crop,h_400,w_400';
 
-    const MULTI_DELETE_OPTION_1 = 'multi_delete_option_1';
-    const MULTI_DELETE_OPTION_2 = 'multi_delete_option_2';
-    const MULTI_DELETE_1        = 'multi_delete_1';
-    const MULTI_DELETE_2        = 'multi_delete_2';
-    const DELETE_DERIVED        = 'delete_derived';
-    const DELETE_SINGLE         = 'delete_single';
-    const PRIVATE_ASSET         = 'private_asset';
+    const MULTI_DELETE_OPTION_1   = 'multi_delete_option_1';
+    const MULTI_DELETE_OPTION_2   = 'multi_delete_option_2';
+    const MULTI_DELETE_1          = 'multi_delete_1';
+    const MULTI_DELETE_ASSET_ID_1 = 'multi_delete_asset_id_1';
+    const MULTI_DELETE_2          = 'multi_delete_2';
+    const MULTI_DELETE_ASSET_ID_2 = 'multi_delete_asset_id_2';
+    const DELETE_DERIVED          = 'delete_derived';
+    const DELETE_SINGLE           = 'delete_single';
+    const DELETE_SINGLE_ASSET_ID  = 'delete_single_asset_id';
+    const PRIVATE_ASSET           = 'private_asset';
 
     private static $DELETE_PREFIX;
     private static $FULL_DELETE_PREFIX;
@@ -62,8 +65,11 @@ final class DeleteAssetsTest extends IntegrationTestCase
                 ],
                 self::DELETE_DERIVED,
                 self::MULTI_DELETE_1,
+                self::MULTI_DELETE_ASSET_ID_1,
                 self::MULTI_DELETE_2,
+                self::MULTI_DELETE_ASSET_ID_2,
                 self::DELETE_SINGLE,
+                self::DELETE_SINGLE_ASSET_ID,
                 self::$DELETE_PREFIX,
                 [
                     'options' => [
@@ -140,6 +146,21 @@ final class DeleteAssetsTest extends IntegrationTestCase
     }
 
     /**
+     * Delete uploaded images by a single Asset ID given as a string.
+     *
+     * @throws ApiError
+     */
+    public function testDeleteSingleAssetByAssetId()
+    {
+        $result = self::$adminApi->deleteAssetsByAssetIds(self::getTestAssetAssetId(self::DELETE_SINGLE_ASSET_ID));
+
+        self::assertAssetDeleted($result, self::getTestAssetAssetId(self::DELETE_SINGLE_ASSET_ID));
+
+        $this->expectException(NotFound::class);
+        self::$adminApi->assetByAssetId(self::getTestAssetAssetId(self::DELETE_SINGLE_ASSET_ID));
+    }
+
+    /**
      * Delete multiple uploaded images by public IDs given in an array.
      *
      * @throws ApiError
@@ -164,6 +185,30 @@ final class DeleteAssetsTest extends IntegrationTestCase
     }
 
     /**
+     * Delete multiple uploaded images by asset IDs given in an array.
+     *
+     * @throws ApiError
+     */
+    public function testDeleteMultipleAssetsByAssetIds()
+    {
+        $result = self::$adminApi->deleteAssetsByAssetIds(
+            [
+                self::getTestAssetAssetId(self::MULTI_DELETE_ASSET_ID_1),
+                self::getTestAssetAssetId(self::MULTI_DELETE_ASSET_ID_2),
+            ]
+        );
+
+        self::assertAssetDeleted($result, self::getTestAssetAssetId(self::MULTI_DELETE_ASSET_ID_1), 2);
+        self::assertAssetDeleted($result, self::getTestAssetAssetId(self::MULTI_DELETE_ASSET_ID_2), 2);
+
+        $this->expectException(NotFound::class);
+        self::$adminApi->assetByAssetId(self::getTestAssetAssetId(self::MULTI_DELETE_ASSET_ID_1));
+
+        $this->expectException(NotFound::class);
+        self::$adminApi->assetByAssetId(self::getTestAssetAssetId(self::MULTI_DELETE_ASSET_ID_2));
+    }
+
+    /**
      * Delete uploaded images by public IDs with options.
      *
      * @throws ApiError
@@ -177,7 +222,7 @@ final class DeleteAssetsTest extends IntegrationTestCase
                 'nonexistent_id',
             ],
             [
-                DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY
+                DeliveryType::KEY => DeliveryType::PRIVATE_DELIVERY,
             ]
         );
 
@@ -264,7 +309,7 @@ final class DeleteAssetsTest extends IntegrationTestCase
 
         $result = self::$adminApi->deleteAssets(
             [
-                self::getTestAssetPublicId(self::DELETE_DERIVED)
+                self::getTestAssetPublicId(self::DELETE_DERIVED),
             ],
             [
                 'keep_original' => true,
@@ -315,7 +360,7 @@ final class DeleteAssetsTest extends IntegrationTestCase
                         'file'            => self::TEST_DOCX_PATH,
                         'tags'            => [self::$UNIQUE_TEST_TAG_DELETE_OPTIONS],
                     ],
-                ]
+                ],
             ]
         );
         $result = self::$adminApi->deleteAllAssets(
@@ -330,7 +375,7 @@ final class DeleteAssetsTest extends IntegrationTestCase
         $assets = self::$adminApi->assetsByTag(
             self::$UNIQUE_TEST_TAG_DELETE_OPTIONS,
             [
-                AssetType::KEY => AssetType::RAW
+                AssetType::KEY => AssetType::RAW,
             ]
         );
 
@@ -339,7 +384,7 @@ final class DeleteAssetsTest extends IntegrationTestCase
             $assets['resources'][0],
             [
                 DeliveryType::KEY => DeliveryType::UPLOAD,
-                AssetType::KEY    => AssetType::RAW
+                AssetType::KEY    => AssetType::RAW,
             ]
         );
     }
