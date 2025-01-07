@@ -302,6 +302,24 @@ trait AssetsTrait
     }
 
     /**
+     * Reverts to the latest backed up version of the specified deleted assets by asset IDs.
+     *
+     * @param array|string $assetIds The asset IDs of the backed up assets to restore. They can be existing or
+     *                               deleted assets.
+     * @param array        $options  The optional parameters.
+     *
+     * @return ApiResponse The result of the restore operation.
+     */
+    public function restoreByAssetIds(array|string $assetIds, array $options = []): ApiResponse
+    {
+        $uri = [ApiEndPoint::ASSETS, 'restore'];
+
+        $params = array_merge($options, ['asset_ids' => ArrayUtils::build($assetIds)]);
+
+        return $this->apiClient->postJson($uri, $params);
+    }
+
+    /**
      * Updates details of an existing asset.
      *
      * Update one or more of the attributes associated with a specified asset. Note that you can also update
