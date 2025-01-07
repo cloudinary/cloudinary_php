@@ -30,12 +30,13 @@ class MetadataFieldsTest extends UnitTestCase
     const EXTERNAL_ID_INT    = 'metadata_external_id_int';
     const EXTERNAL_ID_ENUM   = 'metadata_external_id_enum';
     const EXTERNAL_ID_DELETE = 'metadata_deletion_test';
-    const DATASOURCE_SINGLE  = [
-        [
-            'value'       => 'v1',
-            'external_id' => 'metadata_datasource_entry_external_id'
-        ]
-    ];
+    const DATASOURCE_SINGLE
+                             = [
+            [
+                'value'       => 'v1',
+                'external_id' => 'metadata_datasource_entry_external_id',
+            ],
+        ];
 
     /**
      * Test getting a list of all metadata fields.
@@ -65,7 +66,7 @@ class MetadataFieldsTest extends UnitTestCase
 
         $stringMetadataField = new StringMetadataField(self::EXTERNAL_ID_STRING);
         $stringMetadataField->setExternalId(self::EXTERNAL_ID_STRING);
-        $stringMetadataField->setRestrictions(["readonly_ui" => true]);
+        $stringMetadataField->setRestrictions(['readonly_ui' => true]);
         $stringMetadataField->setMandatory(false);
         $stringMetadataField->setDefaultDisabled();
 
@@ -81,7 +82,7 @@ class MetadataFieldsTest extends UnitTestCase
                 'external_id'      => self::EXTERNAL_ID_STRING,
                 'label'            => self::EXTERNAL_ID_STRING,
                 'mandatory'        => false,
-                'restrictions'     => ["readonly_ui" => true],
+                'restrictions'     => ['readonly_ui' => true],
                 'default_disabled' => true,
             ]
         );
@@ -109,7 +110,7 @@ class MetadataFieldsTest extends UnitTestCase
             [
                 'type'        => MetadataFieldType::INTEGER,
                 'external_id' => self::EXTERNAL_ID_INT,
-                'label'       => self::EXTERNAL_ID_INT
+                'label'       => self::EXTERNAL_ID_INT,
             ]
         );
     }
@@ -126,6 +127,7 @@ class MetadataFieldsTest extends UnitTestCase
         $enumMetadataField = new EnumMetadataField(self::EXTERNAL_ID_ENUM, self::DATASOURCE_SINGLE);
         $enumMetadataField->setDataSource(self::DATASOURCE_SINGLE);
         $enumMetadataField->setExternalId(self::EXTERNAL_ID_ENUM);
+        $enumMetadataField->setAllowDynamicListValues();
 
         $mockAdminApi->addMetadataField($enumMetadataField);
         $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
@@ -135,12 +137,14 @@ class MetadataFieldsTest extends UnitTestCase
         self::assertRequestFields(
             $lastRequest,
             [
-                'datasource' => [
-                    'values' => self::DATASOURCE_SINGLE
+                'datasource'                => [
+                    'values' => self::DATASOURCE_SINGLE,
                 ],
-                'external_id' => self::EXTERNAL_ID_ENUM,
-                'label' => self::EXTERNAL_ID_ENUM,
-                'type' => MetadataFieldType::ENUM
+                'external_id'               => self::EXTERNAL_ID_ENUM,
+                'label'                     => self::EXTERNAL_ID_ENUM,
+                'type'                      => MetadataFieldType::ENUM,
+                'allow_dynamic_list_values' => true,
+
             ]
         );
     }

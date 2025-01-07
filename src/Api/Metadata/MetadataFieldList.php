@@ -20,6 +20,7 @@ use InvalidArgumentException;
 abstract class MetadataFieldList extends MetadataField
 {
     protected MetadataDataSource $datasource;
+    protected bool $allowDynamicListValues;
 
     /**
      * The MetadataFieldList constructor.
@@ -41,7 +42,7 @@ abstract class MetadataFieldList extends MetadataField
      */
     public function getPropertyKeys(): array
     {
-        return array_merge(parent::getPropertyKeys(), ['datasource']);
+        return array_merge(parent::getPropertyKeys(), ['datasource', 'allowDynamicListValues']);
     }
 
     /**
@@ -70,5 +71,23 @@ abstract class MetadataFieldList extends MetadataField
         } else {
             throw new InvalidArgumentException('The specified MetadataFieldList datasource is not valid.');
         }
+    }
+
+    /**
+     * Gets the value indicating whether the field should allow dynamic list values.
+     */
+    public function isAllowDynamicListValues(): bool
+    {
+        return $this->allowDynamicListValues;
+    }
+
+    /**
+     * Sets the value indicating whether the field should allow dynamic list values.
+     *
+     * @param bool $allowDynamicListValues The value to set.
+     */
+    public function setAllowDynamicListValues(bool $allowDynamicListValues = true): void
+    {
+        $this->allowDynamicListValues = $allowDynamicListValues;
     }
 }
