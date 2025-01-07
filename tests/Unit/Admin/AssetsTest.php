@@ -128,6 +128,57 @@ final class AssetsTest extends UnitTestCase
     }
 
     /**
+     * @return array[]
+     */
+    public function restoreDeletedAssetByAssetIDSpecificVersionDataProvider()
+    {
+        return [
+            [
+                'assetIds'  => self::API_TEST_ASSET_ID,
+                'options'    => [
+                    'versions' => ['293272f6bd9ec6ae9fa643e295b4dd1b'],
+                ],
+                'url'        => '/resources/restore',
+                'bodyFields' => [
+                    'asset_ids' => [self::API_TEST_ASSET_ID],
+                    'versions'   => ['293272f6bd9ec6ae9fa643e295b4dd1b'],
+                ],
+            ],
+            [
+                'assetIds'  => [self::API_TEST_ASSET_ID2, self::API_TEST_ASSET_ID3],
+                'options'    => [
+                    'versions'      => ['9fa643e295b4dd1b293272f6bd9ec6ae', 'b4dd1b293272f6bd9fa643e2959ec6ae'],
+                ],
+                'url'        => '/resources/restore',
+                'bodyFields' => [
+                    'asset_ids' => [self::API_TEST_ASSET_ID2, self::API_TEST_ASSET_ID3],
+                    'versions'   => ['9fa643e295b4dd1b293272f6bd9ec6ae', 'b4dd1b293272f6bd9fa643e2959ec6ae'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Restore specific versions of a deleted asset by asset IDs.
+     *
+     * @dataProvider restoreDeletedAssetByAssetIDSpecificVersionDataProvider
+     *
+     * @param array|string $assetIds
+     * @param array        $options
+     * @param string       $url
+     * @param array        $bodyFields
+     */
+    public function testRestoreDeletedAssetByAssetIDSpecificVersion($assetIds, $options, $url, $bodyFields)
+    {
+        $mockAdminApi = new MockAdminApi();
+        $mockAdminApi->restoreByAssetIds($assetIds, $options);
+        $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
+
+        self::assertRequestUrl($lastRequest, $url);
+        self::assertRequestJsonBodySubset($lastRequest, $bodyFields);
+    }
+
+    /**
      * Test update assets complex fields serialization.
      */
     public function testUpdateAssetFields()
