@@ -131,35 +131,35 @@ abstract class AssetTestCase extends UnitTestCase
     /**
      * @param        $expectedPath
      * @param        $actualUrl
-     * @param null   $message
+     * @param string $message
      * @param string $customDeliveryType
      */
     protected static function assertVideoUrl(
         $expectedPath,
         $actualUrl,
-        $message = null,
+        $message = '',
         $customDeliveryType = DeliveryType::UPLOAD
     ) {
         $expectedPath = AssetType::VIDEO . "/$customDeliveryType/$expectedPath";
 
-        self::assertAssetUrl($expectedPath, $actualUrl, $message);
+        self::assertAssetUrl($expectedPath, $actualUrl, ['message' => $message]);
     }
 
     /**
      * @param        $expectedPath
      * @param        $actualUrl
-     * @param null   $message
+     * @param string $message
      * @param string $customDeliveryType
      */
     protected static function assertFileUrl(
         $expectedPath,
         $actualUrl,
-        $message = null,
+        $message = '',
         $customDeliveryType = DeliveryType::UPLOAD
     ) {
         $expectedPath = AssetType::RAW . "/$customDeliveryType/$expectedPath";
 
-        self::assertAssetUrl($expectedPath, $actualUrl, $message);
+        self::assertAssetUrl($expectedPath, $actualUrl, ['message' => $message]);
     }
 
     /**
