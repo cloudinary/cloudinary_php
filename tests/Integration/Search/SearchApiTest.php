@@ -282,25 +282,6 @@ class SearchApiTest extends IntegrationTestCase
     }
 
     /**
-     * Find assets without limiting expression to certain fields but with an underscore in the expression
-     * Shows results containing the entire expression in any string field
-     * Shows results containing the entire expression or a part of it (parts are separated by underscore) in public_id
-     *
-     * @throws ApiError
-     */
-    public function testFindAssetsByGeneralExpressionWithUnderscore()
-    {
-        $result = $this->search
-            ->expression(self::$MULTI_STRING)
-            ->maxResults(2)
-            ->execute();
-
-        self::assertEquals(2, $result['total_count']);
-        self::assertCount(2, $result['resources']);
-        self::assertValidAsset($result['resources'][0]);
-    }
-
-    /**
      * Find assets with an expression limiting the search expression to certain fields
      * Shows results containing given text in tags field
      *

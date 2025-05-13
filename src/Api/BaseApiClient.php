@@ -53,7 +53,8 @@ class BaseApiClient
             HttpStatusCode::FORBIDDEN             => NotAllowed::class,
             HttpStatusCode::NOT_FOUND             => NotFound::class,
             HttpStatusCode::CONFLICT              => AlreadyExists::class,
-            HttpStatusCode::ENHANCE_YOUR_CALM     => RateLimited::class, // RFC6585::TOO_MANY_REQUESTS
+            HttpStatusCode::ENHANCE_YOUR_CALM     => RateLimited::class,
+            HttpStatusCode::TOO_MANY_REQUESTS     => RateLimited::class,
             HttpStatusCode::INTERNAL_SERVER_ERROR => GeneralError::class,
         ];
 
