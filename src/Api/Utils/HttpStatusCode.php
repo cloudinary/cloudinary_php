@@ -91,6 +91,16 @@ class HttpStatusCode
     public const ENHANCE_YOUR_CALM = 420;
 
     /**
+     * The 429 (Too Many Requests) status code indicates the user has sent too
+     * many requests in a given amount of time ("rate limiting").
+     *
+     * @link https://datatracker.ietf.org/doc/html/rfc6585#section-4
+     *
+     * @var int
+     */
+    public const TOO_MANY_REQUESTS = 429;
+
+    /**
      * The 500 (Internal Server Error) status code indicates that the server
      * encountered an unexpected condition that prevented it from fulfilling the
      * request.
