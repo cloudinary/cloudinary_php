@@ -244,8 +244,14 @@ class ApiUtils
      */
     public static function serializeQueryParams(array $parameters = []): string
     {
+        // URL encode & characters in values to prevent parameter smuggling
+        $encodedParameters = ArrayUtils::mapAssoc(
+            static fn($key, $value) => str_replace('&', '%26', $value),
+            $parameters
+        );
+        
         return ArrayUtils::implodeAssoc(
-            $parameters,
+            $encodedParameters,
             self::QUERY_STRING_OUTER_DELIMITER,
             self::QUERY_STRING_INNER_DELIMITER
         );
