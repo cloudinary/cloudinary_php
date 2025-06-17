@@ -22,7 +22,10 @@ use Cloudinary\Utils;
  */
 final class ApiUtilsTest extends UnitTestCase
 {
-    public function tearDown()
+    public const API_SIGN_REQUEST_TEST_SECRET = 'hdcixPpR2iKERPwqvH6sHdK9cyac';
+    public const API_SIGN_REQUEST_CLOUD_NAME = 'dn6ot3ged';
+
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -230,7 +233,7 @@ final class ApiUtilsTest extends UnitTestCase
             ],
             [
                 'value'  => ['p1' => 'v1=v2*|}{ & !@#$%^&*()_;/.,?><\\/|_+a'],
-                'result' => 'bbdc631f4b490c0ba65722d8dbf9300d1fd98e86',
+                'result' => 'ced1e363d8db0a8d7ebcfb9e67fadbf5ee78a0f1',
             ],
         ];
     }
@@ -276,12 +279,12 @@ final class ApiUtilsTest extends UnitTestCase
             ],
             [
                 'value'  => ['p1' => 'v1=v2*|}{ & !@#$%^&*()_;/.,?><\\/|_+a'],
-                'result' => 'bbdc631f4b490c0ba65722d8dbf9300d1fd98e86',
+                'result' => 'ced1e363d8db0a8d7ebcfb9e67fadbf5ee78a0f1',
                 'signatureAlgorithm' => 'sha1',
             ],
             [
                 'value'  => ['p1' => 'v1=v2*|}{ & !@#$%^&*()_;/.,?><\\/|_+a'],
-                'result' => '9cdbdd04f587b41db72d66437f6dac2a379cd899c0cf3c3430925b1beca6052d',
+                'result' => '0c06416c30bfc727eb2cbc9f93245be70bd6567c788b5bd93a3772e8253312bf',
                 'signatureAlgorithm' => 'sha256',
             ],
         ];
@@ -310,13 +313,13 @@ final class ApiUtilsTest extends UnitTestCase
     public function testApiSignRequestWithGlobalConfig()
     {
         $initialParams = [
-            'cloud_name' => 'dn6ot3ged',
+            'cloud_name' => self::API_SIGN_REQUEST_CLOUD_NAME,
             'timestamp' => 1568810420,
             'username' => 'user@cloudinary.com'
         ];
 
         $params = $initialParams;
-        Configuration::instance()->cloud->apiSecret = 'hdcixPpR2iKERPwqvH6sHdK9cyac';
+        Configuration::instance()->cloud->apiSecret = self::API_SIGN_REQUEST_TEST_SECRET;
         Configuration::instance()->cloud->signatureAlgorithm = Utils::ALGO_SHA256;
         ApiUtils::signRequest($params, Configuration::instance()->cloud);
         $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
@@ -335,15 +338,90 @@ final class ApiUtilsTest extends UnitTestCase
     public function testApiSignRequestWithExplicitConfig()
     {
         $params = [
-            'cloud_name' => 'dn6ot3ged',
+            'cloud_name' => self::API_SIGN_REQUEST_CLOUD_NAME,
             'timestamp' => 1568810420,
             'username' => 'user@cloudinary.com'
         ];
 
-        $config = new Configuration('cloudinary://key:hdcixPpR2iKERPwqvH6sHdK9cyac@test123');
+        $config = new Configuration('cloudinary://key:' . self::API_SIGN_REQUEST_TEST_SECRET . '@test123');
         $config->cloud->signatureAlgorithm = Utils::ALGO_SHA256;
         ApiUtils::signRequest($params, $config->cloud);
         $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
         self::assertEquals($expected, $params['signature']);
+    }
+
+    /**
+     * Should prevent parameter smuggling via & characters in parameter values.
+     */
+    public function testApiSignRequestPreventsParameterSmuggling()
+    {
+        // Test with notification_url containing & characters
+        $paramsWithAmpersand = [
+            'cloud_name' => self::API_SIGN_REQUEST_CLOUD_NAME,
+            'timestamp' => 1568810420,
+            'notification_url' => 'https://fake.com/callback?a=1&tags=hello,world'
+        ];
+
+        $config = new Configuration('cloudinary://key:' . self::API_SIGN_REQUEST_TEST_SECRET . '@test123');
+        ApiUtils::signRequest($paramsWithAmpersand, $config->cloud);
+        $signatureWithAmpersand = $paramsWithAmpersand['signature'];
+
+        // Test that attempting to smuggle parameters by splitting the notification_url fails
+        $paramsSmugggled = [
+            'cloud_name' => self::API_SIGN_REQUEST_CLOUD_NAME,
+            'timestamp' => 1568810420,
+            'notification_url' => 'https://fake.com/callback?a=1',
+            'tags' => 'hello,world'  // This would be smuggled if & encoding didn't work
+        ];
+
+        ApiUtils::signRequest($paramsSmugggled, $config->cloud);
+        $signatureSmugggled = $paramsSmugggled['signature'];
+
+        // The signatures should be different, proving that parameter smuggling is prevented
+        self::assertNotEquals($signatureWithAmpersand, $signatureSmugggled,
+                            'Signatures should be different to prevent parameter smuggling');
+
+        // Verify the expected signature for the properly encoded case
+        $expectedSignature = '4fdf465dd89451cc1ed8ec5b3e314e8a51695704';
+        self::assertEquals($expectedSignature, $signatureWithAmpersand);
+
+        // Verify the expected signature for the smuggled parameters case
+        $expectedSmuggledSignature = '7b4e3a539ff1fa6e6700c41b3a2ee77586a025f9';
+        self::assertEquals($expectedSmuggledSignature, $signatureSmugggled);
+    }
+
+    /**
+     * Should apply the configured signature version from CloudConfig.
+     */
+    public function testConfiguredSignatureVersionIsApplied()
+    {
+        $params = [
+            'cloud_name' => self::API_SIGN_REQUEST_CLOUD_NAME,
+            'timestamp' => 1568810420,
+            'notification_url' => 'https://fake.com/callback?a=1&tags=hello,world'
+        ];
+
+        $config = new Configuration('cloudinary://key:' . self::API_SIGN_REQUEST_TEST_SECRET . '@test123');
+
+        // Test with signature version 1 (legacy behavior - no URL encoding)
+        $config->cloud->signatureVersion = 1;
+        $paramsV1 = $params;
+        ApiUtils::signRequest($paramsV1, $config->cloud);
+        $signatureV1 = $paramsV1['signature'];
+
+        // Test with signature version 2 (current behavior - with URL encoding)
+        $config->cloud->signatureVersion = 2;
+        $paramsV2 = $params;
+        ApiUtils::signRequest($paramsV2, $config->cloud);
+        $signatureV2 = $paramsV2['signature'];
+
+        // Signatures should be different, proving the version setting is applied
+        self::assertNotEquals($signatureV1, $signatureV2,
+                            'Signature versions should produce different results');
+
+        // Version 2 should match the expected encoded signature
+        $expectedV2Signature = '4fdf465dd89451cc1ed8ec5b3e314e8a51695704';
+        self::assertEquals($expectedV2Signature, $signatureV2,
+                          'Version 2 should match expected encoded signature');
     }
 }
