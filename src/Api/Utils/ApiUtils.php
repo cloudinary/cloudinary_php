@@ -242,16 +242,18 @@ class ApiUtils
      *
      * @internal
      */
-    public static function serializeQueryParams(array $parameters = []): string
+    public static function serializeQueryParams(array $parameters = [], int $signatureVersion = 2): string
     {
-        // URL encode & characters in values to prevent parameter smuggling
-        $encodedParameters = ArrayUtils::mapAssoc(
-            static fn($key, $value) => str_replace('&', '%26', $value),
-            $parameters
-        );
-        
+        // Version 2: URL encode & characters in values to prevent parameter smuggling
+        if ($signatureVersion >= 2) {
+            $parameters = ArrayUtils::mapAssoc(
+                static fn($key, $value) => str_replace('&', '%26', $value),
+                $parameters
+            );
+        }
+
         return ArrayUtils::implodeAssoc(
-            $encodedParameters,
+            $parameters,
             self::QUERY_STRING_OUTER_DELIMITER,
             self::QUERY_STRING_INNER_DELIMITER
         );
@@ -263,6 +265,7 @@ class ApiUtils
      * @param array  $parameters         Parameters to sign.
      * @param string $secret             The API secret of the cloud.
      * @param string $signatureAlgorithm Signature algorithm
+     * @param int    $signatureVersion   Signature version (1 or 2)
      *
      * @return string The signature.
      *
@@ -271,13 +274,14 @@ class ApiUtils
     public static function signParameters(
         array $parameters,
         string $secret,
-        string $signatureAlgorithm = Utils::ALGO_SHA1
+        string $signatureAlgorithm = Utils::ALGO_SHA1,
+        int $signatureVersion = 2
     ): string {
         $parameters = array_map(self::class . '::serializeSimpleApiParam', $parameters);
 
         ksort($parameters);
 
-        $signatureContent = self::serializeQueryParams($parameters);
+        $signatureContent = self::serializeQueryParams($parameters, $signatureVersion);
 
         return Utils::sign($signatureContent, $secret, false, $signatureAlgorithm);
     }
@@ -293,7 +297,8 @@ class ApiUtils
         $parameters['signature'] = self::signParameters(
             $parameters,
             $cloudConfig->apiSecret,
-            $cloudConfig->signatureAlgorithm
+            $cloudConfig->signatureAlgorithm,
+            $cloudConfig->signatureVersion
         );
         $parameters['api_key']   = $cloudConfig->apiKey;
     }

@@ -60,6 +60,20 @@ trait CloudConfigTrait
     }
 
     /**
+     * Sets the signature version.
+     *
+     * @param int $signatureVersion The signature version to use. (Can be 1 or 2).
+     *
+     * @return $this
+     *
+     * @api
+     */
+    public function signatureVersion(int $signatureVersion): static
+    {
+        return $this->setCloudConfig(CloudConfig::SIGNATURE_VERSION, $signatureVersion);
+    }
+
+    /**
      * Sets the Cloud configuration key with the specified value.
      *
      * @param string $configKey   The configuration key.

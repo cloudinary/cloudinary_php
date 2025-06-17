@@ -19,6 +19,7 @@ use Cloudinary\Utils;
  * target="_blank">Get account details from the Cloudinary Console.</a>
  *
  * @property ?string $signatureAlgorithm By default, set to self::DEFAULT_SIGNATURE_ALGORITHM.
+ * @property ?int $signatureVersion By default, set to self::DEFAULT_SIGNATURE_VERSION.
  *
  * @api
  */
@@ -29,6 +30,7 @@ class CloudConfig extends BaseConfigSection
     public const CONFIG_NAME = 'cloud';
 
     public const DEFAULT_SIGNATURE_ALGORITHM = Utils::ALGO_SHA1;
+    public const DEFAULT_SIGNATURE_VERSION = 2;
 
     // Supported parameters
     public const CLOUD_NAME = 'cloud_name';
@@ -36,6 +38,7 @@ class CloudConfig extends BaseConfigSection
     public const API_SECRET = 'api_secret';
     public const OAUTH_TOKEN = 'oauth_token';
     public const SIGNATURE_ALGORITHM = 'signature_algorithm';
+    public const SIGNATURE_VERSION = 'signature_version';
 
     /**
      * @var array of configuration keys that contain sensitive data that should not be exported (for example api key)
@@ -68,6 +71,11 @@ class CloudConfig extends BaseConfigSection
      * Sets a signature algorithm (SHA1 by default).
      */
     protected ?string $signatureAlgorithm = null;
+
+    /**
+     * Sets the signature version (2 by default).
+     */
+    protected ?int $signatureVersion = null;
 
     /**
      * Serialises configuration section to a string representation.

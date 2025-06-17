@@ -389,4 +389,39 @@ final class ApiUtilsTest extends UnitTestCase
         $expectedSmuggledSignature = '7b4e3a539ff1fa6e6700c41b3a2ee77586a025f9';
         self::assertEquals($expectedSmuggledSignature, $signatureSmugggled);
     }
+
+    /**
+     * Should apply the configured signature version from CloudConfig.
+     */
+    public function testConfiguredSignatureVersionIsApplied()
+    {
+        $params = [
+            'cloud_name' => self::API_SIGN_REQUEST_CLOUD_NAME,
+            'timestamp' => 1568810420,
+            'notification_url' => 'https://fake.com/callback?a=1&tags=hello,world'
+        ];
+
+        $config = new Configuration('cloudinary://key:' . self::API_SIGN_REQUEST_TEST_SECRET . '@test123');
+
+        // Test with signature version 1 (legacy behavior - no URL encoding)
+        $config->cloud->signatureVersion = 1;
+        $paramsV1 = $params;
+        ApiUtils::signRequest($paramsV1, $config->cloud);
+        $signatureV1 = $paramsV1['signature'];
+
+        // Test with signature version 2 (current behavior - with URL encoding)
+        $config->cloud->signatureVersion = 2;
+        $paramsV2 = $params;
+        ApiUtils::signRequest($paramsV2, $config->cloud);
+        $signatureV2 = $paramsV2['signature'];
+
+        // Signatures should be different, proving the version setting is applied
+        self::assertNotEquals($signatureV1, $signatureV2,
+                            'Signature versions should produce different results');
+
+        // Version 2 should match the expected encoded signature
+        $expectedV2Signature = '4fdf465dd89451cc1ed8ec5b3e314e8a51695704';
+        self::assertEquals($expectedV2Signature, $signatureV2,
+                          'Version 2 should match expected encoded signature');
+    }
 }
