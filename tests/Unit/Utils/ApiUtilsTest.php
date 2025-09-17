@@ -320,13 +320,13 @@ final class ApiUtilsTest extends UnitTestCase
 
         $params = $initialParams;
         Configuration::instance()->cloud->apiSecret = self::API_SIGN_REQUEST_TEST_SECRET;
-        Configuration::instance()->cloud->signatureAlgorithm = Utils::ALGO_SHA256;
+        Configuration::instance()->cloud->signatureAlgorithm = null;
         ApiUtils::signRequest($params, Configuration::instance()->cloud);
         $expected = '45ddaa4fa01f0c2826f32f669d2e4514faf275fe6df053f1a150e7beae58a3bd';
         self::assertEquals($expected, $params['signature']);
 
         $params = $initialParams;
-        Configuration::instance()->cloud->signatureAlgorithm = null;
+        Configuration::instance()->cloud->signatureAlgorithm = Utils::ALGO_SHA1;
         ApiUtils::signRequest($params, Configuration::instance()->cloud);
         $expectedSha1 = '14c00ba6d0dfdedbc86b316847d95b9e6cd46d94';
         self::assertEquals($expectedSha1, $params['signature']);
@@ -382,11 +382,11 @@ final class ApiUtilsTest extends UnitTestCase
                             'Signatures should be different to prevent parameter smuggling');
 
         // Verify the expected signature for the properly encoded case
-        $expectedSignature = '4fdf465dd89451cc1ed8ec5b3e314e8a51695704';
+        $expectedSignature = '6c3d31a5b591c5afb8a37e31764171324de3f57421301e87503e5ceeabad0bbd';
         self::assertEquals($expectedSignature, $signatureWithAmpersand);
 
         // Verify the expected signature for the smuggled parameters case
-        $expectedSmuggledSignature = '7b4e3a539ff1fa6e6700c41b3a2ee77586a025f9';
+        $expectedSmuggledSignature = 'a764c945d130e8c894342711d373606cd39df91fe91dbc4559e778e0b47e7730';
         self::assertEquals($expectedSmuggledSignature, $signatureSmugggled);
     }
 
@@ -420,7 +420,7 @@ final class ApiUtilsTest extends UnitTestCase
                             'Signature versions should produce different results');
 
         // Version 2 should match the expected encoded signature
-        $expectedV2Signature = '4fdf465dd89451cc1ed8ec5b3e314e8a51695704';
+        $expectedV2Signature = '6c3d31a5b591c5afb8a37e31764171324de3f57421301e87503e5ceeabad0bbd';
         self::assertEquals($expectedV2Signature, $signatureV2,
                           'Version 2 should match expected encoded signature');
     }

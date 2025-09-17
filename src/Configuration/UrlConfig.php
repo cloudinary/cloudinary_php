@@ -17,6 +17,7 @@ namespace Cloudinary\Configuration;
  *                                                non-secure HTTP pages.
  * @property bool  $forceVersion                  By default, set to self::DEFAULT_FORCE_VERSION.
  * @property mixed $responsiveWidthTransformation The transformation to use with responsive width.
+ * @property bool  $longUrlSignature              Whether to use long URL signature.
  *
  * @api
  */
@@ -53,6 +54,11 @@ class UrlConfig extends BaseConfigSection
      * Default value for secure (distribution).
      */
     public const DEFAULT_SECURE = true;
+
+    /**
+     * Default value for long URL signature.
+     */
+    public const DEFAULT_LONG_URL_SIGNATURE = true;
 
     /**
      * Default value for forcing version.
@@ -155,7 +161,7 @@ class UrlConfig extends BaseConfigSection
      *
      * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
      */
-    public ?bool $longUrlSignature = null;
+    protected ?bool $longUrlSignature = null;
 
     /**
      * Set to true to use shorten asset type.
