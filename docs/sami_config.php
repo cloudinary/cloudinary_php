@@ -14,7 +14,7 @@ return new Sami(
         'theme'                => 'cloudinary',
         'template_dirs'        => [$docsDir . 'themes'],
         'title'                => 'Cloudinary PHP SDK',
-        'version'              => '3.1.1',
+        'version'              => '3.1.2',
         'build_dir'            => $docsDir . 'build',
         'cache_dir'            => $docsDir . 'cache',
         'default_opened_level' => 1,
