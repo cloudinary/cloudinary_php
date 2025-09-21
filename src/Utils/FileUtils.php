@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the Cloudinary PHP package.
  *
@@ -137,7 +138,7 @@ class FileUtils
 
         if (! $fp) {
             $err = error_get_last();
-            throw new GeneralError($err['message']);
+            throw new GeneralError($err['message'] ?? 'Failed to open file: ' . $filename);
         }
 
         return $fp;
