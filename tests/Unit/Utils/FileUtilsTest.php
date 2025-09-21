@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the Cloudinary PHP package.
  *
@@ -10,6 +11,7 @@
 
 namespace Cloudinary\Test\Unit\Utils;
 
+use Cloudinary\Api\Exception\GeneralError;
 use Cloudinary\FileUtils;
 use Cloudinary\Tag\ImageTag;
 use PHPUnit\Framework\TestCase;
@@ -63,5 +65,40 @@ final class FileUtilsTest extends TestCase
         foreach ($files as $file) {
             self::assertEquals($file[1], FileUtils::splitPathFilenameExtension($file[0]));
         }
+    }
+
+    public function testSafeFileOpenWithExistingFile()
+    {
+        $existingFile = __DIR__ . '/../../assets/sample.png';
+        $resource = FileUtils::safeFileOpen($existingFile, 'rb');
+
+        self::assertIsResource($resource);
+        self::assertEquals('stream', get_resource_type($resource));
+
+        fclose($resource);
+    }
+
+    public function testSafeFileOpenWithNonExistingFile()
+    {
+        $nonExistingFile = __DIR__ . '/../../assets/non_existing_file.txt';
+
+        $this->expectException(GeneralError::class);
+        FileUtils::safeFileOpen($nonExistingFile, 'rb');
+    }
+
+    public function testSafeFileOpenWithNonExistingFolder()
+    {
+        $nonExistingFile = 'foo/bar';
+
+        $this->expectException(GeneralError::class);
+        FileUtils::safeFileOpen($nonExistingFile, 'rb');
+    }
+
+    public function testSafeFileOpenWithEmptyPath()
+    {
+        $this->expectException(GeneralError::class);
+        $this->expectExceptionMessage('Path cannot be empty');
+
+        FileUtils::safeFileOpen('', 'rb');
     }
 }
