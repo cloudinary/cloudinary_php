@@ -199,7 +199,7 @@ abstract class BaseAsset implements AssetInterface
         $params['public_id'] = $source;
 
         $asset         = AssetDescriptor::fromParams($source, $params);
-        $configuration = new Configuration(Configuration::instance());
+        $configuration = clone Configuration::instance();
 
         # set v1 defaults
         if (! $configuration->url->isExplicitlySet('secure')) {
@@ -377,7 +377,7 @@ abstract class BaseAsset implements AssetInterface
 
         foreach ([$this->cloud, $this->urlConfig] as $confSection) {
             $section = $confSection->jsonSerialize(false, $includeEmptyKeys, $includeEmptySections);
-            if (! $includeEmptySections && empty(array_values($section)[0])) {
+            if (! $includeEmptySections && empty(current($section))) {
                 continue;
             }
             $json += $section;

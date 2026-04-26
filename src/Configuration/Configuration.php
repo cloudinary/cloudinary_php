@@ -118,6 +118,17 @@ class Configuration implements ConfigurableInterface
         $this->init($config, $includeSensitive);
     }
 
+    public function __clone(): void
+    {
+        $this->cloud                 = clone $this->cloud;
+        $this->api                   = clone $this->api;
+        $this->url                   = clone $this->url;
+        $this->tag                   = clone $this->tag;
+        $this->responsiveBreakpoints = clone $this->responsiveBreakpoints;
+        $this->authToken             = clone $this->authToken;
+        $this->logging               = clone $this->logging;
+    }
+
     /**
      * Configuration initializer.
      *
@@ -328,7 +339,7 @@ class Configuration implements ConfigurableInterface
         foreach ($this->sections as $section) {
             $section = StringUtils::snakeCaseToCamelCase($section);
             $section = $this->$section->jsonSerialize($includeSensitive, $includeEmptyKeys);
-            if (! $includeEmptySections && empty(array_values($section)[0])) {
+            if (! $includeEmptySections && empty(current($section))) {
                 continue;
             }
             $json += $section;

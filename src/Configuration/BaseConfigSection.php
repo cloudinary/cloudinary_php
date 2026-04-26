@@ -43,6 +43,11 @@ abstract class BaseConfigSection implements ConfigurableInterface
      */
     protected array $explicitlySetKeys = [];
 
+    /**
+     * @var array<string, array>
+     */
+    private static array $exportableKeysCache = [];
+
 
     /**
      * BaseConfig constructor.
@@ -195,12 +200,17 @@ abstract class BaseConfigSection implements ConfigurableInterface
      */
     protected static function exportableKeys(bool $includeSensitive = true): array
     {
+        $cacheKey = static::class . ($includeSensitive ? ':1' : ':0');
+        if (isset(self::$exportableKeysCache[$cacheKey])) {
+            return self::$exportableKeysCache[$cacheKey];
+        }
+
         $blacklisted = [static::CONFIG_NAME];
         if (! $includeSensitive) {
             $blacklisted = array_merge($blacklisted, static::$sensitiveDataKeys);
         }
 
-        return array_filter(
+        return self::$exportableKeysCache[$cacheKey] = array_filter(
             ClassUtils::getConstants(static::class, $blacklisted),
             static fn($key) => ! empty($key) && is_string($key)
         );

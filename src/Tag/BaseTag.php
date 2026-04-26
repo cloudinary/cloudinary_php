@@ -86,8 +86,13 @@ abstract class BaseTag
      */
     public function configuration(Configuration|array|string|null $configuration): Configuration
     {
-        $tempConfiguration = new Configuration($configuration); // TODO: improve performance here
-        $this->config      = $tempConfiguration;
+        if ($configuration instanceof Configuration) {
+            $tempConfiguration = clone $configuration;
+        } else {
+            $tempConfiguration = new Configuration($configuration);
+        }
+
+        $this->config = $tempConfiguration;
 
         return $tempConfiguration;
     }
@@ -339,7 +344,7 @@ abstract class BaseTag
      */
     protected static function fromParamsDefaultConfig(): Configuration
     {
-        $configuration = new Configuration(Configuration::instance());
+        $configuration = clone Configuration::instance();
         # set v1 defaults
         $configuration->tag->quotesType       = self::SINGLE_QUOTES;
         $configuration->tag->sortAttributes   = true;
