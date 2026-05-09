@@ -14,6 +14,7 @@ use Cloudinary\Asset\AuthToken;
 use Cloudinary\Asset\Image;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Transformation\Scale;
+use Cloudinary\Utils;
 use UnexpectedValueException;
 
 /**
@@ -94,6 +95,8 @@ class AssetAuthTokenTest extends AuthTokenTestCase
         $this->image->authToken->config->key = null;
 
         $this->image->cloud->apiSecret = 'b';
+        $this->image->cloud->signatureAlgorithm = Utils::ALGO_SHA1;
+        $this->image->urlConfig->longUrlSignature = false;
 
         self::assertImageUrl(
             's--v2fTPYTu--/'.self::EXPECTED_VERSIONED_PATH,

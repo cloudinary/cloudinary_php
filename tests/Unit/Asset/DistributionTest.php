@@ -16,6 +16,7 @@ use Cloudinary\Asset\Image;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\UrlConfig;
 use Cloudinary\Exception\ConfigurationException;
+use Cloudinary\Utils;
 
 /**
  * Class DistributionTest
@@ -215,8 +216,11 @@ final class DistributionTest extends AssetTestCase
         );
     }
 
-    public function testSignature()
+    public function testShortSignatureWithSHA1()
     {
+        $this->image->urlConfig->longUrlSignature = false;
+        $this->image->cloud->signatureAlgorithm = Utils::ALGO_SHA1;
+
         self::assertImageUrl('s--MDvxhRxa--/' . self::IMAGE_NAME, $this->image->signUrl());
     }
 
@@ -226,7 +230,6 @@ final class DistributionTest extends AssetTestCase
     public function testLongSignature()
     {
         $this->image->urlConfig->signUrl          = true;
-        $this->image->urlConfig->longUrlSignature = true;
 
         self::assertImageUrl('s--RVsT3IpYGITMIc0RjCpde9T9Uujc2c1X--/' . self::IMAGE_NAME, $this->image);
     }
