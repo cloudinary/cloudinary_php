@@ -1,0 +1,23 @@
+# Files excluded from the Composer distribution archive.
+#
+# Composer ships the whole repository minus these entries, so `docs/` and `examples/`
+# reach users at vendor/cloudinary/cloudinary_php/ where coding agents can read them.
+# Development, test, and API-doc build tooling is excluded to keep vendor/ lean.
+
+/.github/                       export-ignore
+/.code-generation/              export-ignore
+/apidocs/                       export-ignore
+/tests/                         export-ignore
+/tools/                         export-ignore
+/samples/                       export-ignore
+/.gitattributes                 export-ignore
+/.gitignore                     export-ignore
+/context7.json                  export-ignore
+/.htaccess                      export-ignore
+/phpcs.xml                      export-ignore
+/phpstan.neon                   export-ignore
+/phpunit.xml                    export-ignore
+/CONTRIBUTING.md                export-ignore
+/DEVELOPER_GUIDELINE.md         export-ignore
+/AGENTS.md                      export-ignore
+/CLAUDE.md                      export-ignore

@@ -1,130 +1,146 @@
+# Cloudinary PHP SDK
+
+Upload, transform, optimize, and manage images and videos with Cloudinary from PHP — the `cloudinary/cloudinary_php` package on Packagist.
+
 [![Tests](https://github.com/cloudinary/cloudinary_php/actions/workflows/test.yaml/badge.svg)](https://github.com/cloudinary/cloudinary_php/actions/workflows/test.yaml)
-[![license](https://img.shields.io/github/license/cloudinary/cloudinary_php.svg?maxAge=2592000)](https://github.com/cloudinary/cloudinary_php/blob/master/LICENSE)
-[![Packagist](https://img.shields.io/packagist/v/cloudinary/cloudinary_php.svg?maxAge=2592000)](https://packagist.org/packages/cloudinary/cloudinary_php)
-[![Packagist](https://img.shields.io/packagist/dt/cloudinary/cloudinary_php.svg?maxAge=2592000)](https://packagist.org/packages/cloudinary/cloudinary_php/stats)
+[![Packagist](https://img.shields.io/packagist/v/cloudinary/cloudinary_php.svg)](https://packagist.org/packages/cloudinary/cloudinary_php)
+[![Downloads](https://img.shields.io/packagist/dm/cloudinary/cloudinary_php.svg)](https://packagist.org/packages/cloudinary/cloudinary_php/stats)
+[![License](https://img.shields.io/packagist/l/cloudinary/cloudinary_php.svg)](LICENSE)
 
-Cloudinary PHP SDK
-==================
-
-## About
-
-The Cloudinary PHP SDK allows you to quickly and easily integrate your application with Cloudinary.
-Effortlessly optimize, transform, upload and manage your cloud's assets.
-
-#### Note
-
-This Readme provides basic installation and usage information.
-For the complete documentation, see the [PHP SDK Guide](https://cloudinary.com/documentation/php_integration).
-
-## Table of Contents
-
-- [Key Features](#key-features)
-- [Version Support](#Version-Support)
-- [Installation](#installation)
-- [Usage](#usage)
-    - [Setup](#Setup)
-    - [Transform and Optimize Assets](#Transform-and-Optimize-Assets)
-
-## Key Features
-
-- [Transform](https://cloudinary.com/documentation/php_video_manipulation#video_transformation_examples) and
-  [optimize](https://cloudinary.com/documentation/php_image_manipulation#image_optimizations) assets.
-- Generate [image](https://cloudinary.com/documentation/php_image_manipulation#deliver_and_transform_images) and
-  [video](https://cloudinary.com/documentation/php_video_manipulation#php_video_transformation_code_examples) tags.
-- [Asset Management](https://cloudinary.com/documentation/php_asset_administration).
-- [Secure URLs](https://cloudinary.com/documentation/video_manipulation_and_delivery#generating_secure_https_urls_using_sdks).
-
-## Version Support
-
-| SDK Version | PHP 5.4 | PHP 5.5 | PHP 5.6 | PHP 7.x | PHP 8.0 - 8.3 | PHP 8.4 |
-|-------------|---------|---------|---------|---------|---------------|---------|
-| 3.x         | ✘       | ✘       | ✘       | ✘       | ✔             | ✔       |
-| 2.x         | ✘       | ✘       | ✔       | ✔       | ✔             | ✘ *     |
-| 1.x         | ✔       | ✔       | ✔       | ✔       | ✘             | ✘       |
-
-\* Deprecation warnings
-
-## Installation
+## Install
 
 ```bash
-composer require "cloudinary/cloudinary_php"
+composer require cloudinary/cloudinary_php
 ```
 
-# Usage
+## Quick start
 
-### Migration
+Set your API environment variable (Console > Settings > API Keys):
 
-See the [Cloudinary PHP SDK Migration guide](https://cloudinary.com/documentation/php2_migration) for more information
-on migrating to this version of the PHP SDK.
+```bash
+export CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+```
 
-The previous (1.x) version of the SDK is located [here](https://github.com/cloudinary/cloudinary_php/tree/support/1.x).
-
-### Setup
+Upload an image and get an optimized delivery URL:
 
 ```php
+<?php
+
+require 'vendor/autoload.php';
+
 use Cloudinary\Cloudinary;
+use Cloudinary\Transformation\Delivery;
+use Cloudinary\Transformation\Format;
+use Cloudinary\Transformation\Gravity;
+use Cloudinary\Transformation\Quality;
+use Cloudinary\Transformation\Resize;
 
-$cloudinary = new Cloudinary();
+try {
+    $cloudinary = new Cloudinary();
+
+    // Upload a remote image (a local file path works the same way).
+    $result = $cloudinary->uploadApi()->upload(
+        'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+        ['public_id' => 'quickstart-sample']
+    );
+
+    echo 'Uploaded: ', $result['public_id'], PHP_EOL;
+
+    // Build a 400x400 auto-cropped URL with automatic format and quality.
+    $url = $cloudinary->image($result['public_id'])
+        ->resize(Resize::fill(400, 400)->gravity(Gravity::auto()))
+        ->delivery(Delivery::format(Format::auto()))
+        ->delivery(Delivery::quality(Quality::auto()));
+
+    echo 'Optimized URL: ', $url, PHP_EOL;
+} catch (Throwable $e) {
+    fwrite(STDERR, 'Quick start failed: ' . $e->getMessage() . PHP_EOL);
+    fwrite(STDERR, 'Check that CLOUDINARY_URL is set (Console > Settings > API Keys).' . PHP_EOL);
+    exit(1);
+}
 ```
 
-### Transform and Optimize Assets
+Save as `quickstart.php` and run `php quickstart.php`. [Create a free account](https://cloudinary.com/users/register_free) if you don't have one — or run `npx @cloudinary/cloud` to [provision one without signing up](docs/get-credentials.md).
 
-- [See full documentation](https://cloudinary.com/documentation/php_image_manipulation).
+`uploadApi()`, `adminApi()`, and `searchApi()` are methods — call them with parentheses.
 
-```php
-$cloudinary->image('sample.jpg')->resize(Resize::fill()->width(100)->height(150))->format(Format::auto());
-```
+## Common tasks
 
-### Upload
+- [Get Cloudinary credentials](docs/get-credentials.md)
+- [Import and call the SDK](docs/import-and-call.md)
+- [Configure Cloudinary](docs/configure-cloudinary.md)
+- [Upload an image](docs/upload-image.md)
+- [Upload a large video](docs/upload-large-video.md)
+- [Sign a browser upload](docs/sign-browser-upload.md)
+- [Transform and deliver an image](docs/transform-and-deliver-image.md)
+- [Transform and deliver a video](docs/transform-and-deliver-video.md)
+- [Search and manage assets](docs/search-and-manage-assets.md)
+- [Moderate an upload](docs/moderate-upload.md)
+- [Use structured metadata](docs/use-structured-metadata.md)
+- [Troubleshoot errors](docs/troubleshoot-errors.md)
 
-- [See full documentation](https://cloudinary.com/documentation/php_image_and_video_upload).
-- [Learn more about configuring your uploads with upload presets](https://cloudinary.com/documentation/upload_presets).
+Runnable versions live in [`examples/`](examples/) — each is a complete file you can run directly.
 
-```php
-$cloudinary->uploadApi->upload('my_image.jpg');
-```
+## When to use this SDK
 
-### Security options
+Use this package in **PHP server-side code**: uploads, signed operations, asset
+administration, search, moderation, and delivery URL generation. It works with any
+framework, and with none.
 
-- [See full documentation](https://cloudinary.com/documentation/solution_overview#security).
+For other jobs, better-fitting tools exist:
 
-## Contributions
+- Laravel-native integration with facades and a storage driver: [`cloudinary-labs/cloudinary-laravel`](https://github.com/cloudinary-labs/cloudinary-laravel).
+- WordPress, Magento, and similar platforms: [platform integrations](https://cloudinary.com/documentation/integrations) ([md](https://cloudinary.com/documentation/integrations.md)).
+- Browser or frontend framework rendering: [frontend SDKs](https://cloudinary.com/documentation/frontend_sdks) ([md](https://cloudinary.com/documentation/frontend_sdks.md)).
+- Complete in-browser upload UI: [Upload Widget](https://cloudinary.com/documentation/upload_widget) ([md](https://cloudinary.com/documentation/upload_widget.md)).
+- Text-to-image generation and image-to-video: [platform APIs](https://cloudinary.com/documentation/image_generation_addon) ([md](https://cloudinary.com/documentation/image_generation_addon.md)), not wrapped by this package.
+- Multi-step media workflow automation: [MediaFlows](https://cloudinary.com/documentation/mediaflows_user_guide) ([md](https://cloudinary.com/documentation/mediaflows_user_guide.md)).
+- Interactive agent-driven asset operations: [Cloudinary MCP servers and Skills](https://cloudinary.com/documentation/cloudinary_llm_mcp) ([md](https://cloudinary.com/documentation/cloudinary_llm_mcp.md)).
 
-- Ensure tests run locally
-- Open a PR and ensure Travis tests pass
+The full capability map — plus the Skills, MCP servers, and CLI worth setting up first —
+is in [docs/platform-capabilities.md](docs/platform-capabilities.md).
 
-## Get Help
+## Status and compatibility
 
-If you run into an issue or have a question, you can either:
+Stable, actively maintained. See [CHANGELOG.md](CHANGELOG.md).
 
-- Issues related to the SDK: [Open a GitHub issue](https://github.com/cloudinary/cloudinary_php/issues).
-- Issues related to your account: [Open a support ticket](https://cloudinary.com/contact)
+| SDK version | PHP |
+|-------------|-----|
+| 3.x         | 8.0 and later |
+| 2.x         | 5.6 – 8.3 (no longer maintained) |
+| 1.x         | 5.4 – 7.x (no longer maintained) |
 
-## About Cloudinary
+The 1.x series lives on the [`support/1.x`](https://github.com/cloudinary/cloudinary_php/tree/support/1.x) branch. Moving from it? See the [migration guide](https://cloudinary.com/documentation/php2_migration) ([md](https://cloudinary.com/documentation/php2_migration.md)).
 
-Cloudinary is a powerful media API for websites and mobile apps alike, Cloudinary enables developers to efficiently
-manage, transform, optimize, and deliver images and videos through multiple CDNs. Ultimately, viewers enjoy responsive
-and personalized visual-media experiences—irrespective of the viewing device.
+## Documentation
 
-## Additional Resources
+- [Bundled task docs](docs/README.md) — ship inside the package, version-matched.
+- [PHP SDK guide](https://cloudinary.com/documentation/php_integration) — the full documentation ([md](https://cloudinary.com/documentation/php_integration.md)).
+- [Transformation and API reference](https://cloudinary.com/documentation/cloudinary_references) ([md](https://cloudinary.com/documentation/cloudinary_references.md)).
 
-- [Cloudinary Transformation and REST API References](https://cloudinary.com/documentation/cloudinary_references):
-  Comprehensive references, including syntax and examples for all SDKs.
-- [MediaJams.dev](https://mediajams.dev/): Bite-size use-case tutorials written by and for Cloudinary Developers
-- [DevJams](https://www.youtube.com/playlist?list=PL8dVGjLA2oMr09amgERARsZyrOz_sPvqw): Cloudinary developer podcasts on
-  YouTube.
-- [Cloudinary Academy](https://training.cloudinary.com/): Free self-paced courses, instructor-led virtual courses, and
-  on-site courses.
-- [Code Explorers and Feature Demos](https://cloudinary.com/documentation/code_explorers_demos_index): A one-stop shop
-  for all code explorers, Postman collections, and feature demos found in the docs.
-- [Cloudinary Roadmap](https://cloudinary.com/roadmap): Your chance to follow, vote, or suggest what Cloudinary should
-  develop next.
-- [Cloudinary Facebook Community](https://www.facebook.com/groups/CloudinaryCommunity): Learn from and offer help to
-  other Cloudinary developers.
-- [Cloudinary Account Registration](https://cloudinary.com/users/register/free): Free Cloudinary account registration.
-- [Cloudinary Website](https://cloudinary.com): Learn about Cloudinary's products, partners, customers, pricing, and
-  more.
+Documentation links in this README point at the browsable HTML page, with an `(md)`
+companion link that returns the same page as raw Markdown. Inside `docs/` and `examples/`
+the links are Markdown-only, since those files are written to be read by coding agents.
+Either form works for any page: add `.md` for Markdown, drop it for HTML.
 
-## Licence
+## For AI coding agents
 
-Released under the MIT license.
+- Contributing to this repo: read [AGENTS.md](AGENTS.md).
+- Using the installed package: the docs in `vendor/cloudinary/cloudinary_php/docs/` match
+  your installed version and are the source of truth; start with
+  [platform-capabilities](docs/platform-capabilities.md) before assuming a feature exists.
+
+## Support
+
+- SDK bugs and feature requests: [GitHub issues](https://github.com/cloudinary/cloudinary_php/issues)
+- Account and platform questions: [Cloudinary support](https://support.cloudinary.com)
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for private vulnerability reporting. Keep your
+`api_secret` in server-side code; for client uploads, use the server-signed pattern in
+[Sign a browser upload](docs/sign-browser-upload.md).
+
+## License
+
+Released under the MIT license — see [LICENSE](LICENSE). Copyright (c) Cloudinary Ltd.
