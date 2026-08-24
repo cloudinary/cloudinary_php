@@ -393,9 +393,17 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
             ]
         );
 
-        if ($deliveryType === DeliveryType::FACEBOOK || $assetType === AssetType::RAW) {
+        if ($assetType === AssetType::RAW) {
             self::assertArrayNotHasKey('height', $asset);
             self::assertArrayNotHasKey('width', $asset);
+        } elseif ($deliveryType === DeliveryType::FACEBOOK) {
+            // Social delivery types may or may not carry dimensions depending on what the
+            // remote provider reports, so assert the type only when they are present.
+            foreach (['width', 'height'] as $dimension) {
+                if (array_key_exists($dimension, (array)$asset)) {
+                    self::assertIsInt($asset[$dimension]);
+                }
+            }
         } elseif (in_array($assetType, [AssetType::IMAGE, AssetType::VIDEO], true)) {
             self::assertObjectStructure(
                 $asset,
