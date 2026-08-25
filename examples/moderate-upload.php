@@ -3,8 +3,14 @@
 /**
  * Queue an upload for manual moderation, list the pending queue, and approve it.
  *
- * Uses 'manual' moderation, which needs no add-on subscription. Automatic kinds
- * (AI visual moderation, duplicate detection) must be enabled on the account first.
+ * Uses 'manual' moderation, which needs no add-on subscription. Other kinds exist —
+ * AI visual moderation, perceptual duplicate detection, and other provider-backed
+ * checks — but each must be enabled on the account first, and some require accepting the
+ * provider's terms of service. See:
+ *   https://cloudinary.com/documentation/moderation_addons.md
+ *
+ * Whether a 'pending' asset is publicly deliverable is a product-environment setting, so
+ * do not treat moderation as access control. See docs/moderate-upload.md.
  *
  * Prerequisites:
  *   composer require cloudinary/cloudinary_php

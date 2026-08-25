@@ -51,7 +51,8 @@ Runnable version: [`examples/search-and-manage-assets.php`](../examples/search-a
 | `created_at>2026-01-01` | Uploaded since that date |
 | `context.alt:shirt*` | Context field prefix match |
 
-Combine with `AND`, `OR`, `NOT`.
+Combine with `AND`, `OR`, `NOT`. Full grammar:
+[search expressions reference](https://cloudinary.com/documentation/search_expressions.md).
 
 ### Leading wildcards are rejected
 

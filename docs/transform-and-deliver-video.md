@@ -31,10 +31,14 @@ echo $url, PHP_EOL;
 Output:
 
 ```
-https://res.cloudinary.com/<cloud_name>/video/upload/c_fill,h_360,w_640/f_auto/q_auto/v1/my-video
+https://res.cloudinary.com/<cloud_name>/video/upload/c_fill,h_360,w_640/f_auto/q_auto/my-video?_a=BAAHWXGY
 ```
 
 Runnable version: [`examples/transform-and-deliver-video.php`](../examples/transform-and-deliver-video.php).
+
+The trailing `?_a=` is anonymous SDK-version telemetry, present on every generated URL.
+See [Transform and deliver an image](transform-and-deliver-image.md#the-_a-suffix) for
+how to disable it. The path examples below omit it for readability.
 
 ## Result fields to keep
 
@@ -58,15 +62,15 @@ use Cloudinary\Transformation\VideoEdit;
 
 // First five seconds.
 $cloudinary->video('my-video')->videoEdit(VideoEdit::trim()->startOffset(0)->endOffset(5));
-// -> /video/upload/eo_5,so_0/v1/my-video
+// -> /video/upload/eo_5,so_0/my-video
 
 // Quieter audio.
 $cloudinary->video('my-video')->videoEdit(VideoEdit::volume(-20));
-// -> /video/upload/e_volume:-20/v1/my-video
+// -> /video/upload/e_volume:-20/my-video
 
 // Auto-generated highlight preview.
 $cloudinary->video('my-video')->videoEdit(VideoEdit::preview(5));
-// -> /video/upload/e_preview:duration_5/v1/my-video
+// -> /video/upload/e_preview:duration_5/my-video
 ```
 
 ## Generating a `<video>` tag

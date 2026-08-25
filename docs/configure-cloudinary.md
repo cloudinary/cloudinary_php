@@ -97,7 +97,10 @@ first and override the property:
 ```php
 use Cloudinary\Configuration\Configuration;
 
-$configuration = Configuration::fromCloudinaryUrl(getenv('CLOUDINARY_URL'));
+// `?: ''` matters: getenv() returns false when unset, and fromCloudinaryUrl() requires a
+// string, so without it an unset variable raises a TypeError instead of the SDK's
+// ConfigurationException.
+$configuration = Configuration::fromCloudinaryUrl(getenv('CLOUDINARY_URL') ?: '');
 $configuration->logging->enabled = false;
 
 $cloudinary = new Cloudinary($configuration);

@@ -33,10 +33,20 @@ echo $url, PHP_EOL;
 Output:
 
 ```
-https://res.cloudinary.com/<cloud_name>/image/upload/c_fill,g_auto,h_400,w_400/f_auto/q_auto/sample
+https://res.cloudinary.com/<cloud_name>/image/upload/c_fill,g_auto,h_400,w_400/f_auto/q_auto/sample?_a=BAAHWXGY
 ```
 
 Runnable version: [`examples/transform-and-deliver-image.php`](../examples/transform-and-deliver-image.php).
+
+### The `?_a=` suffix
+
+Generated URLs carry an `_a` query parameter — anonymous SDK-version telemetry, no
+account or asset data. It does not affect delivery or caching. The examples below omit it
+for readability; real output always includes it. To turn it off:
+
+```php
+$cloudinary = new Cloudinary('cloudinary://key:secret@cloud?analytics=false');
+```
 
 ## Result fields to keep
 
@@ -128,3 +138,8 @@ This is expected and the URL resolves correctly. To emit a real version, pass th
 - [Transform and deliver a video](transform-and-deliver-video.md)
 - [Upload an image](upload-image.md)
 - [Troubleshoot errors](troubleshoot-errors.md)
+- [Transformation reference](https://cloudinary.com/documentation/transformation_reference.md)
+  — every parameter, with the URL syntax each one produces.
+- [Transformation builder skill](https://cloudinary.com/documentation/cloudinary_llm_mcp.md)
+  — install it (`npx skills add cloudinary-devs/skills`) rather than guessing at
+  transformation chains.

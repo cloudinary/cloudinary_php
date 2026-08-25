@@ -43,7 +43,7 @@ Runnable version: [`examples/upload-image.php`](../examples/upload-image.php).
 | Field | Why it matters |
 |---|---|
 | `public_id` | The delivery handle. Every transformation URL is built from it. |
-| `asset_id` | Immutable identifier. Survives renames — prefer it for lookups you store. |
+| `asset_id` | Immutable identifier. **Store this one.** Survives renames and moves; `public_id` does not. |
 | `secure_url` | Ready-to-use HTTPS delivery URL of the original. |
 | `version` | Cache-busting number; changes on every re-upload to the same `public_id`. |
 | `format`, `width`, `height`, `bytes` | What the server actually stored, after any incoming transformation. |

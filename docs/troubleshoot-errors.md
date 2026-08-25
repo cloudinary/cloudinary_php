@@ -9,21 +9,68 @@ account, or the input.
 
 All API failures extend `Cloudinary\Api\Exception\ApiError`:
 
-| Exception | Typical cause |
-|---|---|
-| `BadRequest` | Malformed input — wrong `resource_type`, bad search expression, undefined metadata key. |
-| `AuthorizationRequired` | Bad or mismatched credentials; a feature not enabled for the account. |
-| `NotFound` | No asset with that `public_id` and `resource_type`. |
-| `AlreadyExists` | The identifier is taken. |
-| `NotAllowed` | The operation is forbidden on this account or asset. |
-| `RateLimited` | Too many requests — or an unsubscribed add-on. |
-| `GeneralError` | Server-side failure with no more specific type. |
+| Exception | HTTP | Typical cause |
+|---|---|---|
+| `BadRequest` | 400 | Malformed input — wrong `resource_type`, bad search expression, undefined metadata key. |
+| `AuthorizationRequired` | 401 | Bad or mismatched credentials; a feature not enabled for the account. |
+| `NotAllowed` | 403 | The operation is forbidden on this account or asset. |
+| `NotFound` | 404 | No asset with that `public_id` and `resource_type`. |
+| `AlreadyExists` | 409 | The identifier is taken. |
+| `RateLimited` | 420, 429 | Too many requests — or an unsubscribed add-on. |
+| `GeneralError` | 500, anything unmapped | Server-side failure, or a status this SDK has no specific class for. |
 
 Configuration problems throw from a **different namespace**:
 
-```php
+```
 Cloudinary\Exception\ConfigurationException  // not under Api\Exception
 ```
+
+### Only the message is preserved
+
+This SDK constructs exceptions with the server's error message and nothing else. There is
+no status-code getter and no structured error body — `getCode()` returns `0`:
+
+```php
+try {
+    $cloudinary->adminApi()->asset('missing');
+} catch (ApiError $e) {
+    $e->getMessage();   // 'Resource not found - missing'
+    $e->getCode();      // 0 — not the HTTP status
+    get_class($e);      // Cloudinary\Api\Exception\NotFound — this is the signal
+}
+```
+
+Branch on the **exception class**, not on a code parsed out of the message. The class is
+the only reliable machine-readable part.
+
+### 423 and other unmapped statuses
+
+Only the statuses in the table have their own class. Anything else — notably **423
+(asset still processing)** — becomes a `GeneralError` whose message is the raw response
+body rather than the parsed error text:
+
+```
+GeneralError: Server returned unexpected status code - 423 - {"error":{"message":"..."}}
+```
+
+So a 423 cannot be distinguished by type. If you need to retry on it, match the status in
+the message:
+
+```php
+use Cloudinary\Api\Exception\GeneralError;
+
+try {
+    $cloudinary->adminApi()->asset('still-processing');
+} catch (GeneralError $e) {
+    if (str_contains($e->getMessage(), 'status code - 423')) {
+        // Asset is still being processed — back off and retry.
+    }
+
+    throw $e;
+}
+```
+
+Cloudinary platform status: [status.cloudinary.com](https://status.cloudinary.com).
 
 ## Catching them
 
@@ -108,7 +155,9 @@ handler, so one failure can look like three. To handle errors yourself without t
 ```php
 use Cloudinary\Configuration\Configuration;
 
-$configuration = Configuration::fromCloudinaryUrl(getenv('CLOUDINARY_URL'));
+// getenv() returns false when unset; fromCloudinaryUrl() requires a string, so `?: ''`
+// yields the SDK's ConfigurationException instead of a raw PHP TypeError.
+$configuration = Configuration::fromCloudinaryUrl(getenv('CLOUDINARY_URL') ?: '');
 $configuration->logging->enabled = false;
 
 $cloudinary = new Cloudinary($configuration);

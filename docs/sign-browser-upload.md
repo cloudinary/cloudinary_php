@@ -5,8 +5,9 @@
 Letting a browser or mobile app upload straight to Cloudinary without routing the bytes
 through your server — and without ever exposing your `api_secret`.
 
-Your server signs a short-lived set of parameters; the client posts the file plus that
-signature directly to Cloudinary.
+Your server signs a set of parameters; the client posts the file plus that signature
+directly to Cloudinary. The signature covers a `timestamp` and is accepted for
+**one hour** from it — generate one per upload attempt rather than caching.
 
 ## Complete flow
 
@@ -23,7 +24,10 @@ use Cloudinary\Cloudinary;
 $cloudinary = new Cloudinary();
 $cloud      = $cloudinary->configuration->cloud;
 
-// Only the parameters the client is allowed to send. Every one of these is signed.
+// Only the parameters the client is allowed to send. Every entry in this array is
+// covered by the signature, and every signed entry must also be POSTed by the client —
+// the two sets have to match exactly. To let the client set something (a tag, a folder),
+// add it here; anything absent here cannot be sent.
 $params = [
     'timestamp' => time(),
     'folder'    => 'user-uploads',
@@ -91,7 +95,7 @@ Invalid Signature <hash>. String to sign - 'folder=user-uploads&timestamp=178758
 
 ## Signatures are short-lived
 
-`timestamp` is part of the signature and Cloudinary rejects stale ones (about an hour).
+`timestamp` is part of the signature and Cloudinary rejects one older than an hour.
 Generate a signature per upload attempt; do not cache or reuse them.
 
 ## Alternative: unsigned uploads

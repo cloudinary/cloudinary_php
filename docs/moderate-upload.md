@@ -60,12 +60,18 @@ the asset.
 | `moderation_status` | Same status, flattened. Admin API responses only. |
 | `public_id` | Needed to approve or reject later. |
 
-## A pending asset is still delivered
+## What `pending` means depends on your product environment
 
-Queuing for moderation does not hide the asset. Until you act on it, its delivery URL
-works. If content must not be visible before review, upload it as
+`pending` is a moderation state, not a guaranteed access state. Whether a pending asset is
+publicly deliverable is governed by a product-environment setting, so it differs between
+accounts — on many it **is** deliverable while awaiting review, which surprises people.
+
+Do not rely on moderation as an access-control mechanism in either direction. Verify the
+behaviour on your own environment, and if content must not be reachable before review,
+enforce that explicitly: upload as
 [`'type' => 'private'`](https://cloudinary.com/documentation/upload_images.md) or into a
-restricted folder, and publish after approval.
+restricted folder, then publish after approval. The same applies to what the asset looks
+like in the Media Library versus on the CDN — those are separate surfaces.
 
 ## Approving and rejecting
 
@@ -81,7 +87,9 @@ $cloudinary->adminApi()->update('docs/needs-review', [
 ]);
 ```
 
-Rejected assets are moved out of delivery; approved ones stay.
+How each state maps to delivery is again environment-configurable — commonly `rejected`
+is taken out of delivery and `approved` stays, but confirm it on your environment rather
+than assuming it.
 
 ## Listing the queue
 
@@ -98,8 +106,13 @@ foreach ($pending['resources'] as $asset) {
 ## Automatic moderation is an add-on
 
 `'moderation' => 'manual'` needs no add-on. Automatic kinds — AI-based visual moderation,
-perceptual duplicate detection — must be enabled on your account first. Without a
-subscription the call fails at request time.
+perceptual duplicate detection — must be enabled on your account first, which the account
+owner does in the Console; some add-ons also require accepting the provider's terms of
+service before the first call will succeed. An agent cannot do either step: if the call
+fails for this reason, tell the user what to enable rather than retrying.
+
+The available kinds and their provider-specific response shapes are listed in
+[moderation add-ons](https://cloudinary.com/documentation/moderation_addons.md).
 
 Because the verdict is model output, assert on the **shape** of the response — that a
 status exists and is one of the expected values — not on a specific verdict for a given
@@ -119,3 +132,5 @@ image.
 - [Upload an image](upload-image.md)
 - [Search and manage assets](search-and-manage-assets.md)
 - [What this SDK does and does not do](platform-capabilities.md)
+- [Moderation add-ons](https://cloudinary.com/documentation/moderation_addons.md) — the
+  kinds beyond `manual`, and what each returns.

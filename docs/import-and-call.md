@@ -58,7 +58,7 @@ $result->getArrayCopy();     // array, for json_encode() or var_dump()
 The classmap autoloader means a file's path is not always its namespace. The signing
 helper lives at `src/Api/Utils/ApiUtils.php` but is namespaced `Cloudinary\Api`:
 
-```php
+```
 use Cloudinary\Api\ApiUtils;          // correct
 use Cloudinary\Api\Utils\ApiUtils;    // Error: Class not found
 ```

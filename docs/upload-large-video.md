@@ -76,6 +76,30 @@ $cloudinary = new Cloudinary([
 Smaller chunks mean more requests but less to retransmit after a failure. The default is
 20000000 bytes.
 
+## Size limits are per product environment
+
+A rejected large upload is usually an account limit, not a code problem — free
+environments cap video uploads well below paid ones. Raising `chunk_size` or `timeout`
+will not get past it; chunking splits the request, it does not raise the ceiling.
+
+Check the actual limits your environment enforces:
+
+```php
+$usage = $cloudinary->adminApi()->usage();
+
+echo $usage['plan'], PHP_EOL;
+```
+
+Mitigations, cheapest first:
+
+- Compress or downscale before uploading, if the source is larger than you need stored.
+- Upload from a **remote URL** rather than a local file — fetching server-side avoids the
+  request-body path entirely and is subject to different limits.
+- Split genuinely long source material into segments and stitch on delivery.
+- If the asset legitimately needs to be that large, the limit is raised by changing plan:
+  [pricing](https://cloudinary.com/pricing) or
+  [contact support](https://support.cloudinary.com).
+
 ## Transcoding happens after upload
 
 The response describes the stored original. Derived versions — other formats, adaptive
@@ -91,7 +115,7 @@ request does not wait for transcoding.
 |---|---|
 | `BadRequest: Invalid image file` | Missing `resource_type => 'video'`. |
 | Request times out on a large file | Raise `api.timeout`; lower `api.chunk_size`. |
-| `413` or a rejected request | The file exceeds your plan's per-file limit. |
+| `413` or a rejected request | Per-file size limit for your product environment — see below. |
 | Upload succeeds, playback 404s briefly | The rendition is still being generated. |
 | Memory exhaustion on a huge file | Pass a path or stream, not file contents loaded into a string. |
 

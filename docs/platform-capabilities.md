@@ -48,7 +48,7 @@ Any documentation URL returns Markdown if you append `.md`.
 | Search by expression | `$cloudinary->searchApi()` | [Search and manage assets](search-and-manage-assets.md) |
 | List, rename, delete, tag | `$cloudinary->adminApi()`, `$cloudinary->uploadApi()` | [Search and manage assets](search-and-manage-assets.md) |
 | Find visually similar assets | `$cloudinary->adminApi()->visualSearch()` | [Search and manage assets](search-and-manage-assets.md) |
-| Attach structured fields | `$cloudinary->adminApi()->addMetadataField()` | [Use structured metadata](use-structured-metadata.md) |
+| Track typed, validated business data per asset — owner, campaign, licence expiry — and search on it | `$cloudinary->adminApi()->addMetadataField()` | [Use structured metadata](use-structured-metadata.md) |
 | Bundle assets into an archive | `$cloudinary->uploadApi()->createArchive()` | [Search and manage assets](search-and-manage-assets.md) |
 
 ### Analyze and moderate

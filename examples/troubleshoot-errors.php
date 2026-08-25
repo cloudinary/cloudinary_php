@@ -38,7 +38,9 @@ function main(): void
     // Build the configuration from the environment first, then override. Passing a
     // partial array to the constructor REPLACES the configuration rather than merging
     // with it, so `new Cloudinary(['logging' => ...])` would discard the credentials.
-    $configuration = Configuration::fromCloudinaryUrl(getenv('CLOUDINARY_URL'));
+    // getenv() returns false when unset, and fromCloudinaryUrl() requires a string, so
+    // coerce to '' to get the SDK's own ConfigurationException rather than a TypeError.
+    $configuration = Configuration::fromCloudinaryUrl(getenv('CLOUDINARY_URL') ?: '');
     $configuration->logging->enabled = false;
 
     $cloudinary = new Cloudinary($configuration);
