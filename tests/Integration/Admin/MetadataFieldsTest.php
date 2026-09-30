@@ -156,6 +156,17 @@ class MetadataFieldsTest extends IntegrationTestCase
         }
 
         foreach ($values as $key => $value) {
+            // Assert that the expected values are present rather than that they are the
+            // only values: the API may add keys to structured fields such as
+            // `restrictions` without that being a regression.
+            if (is_array($value) && is_array($metadataField[$key])) {
+                foreach ($value as $subKey => $subValue) {
+                    self::assertArrayHasKey($subKey, $metadataField[$key]);
+                    self::assertEquals($subValue, $metadataField[$key][$subKey]);
+                }
+                continue;
+            }
+
             self::assertEquals($value, $metadataField[$key]);
         }
     }

@@ -175,7 +175,7 @@ function update_version
 
     safe_replace "'version'              => '${current_version_re}'"\
                  "'version'              => '${NEW_VERSION}'"\
-                  docs/sami_config.php\
+                  apidocs/sami_config.php\
                   || return 1
 
     if [[ "${UPDATE_ONLY}" = true ]]; then
@@ -187,7 +187,7 @@ function update_version
 
     echo ""
     echo "# After editing CHANGELOG.md, optionally review changes and issue these commands:"
-    echo git add composer.json src/Cloudinary.php CHANGELOG.md docs/sami_config.php
+    echo git add composer.json src/Cloudinary.php CHANGELOG.md apidocs/sami_config.php
     echo git commit -m "\"Version ${NEW_VERSION}\""
     echo sed -e "'1,/^${NEW_VERSION//./\\.}/d'" \
              -e "'/^=/d'" \
@@ -202,7 +202,7 @@ function update_version
     echo ""
     read -p "Run the above commands automatically? (y/N): " confirm && [[ ${confirm} == [yY] || ${confirm} == [yY][eE][sS] ]] || { popd; return 0; }
 
-    git add composer.json src/Cloudinary.php CHANGELOG.md docs/sami_config.php
+    git add composer.json src/Cloudinary.php CHANGELOG.md apidocs/sami_config.php
     git commit -m "Version ${NEW_VERSION}"
     sed -e "1,/^${NEW_VERSION//./\\.}/d" \
         -e "/^=/d" \

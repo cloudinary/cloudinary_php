@@ -176,14 +176,20 @@ final class ListAssetsTest extends IntegrationTestCase
     }
 
     /**
-     * Facebook images assets do not contain height or width.
+     * Facebook image assets report dimensions as integers when the remote provider
+     * supplies them.
      */
     public function testFacebookImagesWidthHeight()
     {
         $result = self::$adminApi->assets([DeliveryType::KEY => DeliveryType::FACEBOOK]);
 
-        self::assertArrayNotHasKey('height', $result['resources'][0]);
-        self::assertArrayNotHasKey('width', $result['resources'][0]);
+        $asset = $result['resources'][0];
+
+        foreach (['width', 'height'] as $dimension) {
+            if (array_key_exists($dimension, (array)$asset)) {
+                self::assertIsInt($asset[$dimension]);
+            }
+        }
     }
 
     /**
