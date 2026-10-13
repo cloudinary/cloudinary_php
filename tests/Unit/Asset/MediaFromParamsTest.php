@@ -472,6 +472,9 @@ final class MediaFromParamsTest extends AssetTestCase
 
         Configuration::instance()->cloud->apiSecret = 'b';
 
+        Configuration::instance()->cloud->signatureAlgorithm = Utils::ALGO_SHA1;
+        Configuration::instance()->url->longUrlSignature = false;
+
         $deliveryType = ArrayUtils::get($options, 'type', DeliveryType::UPLOAD);
 
         self::assertMediaFromParamsUrl(
@@ -490,17 +493,18 @@ final class MediaFromParamsTest extends AssetTestCase
     public function expectedFileSignatures()
     {
         return [
-            'Should sign an URL with a short signature by default'                   => [
+            'Should sign an URL with a short signature if long_url_signature is false' => [
                 [
                     'sign_url' => true,
                     'source'   => 'sample.jpg',
+                    'long_url_signature' => false,
+                    'signature_algorithm' => Utils::ALGO_SHA1,
                 ],
                 's--v2fTPYTu--',
             ],
-            'Should sign an URL with a long signature if long_url_signature is true' => [
+            'Should sign an URL with a long signature by default' => [
                 [
                     'sign_url'           => true,
-                    'long_url_signature' => true,
                     'source'             => 'sample.jpg',
                 ],
                 's--2hbrSMPOjj5BJ4xV7SgFbRDevFaQNUFf--',

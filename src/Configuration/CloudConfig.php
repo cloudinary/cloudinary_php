@@ -29,7 +29,7 @@ class CloudConfig extends BaseConfigSection
 
     public const CONFIG_NAME = 'cloud';
 
-    public const DEFAULT_SIGNATURE_ALGORITHM = Utils::ALGO_SHA1;
+    public const DEFAULT_SIGNATURE_ALGORITHM = Utils::ALGO_SHA256;
     public const DEFAULT_SIGNATURE_VERSION = 2;
 
     // Supported parameters
