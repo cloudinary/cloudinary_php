@@ -14,7 +14,6 @@ use Cloudinary\Api\BaseApiClient;
 use Cloudinary\Configuration\Provisioning\ProvisioningAccountConfig;
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
 use Cloudinary\Exception\ConfigurationException;
-use GuzzleHttp\Client;
 
 /**
  * Class AccountApiClient
@@ -73,14 +72,9 @@ class AccountApiClient extends BaseApiClient
         $this->createHttpClient();
     }
 
-    protected function createHttpClient(): void
-    {
-        $this->httpClient = new Client($this->buildHttpClientConfig());
-    }
-
     protected function buildHttpClientConfig(): array
     {
-        return [
+        $clientConfig = [
             'auth'            => [
                 $this->provisioningAccount->provisioningApiKey,
                 $this->provisioningAccount->provisioningApiSecret,
@@ -92,6 +86,8 @@ class AccountApiClient extends BaseApiClient
             'headers'         => ['User-Agent' => self::userAgent()],
             'http_errors'     => false, // We handle HTTP errors by ourselves and throw corresponding exceptions
         ];
+
+        return array_merge($clientConfig, self::httpHandlerConfig($this->psrHttpClient));
     }
 
 

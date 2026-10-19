@@ -77,6 +77,7 @@ Save as `quickstart.php` and run `php quickstart.php`. [Create a free account](h
 - [Search and manage assets](docs/search-and-manage-assets.md)
 - [Moderate an upload](docs/moderate-upload.md)
 - [Use structured metadata](docs/use-structured-metadata.md)
+- [Use a custom HTTP client](docs/use-custom-http-client.md)
 - [Troubleshoot errors](docs/troubleshoot-errors.md)
 
 Runnable versions live in [`examples/`](examples/) — each is a complete file you can run directly.
@@ -122,6 +123,29 @@ Documentation links in this README point at the browsable HTML page, with an `(m
 companion link that returns the same page as raw Markdown. Inside `docs/` and `examples/`
 the links are Markdown-only, since those files are written to be read by coding agents.
 Either form works for any page: add `.md` for Markdown, drop it for HTML.
+
+## Advanced: use a custom HTTP client
+
+By default the SDK sends requests with its own Guzzle client. To route them through your
+own [PSR-18](https://www.php-fig.org/psr/psr-18/) client, with its logging, retries,
+proxy and timeouts:
+
+```php
+use Cloudinary\Cloudinary;
+use GuzzleHttp\Psr7\HttpFactory;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Psr18Client;
+
+$cloudinary = new Cloudinary();
+$cloudinary->setHttpClient(new Psr18Client(HttpClient::create(), new HttpFactory(), new HttpFactory()));
+```
+
+Any `Psr\Http\Client\ClientInterface` works. API objects created with `new` take the client
+through their own `setHttpClient()`, or `Cloudinary::setDefaultHttpClient()` sets it for the
+whole process. With a custom client, `timeout`, `connection_timeout` and `api_proxy` are
+configured on your client, and `*Async()` calls run one at a time. Every request carries
+an `Authorization` header with your API secret: redact it if your client logs headers.
+Details: [Use a custom HTTP client](docs/use-custom-http-client.md).
 
 ## For AI coding agents
 

@@ -85,7 +85,9 @@ class AuthTokenTest extends AuthTokenTestCase
     public function testEscapeToLower()
     {
         $method = new ReflectionMethod(AuthToken::class, 'escapeToLower');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         self::assertEquals(
             'Encode%20these%20%3a%7e%40%23%25%5e%26%7b%7d%5b%5d%5c%22%27%3b%2f%22,%20but%20not%20those%20$!()_.*',

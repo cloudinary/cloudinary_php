@@ -54,7 +54,9 @@ final class ApiClientTest extends UnitTestCase
     {
         $apiClient = new ApiClient();
         $reflectionMethod = new ReflectionMethod(ApiClient::class, 'parseJsonResponse');
-        $reflectionMethod->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $reflectionMethod->setAccessible(true);
+        }
 
         $message = null;
         $expectedExceptionMessage = 'Error parsing server response';

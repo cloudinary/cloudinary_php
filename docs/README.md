@@ -35,6 +35,7 @@ versions of these tasks are in `vendor/cloudinary/cloudinary_php/examples/`.
 - [Search and manage assets](search-and-manage-assets.md)
 - [Moderate an upload](moderate-upload.md)
 - [Use structured metadata](use-structured-metadata.md)
+- [Use a custom HTTP client](use-custom-http-client.md)
 - [Troubleshoot errors](troubleshoot-errors.md)
 
 ## Security boundary

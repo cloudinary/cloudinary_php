@@ -19,6 +19,7 @@ use Cloudinary\ArrayUtils;
 use Cloudinary\Asset\AssetType;
 use Cloudinary\Asset\DeliveryType;
 use Cloudinary\Asset\Media;
+use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\StringUtils;
@@ -32,6 +33,8 @@ use GuzzleHttp\Psr7;
 use PHPUnit\Framework\Constraint\IsType;
 use ReflectionClass;
 use RuntimeException;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Psr18Client;
 
 /**
  * Class IntegrationTestCase
@@ -73,8 +76,29 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         $config = array_merge(self::TEST_LOGGING, $config);
         Configuration::instance()->init($config);
 
+        self::useHttpClientFromEnv();
+
         self::$adminApi  = new AdminApi();
         self::$uploadApi = new UploadApi();
+    }
+
+    /**
+     * Sets the PSR-18 client selected by CLD_TEST_HTTP_CLIENT (symfony|guzzle), or the default transport.
+     */
+    protected static function useHttpClientFromEnv()
+    {
+        switch (getenv('CLD_TEST_HTTP_CLIENT')) {
+            case 'symfony':
+                Cloudinary::setDefaultHttpClient(
+                    new Psr18Client(HttpClient::create(), new Psr7\HttpFactory(), new Psr7\HttpFactory())
+                );
+                break;
+            case 'guzzle':
+                Cloudinary::setDefaultHttpClient(new Client());
+                break;
+            default:
+                Cloudinary::setDefaultHttpClient(null);
+        }
     }
 
     /**

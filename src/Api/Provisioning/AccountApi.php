@@ -15,6 +15,7 @@ use Cloudinary\Api\ApiUtils;
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Configuration\Provisioning\ProvisioningConfiguration;
+use Psr\Http\Client\ClientInterface;
 
 /**
  * Class AccountApi
@@ -34,6 +35,18 @@ class AccountApi
     public function __construct(?ProvisioningConfiguration $configuration = null)
     {
         $this->accountApiClient = new AccountApiClient($configuration);
+    }
+
+    /**
+     * Sets a PSR-18 HTTP client for the requests of this API instance, or the default when null.
+     *
+     * @param ClientInterface|null $client The PSR-18 client.
+     */
+    public function setHttpClient(?ClientInterface $client): static
+    {
+        $this->accountApiClient->setHttpClient($client);
+
+        return $this;
     }
 
     /**

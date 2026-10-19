@@ -17,6 +17,7 @@ use Cloudinary\Asset\SearchAsset;
 use Cloudinary\Asset\SearchAssetTrait;
 use GuzzleHttp\Promise\PromiseInterface;
 use JsonSerializable;
+use Psr\Http\Client\ClientInterface;
 
 /**
  * Class SearchApi
@@ -68,6 +69,18 @@ class SearchApi implements JsonSerializable, SearchQueryInterface
     {
         $this->apiClient   = new ApiClient($configuration);
         $this->searchAsset = new SearchAsset($configuration);
+    }
+
+    /**
+     * Sets a PSR-18 HTTP client for the requests of this API instance, or the default when null.
+     *
+     * @param ClientInterface|null $client The PSR-18 client.
+     */
+    public function setHttpClient(?ClientInterface $client): static
+    {
+        $this->apiClient->setHttpClient($client);
+
+        return $this;
     }
 
     /**
