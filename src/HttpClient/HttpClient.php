@@ -10,6 +10,7 @@
 
 namespace Cloudinary;
 
+use Cloudinary\Api\BaseApiClient;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Exception\Error;
 use Cloudinary\Log\LoggerTrait;
@@ -38,7 +39,7 @@ class HttpClient
      */
     public function __construct(?Configuration $configuration = null)
     {
-        $this->httpClient = new Client();
+        $this->httpClient = new Client(BaseApiClient::httpHandlerConfig());
 
         if ($configuration === null) {
             $configuration = Configuration::instance();

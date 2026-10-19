@@ -21,6 +21,7 @@ use Cloudinary\Api\Exception\RateLimited;
 use Cloudinary\ArrayUtils;
 use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\ApiConfig;
+use Cloudinary\HttpClient\Psr18Handler;
 use Cloudinary\JsonUtils;
 use Cloudinary\Log\LoggerTrait;
 use Cloudinary\StringUtils;
@@ -28,10 +29,12 @@ use Cloudinary\Utils;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use JsonSerializable;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -103,6 +106,79 @@ class BaseApiClient
      * @var string
      */
     public static string $userPlatform = '';
+
+    /**
+     * @var ClientInterface|null Process-wide default PSR-18 client for API clients without their own.
+     */
+    private static ?ClientInterface $defaultPsrHttpClient = null;
+
+    /**
+     * @var ClientInterface|null PSR-18 client of this API client; overrides the process-wide default.
+     */
+    protected ?ClientInterface $psrHttpClient = null;
+
+    /**
+     * Sets the process-wide default PSR-18 client, or restores the built-in transport when null.
+     *
+     * @param ClientInterface|null $client The PSR-18 client.
+     *
+     * @internal Use Cloudinary::setDefaultHttpClient().
+     */
+    public static function setDefaultHttpClient(?ClientInterface $client): void
+    {
+        self::$defaultPsrHttpClient = $client;
+    }
+
+    /**
+     * Returns the Guzzle handler config for the given or default PSR-18 client, or an empty array.
+     *
+     * @param ClientInterface|null $client The PSR-18 client; the process-wide default when null.
+     *
+     * @internal
+     */
+    public static function httpHandlerConfig(?ClientInterface $client = null): array
+    {
+        $client ??= self::$defaultPsrHttpClient;
+
+        if ($client === null) {
+            return [];
+        }
+
+        return ['handler' => HandlerStack::create(new Psr18Handler($client))];
+    }
+
+    /**
+     * Sets the PSR-18 client for this API client, or falls back to the default when null.
+     *
+     * @param ClientInterface|null $client The PSR-18 client.
+     *
+     * @internal Use setHttpClient() on Cloudinary or on the API classes.
+     */
+    public function setHttpClient(?ClientInterface $client): static
+    {
+        $this->psrHttpClient = $client;
+        $this->createHttpClient();
+
+        return $this;
+    }
+
+    /**
+     * Creates the HTTP client that performs the requests.
+     */
+    protected function createHttpClient(): void
+    {
+        $this->httpClient = new Client($this->buildHttpClientConfig());
+    }
+
+    /**
+     * Builds the HTTP client configuration.
+     *
+     * @internal
+     */
+    protected function buildHttpClientConfig(): array
+    {
+        return self::httpHandlerConfig($this->psrHttpClient);
+    }
 
     /**
      * Gets base API url.

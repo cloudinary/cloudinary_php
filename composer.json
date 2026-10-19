@@ -31,7 +31,8 @@
     "guzzlehttp/psr7": "^2.7|^3.0",
     "ext-json": "*",
     "monolog/monolog": "^2|^3",
-    "psr/log" : "^2|^3"
+    "psr/log" : "^2|^3",
+    "psr/http-client": "^1.0"
   },
   "require-dev": {
     "symfony/phpunit-bridge": "^7.2",
@@ -40,7 +41,8 @@
     "friendsofphp/php-cs-fixer": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "symfony/http-client": "^5.4|^6.4|^7.0|^8.0"
   },
   "autoload": {
     "classmap": [

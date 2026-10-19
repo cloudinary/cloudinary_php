@@ -19,7 +19,6 @@ use Cloudinary\Configuration\Configuration;
 use Cloudinary\FileUtils;
 use Cloudinary\Utils;
 use Exception;
-use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\LimitStream;
@@ -55,11 +54,6 @@ class ApiClient extends BaseApiClient
                          . "/{$this->cloud->cloudName}/";
 
         $this->createHttpClient();
-    }
-
-    protected function createHttpClient(): void
-    {
-        $this->httpClient = new Client($this->buildHttpClientConfig());
     }
 
     /**
@@ -431,7 +425,7 @@ class ApiClient extends BaseApiClient
             unset($authConfig['headers']);
         }
 
-        return array_merge($clientConfig, $authConfig);
+        return array_merge($clientConfig, $authConfig, self::httpHandlerConfig($this->psrHttpClient));
     }
 
     /**

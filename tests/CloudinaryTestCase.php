@@ -184,7 +184,9 @@ abstract class CloudinaryTestCase extends TestCase
             return null;
         }
 
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         return $method->invoke($classInstance, ...$args);
     }
@@ -230,7 +232,9 @@ abstract class CloudinaryTestCase extends TestCase
     protected static function assertObjectLoggedMessage($obj, $message, $level)
     {
         $reflectionMethod = new ReflectionMethod(get_class($obj), 'getLogger');
-        $reflectionMethod->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $reflectionMethod->setAccessible(true);
+        }
         $logger = $reflectionMethod->invoke($obj);
         /** @var TestHandler $testHandler */
         $testHandler = $logger->getTestHandler();

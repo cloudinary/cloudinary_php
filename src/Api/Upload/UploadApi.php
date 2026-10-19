@@ -17,6 +17,7 @@ use Cloudinary\Asset\AssetType;
 use Cloudinary\Configuration\CloudConfig;
 use Cloudinary\Utils;
 use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Client\ClientInterface;
 
 /**
  * Class UploadApi for accessing Cloudinary Upload API functionality
@@ -49,6 +50,18 @@ class UploadApi
     public function __construct(mixed $configuration = null)
     {
         $this->apiClient = new UploadApiClient($configuration);
+    }
+
+    /**
+     * Sets a PSR-18 HTTP client for the requests of this API instance, or the default when null.
+     *
+     * @param ClientInterface|null $client The PSR-18 client.
+     */
+    public function setHttpClient(?ClientInterface $client): static
+    {
+        $this->apiClient->setHttpClient($client);
+
+        return $this;
     }
 
     /**
