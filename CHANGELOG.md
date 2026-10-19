@@ -1,3 +1,11 @@
+3.3.0 / 2026-10-19
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for custom PSR-18 HTTP clients
+
 3.2.0 / 2026-10-19
 ==================
 
