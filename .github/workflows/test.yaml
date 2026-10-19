@@ -3,6 +3,10 @@ on: [push, pull_request]
 jobs:
   php:
     name: PHP ${{ matrix.php-versions }}, Guzzle ${{ matrix.guzzle-versions }}
+    # Same-repo changes run on push; fork PRs run on pull_request.
+    if: >-
+      (github.event_name == 'push' && !github.event.pull_request.head.repo.fork) ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -15,7 +19,12 @@ jobs:
           - '8.4'
         guzzle-versions:
           - '7'
-          - '8'
+        # Guzzle 8 on lowest and highest PHP only.
+        include:
+          - php-versions: '8.0'
+            guzzle-versions: '8'
+          - php-versions: '8.4'
+            guzzle-versions: '8'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
