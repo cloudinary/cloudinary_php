@@ -65,7 +65,8 @@ class ApiConfig extends BaseConfigSection
 
     /**
      *  Describing the number of seconds to wait while trying to connect to a server.
-     *  Use 0 to wait indefinitely (the default behavior).
+     *  When not set, the HTTP client default applies (Guzzle 8: 60 seconds, Guzzle 7 with cURL: 300 seconds).
+     *  Use 0 to disable the limit on Guzzle 8; on Guzzle 7 with cURL, 0 selects the 300 seconds default.
      *
      * @var int|float|null
      */

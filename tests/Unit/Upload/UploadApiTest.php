@@ -205,6 +205,29 @@ final class UploadApiTest extends AssetTestCase
                 ],
                 [],
             ],
+            [
+                [
+                    'headers'       => ['X-Request-ID' => 12345],
+                    'extra_headers' => ['X-Debug' => [true, 1]],
+                ],
+                ['X-Request-ID' => ['12345'], 'X-Debug' => ['1', '1']],
+            ],
         ];
+    }
+
+    /**
+     * Should send list-form `headers` as an upload parameter only, not as HTTP request headers.
+     */
+    public function testListFormHeadersAreNotSentAsHttpHeaders()
+    {
+        $mockUploadApi = new MockUploadApi();
+        $mockUploadApi->upload(self::TEST_BASE64_IMAGE, ['headers' => ['X-Robots-Tag: noindex']]);
+
+        self::assertArrayNotHasKey('0', $mockUploadApi->getApiClient()->getLastRequestHeaders());
+        self::assertArrayNotHasKey('X-Robots-Tag', $mockUploadApi->getApiClient()->getLastRequestHeaders());
+        self::assertSame(
+            'X-Robots-Tag: noindex',
+            $mockUploadApi->getApiClient()->getRequestMultipartOptions()['headers']
+        );
     }
 }

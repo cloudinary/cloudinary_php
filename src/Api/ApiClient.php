@@ -418,10 +418,12 @@ class ApiClient extends BaseApiClient
             $authConfig = [
                 'headers' => ['Authorization' => 'Bearer ' . $this->cloud->oauthToken],
             ];
-        } else {
+        } elseif (! empty($this->cloud->apiKey) && ! empty($this->cloud->apiSecret)) {
             $authConfig = [
                 'auth' => [$this->cloud->apiKey, $this->cloud->apiSecret],
             ];
+        } else {
+            $authConfig = [];
         }
 
         if (isset($authConfig['headers'])) {

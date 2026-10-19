@@ -2,7 +2,7 @@ name: Tests
 on: [push, pull_request]
 jobs:
   php:
-    name: PHP ${{ matrix.php-versions }}
+    name: PHP ${{ matrix.php-versions }}, Guzzle ${{ matrix.guzzle-versions }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -13,6 +13,9 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
+        guzzle-versions:
+          - '7'
+          - '8'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +26,9 @@ jobs:
           extensions: json
           coverage: xdebug
       - name: Install Composer dependencies
-        run: composer update -n
+        run: |
+          composer require -n --no-update guzzlehttp/guzzle:^${{ matrix.guzzle-versions }}
+          composer update -n
       - name: Run Tests
         run: |
           export CLOUDINARY_URL=$(bash tools/get_test_cloud.sh);

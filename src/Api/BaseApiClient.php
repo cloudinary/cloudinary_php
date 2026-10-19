@@ -33,6 +33,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 /**
  * Class BaseApiClient
@@ -297,9 +298,11 @@ class BaseApiClient
     protected function callAsync(string $method, array|string $endPoint, array $options): PromiseInterface
     {
         $endPoint           = self::finalizeEndPoint($endPoint);
-        $options['headers'] = ArrayUtils::mergeNonEmpty(
-            ArrayUtils::get($options, 'headers', []),
-            ArrayUtils::get($options, 'extra_headers', [])
+        $options['headers'] = self::normalizeHeaders(
+            ArrayUtils::mergeNonEmpty(
+                ArrayUtils::get($options, 'headers', []),
+                ArrayUtils::get($options, 'extra_headers', [])
+            )
         );
         $this->getLogger()->debug("Making async $method request", ['method' => $method, 'endPoint' => $endPoint]);
 
@@ -326,7 +329,7 @@ class BaseApiClient
                         return Create::rejectionFor($e);
                     }
                 },
-                function (Exception $error) {
+                function (Throwable $error) {
                     $this->getLogger()->critical(
                         'Async request failed',
                         [
@@ -341,6 +344,28 @@ class BaseApiClient
                     return Create::rejectionFor($error);
                 }
             );
+    }
+
+    /**
+     * Keeps named headers only and casts their values to strings.
+     *
+     * @param array $headers The headers to normalize.
+     *
+     * @internal
+     */
+    private static function normalizeHeaders(array $headers): array
+    {
+        $normalized = [];
+
+        foreach ($headers as $name => $value) {
+            if (! is_string($name)) {
+                continue;
+            }
+
+            $normalized[$name] = is_array($value) ? array_map('strval', $value) : (string)$value;
+        }
+
+        return $normalized;
     }
 
     /**

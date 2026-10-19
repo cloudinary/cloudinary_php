@@ -112,5 +112,6 @@ final class OAuthTest extends AssetTestCase
             self::API_TEST_PRESET,
             $uploadApi->getApiClient()->getRequestMultipartOptions()['upload_preset']
         );
+        self::assertArrayNotHasKey('Authorization', $uploadApi->getApiClient()->getLastRequestHeaders());
     }
 }
