@@ -2,7 +2,11 @@ name: Tests
 on: [push, pull_request]
 jobs:
   php:
-    name: PHP ${{ matrix.php-versions }}
+    name: PHP ${{ matrix.php-versions }}, Guzzle ${{ matrix.guzzle-versions }}
+    # Same-repo changes run on push; fork PRs run on pull_request.
+    if: >-
+      (github.event_name == 'push' && !github.event.pull_request.head.repo.fork) ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -13,6 +17,14 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
+        guzzle-versions:
+          - '7'
+        # Guzzle 8 on lowest and highest PHP only.
+        include:
+          - php-versions: '8.0'
+            guzzle-versions: '8'
+          - php-versions: '8.4'
+            guzzle-versions: '8'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +35,9 @@ jobs:
           extensions: json
           coverage: xdebug
       - name: Install Composer dependencies
-        run: composer update -n
+        run: |
+          composer require -n --no-update guzzlehttp/guzzle:^${{ matrix.guzzle-versions }}
+          composer update -n
       - name: Run Tests
         run: |
           export CLOUDINARY_URL=$(bash tools/get_test_cloud.sh);

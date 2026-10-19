@@ -363,9 +363,16 @@ final class AssetsTest extends UnitTestCase
         $lastRequest = $mockAdminApi->getMockHandler()->getLastRequest();
 
         self::assertRequestUrl($lastRequest, '/resources/visual_search');
-        $body = $lastRequest->getBody()->getContents();
 
-        self::assertStringContainsString('image_file', $body);
-        self::assertStringContainsString('Content-Length: 5110', $body);
+        $file = array_values(
+            array_filter(
+                $mockAdminApi->getApiClient()->getRequestOptions()['multipart'],
+                static fn($part) => $part['name'] === 'image_file'
+            )
+        )[0];
+        $file['contents']->rewind();
+
+        self::assertSame(file_get_contents(IntegrationTestCase::TEST_IMAGE_PATH), $file['contents']->getContents());
+        self::assertSame('sample.png', $file['filename']);
     }
 }
